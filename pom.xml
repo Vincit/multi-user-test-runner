@@ -17,8 +17,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.3</version>
                 <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
+                    <source>${java-version}</source>
+                    <target>${java-version}</target>
                 </configuration>
             </plugin>
         </plugins>
@@ -26,7 +26,15 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
         <java-version>1.7</java-version>
+
+        <!-- Dependency versions -->
+        <spring-security-version>3.2.5.RELEASE</spring-security-version>
+        <spring-data-jpa-version>1.7.1.RELEASE</spring-data-jpa-version>
+        <spring-test-version>3.2.11.RELEASE</spring-test-version>
+        <junit-version>4.12</junit-version>
+        <mockito-version>1.10.19</mockito-version>
     </properties>
 
 
@@ -35,19 +43,19 @@
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-core</artifactId>
-            <version>3.2.5.RELEASE</version>
+            <version>${spring-security-version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-jpa</artifactId>
-            <version>1.7.1.RELEASE</version>
+            <version>${spring-data-jpa-version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
-            <version>3.2.11.RELEASE</version>
+            <version>${spring-test-version}</version>
             <scope>provided</scope>
         </dependency>
 
@@ -55,15 +63,16 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.12</version>
+            <version>${junit-version}</version>
             <scope>provided</scope>
         </dependency>
+
 
         <!-- Test dependencies -->
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
-            <version>1.10.19</version>
+            <version>${mockito-version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
