@@ -17,7 +17,7 @@ import java.util.List;
  * is the user creating a resource e.g. project or a customer. User is the user who
  * later uses/edits/deletes the previously created resource.
  *
- * MultiUserTestRunner requires the test class to have {@link TestUsers} annotation which
+ * MultiUserTestRunner requires the test class to have {@link fi.vincit.multiusertest.annotation.TestUsers} annotation which
  * will define with what users the tests are executed.
  *
  * There are two different type of entities that can be used: roles and users. Roles
