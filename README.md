@@ -3,6 +3,15 @@ Multi User Test Runner
 
 Custom JUnit test runner for testing Spring webapps with multiple roles and users and their combinations.
 
+# Requirements
+
+ * Java 7
+ * JUnit 4.12 (version tested)
+ * Spring Framework 3.2.11 (version tested)
+ * Spring Security 3.2.5 (version tested)
+ 
+Library may work with other versions, but it has not been tested other than the versions mentioned.
+
 # Usage
 
 1. Create a configured abstract class by extending `AbstractUserRole` class and implement methods
