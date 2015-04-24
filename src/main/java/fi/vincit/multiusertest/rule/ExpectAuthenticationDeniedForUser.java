@@ -19,15 +19,32 @@ import java.util.Set;
  */
 public class ExpectAuthenticationDeniedForUser implements TestRule {
 
+    private enum FailMode {
+        EXPECT_FAIL,
+        EXPECT_NOT_FAIL,
+        NONE,
+    }
+
     private Set<UserIdentifier> expectToFailOnRoles = new HashSet<UserIdentifier>();
     private UserIdentifier userIdentifier;
+    private FailMode failMode = FailMode.NONE;
 
     public ExpectAuthenticationDeniedForUser expectToFailIfUserAnyOf(String... identifiers) {
+        addIdentifiers(FailMode.EXPECT_FAIL, identifiers);
+        return this;
+    }
+
+    public ExpectAuthenticationDeniedForUser expectNotToFailIfUserAnyOf(String... identifiers) {
+        addIdentifiers(FailMode.EXPECT_NOT_FAIL, identifiers);
+        return this;
+    }
+
+    private void addIdentifiers(FailMode failMode, String... identifiers) {
         dontExpectToFail();
         for (String identifier : identifiers) {
             expectToFailOnRoles.add(UserIdentifier.parse(identifier));
         }
-        return this;
+        this.failMode = failMode;
     }
 
     public void setRole(UserIdentifier identifier) {
@@ -45,6 +62,7 @@ public class ExpectAuthenticationDeniedForUser implements TestRule {
 
     public void dontExpectToFail() {
         expectToFailOnRoles.clear();
+        failMode = FailMode.NONE;
     }
 
     private class AuthChecker extends Statement {
@@ -72,7 +90,13 @@ public class ExpectAuthenticationDeniedForUser implements TestRule {
         }
 
         private boolean evaluateExpectToFailCondition() {
-            return expectToFailOnRoles.contains(userIdentifier);
+            if (failMode == FailMode.EXPECT_FAIL) {
+                return expectToFailOnRoles.contains(userIdentifier);
+            } else if (failMode == FailMode.EXPECT_NOT_FAIL) {
+                return !expectToFailOnRoles.contains(userIdentifier);
+            } else {
+                return false;
+            }
         }
     }
 }
