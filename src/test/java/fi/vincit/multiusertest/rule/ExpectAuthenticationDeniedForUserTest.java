@@ -14,6 +14,8 @@ import org.springframework.security.access.AccessDeniedException;
 import java.util.Arrays;
 import java.util.Collection;
 
+import static fi.vincit.multiusertest.rule.Authentication.notToFail;
+import static fi.vincit.multiusertest.rule.Authentication.toFail;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 
@@ -110,9 +112,9 @@ public class ExpectAuthenticationDeniedForUserTest {
 
         rule.setRole(usedIdentifier);
         if (failMode == Mode.FAIL_IF_ANY_OF) {
-            rule.expectToFailIfUserAnyOf(expectedIdentifier.getIdentifiers());
+            rule.expect(toFail().ifAnyOf(expectedIdentifier.getIdentifiers()));
         } else if (failMode == Mode.NOT_FAIL_IF_ANY_OF) {
-            rule.expectNotToFailIfUserAnyOf(expectedIdentifier.getIdentifiers());
+            rule.expect(notToFail().ifAnyOf(expectedIdentifier.getIdentifiers()));
         }
 
         statement.evaluate();
@@ -127,10 +129,11 @@ public class ExpectAuthenticationDeniedForUserTest {
 
         rule.setRole(usedIdentifier);
         if (failMode == Mode.FAIL_IF_ANY_OF) {
-            rule.expectToFailIfUserAnyOf(expectedIdentifier.getIdentifiers());
+            rule.expect(toFail().ifAnyOf(expectedIdentifier.getIdentifiers()));
         } else if (failMode == Mode.NOT_FAIL_IF_ANY_OF) {
-            rule.expectNotToFailIfUserAnyOf(expectedIdentifier.getIdentifiers());
+            rule.expect(notToFail().ifAnyOf(expectedIdentifier.getIdentifiers()));
         }
+
         rule.dontExpectToFail();
 
         statement.evaluate();

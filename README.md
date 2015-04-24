@@ -18,7 +18,7 @@ Library may work with other versions, but it has not been tested other than the 
 2. Create a test class which is extended from your configured class.
 3. Add `@TestUsers` annotation for your test class
 4. Write test methods
-5. User `authentication().expectToFailIfUserAnyOf()` method to mark which roles/user are expected to fail
+5. User `authentication().expect(toFail().ifAnyOf("user:user"));` method to mark which roles/user are expected to fail
 
 # Example
 
@@ -81,7 +81,7 @@ public class ServiceIT extends AbstractConfiguredUserIT {
         Todo todo = todoService.create(new TodoDto("Write documentation"));
         
         logInAs(LoginRole.USER);
-        authorization().expectToFailIfUserAnyOf("role:ROLE_USER", "user:existing-user-name");
+        authorization().expect(toFail().ifUserAnyOf("role:ROLE_USER", "user:existing-user-name"));
         
         // Create/update/read data with "user" user
         TodoDto updateDto = new TodoDto(todo);

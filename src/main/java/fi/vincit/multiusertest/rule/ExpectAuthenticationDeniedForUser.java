@@ -11,40 +11,28 @@ import java.util.Set;
 
 /**
  * Rule to be used with {@link fi.vincit.multiusertest.runner.MultiUserTestRunner} to define whether a test passes or
- * fails. Before a method to be tested is executed {@link ExpectAuthenticationDeniedForUser#expectToFailIfUserAnyOf(String...)}
+ * fails. Before a method to be tested is executed {@link ExpectAuthenticationDeniedForUser#expect(Authentication)}
  * should be called with the users that are expected to fail. The user syntax is same as in
  * {@link fi.vincit.multiusertest.runner.MultiUserTestRunner}
  *
- *
  */
 public class ExpectAuthenticationDeniedForUser implements TestRule {
-
-    private enum FailMode {
-        EXPECT_FAIL,
-        EXPECT_NOT_FAIL,
-        NONE,
-    }
 
     private Set<UserIdentifier> expectToFailOnRoles = new HashSet<UserIdentifier>();
     private UserIdentifier userIdentifier;
     private FailMode failMode = FailMode.NONE;
 
-    public ExpectAuthenticationDeniedForUser expectToFailIfUserAnyOf(String... identifiers) {
-        addIdentifiers(FailMode.EXPECT_FAIL, identifiers);
+    public ExpectAuthenticationDeniedForUser expect(Authentication identifiers) {
+        addIdentifiers(identifiers);
         return this;
     }
 
-    public ExpectAuthenticationDeniedForUser expectNotToFailIfUserAnyOf(String... identifiers) {
-        addIdentifiers(FailMode.EXPECT_NOT_FAIL, identifiers);
-        return this;
-    }
-
-    private void addIdentifiers(FailMode failMode, String... identifiers) {
+    private void addIdentifiers(Authentication identifiers) {
         dontExpectToFail();
-        for (String identifier : identifiers) {
+        for (String identifier : identifiers.getIdentifiers()) {
             expectToFailOnRoles.add(UserIdentifier.parse(identifier));
         }
-        this.failMode = failMode;
+        this.failMode = identifiers.getFailMode();
     }
 
     public void setRole(UserIdentifier identifier) {
