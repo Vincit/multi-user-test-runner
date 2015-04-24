@@ -40,7 +40,7 @@ public class MultiUserTestRunner extends Suite {
     private final static MultiUserTestClassRunnerFactory DEAFAULT_RUNNER_FACTORY = new MultiUserTestClassRunnerFactory() {
         @Override
         public ParentRunner<FrameworkMethod> createTestRunner(Class testClass, UserIdentifier creator, UserIdentifier user) throws InitializationError {
-            return new MultiUserTestClassRunner(testClass, creator, user);
+            return new SpringMultiUserTestClassRunner(testClass, creator, user);
         }
     };
 

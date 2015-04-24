@@ -7,12 +7,12 @@ import org.junit.runners.model.InitializationError;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 
-public class MultiUserTestClassRunner extends SpringJUnit4ClassRunner {
+public class SpringMultiUserTestClassRunner extends SpringJUnit4ClassRunner {
 
     private UserIdentifier creatorIdentifier;
     private UserIdentifier userIdentifier;
 
-    public MultiUserTestClassRunner(Class<?> clazz, UserIdentifier creatorIdentifier, UserIdentifier userIdentifier) throws InitializationError {
+    public SpringMultiUserTestClassRunner(Class<?> clazz, UserIdentifier creatorIdentifier, UserIdentifier userIdentifier) throws InitializationError {
         super(clazz);
         this.creatorIdentifier = creatorIdentifier;
         this.userIdentifier = userIdentifier;
