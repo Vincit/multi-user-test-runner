@@ -12,6 +12,7 @@ public class SpringMultiUserTestClassRunner extends SpringJUnit4ClassRunner {
     private UserIdentifier creatorIdentifier;
     private UserIdentifier userIdentifier;
 
+
     public SpringMultiUserTestClassRunner(Class<?> clazz, UserIdentifier creatorIdentifier, UserIdentifier userIdentifier) throws InitializationError {
         super(clazz);
         this.creatorIdentifier = creatorIdentifier;

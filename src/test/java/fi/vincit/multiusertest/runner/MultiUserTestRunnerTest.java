@@ -2,20 +2,19 @@ package fi.vincit.multiusertest.runner;
 
 import fi.vincit.multiusertest.annotation.TestUsers;
 import fi.vincit.multiusertest.util.UserIdentifier;
-import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.Description;
+import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.ParentRunner;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
 
+import java.util.Collections;
+import java.util.List;
+
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 public class MultiUserTestRunnerTest {
 
@@ -25,20 +24,54 @@ public class MultiUserTestRunnerTest {
 
     private MultiUserTestClassRunnerFactory factory;
 
-    @Before
-    public void init() throws InitializationError {
-        ParentRunner<FrameworkMethod> mockRunner = mock(ParentRunner.class);
-        factory = mock(MultiUserTestClassRunnerFactory.class);
-        when(factory.createTestRunner(any(Class.class), any(UserIdentifier.class), any(UserIdentifier.class)))
-                .thenReturn(mockRunner);
+
+    @Ignore
+    public static class TestRunner extends ParentRunner<FrameworkMethod> {
+
+        private Class<?> klass;
+        private UserIdentifier creator;
+        private UserIdentifier user;
+
+        public TestRunner(Class<?> klass, UserIdentifier creator, UserIdentifier user) throws InitializationError {
+            super(klass);
+            this.klass = klass;
+            this.creator = creator;
+            this.user = user;
+        }
+
+        @Override
+        protected List<FrameworkMethod> getChildren() {
+            return Collections.emptyList();
+        }
+
+        @Override
+        protected Description describeChild(FrameworkMethod frameworkMethod) {
+            return Description.createSuiteDescription("Test class");
+        }
+
+        @Override
+        protected void runChild(FrameworkMethod frameworkMethod, RunNotifier runNotifier) {
+        }
+
+        public Class<?> getKlass() {
+            return klass;
+        }
+
+        public UserIdentifier getCreator() {
+            return creator;
+        }
+
+        public UserIdentifier getUser() {
+            return user;
+        }
     }
 
-    @TestUsers(creators = "role:ROLE_USERS")
+    @TestUsers(creators = "role:ROLE_USERS", runner = TestRunner.class)
     @Ignore
     public static class OneCreator {
     }
 
-    @TestUsers(creators = "role:ROLE_USERS", users = {"user:Foo", "role:Bar"})
+    @TestUsers(creators = "role:ROLE_USERS", users = {"user:Foo", "role:Bar"}, runner = TestRunner.class)
     @Ignore
     public static class OneCreator_MultipleUsers {
     }
@@ -53,32 +86,30 @@ public class MultiUserTestRunnerTest {
         MultiUserTestRunner runner = createMultiUserTestRunner(OneCreator.class);
 
         assertThat(runner.getChildren().size(), is(1));
-        verify(factory).createTestRunner(
-                any(Class.class),
-                eq(UserIdentifier.parse("role:ROLE_USERS")),
-                eq(UserIdentifier.getNewUser())
-        );
+        TestRunner childRunner1 = (TestRunner) runner.getChildren().get(0);
+        assertThat(childRunner1.getCreator(), is(UserIdentifier.parse("role:ROLE_USERS")));
+        assertThat(childRunner1.getUser(), is(UserIdentifier.getNewUser()));
     }
 
     @Test
     public void testClassWith_OneCreator_MultipleUsers() throws Throwable {
         MultiUserTestRunner runner = createMultiUserTestRunner(OneCreator_MultipleUsers.class);
 
+
         assertThat(runner.getChildren().size(), is(2));
-        verify(factory).createTestRunner(
-                any(Class.class),
-                eq(UserIdentifier.parse("role:ROLE_USERS")),
-                eq(UserIdentifier.parse("user:Foo"))
-        );
-        verify(factory).createTestRunner(
-                any(Class.class),
-                eq(UserIdentifier.parse("role:ROLE_USERS")),
-                eq(UserIdentifier.parse("role:Bar"))
-        );
+
+        TestRunner childRunner1 = (TestRunner) runner.getChildren().get(0);
+        assertThat(childRunner1.getCreator(), is(UserIdentifier.parse("role:ROLE_USERS")));
+        assertThat(childRunner1.getUser(), is(UserIdentifier.parse("user:Foo")));
+
+        TestRunner childRunner2 = (TestRunner) runner.getChildren().get(1);
+        assertThat(childRunner2.getCreator(), is(UserIdentifier.parse("role:ROLE_USERS")));
+        assertThat(childRunner2.getUser(), is(UserIdentifier.parse("role:Bar")));
+
     }
 
     private MultiUserTestRunner createMultiUserTestRunner(Class testClass) throws Throwable {
-        return new MultiUserTestRunner(testClass, factory);
+        return new MultiUserTestRunner(testClass);
     }
 
 }

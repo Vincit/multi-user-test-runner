@@ -1,5 +1,7 @@
 package fi.vincit.multiusertest.annotation;
 
+import fi.vincit.multiusertest.runner.SpringMultiUserTestClassRunner;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
@@ -28,4 +30,5 @@ public @interface TestUsers {
 
     String[] creators() default {};
     String[] users() default {NEW_USER};
+    Class runner() default SpringMultiUserTestClassRunner.class;
 }

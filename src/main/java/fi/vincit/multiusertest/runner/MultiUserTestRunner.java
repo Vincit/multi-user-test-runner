@@ -5,9 +5,8 @@ import fi.vincit.multiusertest.util.UserIdentifier;
 import org.junit.runner.Runner;
 import org.junit.runners.ParentRunner;
 import org.junit.runners.Suite;
-import org.junit.runners.model.FrameworkMethod;
-import org.junit.runners.model.InitializationError;
 
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -36,32 +35,29 @@ public class MultiUserTestRunner extends Suite {
     public static final String USER_PREFIX = "user:";
 
     private final ArrayList<Runner> runners = new ArrayList<Runner>();
-
-    private final static MultiUserTestClassRunnerFactory DEAFAULT_RUNNER_FACTORY = new MultiUserTestClassRunnerFactory() {
-        @Override
-        public ParentRunner<FrameworkMethod> createTestRunner(Class testClass, UserIdentifier creator, UserIdentifier user) throws InitializationError {
-            return new SpringMultiUserTestClassRunner(testClass, creator, user);
-        }
-    };
-
-    private MultiUserTestClassRunnerFactory testRunnerFactory = DEAFAULT_RUNNER_FACTORY;
+    private Constructor runnerFactory;
 
 
     public MultiUserTestRunner(Class<?> klass) throws Throwable {
         super(klass, NO_RUNNERS);
+        createTestRunner(getAnnotationOrThrow());
         createRunnersForRoles(getCreatorRoles(), getUserRoles());
     }
 
-    public MultiUserTestRunner(Class<?> klass, MultiUserTestClassRunnerFactory testRunnerFactory) throws Throwable {
-        super(klass, NO_RUNNERS);
-        setTestRunnerFactory(testRunnerFactory);
-        createRunnersForRoles(getCreatorRoles(), getUserRoles());
+    private void createTestRunner(TestUsers testRunnerFactory) throws NoSuchMethodException {
+        Class runnerClass = testRunnerFactory.runner();
+        if (runnerClass != null) {
+            try {
+                runnerFactory = runnerClass.getConstructor(Class.class, UserIdentifier.class, UserIdentifier.class);
+            } catch (NoSuchMethodException e) {
+                throw new NoSuchMethodException("Runner must have constructor with class, Useridentifier, UserIdentifier parameters");
+            }
+
+        } else {
+            throw new IllegalArgumentException("TestUsers.runner must not be null");
+        }
     }
 
-
-    public void setTestRunnerFactory(MultiUserTestClassRunnerFactory testRunnerFactory) {
-        this.testRunnerFactory = testRunnerFactory;
-    }
 
     private TestUsers getAnnotationOrThrow() throws Exception {
         TestUsers testRolesAnnotation = getTestClass().getJavaClass().getAnnotation(TestUsers.class);
@@ -95,13 +91,13 @@ public class MultiUserTestRunner extends Suite {
     private void createRunnersForRoles(List<UserIdentifier> creatorIdentifiers, List<UserIdentifier> userIdentifiers) throws Exception {
         for (UserIdentifier creatorIdentifier : creatorIdentifiers) {
             for (UserIdentifier userIdentifier : userIdentifiers) {
-                ParentRunner<FrameworkMethod> testRunner =
-                        testRunnerFactory.createTestRunner(
-                            getTestClass().getJavaClass(),
-                            creatorIdentifier,
-                            userIdentifier
+                Object parentRunner = runnerFactory.newInstance(
+                        getTestClass().getJavaClass(),
+                        creatorIdentifier,
+                        userIdentifier
                 );
-                runners.add(testRunner);
+                runners.add((ParentRunner) parentRunner);
+
             }
         }
     }
