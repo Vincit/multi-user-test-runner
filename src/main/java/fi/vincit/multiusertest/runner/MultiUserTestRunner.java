@@ -35,7 +35,7 @@ public class MultiUserTestRunner extends Suite {
     public static final String USER_PREFIX = "user:";
 
     private final ArrayList<Runner> runners = new ArrayList<Runner>();
-    private Constructor runnerFactory;
+    private Constructor runnerConstructor;
 
 
     public MultiUserTestRunner(Class<?> klass) throws Throwable {
@@ -44,11 +44,11 @@ public class MultiUserTestRunner extends Suite {
         createRunnersForRoles(getCreatorRoles(), getUserRoles());
     }
 
-    private void createTestRunner(TestUsers testRunnerFactory) throws NoSuchMethodException {
-        Class runnerClass = testRunnerFactory.runner();
+    private void createTestRunner(TestUsers testRunnerAnnotation) throws NoSuchMethodException {
+        Class runnerClass = testRunnerAnnotation.runner();
         if (runnerClass != null) {
             try {
-                runnerFactory = runnerClass.getConstructor(Class.class, UserIdentifier.class, UserIdentifier.class);
+                runnerConstructor = runnerClass.getConstructor(Class.class, UserIdentifier.class, UserIdentifier.class);
             } catch (NoSuchMethodException e) {
                 throw new NoSuchMethodException("Runner must have constructor with class, UserIdentifier, UserIdentifier parameters");
             }
@@ -91,7 +91,7 @@ public class MultiUserTestRunner extends Suite {
     private void createRunnersForRoles(List<UserIdentifier> creatorIdentifiers, List<UserIdentifier> userIdentifiers) throws Exception {
         for (UserIdentifier creatorIdentifier : creatorIdentifiers) {
             for (UserIdentifier userIdentifier : userIdentifiers) {
-                Object parentRunner = runnerFactory.newInstance(
+                Object parentRunner = runnerConstructor.newInstance(
                         getTestClass().getJavaClass(),
                         creatorIdentifier,
                         userIdentifier
