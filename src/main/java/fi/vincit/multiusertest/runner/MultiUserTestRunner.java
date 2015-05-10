@@ -50,7 +50,7 @@ public class MultiUserTestRunner extends Suite {
             try {
                 runnerFactory = runnerClass.getConstructor(Class.class, UserIdentifier.class, UserIdentifier.class);
             } catch (NoSuchMethodException e) {
-                throw new NoSuchMethodException("Runner must have constructor with class, Useridentifier, UserIdentifier parameters");
+                throw new NoSuchMethodException("Runner must have constructor with class, UserIdentifier, UserIdentifier parameters");
             }
 
         } else {
