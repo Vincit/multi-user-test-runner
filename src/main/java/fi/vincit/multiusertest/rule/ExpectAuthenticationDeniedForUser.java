@@ -21,6 +21,7 @@ public class ExpectAuthenticationDeniedForUser implements TestRule {
     private Set<UserIdentifier> expectToFailOnRoles = new HashSet<UserIdentifier>();
     private UserIdentifier userIdentifier;
     private FailMode failMode = FailMode.NONE;
+    private static final Statement NO_BASE = null;
 
     public ExpectAuthenticationDeniedForUser expect(Authentication identifiers) {
         addIdentifiers(identifiers);
@@ -49,8 +50,15 @@ public class ExpectAuthenticationDeniedForUser implements TestRule {
     }
 
     public void dontExpectToFail() {
-        expectToFailOnRoles.clear();
-        failMode = FailMode.NONE;
+        try {
+            new AuthChecker(NO_BASE).evaluate();
+            expectToFailOnRoles.clear();
+            failMode = FailMode.NONE;
+        } catch(AssertionError ae) {
+            throw new AssertionError("Expected to fail before dontExpectToFailCall", ae);
+        } catch (Throwable e) {
+            throw new RuntimeException("Internal error", e);
+        }
     }
 
     private class AuthChecker extends Statement {
@@ -64,7 +72,10 @@ public class ExpectAuthenticationDeniedForUser implements TestRule {
         @Override
         public void evaluate() throws Throwable {
             try {
-                next.evaluate();
+                if (next != null) {
+                    next.evaluate();
+                }
+
                 boolean expectToFail = evaluateExpectToFailCondition();
                 if (expectToFail) {
                     throw new AssertionError("Expected to fail with user role " + userIdentifier.toString());

@@ -121,8 +121,28 @@ public class ExpectAuthenticationDeniedForUserTest {
     }
 
 
-    @Test(expected = AssertionError.class)
-    public void clearExpectation() throws Throwable {
+    @Test
+    public void clearExpectationButExpectedToFailBefore() throws Throwable {
+        if (exceptionMode == ExceptionMode.EXPECT) {
+            expectedException.expect(AssertionError.class);
+        }
+
+        ExpectAuthenticationDeniedForUser rule = new ExpectAuthenticationDeniedForUser();
+
+        rule.setRole(usedIdentifier);
+        if (failMode == Mode.FAIL_IF_ANY_OF) {
+            rule.expect(toFail().ifAnyOf(expectedIdentifier.getIdentifiers()));
+        } else if (failMode == Mode.NOT_FAIL_IF_ANY_OF) {
+            rule.expect(notToFail().ifAnyOf(expectedIdentifier.getIdentifiers()));
+        }
+
+        rule.dontExpectToFail();
+    }
+
+    @Test
+    public void clearExpectationDontExpectToFail() throws Throwable {
+        expectedException.expect(AssertionError.class);
+
         ExpectAuthenticationDeniedForUser rule = new ExpectAuthenticationDeniedForUser();
 
         Statement statement = mockApplyAndThrow(rule);
