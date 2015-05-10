@@ -17,7 +17,7 @@ import java.util.List;
  * later uses/edits/deletes the previously created resource.
  *
  * MultiUserTestRunner requires the test class to have {@link fi.vincit.multiusertest.annotation.TestUsers} annotation which
- * will define with what users the tests are executed.
+ * will define with what users the tests are executed. This annotation also allows the test runner to be changed.
  *
  * There are two different type of entities that can be used: roles and users. Roles
  * create a new user to DB with the given role. Users use existing users that are found in
@@ -26,6 +26,7 @@ import java.util.List;
  * There are also two special entities that can be used for test user: {@link fi.vincit.multiusertest.annotation.TestUsers#CREATOR} and
  * {@link fi.vincit.multiusertest.annotation.TestUsers#NEW_USER}. CREATOR uses the the same user as the resource was generated. NEW_USER
  * creates a new user with the same role as the creator had.
+ *
  */
 public class MultiUserTestRunner extends Suite {
 
