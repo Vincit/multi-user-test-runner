@@ -22,19 +22,15 @@ public class MultiUserTestRunnerTest {
     public static class NoAnnotation {
     }
 
-    private MultiUserTestClassRunnerFactory factory;
-
 
     @Ignore
     public static class TestRunner extends ParentRunner<FrameworkMethod> {
 
-        private Class<?> klass;
         private UserIdentifier creator;
         private UserIdentifier user;
 
-        public TestRunner(Class<?> klass, UserIdentifier creator, UserIdentifier user) throws InitializationError {
-            super(klass);
-            this.klass = klass;
+        public TestRunner(Class<?> clazz, UserIdentifier creator, UserIdentifier user) throws InitializationError {
+            super(clazz);
             this.creator = creator;
             this.user = user;
         }
@@ -51,10 +47,6 @@ public class MultiUserTestRunnerTest {
 
         @Override
         protected void runChild(FrameworkMethod frameworkMethod, RunNotifier runNotifier) {
-        }
-
-        public Class<?> getKlass() {
-            return klass;
         }
 
         public UserIdentifier getCreator() {
