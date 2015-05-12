@@ -35,11 +35,6 @@ public class AbstractUserRoleITTest {
         }
 
         @Override
-        protected void authenticateUser(String s) {
-
-        }
-
-        @Override
         protected String createUser(String username, String firstName, String lastName, Role userRole, LoginRole loginRole) {
             return null;
         }

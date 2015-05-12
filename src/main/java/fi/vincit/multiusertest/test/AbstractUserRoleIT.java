@@ -175,12 +175,6 @@ public abstract class AbstractUserRoleIT<USER, USER_ID, ROLE> {
     protected abstract void loginWithUser(USER user);
 
     /**
-     * Authenticate user to the system
-     * @param user User to authenticate
-     */
-    protected abstract void authenticateUser(USER user);
-
-    /**
      * Creates new user to the system and returns it
      * @param username Random user name
      * @param firstName First name
