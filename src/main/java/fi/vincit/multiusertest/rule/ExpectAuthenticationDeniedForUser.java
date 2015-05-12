@@ -21,6 +21,7 @@ public class ExpectAuthenticationDeniedForUser implements TestRule {
     private Set<UserIdentifier> expectToFailOnRoles = new HashSet<UserIdentifier>();
     private UserIdentifier userIdentifier;
     private FailMode failMode = FailMode.NONE;
+    private Class<? extends Throwable> expectedException = AccessDeniedException.class;
     private static final Statement NO_BASE = null;
 
     public ExpectAuthenticationDeniedForUser expect(Authentication identifiers) {
@@ -42,6 +43,10 @@ public class ExpectAuthenticationDeniedForUser implements TestRule {
 
     public void setRole(UserIdentifier.Type type, String identifier) {
         this.userIdentifier = new UserIdentifier(type, identifier);
+    }
+
+    public void setExpectedException(Class<? extends Throwable> expectedException) {
+        this.expectedException = expectedException;
     }
 
     @Override
@@ -80,10 +85,14 @@ public class ExpectAuthenticationDeniedForUser implements TestRule {
                 if (expectToFail) {
                     throw new AssertionError("Expected to fail with user role " + userIdentifier.toString());
                 }
-            } catch (AccessDeniedException e) {
-                boolean expectToFail = evaluateExpectToFailCondition();
-                if (!expectToFail) {
-                    throw new AssertionError("Not expected to fail with user role " + userIdentifier.toString(), e);
+            } catch (Throwable e) {
+                if (expectedException.isInstance(e)) {
+                    boolean expectToFail = evaluateExpectToFailCondition();
+                    if (!expectToFail) {
+                        throw new AssertionError("Not expected to fail with user role " + userIdentifier.toString(), e);
+                    }
+                } else {
+                    throw e;
                 }
             }
         }
