@@ -7,6 +7,10 @@ Custom JUnit test runner for testing Spring webapps with multiple roles and user
 
  * Java 7
  * JUnit 4.12 (version tested)
+ 
+# Optional Requirements
+
+## For SpringMultiUserTestClassRunner
  * Spring Framework 3.2.11 (version tested)
  * Spring Security 3.2.5 (version tested)
  
@@ -19,6 +23,15 @@ Library may work with other versions, but it has not been tested other than the 
 3. Add `@TestUsers` annotation for your test class
 4. Write test methods
 5. User `authentication().expect(toFail().ifAnyOf("user:user"));` method to mark which roles/user are expected to fail
+
+# Runner Classes
+
+By default there are two runner classes `SpringMultiUserTestClassRunner` and `BlockMultiUserTestClassRunner`. Spring
+runner loads the Spring context before the tests and the Block runner will works as a plain JUnit test runner.
+Used runner can be configured via `TestUsers` annotation's `runner` argument. Spring runner is used by default.
+It is also possible to define a custom runner. The custom runner has to implement JUnit's `ParentTestRunner` and
+has to have a constructor with following format: 
+`CustomRunner(Class<?> clazz, UserIdentifier creatorIdentifier, UserIdentifier userIdentifier)`.
 
 # Example
 

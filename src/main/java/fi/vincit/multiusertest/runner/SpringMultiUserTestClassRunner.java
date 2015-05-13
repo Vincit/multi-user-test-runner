@@ -6,7 +6,10 @@ import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-
+/**
+ * Spring specific runner. Uses SpringJUnit4ClassRunner to initialize
+ * spring context.
+ */
 public class SpringMultiUserTestClassRunner extends SpringJUnit4ClassRunner {
 
     private UserIdentifier creatorIdentifier;

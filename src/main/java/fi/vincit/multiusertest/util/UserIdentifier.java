@@ -3,6 +3,9 @@ package fi.vincit.multiusertest.util;
 import fi.vincit.multiusertest.annotation.TestUsers;
 import fi.vincit.multiusertest.runner.MultiUserTestRunner;
 
+/**
+ *
+ */
 public class UserIdentifier {
 
     public enum Type {
