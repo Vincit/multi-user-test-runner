@@ -16,7 +16,7 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 
-public class ExpectAuthenticationDeniedForUserTest_SetException {
+public class ExpectAuthenticationDeniedForUserTest_setModes {
 
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
@@ -76,6 +76,26 @@ public class ExpectAuthenticationDeniedForUserTest_SetException {
         rule.setRole(UserIdentifier.getNewUser());
 
         mockAndApply(rule).evaluate();
+    }
+
+    @Test
+    public void failModeNoneByDefault() {
+        ExpectAuthenticationDeniedForUser rule = new ExpectAuthenticationDeniedForUser();
+        assertThat(rule.getFailMode(), is(FailMode.NONE));
+    }
+
+    @Test
+    public void setExpectedFailCondition_ToFail() {
+        ExpectAuthenticationDeniedForUser rule = new ExpectAuthenticationDeniedForUser();
+        rule.expect(toFail().ifAnyOf("role:foo"));
+        assertThat(rule.getFailMode(), is(FailMode.EXPECT_FAIL));
+    }
+
+    @Test
+    public void setExpectedFailCondition_NotToFail() {
+        ExpectAuthenticationDeniedForUser rule = new ExpectAuthenticationDeniedForUser();
+        rule.expect(notToFail().ifAnyOf("role:foo"));
+        assertThat(rule.getFailMode(), is(FailMode.EXPECT_NOT_FAIL));
     }
 
     private Statement mockAndApply(ExpectAuthenticationDeniedForUser rule) {

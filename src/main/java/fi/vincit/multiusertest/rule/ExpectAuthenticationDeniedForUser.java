@@ -60,7 +60,7 @@ public class ExpectAuthenticationDeniedForUser implements TestRule {
             expectToFailOnRoles.clear();
             failMode = FailMode.NONE;
         } catch(AssertionError ae) {
-            throw new AssertionError("Expected to fail before dontExpectToFailCall", ae);
+            throw new AssertionError("Expected to fail before call", ae);
         } catch (Throwable e) {
             throw new RuntimeException("Internal error", e);
         }
