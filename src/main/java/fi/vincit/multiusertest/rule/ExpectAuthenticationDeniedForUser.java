@@ -66,6 +66,22 @@ public class ExpectAuthenticationDeniedForUser implements TestRule {
         }
     }
 
+    Set<UserIdentifier> getExpectToFailOnRoles() {
+        return expectToFailOnRoles;
+    }
+
+    UserIdentifier getUserIdentifier() {
+        return userIdentifier;
+    }
+
+    FailMode getFailMode() {
+        return failMode;
+    }
+
+    Class<? extends Throwable> getExpectedException() {
+        return expectedException;
+    }
+
     private class AuthChecker extends Statement {
 
         private Statement next;
@@ -80,20 +96,20 @@ public class ExpectAuthenticationDeniedForUser implements TestRule {
                 if (next != null) {
                     next.evaluate();
                 }
-
-                boolean expectToFail = evaluateExpectToFailCondition();
-                if (expectToFail) {
-                    throw new AssertionError("Expected to fail with user role " + userIdentifier.toString());
-                }
             } catch (Throwable e) {
                 if (expectedException.isInstance(e)) {
-                    boolean expectToFail = evaluateExpectToFailCondition();
-                    if (!expectToFail) {
+                    if (!evaluateExpectToFailCondition()) {
                         throw new AssertionError("Not expected to fail with user role " + userIdentifier.toString(), e);
+                    } else {
+                        return;
                     }
                 } else {
                     throw e;
                 }
+            }
+
+            if (evaluateExpectToFailCondition()) {
+                throw new AssertionError("Expected to fail with user role " + userIdentifier.toString());
             }
         }
 
