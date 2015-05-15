@@ -35,7 +35,7 @@
                     <artifactId>multi-user-test-runner</artifactId>
                     <version>${version}</version>
                     <scope>system</scope>
-                    <systemPath>${project.basedir}/lib/multi-user-teest-runner-${version}.jar</systemPath>
+                    <systemPath>${project.basedir}/lib/multi-user-test-runner-${version}.jar</systemPath>
                 </dependency>
             </dependencies>
         </profile>
