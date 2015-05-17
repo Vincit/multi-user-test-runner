@@ -2,6 +2,7 @@ package fi.vincit.multiusertest;
 
 import fi.vincit.multiusertest.test.AbstractUserRoleIT;
 import fi.vincit.multiusertest.util.LoginRole;
+import fi.vincit.multiusertest.util.User;
 
 public abstract class ConfiguredTest extends AbstractUserRoleIT<User, Long, User.Role> {
     @Override

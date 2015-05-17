@@ -1,4 +1,4 @@
-package fi.vincit.multiusertest;
+package fi.vincit.multiusertest.util;
 
 public class User {
     public enum Role {
