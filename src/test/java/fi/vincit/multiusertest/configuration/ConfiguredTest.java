@@ -1,4 +1,4 @@
-package fi.vincit.multiusertest;
+package fi.vincit.multiusertest.configuration;
 
 import fi.vincit.multiusertest.test.AbstractUserRoleIT;
 import fi.vincit.multiusertest.util.LoginRole;

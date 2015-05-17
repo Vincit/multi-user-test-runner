@@ -1,6 +1,7 @@
 package fi.vincit.multiusertest;
 
 import fi.vincit.multiusertest.annotation.TestUsers;
+import fi.vincit.multiusertest.configuration.ConfiguredTest;
 import fi.vincit.multiusertest.rule.Authentication;
 import fi.vincit.multiusertest.rule.ExpectAuthenticationDeniedForUser;
 import fi.vincit.multiusertest.runner.BlockMultiUserTestClassRunner;
