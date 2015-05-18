@@ -104,3 +104,23 @@ public class ServiceIT extends AbstractConfiguredUserIT {
 }
 
 ```
+
+This will run tests:
+
+* ServiceIT
+    * testX creator = role:ROLE_ADMIN; user = creator;
+    * testX creator = role:ROLE_ADMIN; user = role:ROLE_ADMIN;
+    * testX creator = role:ROLE_ADMIN; user = role:ROLE_USER;
+    * testX creator = role:ROLE_ADMIN; user = user:existing-user-name;
+    * testX creator = role:ROLE_USER; user = creator;
+    * testX creator = role:ROLE_USER; user = role:ROLE_ADMIN;
+    * testX creator = role:ROLE_USER; user = role:ROLE_USER;
+    * testX creator = role:ROLE_USER; user = user:existing-user-name;
+    
+And if something fails due to authorization error, you will see error like:
+```
+java.lang.AssertionError: Not expected to fail with user role role:ROLE_ADMIN
+<stack trace...>
+Caused by: org.springframework.security.access.AccessDeniedException: Permission denied
+<stack trace...>
+```
