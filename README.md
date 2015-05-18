@@ -88,17 +88,18 @@ public class AbstractConfiguredUserIT extends AbstractUserRoleIT<User, Id<User>,
 public class ServiceIT extends AbstractConfiguredUserIT {
 
     @Test
-    public void testX() {
+    public void createAndUpdateTodo() {
         // Create data with "creator" user
         // Logged in as "creator" user by default
         Todo todo = todoService.create(new TodoDto("Write documentation"));
         
         logInAs(LoginRole.USER);
-        authorization().expect(toFail().ifAnyOf("role:ROLE_USER", "user:existing-user-name"));
         
         // Create/update/read data with "user" user
         TodoDto updateDto = new TodoDto(todo);
-        updateDto.setName("Write documentation for project");
+        updateDto.setName("Write better documentation");
+        
+        authorization().expect(toFail().ifAnyOf("role:ROLE_USER", "user:existing-user-name"));
         todoService.update(updateDto);
     }
 }
@@ -108,19 +109,25 @@ public class ServiceIT extends AbstractConfiguredUserIT {
 This will run tests:
 
 * ServiceIT
-    * testX creator = role:ROLE_ADMIN; user = creator;
-    * testX creator = role:ROLE_ADMIN; user = role:ROLE_ADMIN;
-    * testX creator = role:ROLE_ADMIN; user = role:ROLE_USER;
-    * testX creator = role:ROLE_ADMIN; user = user:existing-user-name;
-    * testX creator = role:ROLE_USER; user = creator;
-    * testX creator = role:ROLE_USER; user = role:ROLE_ADMIN;
-    * testX creator = role:ROLE_USER; user = role:ROLE_USER;
-    * testX creator = role:ROLE_USER; user = user:existing-user-name;
+    * createAndUpdateTodo creator = role:ROLE_ADMIN; user = creator;
+    * createAndUpdateTodo creator = role:ROLE_ADMIN; user = role:ROLE_ADMIN;
+    * createAndUpdateTodo creator = role:ROLE_ADMIN; user = role:ROLE_USER;
+    * createAndUpdateTodo creator = role:ROLE_ADMIN; user = user:existing-user-name;
+    * createAndUpdateTodo creator = role:ROLE_USER; user = creator;
+    * createAndUpdateTodo creator = role:ROLE_USER; user = role:ROLE_ADMIN;
+    * createAndUpdateTodo creator = role:ROLE_USER; user = role:ROLE_USER;
+    * createAndUpdateTodo creator = role:ROLE_USER; user = user:existing-user-name;
     
 And if something fails due to authorization error, you will see error like:
 ```
 java.lang.AssertionError: Not expected to fail with user role role:ROLE_ADMIN
 <stack trace...>
 Caused by: org.springframework.security.access.AccessDeniedException: Permission denied
+<stack trace...>
+```
+
+or if tested method doesn't fail when expected:
+```
+java.lang.AssertionError: Expected to fail with user role role:ROLE_USER
 <stack trace...>
 ```
