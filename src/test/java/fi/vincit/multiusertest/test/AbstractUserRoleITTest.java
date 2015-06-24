@@ -167,7 +167,7 @@ public class AbstractUserRoleITTest {
 
         verify(spyClass.expectAuthenticationDeniedForUser).setRole(UserIdentifier.Type.CREATOR, null);
         verify(spyClass.expectAuthenticationDeniedForUser).setRole(UserIdentifier.Type.USER, "user2");
-        verify(spyClass, times(2)).getUserByUsername("user2");
+        verify(spyClass, times(1)).getUserByUsername("user2");
     }
 
     @Test

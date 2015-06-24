@@ -168,7 +168,7 @@ public abstract class AbstractUserRoleIT<USER, USER_ID, ROLE> {
             this.userMode = RoleMode.SET_USER_ROLE;
         } else {
             this.userIdentifier = identifier;
-            this.user = getUserByUsername(this.userIdentifier.getIdentifier());
+            this.user = null;
             this.userRole = null;
             this.userMode = RoleMode.EXISTING_USER;
         }
