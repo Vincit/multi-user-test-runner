@@ -95,7 +95,11 @@ public abstract class AbstractUserRoleIT<USER, USER_ID, ROLE> {
     }
 
     protected USER getUser() {
-        return user;
+        if (userMode == RoleMode.EXISTING_USER) {
+            return getUserByUsername(userIdentifier.getIdentifier());
+        } else {
+            return user;
+        }
     }
 
     public USER getCreator() {
@@ -113,8 +117,9 @@ public abstract class AbstractUserRoleIT<USER, USER_ID, ROLE> {
 
             expectAuthenticationDeniedForUser.setRole(UserIdentifier.Type.CREATOR, null);
         } else {
-            assertThat("Trying to log in as user but the user doesn't exist", getUser(), notNullValue());
-            loginWithUser(getUser());
+            USER user = getUser();
+            assertThat("Trying to log in as user but the user doesn't exist", user, notNullValue());
+            loginWithUser(user);
 
             if (this.userMode == RoleMode.EXISTING_USER) {
                 expectAuthenticationDeniedForUser.setRole(UserIdentifier.Type.USER, this.userIdentifier.getIdentifier());

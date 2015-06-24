@@ -15,11 +15,7 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.inOrder;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class AbstractUserRoleITTest {
 
@@ -171,6 +167,7 @@ public class AbstractUserRoleITTest {
 
         verify(spyClass.expectAuthenticationDeniedForUser).setRole(UserIdentifier.Type.CREATOR, null);
         verify(spyClass.expectAuthenticationDeniedForUser).setRole(UserIdentifier.Type.USER, "user2");
+        verify(spyClass, times(2)).getUserByUsername("user2");
     }
 
     @Test
