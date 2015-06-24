@@ -40,6 +40,7 @@ public abstract class AbstractUserRoleIT<USER, USER_ID, ROLE> {
     private ROLE creatorRole;
     private RoleMode creatorMode;
     private USER creator;
+    private UserIdentifier creatorIdentifier;
 
     private Random random = new Random(System.currentTimeMillis());
 
@@ -103,7 +104,11 @@ public abstract class AbstractUserRoleIT<USER, USER_ID, ROLE> {
     }
 
     public USER getCreator() {
-        return creator;
+        if (creatorMode == RoleMode.EXISTING_USER) {
+            return getUserByUsername(creatorIdentifier.getIdentifier());
+        } else {
+            return creator;
+        }
     }
 
     protected ROLE getUserRole() {
@@ -142,9 +147,10 @@ public abstract class AbstractUserRoleIT<USER, USER_ID, ROLE> {
 
     private void setCreatorIdentifier(UserIdentifier identifier) {
         if (identifier.getType() == UserIdentifier.Type.USER) {
-            this.creator = getUserByUsername(identifier.getIdentifier());
+            this.creator = null;
             this.creatorRole = null;
             this.creatorMode = RoleMode.EXISTING_USER;
+            this.creatorIdentifier = identifier;
         } else if (identifier.getType() == UserIdentifier.Type.ROLE) {
             this.creatorRole = stringToRole(identifier.getIdentifier());
             this.creatorMode = RoleMode.SET_USER_ROLE;

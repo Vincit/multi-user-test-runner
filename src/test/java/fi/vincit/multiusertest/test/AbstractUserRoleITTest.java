@@ -130,6 +130,25 @@ public class AbstractUserRoleITTest {
     }
 
     @Test
+    public void testLoginAs_ExistingCreator() {
+        TestClass spyClass = mockTestClass();
+        spyClass.expectAuthenticationDeniedForUser = mock(ExpectAuthenticationDeniedForUser.class);
+
+        when(spyClass.getRandomUsername()).thenReturn("user1", "user2");
+        when(spyClass.getUserByUsername("user3")).thenReturn("test-user3");
+
+        spyClass.setUsers(UserIdentifier.parse("user:user3"), UserIdentifier.parse("role:ROLE2"));
+        spyClass.initializeUsers();
+
+        verify(spyClass).logInAs(LoginRole.CREATOR);
+
+        verify(spyClass).loginWithUser("test-user3");
+
+        verify(spyClass.expectAuthenticationDeniedForUser).setRole(UserIdentifier.Type.CREATOR, null);
+        verify(spyClass, times(1)).getUserByUsername("user3");
+    }
+
+    @Test
     public void testLoginAs_RoleUser() {
         TestClass spyClass = mockTestClass();
         spyClass.expectAuthenticationDeniedForUser = mock(ExpectAuthenticationDeniedForUser.class);
