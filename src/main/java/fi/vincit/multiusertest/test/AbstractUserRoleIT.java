@@ -112,8 +112,9 @@ public abstract class AbstractUserRoleIT<USER, USER_ID, ROLE> {
 
     protected void logInAs(LoginRole role) {
         if (role == LoginRole.CREATOR) {
-            assertThat("Trying to log in as creator but the creator doesn't exist", getCreator(), notNullValue());
-            loginWithUser(creator);
+            USER creatorUser = getCreator();
+            assertThat("Trying to log in as creator but the creator doesn't exist", creatorUser, notNullValue());
+            loginWithUser(creatorUser);
 
             expectAuthenticationDeniedForUser.setRole(UserIdentifier.Type.CREATOR, null);
         } else {
