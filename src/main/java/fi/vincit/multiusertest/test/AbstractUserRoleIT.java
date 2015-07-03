@@ -3,6 +3,7 @@ package fi.vincit.multiusertest.test;
 import fi.vincit.multiusertest.rule.AuthorizationRule;
 import fi.vincit.multiusertest.runner.MultiUserTestRunner;
 import fi.vincit.multiusertest.util.LoginRole;
+import fi.vincit.multiusertest.util.TestUser;
 import fi.vincit.multiusertest.util.UserIdentifier;
 import org.junit.Before;
 import org.junit.Rule;
@@ -25,22 +26,8 @@ import static org.junit.Assert.assertThat;
 @RunWith(MultiUserTestRunner.class)
 public abstract class AbstractUserRoleIT<USER, USER_ID, ROLE> {
 
-    private enum RoleMode {
-        CREATOR_USER,
-        NEW_WITH_CREATOR_ROLE,
-        SET_USER_ROLE,
-        EXISTING_USER
-    }
-
-    private ROLE userRole;
-    private RoleMode userMode;
-    private USER user;
-    private UserIdentifier userIdentifier;
-
-    private ROLE creatorRole;
-    private RoleMode creatorMode;
-    private USER creator;
-    private UserIdentifier creatorIdentifier;
+    private TestUser<USER, USER_ID, ROLE> user;
+    private TestUser<USER, USER_ID, ROLE> creator;
 
     private Random random = new Random(System.currentTimeMillis());
 
@@ -58,26 +45,26 @@ public abstract class AbstractUserRoleIT<USER, USER_ID, ROLE> {
     }
 
     private void initializeUser() {
-        if (userMode == RoleMode.SET_USER_ROLE) {
-            user = createUser(getRandomUsername(), "Test", "User", getUserRole(), LoginRole.USER);
-        } else if (userMode == RoleMode.CREATOR_USER) {
-            setUser(creator);
-        } else if (userMode == RoleMode.NEW_WITH_CREATOR_ROLE) {
-            user = createUser(getRandomUsername(), "Test", "User", getCreatorRole(), LoginRole.USER);
-        } else if (userMode == RoleMode.EXISTING_USER) {
+        if (user.getMode() == TestUser.RoleMode.SET_USER_ROLE) {
+            this.user = user.withUser(createUser(getRandomUsername(), "Test", "User", getUserRole(), LoginRole.USER));
+        } else if (user.getMode() == TestUser.RoleMode.CREATOR_USER) {
+            this.user = user.withUser(creator.getUser());
+        } else if (user.getMode() == TestUser.RoleMode.NEW_WITH_CREATOR_ROLE) {
+            this.user = user.withUser(createUser(getRandomUsername(), "Test", "User", getCreatorRole(), LoginRole.USER));
+        } else if (user.getMode() == TestUser.RoleMode.EXISTING_USER) {
             // Do nothing, user already set
         } else {
-            throw new IllegalArgumentException("Invalid user mode: " + creatorMode);
+            throw new IllegalArgumentException("Invalid user mode: " + user.getMode());
         }
     }
 
     private void initializeCreator() {
-        if (creatorMode == RoleMode.SET_USER_ROLE) {
-            creator = createUser(getRandomUsername(), "Test", "Creator", creatorRole, LoginRole.CREATOR);
-        } else if (creatorMode == RoleMode.EXISTING_USER) {
+        if (creator.getMode() == TestUser.RoleMode.SET_USER_ROLE) {
+            this.creator = creator.withUser(createUser(getRandomUsername(), "Test", "Creator", creator.getRole(), LoginRole.CREATOR));
+        } else if (creator.getMode() == TestUser.RoleMode.EXISTING_USER) {
             // Do nothing, user already set
         } else {
-            throw new IllegalArgumentException("Invalid creator user mode: " + creatorMode);
+            throw new IllegalArgumentException("Invalid creator user mode: " + creator.getMode());
         }
     }
 
@@ -90,28 +77,24 @@ public abstract class AbstractUserRoleIT<USER, USER_ID, ROLE> {
         setUserIdentifier(userIdentifier);
     }
 
-    protected void setUser(USER user) {
-        this.user = user;
-    }
-
     protected USER getUser() {
-        if (userMode == RoleMode.EXISTING_USER) {
-            return getUserByUsername(userIdentifier.getIdentifier());
+        if (user.getMode() == TestUser.RoleMode.EXISTING_USER) {
+            return getUserByUsername(user.getIdentifier());
         } else {
-            return user;
+            return user.getUser();
         }
     }
 
     public USER getCreator() {
-        if (creatorMode == RoleMode.EXISTING_USER) {
-            return getUserByUsername(creatorIdentifier.getIdentifier());
+        if (creator.getMode() == TestUser.RoleMode.EXISTING_USER) {
+            return getUserByUsername(creator.getIdentifier());
         } else {
-            return creator;
+            return creator.getUser();
         }
     }
 
     protected ROLE getUserRole() {
-        return userRole;
+        return user.getRole();
     }
 
     protected void logInAs(LoginRole role) {
@@ -126,9 +109,9 @@ public abstract class AbstractUserRoleIT<USER, USER_ID, ROLE> {
             assertThat("Trying to log in as user but the user doesn't exist", user, notNullValue());
             loginWithUser(user);
 
-            if (this.userMode == RoleMode.EXISTING_USER) {
-                authorizationRule.setRole(UserIdentifier.Type.USER, this.userIdentifier.getIdentifier());
-            } else if (this.userMode == RoleMode.CREATOR_USER) {
+            if (this.user.getMode() == TestUser.RoleMode.EXISTING_USER) {
+                authorizationRule.setRole(UserIdentifier.Type.USER, this.user.getIdentifier());
+            } else if (this.user.getMode() == TestUser.RoleMode.CREATOR_USER) {
                 authorizationRule.setRole(UserIdentifier.getCreator());
             } else {
                 authorizationRule.setRole(UserIdentifier.Type.ROLE, getUserRole().toString());
@@ -137,7 +120,7 @@ public abstract class AbstractUserRoleIT<USER, USER_ID, ROLE> {
     }
 
     protected ROLE getCreatorRole() {
-        return creatorRole;
+        return creator.getRole();
     }
 
     String getRandomUsername() {
@@ -146,13 +129,12 @@ public abstract class AbstractUserRoleIT<USER, USER_ID, ROLE> {
 
     private void setCreatorIdentifier(UserIdentifier identifier) {
         if (identifier.getType() == UserIdentifier.Type.USER) {
-            this.creator = null;
-            this.creatorRole = null;
-            this.creatorMode = RoleMode.EXISTING_USER;
-            this.creatorIdentifier = identifier;
+            this.creator = TestUser.forExistingUser(identifier);
         } else if (identifier.getType() == UserIdentifier.Type.ROLE) {
-            this.creatorRole = stringToRole(identifier.getIdentifier());
-            this.creatorMode = RoleMode.SET_USER_ROLE;
+            this.creator = TestUser.forRole(
+                    stringToRole(identifier.getIdentifier()),
+                    identifier
+            );
         } else {
             throw new IllegalArgumentException("Invalid identifier for creator: " + identifier.getType());
         }
@@ -160,22 +142,13 @@ public abstract class AbstractUserRoleIT<USER, USER_ID, ROLE> {
 
     private void setUserIdentifier(UserIdentifier identifier) {
         if (identifier.getType() == UserIdentifier.Type.CREATOR) {
-            this.user = null;
-            this.userRole = null;
-            this.userMode = RoleMode.CREATOR_USER;
+            this.user = TestUser.forCreatorUser(identifier);
         } else if (identifier.getType() == UserIdentifier.Type.NEW_USER) {
-            this.user = null;
-            this.userRole = creatorRole;
-            this.userMode = RoleMode.NEW_WITH_CREATOR_ROLE;
+            this.user = TestUser.forNewUser(getCreatorRole(), identifier);
         } else if (identifier.getType() == UserIdentifier.Type.ROLE) {
-            this.user = null;
-            this.userRole = stringToRole(identifier.getIdentifier());
-            this.userMode = RoleMode.SET_USER_ROLE;
+            this.user = TestUser.forRole(stringToRole(identifier.getIdentifier()), identifier);
         } else {
-            this.userIdentifier = identifier;
-            this.user = null;
-            this.userRole = null;
-            this.userMode = RoleMode.EXISTING_USER;
+            this.user = TestUser.forExistingUser(identifier);
         }
     }
 
