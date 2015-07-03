@@ -3,7 +3,7 @@ package fi.vincit.multiusertest;
 import fi.vincit.multiusertest.annotation.TestUsers;
 import fi.vincit.multiusertest.configuration.ConfiguredTest;
 import fi.vincit.multiusertest.rule.Authentication;
-import fi.vincit.multiusertest.rule.ExpectAuthenticationDeniedForUser;
+import fi.vincit.multiusertest.rule.AuthorizationRule;
 import fi.vincit.multiusertest.runner.BlockMultiUserTestClassRunner;
 import fi.vincit.multiusertest.runner.MultiUserTestRunner;
 import fi.vincit.multiusertest.util.LoginRole;
@@ -20,7 +20,7 @@ public class SmokeTest extends ConfiguredTest {
 
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
-    public ExpectAuthenticationDeniedForUser expectFailAuthRule = new ExpectAuthenticationDeniedForUser();
+    public AuthorizationRule expectFailAuthRule = new AuthorizationRule();
 
     @Rule
     public RuleChain ruleChain = RuleChain

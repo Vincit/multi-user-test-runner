@@ -4,10 +4,7 @@ import fi.vincit.multiusertest.annotation.TestUsers;
 import fi.vincit.multiusertest.configuration.ConfiguredTest;
 import fi.vincit.multiusertest.runner.BlockMultiUserTestClassRunner;
 import fi.vincit.multiusertest.runner.MultiUserTestRunner;
-import fi.vincit.multiusertest.util.LoginRole;
-import fi.vincit.multiusertest.util.SecurityUtil;
-import fi.vincit.multiusertest.util.User;
-import fi.vincit.multiusertest.util.UserIdentifier;
+import fi.vincit.multiusertest.util.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.security.access.AccessDeniedException;
@@ -70,6 +67,11 @@ public class BasicTest extends ConfiguredTest {
         logInAs(LoginRole.USER);
         authorization().expect(toFail().ifAnyOf("role:ROLE_USER"));
         throwIfUserRole("role:ROLE_USER");
+    }
+
+    @Test
+    public void dontExpectFailure() {
+        authorization().dontExpectToFail();
     }
 
     private void throwIfUserRole(String identifier) {
