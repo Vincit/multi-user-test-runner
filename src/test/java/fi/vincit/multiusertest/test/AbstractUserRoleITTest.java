@@ -1,6 +1,6 @@
 package fi.vincit.multiusertest.test;
 
-import fi.vincit.multiusertest.rule.ExpectAuthenticationDeniedForUser;
+import fi.vincit.multiusertest.rule.AuthorizationRule;
 import fi.vincit.multiusertest.util.LoginRole;
 import fi.vincit.multiusertest.util.UserIdentifier;
 import org.junit.Test;
@@ -117,7 +117,7 @@ public class AbstractUserRoleITTest {
     @Test
     public void testLoginAs_Creator() {
         TestClass spyClass = mockTestClass();
-        spyClass.expectAuthenticationDeniedForUser = mock(ExpectAuthenticationDeniedForUser.class);
+        spyClass.authorizationRule = mock(AuthorizationRule.class);
 
         when(spyClass.getRandomUsername()).thenReturn("user1", "user2");
 
@@ -126,13 +126,13 @@ public class AbstractUserRoleITTest {
 
         verify(spyClass).loginWithUser("user1");
 
-        verify(spyClass.expectAuthenticationDeniedForUser).setRole(UserIdentifier.Type.CREATOR, null);
+        verify(spyClass.authorizationRule).setRole(UserIdentifier.Type.CREATOR, null);
     }
 
     @Test
     public void testLoginAs_ExistingCreator() {
         TestClass spyClass = mockTestClass();
-        spyClass.expectAuthenticationDeniedForUser = mock(ExpectAuthenticationDeniedForUser.class);
+        spyClass.authorizationRule = mock(AuthorizationRule.class);
 
         when(spyClass.getRandomUsername()).thenReturn("user1", "user2");
         when(spyClass.getUserByUsername("user3")).thenReturn("test-user3");
@@ -144,14 +144,14 @@ public class AbstractUserRoleITTest {
 
         verify(spyClass).loginWithUser("test-user3");
 
-        verify(spyClass.expectAuthenticationDeniedForUser).setRole(UserIdentifier.Type.CREATOR, null);
+        verify(spyClass.authorizationRule).setRole(UserIdentifier.Type.CREATOR, null);
         verify(spyClass, times(1)).getUserByUsername("user3");
     }
 
     @Test
     public void testLoginAs_RoleUser() {
         TestClass spyClass = mockTestClass();
-        spyClass.expectAuthenticationDeniedForUser = mock(ExpectAuthenticationDeniedForUser.class);
+        spyClass.authorizationRule = mock(AuthorizationRule.class);
 
         when(spyClass.getRandomUsername()).thenReturn("user1", "user2");
 
@@ -163,14 +163,14 @@ public class AbstractUserRoleITTest {
         order.verify(spyClass).loginWithUser("user1");
         order.verify(spyClass).loginWithUser("user2");
 
-        verify(spyClass.expectAuthenticationDeniedForUser).setRole(UserIdentifier.Type.CREATOR, null);
-        verify(spyClass.expectAuthenticationDeniedForUser).setRole(UserIdentifier.Type.ROLE, "ROLE2");
+        verify(spyClass.authorizationRule).setRole(UserIdentifier.Type.CREATOR, null);
+        verify(spyClass.authorizationRule).setRole(UserIdentifier.Type.ROLE, "ROLE2");
     }
 
     @Test
     public void testLoginAs_ExistingUser() {
         TestClass spyClass = mockTestClass();
-        spyClass.expectAuthenticationDeniedForUser = mock(ExpectAuthenticationDeniedForUser.class);
+        spyClass.authorizationRule = mock(AuthorizationRule.class);
 
         when(spyClass.getRandomUsername()).thenReturn("user1", "user2");
         when(spyClass.getUserByUsername("user2")).thenReturn("test-user2");
@@ -184,15 +184,15 @@ public class AbstractUserRoleITTest {
         order.verify(spyClass).loginWithUser("user1");
         order.verify(spyClass).loginWithUser("test-user2");
 
-        verify(spyClass.expectAuthenticationDeniedForUser).setRole(UserIdentifier.Type.CREATOR, null);
-        verify(spyClass.expectAuthenticationDeniedForUser).setRole(UserIdentifier.Type.USER, "user2");
+        verify(spyClass.authorizationRule).setRole(UserIdentifier.Type.CREATOR, null);
+        verify(spyClass.authorizationRule).setRole(UserIdentifier.Type.USER, "user2");
         verify(spyClass, times(1)).getUserByUsername("user2");
     }
 
     @Test
     public void testLoginAs_CreatorUser() {
         TestClass spyClass = mockTestClass();
-        spyClass.expectAuthenticationDeniedForUser = mock(ExpectAuthenticationDeniedForUser.class);
+        spyClass.authorizationRule = mock(AuthorizationRule.class);
 
         when(spyClass.getRandomUsername()).thenReturn("user1", "user2");
         when(spyClass.getUserByUsername("user2")).thenReturn("test-user2");
@@ -207,8 +207,8 @@ public class AbstractUserRoleITTest {
         order.verify(spyClass).loginWithUser("user1");
         order.verify(spyClass).loginWithUser("user1");
 
-        verify(spyClass.expectAuthenticationDeniedForUser).setRole(UserIdentifier.Type.CREATOR, null);
-        verify(spyClass.expectAuthenticationDeniedForUser).setRole(UserIdentifier.getCreator());
+        verify(spyClass.authorizationRule).setRole(UserIdentifier.Type.CREATOR, null);
+        verify(spyClass.authorizationRule).setRole(UserIdentifier.getCreator());
     }
 
     protected void mockDefaultCalls(TestClass spyClass) {

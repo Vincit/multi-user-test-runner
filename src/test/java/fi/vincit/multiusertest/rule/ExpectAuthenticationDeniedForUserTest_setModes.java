@@ -25,7 +25,7 @@ public class ExpectAuthenticationDeniedForUserTest_setModes {
     public void dontCatchWrongExceptions() throws Throwable {
         expectedException.expect(AccessDeniedException.class);
 
-        ExpectAuthenticationDeniedForUser rule = new ExpectAuthenticationDeniedForUser();
+        AuthorizationRule rule = new AuthorizationRule();
         rule.setExpectedException(IllegalArgumentException.class);
         rule.setRole(UserIdentifier.getNewUser());
 
@@ -36,7 +36,7 @@ public class ExpectAuthenticationDeniedForUserTest_setModes {
     public void catchSetExceptions() throws Throwable {
         expectedException.expect(AssertionError.class);
 
-        ExpectAuthenticationDeniedForUser rule = new ExpectAuthenticationDeniedForUser();
+        AuthorizationRule rule = new AuthorizationRule();
         rule.setExpectedException(IllegalArgumentException.class);
         rule.setRole(UserIdentifier.getNewUser());
 
@@ -47,7 +47,7 @@ public class ExpectAuthenticationDeniedForUserTest_setModes {
     public void catchSetSuperClassExceptions() throws Throwable {
         expectedException.expect(AssertionError.class);
 
-        ExpectAuthenticationDeniedForUser rule = new ExpectAuthenticationDeniedForUser();
+        AuthorizationRule rule = new AuthorizationRule();
         rule.setExpectedException(IllegalArgumentException.class);
         rule.setRole(UserIdentifier.getNewUser());
 
@@ -58,7 +58,7 @@ public class ExpectAuthenticationDeniedForUserTest_setModes {
     public void throwDefaultException() throws Throwable {
         expectedException.expect(AssertionError.class);
 
-        ExpectAuthenticationDeniedForUser rule = new ExpectAuthenticationDeniedForUser();
+        AuthorizationRule rule = new AuthorizationRule();
         rule.setExpectedException(IllegalArgumentException.class);
         rule.setRole(UserIdentifier.getNewUser());
 
@@ -70,7 +70,7 @@ public class ExpectAuthenticationDeniedForUserTest_setModes {
         expectedException.expect(AssertionError.class);
         expectedException.expectMessage("Expected to fail with user role");
 
-        ExpectAuthenticationDeniedForUser rule = new ExpectAuthenticationDeniedForUser();
+        AuthorizationRule rule = new AuthorizationRule();
         rule.expect(toFail().ifAnyOf(TestUsers.NEW_USER));
         rule.setExpectedException(AssertionError.class);
         rule.setRole(UserIdentifier.getNewUser());
@@ -80,31 +80,31 @@ public class ExpectAuthenticationDeniedForUserTest_setModes {
 
     @Test
     public void failModeNoneByDefault() {
-        ExpectAuthenticationDeniedForUser rule = new ExpectAuthenticationDeniedForUser();
+        AuthorizationRule rule = new AuthorizationRule();
         assertThat(rule.getFailMode(), is(FailMode.NONE));
     }
 
     @Test
     public void setExpectedFailCondition_ToFail() {
-        ExpectAuthenticationDeniedForUser rule = new ExpectAuthenticationDeniedForUser();
+        AuthorizationRule rule = new AuthorizationRule();
         rule.expect(toFail().ifAnyOf("role:foo"));
         assertThat(rule.getFailMode(), is(FailMode.EXPECT_FAIL));
     }
 
     @Test
     public void setExpectedFailCondition_NotToFail() {
-        ExpectAuthenticationDeniedForUser rule = new ExpectAuthenticationDeniedForUser();
+        AuthorizationRule rule = new AuthorizationRule();
         rule.expect(notToFail().ifAnyOf("role:foo"));
         assertThat(rule.getFailMode(), is(FailMode.EXPECT_NOT_FAIL));
     }
 
-    private Statement mockAndApply(ExpectAuthenticationDeniedForUser rule) {
+    private Statement mockAndApply(AuthorizationRule rule) {
         Statement mockStatement = mock(Statement.class);
         Description mockDescription = mock(Description.class);
         return rule.apply(mockStatement, mockDescription);
     }
 
-    protected Statement mockApplyAndThrow(ExpectAuthenticationDeniedForUser rule, Throwable exception) throws Throwable {
+    protected Statement mockApplyAndThrow(AuthorizationRule rule, Throwable exception) throws Throwable {
         Statement mockStatement = mock(Statement.class);
         doThrow(exception).when(mockStatement).evaluate();
         Description mockDescription = mock(Description.class);

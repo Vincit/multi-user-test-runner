@@ -11,12 +11,12 @@ import java.util.Set;
 
 /**
  * Rule to be used with {@link fi.vincit.multiusertest.runner.MultiUserTestRunner} to define whether a test passes or
- * fails. Before a method to be tested is executed {@link ExpectAuthenticationDeniedForUser#expect(Authentication)}
+ * fails. Before a method to be tested is executed {@link AuthorizationRule#expect(Authentication)}
  * should be called with the users that are expected to fail. The user syntax is same as in
  * {@link fi.vincit.multiusertest.runner.MultiUserTestRunner}
  *
  */
-public class ExpectAuthenticationDeniedForUser implements TestRule {
+public class AuthorizationRule implements TestRule {
 
     private Set<UserIdentifier> expectToFailOnRoles = new HashSet<UserIdentifier>();
     private UserIdentifier userIdentifier;
@@ -24,7 +24,7 @@ public class ExpectAuthenticationDeniedForUser implements TestRule {
     private Class<? extends Throwable> expectedException = AccessDeniedException.class;
     private static final Statement NO_BASE = null;
 
-    public ExpectAuthenticationDeniedForUser expect(Authentication identifiers) {
+    public AuthorizationRule expect(Authentication identifiers) {
         addIdentifiers(identifiers);
         return this;
     }

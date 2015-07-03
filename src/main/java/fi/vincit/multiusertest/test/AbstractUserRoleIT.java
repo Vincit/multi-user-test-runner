@@ -1,6 +1,6 @@
 package fi.vincit.multiusertest.test;
 
-import fi.vincit.multiusertest.rule.ExpectAuthenticationDeniedForUser;
+import fi.vincit.multiusertest.rule.AuthorizationRule;
 import fi.vincit.multiusertest.runner.MultiUserTestRunner;
 import fi.vincit.multiusertest.util.LoginRole;
 import fi.vincit.multiusertest.util.UserIdentifier;
@@ -45,8 +45,7 @@ public abstract class AbstractUserRoleIT<USER, USER_ID, ROLE> {
     private Random random = new Random(System.currentTimeMillis());
 
     @Rule
-    public ExpectAuthenticationDeniedForUser expectAuthenticationDeniedForUser =
-            new ExpectAuthenticationDeniedForUser();
+    public AuthorizationRule authorizationRule = new AuthorizationRule();
 
     @Before
     @Transactional
@@ -82,8 +81,8 @@ public abstract class AbstractUserRoleIT<USER, USER_ID, ROLE> {
         }
     }
 
-    public ExpectAuthenticationDeniedForUser authorization() {
-        return expectAuthenticationDeniedForUser;
+    public AuthorizationRule authorization() {
+        return authorizationRule;
     }
 
     public void setUsers(UserIdentifier creatorIdentifier, UserIdentifier userIdentifier) {
@@ -121,18 +120,18 @@ public abstract class AbstractUserRoleIT<USER, USER_ID, ROLE> {
             assertThat("Trying to log in as creator but the creator doesn't exist", creatorUser, notNullValue());
             loginWithUser(creatorUser);
 
-            expectAuthenticationDeniedForUser.setRole(UserIdentifier.Type.CREATOR, null);
+            authorizationRule.setRole(UserIdentifier.Type.CREATOR, null);
         } else {
             USER user = getUser();
             assertThat("Trying to log in as user but the user doesn't exist", user, notNullValue());
             loginWithUser(user);
 
             if (this.userMode == RoleMode.EXISTING_USER) {
-                expectAuthenticationDeniedForUser.setRole(UserIdentifier.Type.USER, this.userIdentifier.getIdentifier());
+                authorizationRule.setRole(UserIdentifier.Type.USER, this.userIdentifier.getIdentifier());
             } else if (this.userMode == RoleMode.CREATOR_USER) {
-                expectAuthenticationDeniedForUser.setRole(UserIdentifier.getCreator());
+                authorizationRule.setRole(UserIdentifier.getCreator());
             } else {
-                expectAuthenticationDeniedForUser.setRole(UserIdentifier.Type.ROLE, getUserRole().toString());
+                authorizationRule.setRole(UserIdentifier.Type.ROLE, getUserRole().toString());
             }
         }
     }

@@ -20,7 +20,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 
 @RunWith(Parameterized.class)
-public class ExpectAuthenticationDeniedForUserTest {
+public class AuthorizationRuleTest {
 
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
@@ -90,10 +90,10 @@ public class ExpectAuthenticationDeniedForUserTest {
     private Mode failMode;
     private ExceptionMode exceptionMode;
 
-    public ExpectAuthenticationDeniedForUserTest(UserIdentifier usedIdentifier,
-                                                 Mode failMode,
-                                                 Identifiers expectedIdentifier,
-                                                 ExceptionMode exceptionMode) {
+    public AuthorizationRuleTest(UserIdentifier usedIdentifier,
+                                 Mode failMode,
+                                 Identifiers expectedIdentifier,
+                                 ExceptionMode exceptionMode) {
         this.usedIdentifier = usedIdentifier;
         this.expectedIdentifier = expectedIdentifier;
         this.failMode = failMode;
@@ -106,7 +106,7 @@ public class ExpectAuthenticationDeniedForUserTest {
             expectedException.expect(AssertionError.class);
         }
 
-        ExpectAuthenticationDeniedForUser rule = new ExpectAuthenticationDeniedForUser();
+        AuthorizationRule rule = new AuthorizationRule();
 
         Statement statement = mockAndApply(rule);
 
@@ -127,7 +127,7 @@ public class ExpectAuthenticationDeniedForUserTest {
             expectedException.expect(AssertionError.class);
         }
 
-        ExpectAuthenticationDeniedForUser rule = new ExpectAuthenticationDeniedForUser();
+        AuthorizationRule rule = new AuthorizationRule();
 
         rule.setRole(usedIdentifier);
         if (failMode == Mode.FAIL_IF_ANY_OF) {
@@ -143,7 +143,7 @@ public class ExpectAuthenticationDeniedForUserTest {
     public void clearExpectationDontExpectToFail() throws Throwable {
         expectedException.expect(AssertionError.class);
 
-        ExpectAuthenticationDeniedForUser rule = new ExpectAuthenticationDeniedForUser();
+        AuthorizationRule rule = new AuthorizationRule();
 
         Statement statement = mockApplyAndThrow(rule);
 
@@ -160,13 +160,13 @@ public class ExpectAuthenticationDeniedForUserTest {
     }
 
 
-    protected Statement mockAndApply(ExpectAuthenticationDeniedForUser rule) {
+    protected Statement mockAndApply(AuthorizationRule rule) {
         Statement mockStatement = mock(Statement.class);
         Description mockDescription = mock(Description.class);
         return rule.apply(mockStatement, mockDescription);
     }
 
-    protected Statement mockApplyAndThrow(ExpectAuthenticationDeniedForUser rule) throws Throwable {
+    protected Statement mockApplyAndThrow(AuthorizationRule rule) throws Throwable {
         Statement mockStatement = mock(Statement.class);
         doThrow(new AccessDeniedException("Test expection")).when(mockStatement).evaluate();
         Description mockDescription = mock(Description.class);
