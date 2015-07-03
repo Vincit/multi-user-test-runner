@@ -8,7 +8,7 @@ import fi.vincit.multiusertest.util.User;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class ConfiguredTest extends AbstractUserRoleIT<User, Long, User.Role> {
+public abstract class ConfiguredTest extends AbstractUserRoleIT<User, User.Role> {
 
     private static Map<String, User> users = new HashMap<>();
 
