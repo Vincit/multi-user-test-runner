@@ -1,20 +1,20 @@
 package fi.vincit.multiusertest.util;
 
-public class TestUser<USER, USER_ID, ROLE> {
+public class TestUser<USER, ROLE> {
 
-    public static <USER, USER_ID, ROLE> TestUser<USER, USER_ID, ROLE> forCreatorUser(UserIdentifier identifier) {
+    public static <USER, ROLE> TestUser<USER, ROLE> forCreatorUser(UserIdentifier identifier) {
         return new TestUser<>(null, RoleMode.CREATOR_USER, null, identifier);
     }
 
-    public static <USER, USER_ID, ROLE> TestUser<USER, USER_ID, ROLE> forNewUser(ROLE role, UserIdentifier identifier) {
+    public static <USER, ROLE> TestUser<USER, ROLE> forNewUser(ROLE role, UserIdentifier identifier) {
         return new TestUser<>(role, RoleMode.NEW_WITH_CREATOR_ROLE, null, identifier);
     }
 
-    public static <USER, USER_ID, ROLE> TestUser<USER, USER_ID, ROLE> forRole(ROLE role, UserIdentifier identifier) {
+    public static <USER, ROLE> TestUser<USER, ROLE> forRole(ROLE role, UserIdentifier identifier) {
         return new TestUser<>(role, RoleMode.SET_USER_ROLE, null, identifier);
     }
 
-    public static <USER, USER_ID, ROLE> TestUser<USER, USER_ID, ROLE> forExistingUser(UserIdentifier identifier) {
+    public static <USER, ROLE> TestUser<USER, ROLE> forExistingUser(UserIdentifier identifier) {
         return new TestUser<>(null, RoleMode.EXISTING_USER, null, identifier);
     }
 
@@ -53,7 +53,7 @@ public class TestUser<USER, USER_ID, ROLE> {
         return user;
     }
 
-    public TestUser<USER, USER_ID, ROLE> withUser(USER user) {
+    public TestUser<USER, ROLE> withUser(USER user) {
         return new TestUser<>(this.role, this.mode, user, this.userIdentifier);
     }
 

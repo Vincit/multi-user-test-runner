@@ -20,14 +20,13 @@ import static org.junit.Assert.assertThat;
  * with just a system specific configurations.
  *
  * @param <USER> User class
- * @param <USER_ID> User objects ID type
  * @param <ROLE> Role
  */
 @RunWith(MultiUserTestRunner.class)
-public abstract class AbstractUserRoleIT<USER, USER_ID, ROLE> {
+public abstract class AbstractUserRoleIT<USER, ROLE> {
 
-    private TestUser<USER, USER_ID, ROLE> user;
-    private TestUser<USER, USER_ID, ROLE> creator;
+    private TestUser<USER, ROLE> user;
+    private TestUser<USER, ROLE> creator;
 
     private Random random = new Random(System.currentTimeMillis());
 

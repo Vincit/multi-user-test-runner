@@ -24,7 +24,7 @@ public class AbstractUserRoleITTest {
         ROLE2
     }
 
-    private static class TestClass extends AbstractUserRoleIT<String, Long, Role> {
+    private static class TestClass extends AbstractUserRoleIT<String, Role> {
         @Override
         protected void loginWithUser(String user) {
 
