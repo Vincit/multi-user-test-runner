@@ -76,7 +76,7 @@ public abstract class AbstractUserRoleIT<USER, ROLE> {
         setUserIdentifier(userIdentifier);
     }
 
-    protected USER getUser() {
+    public USER getUser() {
         if (user.getMode() == TestUser.RoleMode.EXISTING_USER) {
             return getUserByUsername(user.getIdentifier());
         } else {
@@ -149,6 +149,14 @@ public abstract class AbstractUserRoleIT<USER, ROLE> {
         } else {
             this.user = TestUser.forExistingUser(identifier);
         }
+    }
+
+    protected TestUser<USER, ROLE> getUserModel() {
+        return user;
+    }
+
+    protected TestUser<USER, ROLE> getCreatorModel() {
+        return creator;
     }
 
     /**
