@@ -4,14 +4,32 @@ import fi.vincit.multiusertest.annotation.TestUsers;
 import fi.vincit.multiusertest.runner.MultiUserTestRunner;
 
 /**
- *
+ * Generic definition of a user to use in the tests. Defines what kind of
+ * user is being used in the tests. E.g. is user created with a certain role or is an existing
+ * user used.
  */
 public class UserIdentifier {
 
+    /**
+     * Definitions for user types. Specifies what kind of
+     * user is created for logging in or should an existing user be used.
+     */
     public enum Type {
+        /**
+         * Same as creator user
+         */
         CREATOR,
+        /**
+         * New user with role the creator used
+         */
         NEW_USER,
+        /**
+         * User with certain role.
+         */
         ROLE,
+        /**
+         * Existing user. No new user created.
+         */
         USER
     }
 
