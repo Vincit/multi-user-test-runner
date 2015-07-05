@@ -32,6 +32,11 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * Overriding {@link org.junit.runners.BlockJUnit4ClassRunner#testName(FrameworkMethod)} and
  * {@link org.junit.runners.BlockJUnit4ClassRunner#getName()} is recommended to make the test names to
  * describe all the different combinations properly.
+ *
+ * Annotation can also be user with methods. Then the annotation will define with what users the method
+ * will be executed. If {@link this#creators()} are set, the method will only be executed if any of the specified creators are
+ * being used as the creator. Same applies for the {@link this#users()}. If both creators and users are defined then
+ * the method will be run only if any combination of creators and users are being used.
  */
 @Target({TYPE, METHOD})
 @Retention(RUNTIME)
