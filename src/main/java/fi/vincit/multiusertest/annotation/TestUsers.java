@@ -7,6 +7,7 @@ import org.junit.runners.model.FrameworkMethod;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
@@ -32,7 +33,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * {@link org.junit.runners.BlockJUnit4ClassRunner#getName()} is recommended to make the test names to
  * describe all the different combinations properly.
  */
-@Target({TYPE})
+@Target({TYPE, METHOD})
 @Retention(RUNTIME)
 public @interface TestUsers {
 
@@ -53,7 +54,7 @@ public @interface TestUsers {
     /**
      * User roles/users to be used
      */
-    String[] users() default {NEW_USER};
+    String[] users() default {};
 
     /**
      * Test runner class to use
