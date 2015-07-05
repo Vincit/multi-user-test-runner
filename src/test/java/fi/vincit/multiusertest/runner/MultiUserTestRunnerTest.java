@@ -58,6 +58,19 @@ public class MultiUserTestRunnerTest {
         }
     }
 
+    @Ignore
+    public static class TestRunnerNoProperConstructor extends TestRunner {
+
+        public TestRunnerNoProperConstructor(UserIdentifier creator) throws InitializationError {
+            super(TestRunnerNoProperConstructor.class, creator, creator);
+        }
+    }
+
+    @TestUsers(creators = "role:ROLE_USERS", runner = TestRunnerNoProperConstructor.class)
+    public static class NoProperConstructor {
+
+    }
+
     @TestUsers(creators = "role:ROLE_USERS", runner = TestRunner.class)
     @Ignore
     public static class OneCreator {
@@ -95,6 +108,16 @@ public class MultiUserTestRunnerTest {
         assertThat(childRunner2.getCreator(), is(UserIdentifier.parse("role:ROLE_USERS")));
         assertThat(childRunner2.getUser(), is(UserIdentifier.parse("role:Bar")));
 
+    }
+
+    @Test(expected = NoSuchMethodException.class)
+    public void testClassWith_NoProperConstructor() throws Throwable {
+        createMultiUserTestRunner(NoProperConstructor.class);
+    }
+
+    @Test(expected = NoSuchMethodException.class)
+    public void testClassWith_NotRunner() throws Throwable {
+        createMultiUserTestRunner(NoProperConstructor.class);
     }
 
     private MultiUserTestRunner createMultiUserTestRunner(Class testClass) throws Throwable {
