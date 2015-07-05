@@ -10,11 +10,7 @@ public class AnnotationUtil {
 
     public static Set<UserIdentifier> getUsers(TestUsers testUsers) {
         if (testUsers != null) {
-            Set<UserIdentifier> userIdentifiers = new HashSet<>();
-            for (String user : testUsers.users()) {
-                userIdentifiers.add(UserIdentifier.parse(user));
-            }
-            return userIdentifiers;
+            return getDefinitions(testUsers.users());
         } else {
             return Collections.emptySet();
         }
@@ -22,14 +18,18 @@ public class AnnotationUtil {
 
     public static Set<UserIdentifier> getCreators(TestUsers testUsers) {
         if (testUsers != null) {
-            Set<UserIdentifier> userIdentifiers = new HashSet<>();
-            for (String user : testUsers.creators()) {
-                userIdentifiers.add(UserIdentifier.parse(user));
-            }
-            return userIdentifiers;
+            return getDefinitions(testUsers.creators());
         } else {
             return Collections.emptySet();
         }
+    }
+
+    private static Set<UserIdentifier> getDefinitions(String[] definitions) {
+        Set<UserIdentifier> userIdentifiers = new HashSet<>();
+        for (String user : definitions) {
+            userIdentifiers.add(UserIdentifier.parse(user));
+        }
+        return userIdentifiers;
     }
 
 }
