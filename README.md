@@ -22,7 +22,8 @@ Library may work with other versions, but it has not been tested other than the 
 2. Create a test class which is extended from your configured class.
 3. Add `@TestUsers` annotation for your test class
 4. Write test methods
-5. User `authentication().expect(toFail().ifAnyOf("user:user"));` method to mark which roles/user are expected to fail
+5. Add `authentication().expect(toFail().ifAnyOf("user:user"));` before method to test 
+   to mark which roles/users are expected to fail
 
 # Runner Classes
 
