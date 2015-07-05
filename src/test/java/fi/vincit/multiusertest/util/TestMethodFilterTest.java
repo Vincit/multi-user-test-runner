@@ -9,11 +9,11 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class CheckShouldRunTest {
+public class TestMethodFilterTest {
 
     @Test
     public void testRunMetdhodWhenCreatorAndUserSet() {
-        CheckShouldRun r = new CheckShouldRun(
+        TestMethodFilter r = new TestMethodFilter(
                 UserIdentifier.parse("role:ROLE_ADMIN"),
                 UserIdentifier.parse("role:ROLE_ADMIN"));
 
@@ -24,7 +24,7 @@ public class CheckShouldRunTest {
 
     @Test
     public void testDontRunMethodWhenUserDoesntMatch() {
-        CheckShouldRun r = new CheckShouldRun(
+        TestMethodFilter r = new TestMethodFilter(
                 UserIdentifier.parse("role:ROLE_ADMIN"),
                 UserIdentifier.parse("role:ROLE_USER"));
 
@@ -35,7 +35,7 @@ public class CheckShouldRunTest {
 
     @Test
     public void testDontRunMethodWhenCreatorDoesntMatch() {
-        CheckShouldRun r = new CheckShouldRun(
+        TestMethodFilter r = new TestMethodFilter(
                 UserIdentifier.parse("role:ROLE_USER"),
                 UserIdentifier.parse("role:ROLE_ADMIN"));
 
@@ -46,7 +46,7 @@ public class CheckShouldRunTest {
 
     @Test
     public void testRunMethodWhenMultipleUserRoles() {
-        CheckShouldRun r = new CheckShouldRun(
+        TestMethodFilter r = new TestMethodFilter(
                 UserIdentifier.parse("role:ROLE_ADMIN"),
                 UserIdentifier.parse("role:ROLE_USER"));
 
@@ -61,7 +61,7 @@ public class CheckShouldRunTest {
 
     @Test
     public void testRunMethodWhenMultipleCreatorRoles() {
-        CheckShouldRun r = new CheckShouldRun(
+        TestMethodFilter r = new TestMethodFilter(
                 UserIdentifier.parse("role:ROLE_USER"),
                 UserIdentifier.parse("role:ROLE_ADMIN"));
 
@@ -75,7 +75,7 @@ public class CheckShouldRunTest {
 
     @Test
     public void testRunMethodWhenNoUserDefined() {
-        CheckShouldRun r = new CheckShouldRun(
+        TestMethodFilter r = new TestMethodFilter(
                 UserIdentifier.parse("role:ROLE_USER"),
                 UserIdentifier.parse("role:ROLE_ADMIN"));
 
@@ -89,7 +89,7 @@ public class CheckShouldRunTest {
 
     @Test
     public void testRunMethodWhenNoCreatorDefined() {
-        CheckShouldRun r = new CheckShouldRun(
+        TestMethodFilter r = new TestMethodFilter(
                 UserIdentifier.parse("role:ROLE_USER"),
                 UserIdentifier.parse("role:ROLE_ADMIN"));
 
@@ -103,7 +103,7 @@ public class CheckShouldRunTest {
 
     @Test
     public void testRunMethodWhenNoRolesDefined() {
-        CheckShouldRun r = new CheckShouldRun(
+        TestMethodFilter r = new TestMethodFilter(
                 UserIdentifier.parse("role:ROLE_USER"),
                 UserIdentifier.parse("role:ROLE_ADMIN"));
 
@@ -117,7 +117,7 @@ public class CheckShouldRunTest {
 
     @Test
     public void testRunMethodWhenNoAnnotationDefined() {
-        CheckShouldRun r = new CheckShouldRun(
+        TestMethodFilter r = new TestMethodFilter(
                 UserIdentifier.parse("role:ROLE_USER"),
                 UserIdentifier.parse("role:ROLE_ADMIN"));
 

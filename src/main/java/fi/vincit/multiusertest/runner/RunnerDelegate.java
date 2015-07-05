@@ -1,7 +1,7 @@
 package fi.vincit.multiusertest.runner;
 
 import fi.vincit.multiusertest.test.AbstractUserRoleIT;
-import fi.vincit.multiusertest.util.CheckShouldRun;
+import fi.vincit.multiusertest.util.TestMethodFilter;
 import fi.vincit.multiusertest.util.UserIdentifier;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.TestClass;
@@ -12,25 +12,25 @@ public class RunnerDelegate {
 
     private UserIdentifier creatorIdentifier;
     private UserIdentifier userIdentifier;
-    private CheckShouldRun shouldRunChecker;
+    private TestMethodFilter shouldRunChecker;
 
     public RunnerDelegate(UserIdentifier creatorIdentifier, UserIdentifier userIdentifier) {
         assert userIdentifier != null;
         assert creatorIdentifier != null;
         this.creatorIdentifier = creatorIdentifier;
         this.userIdentifier = userIdentifier;
-        this.shouldRunChecker = new CheckShouldRun(creatorIdentifier, userIdentifier);
+        this.shouldRunChecker = new TestMethodFilter(creatorIdentifier, userIdentifier);
     }
 
     // Only for testing
-    RunnerDelegate(UserIdentifier creatorIdentifier, UserIdentifier userIdentifier, CheckShouldRun shouldRunChecker) {
+    RunnerDelegate(UserIdentifier creatorIdentifier, UserIdentifier userIdentifier, TestMethodFilter shouldRunChecker) {
         this.creatorIdentifier = creatorIdentifier;
         this.userIdentifier = userIdentifier;
         this.shouldRunChecker = shouldRunChecker;
     }
 
     public List<FrameworkMethod> filterMethods(List<FrameworkMethod> methods) {
-        List<FrameworkMethod> filteredMethods = shouldRunChecker.getMethodsToRun(methods);
+        List<FrameworkMethod> filteredMethods = shouldRunChecker.filter(methods);
         if (!filteredMethods.isEmpty()) {
             return filteredMethods;
         } else {

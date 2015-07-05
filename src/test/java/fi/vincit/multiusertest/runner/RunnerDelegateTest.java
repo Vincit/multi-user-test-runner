@@ -1,8 +1,8 @@
 package fi.vincit.multiusertest.runner;
 
 import fi.vincit.multiusertest.test.AbstractUserRoleIT;
-import fi.vincit.multiusertest.util.CheckShouldRun;
 import fi.vincit.multiusertest.util.LoginRole;
+import fi.vincit.multiusertest.util.TestMethodFilter;
 import fi.vincit.multiusertest.util.TestUser;
 import fi.vincit.multiusertest.util.UserIdentifier;
 import org.junit.Ignore;
@@ -107,14 +107,14 @@ public class RunnerDelegateTest {
 
     @Test
     public void testIsIgnoredByChild() {
-        CheckShouldRun checkShouldRun = mock(CheckShouldRun.class);
+        TestMethodFilter testMethodFilter = mock(TestMethodFilter.class);
         RunnerDelegate delegate = new RunnerDelegate(
                 UserIdentifier.parse("role:ROLE_ADMIN"),
                 UserIdentifier.parse("role:ROLE_USER"),
-                checkShouldRun
+                testMethodFilter
         );
 
-        when(checkShouldRun.shouldRun(any(FrameworkMethod.class))).thenReturn(false);
+        when(testMethodFilter.shouldRun(any(FrameworkMethod.class))).thenReturn(false);
 
         assertThat(delegate.isIgnored(mockFrameworkMethod(), false), is(true));
     }
@@ -127,57 +127,57 @@ public class RunnerDelegateTest {
 
     @Test
     public void testIsIgnoredWhenParentIsIgnored() {
-        CheckShouldRun checkShouldRun = mock(CheckShouldRun.class);
+        TestMethodFilter testMethodFilter = mock(TestMethodFilter.class);
         RunnerDelegate delegate = new RunnerDelegate(
                 UserIdentifier.parse("role:ROLE_ADMIN"),
                 UserIdentifier.parse("role:ROLE_USER"),
-                checkShouldRun
+                testMethodFilter
         );
 
-        when(checkShouldRun.shouldRun(any(FrameworkMethod.class))).thenReturn(true);
+        when(testMethodFilter.shouldRun(any(FrameworkMethod.class))).thenReturn(true);
 
         assertThat(delegate.isIgnored(mockFrameworkMethod(), true), is(true));
     }
 
     @Test
     public void testIsIgnoredWhenParentAndChildAreIgnored() {
-        CheckShouldRun checkShouldRun = mock(CheckShouldRun.class);
+        TestMethodFilter testMethodFilter = mock(TestMethodFilter.class);
         RunnerDelegate delegate = new RunnerDelegate(
                 UserIdentifier.parse("role:ROLE_ADMIN"),
                 UserIdentifier.parse("role:ROLE_USER"),
-                checkShouldRun
+                testMethodFilter
         );
 
-        when(checkShouldRun.shouldRun(any(FrameworkMethod.class))).thenReturn(false);
+        when(testMethodFilter.shouldRun(any(FrameworkMethod.class))).thenReturn(false);
 
         assertThat(delegate.isIgnored(mockFrameworkMethod(), true), is(true));
     }
 
     @Test
     public void testIsNotIgnored() {
-        CheckShouldRun checkShouldRun = mock(CheckShouldRun.class);
+        TestMethodFilter testMethodFilter = mock(TestMethodFilter.class);
         RunnerDelegate delegate = new RunnerDelegate(
                 UserIdentifier.parse("role:ROLE_ADMIN"),
                 UserIdentifier.parse("role:ROLE_USER"),
-                checkShouldRun
+                testMethodFilter
         );
 
-        when(checkShouldRun.shouldRun(any(FrameworkMethod.class))).thenReturn(true);
+        when(testMethodFilter.shouldRun(any(FrameworkMethod.class))).thenReturn(true);
 
         assertThat(delegate.isIgnored(mockFrameworkMethod(), false), is(false));
     }
 
     @Test
     public void testFilter() {
-        CheckShouldRun checkShouldRun = mock(CheckShouldRun.class);
+        TestMethodFilter testMethodFilter = mock(TestMethodFilter.class);
         RunnerDelegate delegate = new RunnerDelegate(
                 UserIdentifier.parse("role:ROLE_ADMIN"),
                 UserIdentifier.parse("role:ROLE_USER"),
-                checkShouldRun
+                testMethodFilter
         );
 
         List<FrameworkMethod> methods = Arrays.asList(mockFrameworkMethod(), mockFrameworkMethod());
-        when(checkShouldRun.getMethodsToRun(any(List.class))).thenReturn(methods);
+        when(testMethodFilter.filter(any(List.class))).thenReturn(methods);
 
         List<FrameworkMethod> inputMethods = Arrays.asList(mockFrameworkMethod(), mockFrameworkMethod(), mockFrameworkMethod());
         assertThat(delegate.filterMethods(inputMethods), is(methods));
@@ -185,15 +185,15 @@ public class RunnerDelegateTest {
 
     @Test
     public void testFilterWhenNothingToRun() {
-        CheckShouldRun checkShouldRun = mock(CheckShouldRun.class);
+        TestMethodFilter testMethodFilter = mock(TestMethodFilter.class);
         RunnerDelegate delegate = new RunnerDelegate(
                 UserIdentifier.parse("role:ROLE_ADMIN"),
                 UserIdentifier.parse("role:ROLE_USER"),
-                checkShouldRun
+                testMethodFilter
         );
 
         List<FrameworkMethod> methods = Collections.emptyList();
-        when(checkShouldRun.getMethodsToRun(any(List.class))).thenReturn(methods);
+        when(testMethodFilter.filter(any(List.class))).thenReturn(methods);
 
         List<FrameworkMethod> inputMethods = Arrays.asList(mockFrameworkMethod(), mockFrameworkMethod(), mockFrameworkMethod());
         assertThat(delegate.filterMethods(inputMethods), is(inputMethods));

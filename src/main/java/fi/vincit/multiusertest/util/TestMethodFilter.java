@@ -7,11 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class CheckShouldRun {
+public class TestMethodFilter {
     private UserIdentifier creatorIdentifier;
     private UserIdentifier userIdentifier;
 
-    public CheckShouldRun(UserIdentifier creatorIdentifier, UserIdentifier userIdentifier) {
+    public TestMethodFilter(UserIdentifier creatorIdentifier, UserIdentifier userIdentifier) {
         this.creatorIdentifier = creatorIdentifier;
         this.userIdentifier = userIdentifier;
     }
@@ -31,7 +31,7 @@ public class CheckShouldRun {
         return shouldRun;
     }
 
-    public List<FrameworkMethod> getMethodsToRun(List<FrameworkMethod> methods) {
+    public List<FrameworkMethod> filter(List<FrameworkMethod> methods) {
         List<FrameworkMethod> methodsToRun = new ArrayList<>();
         for (FrameworkMethod frameworkMethod : methods) {
             if (shouldRun(frameworkMethod)) {
