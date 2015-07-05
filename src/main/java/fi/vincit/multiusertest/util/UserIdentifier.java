@@ -77,7 +77,12 @@ public class UserIdentifier {
         if (type != that.type) {
             return false;
         }
-        return !(identifier != null ? !identifier.equals(that.identifier) : that.identifier != null);
+
+        if (identifier != null) {
+            return identifier.equals(that.identifier);
+        } else {
+            return that.identifier == null;
+        }
 
     }
 
