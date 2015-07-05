@@ -18,6 +18,8 @@ Library may work with other versions, but it has not been tested other than the 
 
 # Usage
 
+Usage is simple:
+
 1. Create a configured abstract class by extending `AbstractUserRole` class and implement methods
 2. Create a test class which is extended from your configured class.
 3. Add `@TestUsers` annotation for your test class
