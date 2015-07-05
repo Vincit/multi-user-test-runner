@@ -19,8 +19,8 @@ import static org.junit.Assert.assertThat;
  * Abstract test class implementation that can be used for running MultiUserTestRunner tests
  * with just a system specific configurations.
  *
- * @param <USER> User class
- * @param <ROLE> Role
+ * @param <USER> User model type. Type of users the {@link this#createUser(String, String, String, Object, LoginRole)} creates.
+ * @param <ROLE> Role enum or object. Type of user roles the {@link this#stringToRole(String)}.
  */
 @RunWith(MultiUserTestRunner.class)
 public abstract class AbstractUserRoleIT<USER, ROLE> {
