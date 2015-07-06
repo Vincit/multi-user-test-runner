@@ -76,6 +76,21 @@ public class MultiUserTestRunnerTest {
     public static class OneCreator {
     }
 
+    @TestUsers(creators = {}, runner = TestRunner.class)
+    @Ignore
+    public static class NoCreators {
+    }
+
+    @TestUsers(creators = TestUsers.CREATOR, runner = TestRunner.class)
+    @Ignore
+    public static class CreatorCreator {
+    }
+
+    @TestUsers(creators = TestUsers.NEW_USER, runner = TestRunner.class)
+    @Ignore
+    public static class NewUserCreator {
+    }
+
     @TestUsers(creators = "role:ROLE_USERS", users = {"user:Foo", "role:Bar"}, runner = TestRunner.class)
     @Ignore
     public static class OneCreator_MultipleUsers {
@@ -94,7 +109,21 @@ public class MultiUserTestRunnerTest {
         TestRunner childRunner1 = (TestRunner) runner.getChildren().get(0);
         assertThat(childRunner1.getCreator(), is(UserIdentifier.parse("role:ROLE_USERS")));
         assertThat(childRunner1.getUser(), is(UserIdentifier.getNewUser()));
+    }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testClassWith_InvalidCreatorCreator() throws Throwable {
+        createMultiUserTestRunner(CreatorCreator.class);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testClassWith_InvalidNewUserCreator() throws Throwable {
+        createMultiUserTestRunner(NewUserCreator.class);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testClassWith_NoCreators() throws Throwable {
+        createMultiUserTestRunner(NoCreators.class);
     }
 
     @Test

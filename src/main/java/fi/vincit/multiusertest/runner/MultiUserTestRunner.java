@@ -28,7 +28,9 @@ import java.util.List;
  * creates a new user with the same role as the creator had.
  *
  * If no users are defined {@link fi.vincit.multiusertest.annotation.TestUsers#NEW_USER} will be used as the default
- * user entity.
+ * user entity. Creators can't use {@link fi.vincit.multiusertest.annotation.TestUsers#NEW_USER} or
+ * {@link fi.vincit.multiusertest.annotation.TestUsers#CREATOR} roles since those roles are tied to the current
+ * creator role.
  *
  */
 public class MultiUserTestRunner extends Suite {
@@ -96,6 +98,7 @@ public class MultiUserTestRunner extends Suite {
         if (userIdentifiers.isEmpty()) {
             userIdentifiers.add(UserIdentifier.getNewUser());
         }
+        validateCreators(creatorIdentifiers);
 
         for (UserIdentifier creatorIdentifier : creatorIdentifiers) {
             for (UserIdentifier userIdentifier : userIdentifiers) {
@@ -107,6 +110,20 @@ public class MultiUserTestRunner extends Suite {
                 runners.add((ParentRunner) parentRunner);
 
             }
+        }
+    }
+
+    private void validateCreators(List<UserIdentifier> creatorIdentifiers) {
+        if (creatorIdentifiers.isEmpty()) {
+            throw new IllegalArgumentException("Creator must be specified");
+        }
+
+        if (creatorIdentifiers.contains(UserIdentifier.getCreator())) {
+            throw new IllegalArgumentException("Creator can't use CREATOR role");
+        }
+
+        if (creatorIdentifiers.contains(UserIdentifier.getNewUser())) {
+            throw new IllegalArgumentException("Creator can't use NEW_USER role");
         }
     }
 
