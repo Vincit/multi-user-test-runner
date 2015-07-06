@@ -27,6 +27,9 @@ import java.util.List;
  * {@link fi.vincit.multiusertest.annotation.TestUsers#NEW_USER}. CREATOR uses the the same user as the resource was generated. NEW_USER
  * creates a new user with the same role as the creator had.
  *
+ * If no users are defined {@link fi.vincit.multiusertest.annotation.TestUsers#NEW_USER} will be used as the default
+ * user entity.
+ *
  */
 public class MultiUserTestRunner extends Suite {
 
