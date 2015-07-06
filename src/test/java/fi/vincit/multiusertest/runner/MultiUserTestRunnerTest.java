@@ -90,7 +90,11 @@ public class MultiUserTestRunnerTest {
     public void testClassWith_OneCreator_DefaultUsers() throws Throwable {
         MultiUserTestRunner runner = createMultiUserTestRunner(OneCreator.class);
 
-        assertThat(runner.getChildren().size(), is(0));
+        assertThat(runner.getChildren().size(), is(1));
+        TestRunner childRunner1 = (TestRunner) runner.getChildren().get(0);
+        assertThat(childRunner1.getCreator(), is(UserIdentifier.parse("role:ROLE_USERS")));
+        assertThat(childRunner1.getUser(), is(UserIdentifier.getNewUser()));
+
     }
 
     @Test

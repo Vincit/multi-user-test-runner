@@ -7,7 +7,9 @@ import org.junit.runners.ParentRunner;
 import org.junit.runners.Suite;
 
 import java.lang.reflect.Constructor;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Test runner for executing tests with multiple creator-user combinations. Creator
@@ -88,8 +90,9 @@ public class MultiUserTestRunner extends Suite {
     }
 
     private void createRunnersForRoles(List<UserIdentifier> creatorIdentifiers, List<UserIdentifier> userIdentifiers) throws Exception {
-        Set<UserIdentifier> creatorRoles = new HashSet<>();
-        Set<UserIdentifier> userRoles = new HashSet<>();
+        if (userIdentifiers.isEmpty()) {
+            userIdentifiers.add(UserIdentifier.getNewUser());
+        }
 
         for (UserIdentifier creatorIdentifier : creatorIdentifiers) {
             for (UserIdentifier userIdentifier : userIdentifiers) {

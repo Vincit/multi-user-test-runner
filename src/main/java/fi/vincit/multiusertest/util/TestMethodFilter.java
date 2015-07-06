@@ -21,10 +21,10 @@ public class TestMethodFilter {
         Set<UserIdentifier> users = AnnotationUtil.getUsers(frameworkMethod.getAnnotation(TestUsers.class));
 
         boolean shouldRun = true;
-        if (!creators.isEmpty()) {
+        if (creatorIdentifier != null && !creators.isEmpty()) {
             shouldRun = creators.contains(creatorIdentifier);
         }
-        if (!users.isEmpty()) {
+        if (userIdentifier != null && !users.isEmpty()) {
             shouldRun = shouldRun && users.contains(userIdentifier);
         }
 

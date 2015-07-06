@@ -125,6 +125,39 @@ public class TestMethodFilterTest {
         assertThat(r.shouldRun(method), is(true));
     }
 
+    @Test
+    public void testRunMethodWhenUserNotSet() {
+        TestMethodFilter r = new TestMethodFilter(
+                UserIdentifier.parse("role:ROLE_ADMIN"),
+                null);
+
+        FrameworkMethod method = mock(FrameworkMethod.class);
+        mockTestUsers(method, new String[]{"role:ROLE_ADMIN"}, new String[]{"role:ROLE_ADMIN"});
+        assertThat(r.shouldRun(method), is(true));
+    }
+
+    @Test
+    public void testRunMethodWhenCreatorNotSet() {
+        TestMethodFilter r = new TestMethodFilter(
+                null,
+                UserIdentifier.parse("role:ROLE_ADMIN"));
+
+        FrameworkMethod method = mock(FrameworkMethod.class);
+        mockTestUsers(method, new String[]{"role:ROLE_ADMIN"}, new String[]{"role:ROLE_ADMIN"});
+        assertThat(r.shouldRun(method), is(true));
+    }
+
+    @Test
+    public void testRunMethodWhenCreatorNorUserNotSet() {
+        TestMethodFilter r = new TestMethodFilter(
+                null,
+                null);
+
+        FrameworkMethod method = mock(FrameworkMethod.class);
+        mockTestUsers(method, new String[]{"role:ROLE_ADMIN"}, new String[]{"role:ROLE_ADMIN"});
+        assertThat(r.shouldRun(method), is(true));
+    }
+
     private void mockTestUsers(FrameworkMethod method, String[] creators, String[] users) {
         TestUsers testUsers = mock(TestUsers.class);
 
