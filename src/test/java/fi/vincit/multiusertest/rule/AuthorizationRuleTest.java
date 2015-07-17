@@ -1,7 +1,14 @@
 package fi.vincit.multiusertest.rule;
 
-import fi.vincit.multiusertest.annotation.TestUsers;
-import fi.vincit.multiusertest.util.UserIdentifier;
+import static fi.vincit.multiusertest.rule.Authentication.ifAnyOf;
+import static fi.vincit.multiusertest.rule.Authentication.notToFail;
+import static fi.vincit.multiusertest.rule.Authentication.toFail;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+
+import java.util.Arrays;
+import java.util.Collection;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -11,13 +18,8 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.model.Statement;
 import org.springframework.security.access.AccessDeniedException;
 
-import java.util.Arrays;
-import java.util.Collection;
-
-import static fi.vincit.multiusertest.rule.Authentication.notToFail;
-import static fi.vincit.multiusertest.rule.Authentication.toFail;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
+import fi.vincit.multiusertest.annotation.TestUsers;
+import fi.vincit.multiusertest.util.UserIdentifier;
 
 @RunWith(Parameterized.class)
 public class AuthorizationRuleTest {
@@ -112,9 +114,9 @@ public class AuthorizationRuleTest {
 
         rule.setRole(usedIdentifier);
         if (failMode == Mode.FAIL_IF_ANY_OF) {
-            rule.expect(toFail().ifAnyOf(expectedIdentifier.getIdentifiers()));
+            rule.expect(toFail(ifAnyOf(expectedIdentifier.getIdentifiers())));
         } else if (failMode == Mode.NOT_FAIL_IF_ANY_OF) {
-            rule.expect(notToFail().ifAnyOf(expectedIdentifier.getIdentifiers()));
+            rule.expect(notToFail(ifAnyOf(expectedIdentifier.getIdentifiers())));
         }
 
         statement.evaluate();
@@ -131,9 +133,9 @@ public class AuthorizationRuleTest {
 
         rule.setRole(usedIdentifier);
         if (failMode == Mode.FAIL_IF_ANY_OF) {
-            rule.expect(toFail().ifAnyOf(expectedIdentifier.getIdentifiers()));
+            rule.expect(toFail(ifAnyOf(expectedIdentifier.getIdentifiers())));
         } else if (failMode == Mode.NOT_FAIL_IF_ANY_OF) {
-            rule.expect(notToFail().ifAnyOf(expectedIdentifier.getIdentifiers()));
+            rule.expect(notToFail(ifAnyOf(expectedIdentifier.getIdentifiers())));
         }
 
         rule.dontExpectToFail();
@@ -149,9 +151,9 @@ public class AuthorizationRuleTest {
 
         rule.setRole(usedIdentifier);
         if (failMode == Mode.FAIL_IF_ANY_OF) {
-            rule.expect(toFail().ifAnyOf(expectedIdentifier.getIdentifiers()));
+            rule.expect(toFail(ifAnyOf(expectedIdentifier.getIdentifiers())));
         } else if (failMode == Mode.NOT_FAIL_IF_ANY_OF) {
-            rule.expect(notToFail().ifAnyOf(expectedIdentifier.getIdentifiers()));
+            rule.expect(notToFail(ifAnyOf(expectedIdentifier.getIdentifiers())));
         }
 
         rule.dontExpectToFail();

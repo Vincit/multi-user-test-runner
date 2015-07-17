@@ -1,7 +1,13 @@
 package fi.vincit.multiusertest.rule;
 
-import fi.vincit.multiusertest.annotation.TestUsers;
-import fi.vincit.multiusertest.util.UserIdentifier;
+import static fi.vincit.multiusertest.rule.Authentication.ifAnyOf;
+import static fi.vincit.multiusertest.rule.Authentication.notToFail;
+import static fi.vincit.multiusertest.rule.Authentication.toFail;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -9,12 +15,8 @@ import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 import org.springframework.security.access.AccessDeniedException;
 
-import static fi.vincit.multiusertest.rule.Authentication.notToFail;
-import static fi.vincit.multiusertest.rule.Authentication.toFail;
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
+import fi.vincit.multiusertest.annotation.TestUsers;
+import fi.vincit.multiusertest.util.UserIdentifier;
 
 public class ExpectAuthenticationDeniedForUserTest_setModes {
 
@@ -71,7 +73,7 @@ public class ExpectAuthenticationDeniedForUserTest_setModes {
         expectedException.expectMessage("Expected to fail with user role");
 
         AuthorizationRule rule = new AuthorizationRule();
-        rule.expect(toFail().ifAnyOf(TestUsers.NEW_USER));
+        rule.expect(toFail(ifAnyOf(TestUsers.NEW_USER)));
         rule.setExpectedException(AssertionError.class);
         rule.setRole(UserIdentifier.getNewUser());
 
@@ -87,14 +89,14 @@ public class ExpectAuthenticationDeniedForUserTest_setModes {
     @Test
     public void setExpectedFailCondition_ToFail() {
         AuthorizationRule rule = new AuthorizationRule();
-        rule.expect(toFail().ifAnyOf("role:foo"));
+        rule.expect(toFail(ifAnyOf("role:foo")));
         assertThat(rule.getFailMode(), is(FailMode.EXPECT_FAIL));
     }
 
     @Test
     public void setExpectedFailCondition_NotToFail() {
         AuthorizationRule rule = new AuthorizationRule();
-        rule.expect(notToFail().ifAnyOf("role:foo"));
+        rule.expect(notToFail(ifAnyOf("role:foo")));
         assertThat(rule.getFailMode(), is(FailMode.EXPECT_NOT_FAIL));
     }
 
