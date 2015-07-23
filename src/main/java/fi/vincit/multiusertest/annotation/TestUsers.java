@@ -1,15 +1,17 @@
 package fi.vincit.multiusertest.annotation;
 
-import fi.vincit.multiusertest.runner.SpringMultiUserTestClassRunner;
-import fi.vincit.multiusertest.util.UserIdentifier;
-import org.junit.runners.model.FrameworkMethod;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import org.junit.runners.model.FrameworkMethod;
+
+import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
+import fi.vincit.multiusertest.runner.junit.framework.SpringMultiUserTestClassRunner;
+import fi.vincit.multiusertest.util.UserIdentifier;
 
 ;
 
@@ -17,7 +19,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * This annotation works with MultiUserTestRunner. The creators parameter defines which
  * roles are used to create content and users parameter defines which roles are used to
  * consume content. The syntax and possible values for defining users are same in
- * {@link fi.vincit.multiusertest.runner.MultiUserTestRunner} was described.
+ * {@link MultiUserTestRunner} was described.
  *
  * The default test runner class can be changed by using {@link this#runner()}. The class has
  * to have a constructor with:

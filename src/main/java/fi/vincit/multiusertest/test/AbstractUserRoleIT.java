@@ -11,7 +11,7 @@ import org.junit.runner.RunWith;
 import org.springframework.transaction.annotation.Transactional;
 
 import fi.vincit.multiusertest.rule.AuthorizationRule;
-import fi.vincit.multiusertest.runner.MultiUserTestRunner;
+import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
 import fi.vincit.multiusertest.util.LoginRole;
 import fi.vincit.multiusertest.util.TestUser;
 import fi.vincit.multiusertest.util.UserIdentifier;

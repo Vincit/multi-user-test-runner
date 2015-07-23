@@ -1,7 +1,11 @@
-package fi.vincit.multiusertest.runner;
+package fi.vincit.multiusertest.runner.junit;
 
-import fi.vincit.multiusertest.annotation.TestUsers;
-import fi.vincit.multiusertest.util.UserIdentifier;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+
+import java.util.Collections;
+import java.util.List;
+
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.Description;
@@ -10,11 +14,8 @@ import org.junit.runners.ParentRunner;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
 
-import java.util.Collections;
-import java.util.List;
-
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import fi.vincit.multiusertest.annotation.TestUsers;
+import fi.vincit.multiusertest.util.UserIdentifier;
 
 public class MultiUserTestRunnerTest {
 

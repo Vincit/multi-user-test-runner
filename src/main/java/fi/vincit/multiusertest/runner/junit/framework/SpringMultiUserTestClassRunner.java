@@ -1,11 +1,13 @@
-package fi.vincit.multiusertest.runner;
+package fi.vincit.multiusertest.runner.junit.framework;
 
-import fi.vincit.multiusertest.util.UserIdentifier;
+import java.util.List;
+
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.List;
+import fi.vincit.multiusertest.util.RunnerDelegate;
+import fi.vincit.multiusertest.util.UserIdentifier;
 
 /**
  * Spring specific runner. Uses SpringJUnit4ClassRunner to initialize

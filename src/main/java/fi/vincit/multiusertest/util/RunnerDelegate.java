@@ -1,4 +1,4 @@
-package fi.vincit.multiusertest.runner;
+package fi.vincit.multiusertest.util;
 
 import java.util.List;
 import java.util.Objects;
@@ -7,8 +7,6 @@ import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.TestClass;
 
 import fi.vincit.multiusertest.test.AbstractUserRoleIT;
-import fi.vincit.multiusertest.util.TestMethodFilter;
-import fi.vincit.multiusertest.util.UserIdentifier;
 
 public class RunnerDelegate {
 
@@ -49,11 +47,11 @@ public class RunnerDelegate {
         return !shouldRunChecker.shouldRun(child) || isIgnoredByParent;
     }
 
-    protected String testName(FrameworkMethod method) {
+    public String testName(FrameworkMethod method) {
         return String.format("%s: %s", method.getName(), getIdentifierDescription());
     }
 
-    protected String getName(TestClass testClass) {
+    public String getName(TestClass testClass) {
         return String.format("%s: %s", testClass.getName(), getIdentifierDescription());
     }
 

@@ -1,7 +1,7 @@
 package fi.vincit.multiusertest.util;
 
 import fi.vincit.multiusertest.annotation.TestUsers;
-import fi.vincit.multiusertest.runner.MultiUserTestRunner;
+import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
 
 /**
  * Generic definition of a user to use in the tests. Defines what kind of

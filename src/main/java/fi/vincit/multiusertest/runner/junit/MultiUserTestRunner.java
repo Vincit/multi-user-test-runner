@@ -1,4 +1,4 @@
-package fi.vincit.multiusertest.runner;
+package fi.vincit.multiusertest.runner.junit;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;

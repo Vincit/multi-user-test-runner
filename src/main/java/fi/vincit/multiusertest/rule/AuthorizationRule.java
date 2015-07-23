@@ -1,19 +1,21 @@
 package fi.vincit.multiusertest.rule;
 
-import fi.vincit.multiusertest.util.UserIdentifier;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 import org.springframework.security.access.AccessDeniedException;
 
-import java.util.HashSet;
-import java.util.Set;
+import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
+import fi.vincit.multiusertest.util.UserIdentifier;
 
 /**
- * Rule to be used with {@link fi.vincit.multiusertest.runner.MultiUserTestRunner} to define whether a test passes or
+ * Rule to be used with {@link MultiUserTestRunner} to define whether a test passes or
  * fails. Before a method to be tested is executed {@link AuthorizationRule#expect(Authentication)}
  * should be called with the users that are expected to fail. The user syntax is same as in
- * {@link fi.vincit.multiusertest.runner.MultiUserTestRunner}
+ * {@link MultiUserTestRunner}
  *
  */
 public class AuthorizationRule implements TestRule {

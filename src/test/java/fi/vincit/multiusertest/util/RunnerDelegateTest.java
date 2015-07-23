@@ -1,18 +1,4 @@
-package fi.vincit.multiusertest.runner;
-
-import fi.vincit.multiusertest.test.AbstractUserRoleIT;
-import fi.vincit.multiusertest.util.LoginRole;
-import fi.vincit.multiusertest.util.TestMethodFilter;
-import fi.vincit.multiusertest.util.TestUser;
-import fi.vincit.multiusertest.util.UserIdentifier;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runners.model.FrameworkMethod;
-import org.junit.runners.model.TestClass;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+package fi.vincit.multiusertest.util;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
@@ -20,6 +6,17 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.runners.model.FrameworkMethod;
+import org.junit.runners.model.TestClass;
+
+import fi.vincit.multiusertest.test.AbstractUserRoleIT;
 
 public class RunnerDelegateTest {
 
