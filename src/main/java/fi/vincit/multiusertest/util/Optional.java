@@ -9,7 +9,7 @@ import java.util.Objects;
  */
 public class Optional<T> {
 
-    private static final Optional EMPTY = of(null);
+    private static final Optional EMPTY = ofNullable(null);
 
     private T value;
 
