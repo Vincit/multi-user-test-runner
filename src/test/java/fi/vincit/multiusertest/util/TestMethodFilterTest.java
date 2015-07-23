@@ -1,13 +1,14 @@
 package fi.vincit.multiusertest.util;
 
-import fi.vincit.multiusertest.annotation.TestUsers;
-import org.junit.Test;
-import org.junit.runners.model.FrameworkMethod;
-
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
+import org.junit.Test;
+import org.junit.runners.model.FrameworkMethod;
+
+import fi.vincit.multiusertest.annotation.TestUsers;
 
 public class TestMethodFilterTest {
 
@@ -125,37 +126,25 @@ public class TestMethodFilterTest {
         assertThat(r.shouldRun(method), is(true));
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testRunMethodWhenUserNotSet() {
-        TestMethodFilter r = new TestMethodFilter(
+        new TestMethodFilter(
                 UserIdentifier.parse("role:ROLE_ADMIN"),
                 null);
-
-        FrameworkMethod method = mock(FrameworkMethod.class);
-        mockTestUsers(method, new String[]{"role:ROLE_ADMIN"}, new String[]{"role:ROLE_ADMIN"});
-        assertThat(r.shouldRun(method), is(true));
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testRunMethodWhenCreatorNotSet() {
-        TestMethodFilter r = new TestMethodFilter(
+        new TestMethodFilter(
                 null,
                 UserIdentifier.parse("role:ROLE_ADMIN"));
-
-        FrameworkMethod method = mock(FrameworkMethod.class);
-        mockTestUsers(method, new String[]{"role:ROLE_ADMIN"}, new String[]{"role:ROLE_ADMIN"});
-        assertThat(r.shouldRun(method), is(true));
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testRunMethodWhenCreatorNorUserNotSet() {
-        TestMethodFilter r = new TestMethodFilter(
+        new TestMethodFilter(
                 null,
                 null);
-
-        FrameworkMethod method = mock(FrameworkMethod.class);
-        mockTestUsers(method, new String[]{"role:ROLE_ADMIN"}, new String[]{"role:ROLE_ADMIN"});
-        assertThat(r.shouldRun(method), is(true));
     }
 
     private void mockTestUsers(FrameworkMethod method, String[] creators, String[] users) {

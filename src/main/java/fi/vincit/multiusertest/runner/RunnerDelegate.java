@@ -1,12 +1,14 @@
 package fi.vincit.multiusertest.runner;
 
-import fi.vincit.multiusertest.test.AbstractUserRoleIT;
-import fi.vincit.multiusertest.util.TestMethodFilter;
-import fi.vincit.multiusertest.util.UserIdentifier;
+import java.util.List;
+import java.util.Objects;
+
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.TestClass;
 
-import java.util.List;
+import fi.vincit.multiusertest.test.AbstractUserRoleIT;
+import fi.vincit.multiusertest.util.TestMethodFilter;
+import fi.vincit.multiusertest.util.UserIdentifier;
 
 public class RunnerDelegate {
 
@@ -15,8 +17,9 @@ public class RunnerDelegate {
     private TestMethodFilter shouldRunChecker;
 
     public RunnerDelegate(UserIdentifier creatorIdentifier, UserIdentifier userIdentifier) {
-        assert userIdentifier != null;
-        assert creatorIdentifier != null;
+        Objects.requireNonNull(creatorIdentifier);
+        Objects.requireNonNull(userIdentifier);
+
         this.creatorIdentifier = creatorIdentifier;
         this.userIdentifier = userIdentifier;
         this.shouldRunChecker = new TestMethodFilter(creatorIdentifier, userIdentifier);
@@ -24,6 +27,10 @@ public class RunnerDelegate {
 
     // Only for testing
     RunnerDelegate(UserIdentifier creatorIdentifier, UserIdentifier userIdentifier, TestMethodFilter shouldRunChecker) {
+        Objects.requireNonNull(creatorIdentifier);
+        Objects.requireNonNull(userIdentifier);
+        Objects.requireNonNull(shouldRunChecker);
+
         this.creatorIdentifier = creatorIdentifier;
         this.userIdentifier = userIdentifier;
         this.shouldRunChecker = shouldRunChecker;

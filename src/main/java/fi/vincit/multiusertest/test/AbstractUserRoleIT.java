@@ -1,19 +1,20 @@
 package fi.vincit.multiusertest.test;
 
-import fi.vincit.multiusertest.rule.AuthorizationRule;
-import fi.vincit.multiusertest.runner.MultiUserTestRunner;
-import fi.vincit.multiusertest.util.LoginRole;
-import fi.vincit.multiusertest.util.TestUser;
-import fi.vincit.multiusertest.util.UserIdentifier;
+import static org.hamcrest.core.IsNull.notNullValue;
+import static org.junit.Assert.assertThat;
+
+import java.util.Random;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.runner.RunWith;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Random;
-
-import static org.hamcrest.core.IsNull.notNullValue;
-import static org.junit.Assert.assertThat;
+import fi.vincit.multiusertest.rule.AuthorizationRule;
+import fi.vincit.multiusertest.runner.MultiUserTestRunner;
+import fi.vincit.multiusertest.util.LoginRole;
+import fi.vincit.multiusertest.util.TestUser;
+import fi.vincit.multiusertest.util.UserIdentifier;
 
 /**
  * Abstract test class implementation that can be used for running MultiUserTestRunner tests
