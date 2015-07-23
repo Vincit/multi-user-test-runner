@@ -1,15 +1,19 @@
 package fi.vincit.multiusertest.runner;
 
-import fi.vincit.multiusertest.annotation.TestUsers;
-import fi.vincit.multiusertest.util.UserIdentifier;
+import java.lang.reflect.Constructor;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
 import org.junit.runner.Runner;
 import org.junit.runners.ParentRunner;
 import org.junit.runners.Suite;
 
-import java.lang.reflect.Constructor;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import fi.vincit.multiusertest.annotation.TestUsers;
+import fi.vincit.multiusertest.util.Optional;
+import fi.vincit.multiusertest.util.TestConfiguration;
+import fi.vincit.multiusertest.util.UserIdentifier;
 
 /**
  * Test runner for executing tests with multiple creator-user combinations. Creator
@@ -46,15 +50,16 @@ public class MultiUserTestRunner extends Suite {
 
     public MultiUserTestRunner(Class<?> klass) throws Throwable {
         super(klass, NO_RUNNERS);
-        createTestRunner(getAnnotationOrThrow());
-        createRunnersForRoles(getCreatorRoles(), getUserRoles());
+        TestConfiguration configuration = getConfigurationOrThrow();
+        createTestRunner(getConfigurationOrThrow());
+        createRunnersForRoles(configuration.getCreatorIdentifiers(), configuration.getUserIdentifiers());
     }
 
-    private void createTestRunner(TestUsers testRunnerAnnotation) throws NoSuchMethodException {
-        Class runnerClass = testRunnerAnnotation.runner();
-        if (runnerClass != null) {
+    private void createTestRunner(TestConfiguration testConfiguration) throws NoSuchMethodException {
+        if (testConfiguration.getRunner().isPresent()) {
             try {
-                runnerConstructor = runnerClass.getConstructor(Class.class, UserIdentifier.class, UserIdentifier.class);
+                runnerConstructor = testConfiguration.getRunner().get()
+                        .getConstructor(Class.class, UserIdentifier.class, UserIdentifier.class);
             } catch (NoSuchMethodException e) {
                 throw new NoSuchMethodException("Runner must have constructor with class, UserIdentifier, UserIdentifier parameters");
             }
@@ -65,10 +70,11 @@ public class MultiUserTestRunner extends Suite {
     }
 
 
-    private TestUsers getAnnotationOrThrow() throws Exception {
-        TestUsers testRolesAnnotation = getTestClass().getJavaClass().getAnnotation(TestUsers.class);
-        if (testRolesAnnotation != null) {
-            return testRolesAnnotation;
+    private TestConfiguration getConfigurationOrThrow() throws Exception {
+        Optional<TestUsers> testRolesAnnotation =
+                Optional.ofNullable(getTestClass().getJavaClass().getAnnotation(TestUsers.class));
+        if (testRolesAnnotation.isPresent()) {
+            return TestConfiguration.fromTestUsers(testRolesAnnotation.get());
         } else {
             throw new IllegalStateException(
                     "No users defined for test class "
@@ -78,23 +84,8 @@ public class MultiUserTestRunner extends Suite {
         }
     }
 
-    private List<UserIdentifier> getCreatorRoles() throws Exception {
-        return parseUserIdentifiers(getAnnotationOrThrow().creators());
-    }
 
-    private List<UserIdentifier> getUserRoles() throws Exception {
-        return parseUserIdentifiers(getAnnotationOrThrow().users());
-    }
-
-    private List<UserIdentifier> parseUserIdentifiers(String[] creatorStrings) throws Exception {
-        List<UserIdentifier> creators = new ArrayList<>(creatorStrings.length);
-        for (String creatorString : creatorStrings) {
-            creators.add(UserIdentifier.parse(creatorString));
-        }
-        return creators;
-    }
-
-    private void createRunnersForRoles(List<UserIdentifier> creatorIdentifiers, List<UserIdentifier> userIdentifiers) throws Exception {
+    private void createRunnersForRoles(Collection<UserIdentifier> creatorIdentifiers, Collection<UserIdentifier> userIdentifiers) throws Exception {
         if (userIdentifiers.isEmpty()) {
             userIdentifiers.add(UserIdentifier.getNewUser());
         }
@@ -113,7 +104,7 @@ public class MultiUserTestRunner extends Suite {
         }
     }
 
-    private void validateCreators(List<UserIdentifier> creatorIdentifiers) {
+    private void validateCreators(Collection<UserIdentifier> creatorIdentifiers) {
         if (creatorIdentifiers.isEmpty()) {
             throw new IllegalArgumentException("Creator must be specified");
         }
