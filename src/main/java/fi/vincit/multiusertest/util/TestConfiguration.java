@@ -2,15 +2,14 @@ package fi.vincit.multiusertest.util;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.LinkedHashSet;
 
 import fi.vincit.multiusertest.annotation.TestUsers;
 
 public class TestConfiguration {
 
-    private Set<UserIdentifier> creatorIdentifiers;
-    private Set<UserIdentifier> userIdentifiers;
+    private Collection<UserIdentifier> creatorIdentifiers;
+    private Collection<UserIdentifier> userIdentifiers;
     private Class<?> runner;
 
     public static TestConfiguration fromTestUsers(TestUsers testUsers) {
@@ -25,9 +24,9 @@ public class TestConfiguration {
         }
     }
 
-    private static Set<UserIdentifier> getDefinitions(String[] definitions) {
+    private static Collection<UserIdentifier> getDefinitions(String[] definitions) {
         if (definitions != null) {
-            Set<UserIdentifier> userIdentifiers = new HashSet<>();
+            Collection<UserIdentifier> userIdentifiers = new LinkedHashSet<>();
             for (String user : definitions) {
                 userIdentifiers.add(UserIdentifier.parse(user));
             }
@@ -43,10 +42,10 @@ public class TestConfiguration {
         this.runner = null;
     }
 
-    TestConfiguration(Set<UserIdentifier> creatorIdentifiers, Set<UserIdentifier> userIdentifiers, Class<?> runner) {
+    TestConfiguration(Collection<UserIdentifier> creatorIdentifiers, Collection<UserIdentifier> userIdentifiers, Class<?> runner) {
         this.creatorIdentifiers = creatorIdentifiers;
         this.userIdentifiers = userIdentifiers;
-        this.runner = runner;
+        this.runner = Optional.ofNullable(runner);
     }
 
     public Collection<UserIdentifier> getCreatorIdentifiers() {
