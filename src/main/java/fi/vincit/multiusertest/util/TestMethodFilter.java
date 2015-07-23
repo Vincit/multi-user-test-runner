@@ -1,11 +1,12 @@
 package fi.vincit.multiusertest.util;
 
-import fi.vincit.multiusertest.annotation.TestUsers;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import org.junit.runners.model.FrameworkMethod;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import fi.vincit.multiusertest.annotation.TestUsers;
 
 public class TestMethodFilter {
     private UserIdentifier creatorIdentifier;
@@ -17,8 +18,10 @@ public class TestMethodFilter {
     }
 
     public boolean shouldRun(FrameworkMethod frameworkMethod) {
-        Set<UserIdentifier> creators = AnnotationUtil.getCreators(frameworkMethod.getAnnotation(TestUsers.class));
-        Set<UserIdentifier> users = AnnotationUtil.getUsers(frameworkMethod.getAnnotation(TestUsers.class));
+        TestConfiguration configuration =
+                TestConfiguration.fromTestUsers(frameworkMethod.getAnnotation(TestUsers.class));
+        Collection<UserIdentifier> creators = configuration.getCreatorIdentifiers();
+        Collection<UserIdentifier> users = configuration.getUserIdentifiers();
 
         boolean shouldRun = true;
         if (creatorIdentifier != null && !creators.isEmpty()) {
