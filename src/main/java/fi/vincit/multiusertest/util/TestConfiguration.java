@@ -10,7 +10,7 @@ public class TestConfiguration {
 
     private Collection<UserIdentifier> creatorIdentifiers;
     private Collection<UserIdentifier> userIdentifiers;
-    private Class<?> runner;
+    private Optional<Class<?>> runner;
 
     public static TestConfiguration fromTestUsers(TestUsers testUsers) {
         if (testUsers != null) {
@@ -39,7 +39,7 @@ public class TestConfiguration {
     TestConfiguration() {
         this.creatorIdentifiers = Collections.emptySet();
         this.userIdentifiers = Collections.emptySet();
-        this.runner = null;
+        this.runner = Optional.empty();
     }
 
     TestConfiguration(Collection<UserIdentifier> creatorIdentifiers, Collection<UserIdentifier> userIdentifiers, Class<?> runner) {
@@ -56,7 +56,7 @@ public class TestConfiguration {
         return userIdentifiers;
     }
 
-    public Class<?> getRunner() {
+    public Optional<Class<?>> getRunner() {
         return runner;
     }
 }
