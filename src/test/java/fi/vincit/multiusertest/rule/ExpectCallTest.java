@@ -7,6 +7,8 @@ import java.io.IOException;
 import org.junit.Test;
 import org.springframework.security.access.AccessDeniedException;
 
+import fi.vincit.multiusertest.rule.expection.Expectations;
+import fi.vincit.multiusertest.rule.expection.FunctionCall;
 import fi.vincit.multiusertest.util.UserIdentifier;
 
 public class ExpectCallTest {
@@ -24,7 +26,7 @@ public class ExpectCallTest {
 
     @Test
     public void testExpectCallToFail() throws Throwable {
-        Expectation.call(new FunctionCall() {
+        Expectations.call(new FunctionCall() {
             @Override
             public void call() throws Throwable {
                 throwAccessDenied();
@@ -36,7 +38,7 @@ public class ExpectCallTest {
 
     @Test(expected = AssertionError.class)
     public void testExpectCallToFail_OtherRole() throws Throwable {
-        Expectation.call(new FunctionCall() {
+        Expectations.call(new FunctionCall() {
             @Override
             public void call() throws Throwable {
                 throwAccessDenied();
@@ -48,7 +50,7 @@ public class ExpectCallTest {
 
     @Test
     public void testNoThrow() throws Throwable {
-        Expectation.call(new FunctionCall() {
+        Expectations.call(new FunctionCall() {
             @Override
             public void call() throws Throwable {
                 notThrow();
@@ -58,7 +60,7 @@ public class ExpectCallTest {
 
     @Test(expected = AssertionError.class)
     public void testNoThrow_ExpectToFail() throws Throwable {
-        Expectation.call(new FunctionCall() {
+        Expectations.call(new FunctionCall() {
             @Override
             public void call() throws Throwable {
                 notThrow();
@@ -70,7 +72,7 @@ public class ExpectCallTest {
 
     @Test(expected = AssertionError.class)
     public void testThrowsUnexpectedException() throws Throwable {
-        Expectation.call(new FunctionCall() {
+        Expectations.call(new FunctionCall() {
             @Override
             public void call() throws Throwable {
                 throwIOException();
@@ -82,7 +84,7 @@ public class ExpectCallTest {
 
     @Test
     public void testNotExpectToFail() throws Throwable {
-        Expectation.call(new FunctionCall() {
+        Expectations.call(new FunctionCall() {
             @Override
             public void call() throws Throwable {
                 notThrow();
@@ -94,7 +96,7 @@ public class ExpectCallTest {
 
     @Test(expected = AssertionError.class)
     public void testNotExpectToFail_ButFails() throws Throwable {
-        Expectation.call(new FunctionCall() {
+        Expectations.call(new FunctionCall() {
             @Override
             public void call() throws Throwable {
                 throwAccessDenied();
@@ -106,7 +108,7 @@ public class ExpectCallTest {
 
     @Test(expected = AssertionError.class)
     public void testNotExpectToFail_ButFailsWithUnexpected() throws Throwable {
-        Expectation.call(new FunctionCall() {
+        Expectations.call(new FunctionCall() {
             @Override
             public void call() throws Throwable {
                 throwIOException();

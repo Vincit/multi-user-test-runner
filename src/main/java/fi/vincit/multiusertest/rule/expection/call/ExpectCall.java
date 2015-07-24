@@ -7,11 +7,12 @@ import org.springframework.security.access.AccessDeniedException;
 
 import fi.vincit.multiusertest.rule.Authentication;
 import fi.vincit.multiusertest.rule.FailMode;
-import fi.vincit.multiusertest.rule.FunctionCall;
+import fi.vincit.multiusertest.rule.expection.Expectation;
+import fi.vincit.multiusertest.rule.expection.FunctionCall;
 import fi.vincit.multiusertest.util.Optional;
 import fi.vincit.multiusertest.util.UserIdentifier;
 
-public class ExpectCall {
+public class ExpectCall implements Expectation {
 
     private final FunctionCall functionCall;
 
@@ -57,6 +58,7 @@ public class ExpectCall {
         return this;
     }
 
+    @Override
     public void execute(UserIdentifier userIdentifier) throws Throwable {
         Optional<Info> info = getFailInfo(userIdentifier);
         try {

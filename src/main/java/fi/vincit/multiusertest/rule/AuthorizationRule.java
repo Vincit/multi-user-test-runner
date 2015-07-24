@@ -8,6 +8,7 @@ import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 import org.springframework.security.access.AccessDeniedException;
 
+import fi.vincit.multiusertest.rule.expection.Expectation;
 import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
 import fi.vincit.multiusertest.util.UserIdentifier;
 
@@ -25,10 +26,15 @@ public class AuthorizationRule implements TestRule {
     private FailMode failMode = FailMode.NONE;
     private Class<? extends Throwable> expectedException = AccessDeniedException.class;
     private static final Statement NO_BASE = null;
+    private Expectation expectation;
 
     public AuthorizationRule expect(Authentication identifiers) {
         addIdentifiers(identifiers);
         return this;
+    }
+
+    public void expect(Expectation expectation) throws Throwable {
+        expectation.execute(userIdentifier);
     }
 
     private void addIdentifiers(Authentication identifiers) {

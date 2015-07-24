@@ -7,13 +7,16 @@ import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
+import fi.vincit.multiusertest.rule.expection.Callback;
+import fi.vincit.multiusertest.rule.expection.ExpectValueOfCallback;
+import fi.vincit.multiusertest.rule.expection.Expectations;
 import fi.vincit.multiusertest.util.UserIdentifier;
 
 public class ExpectValueOfTest {
 
     @Test
-    public void testReturnValueEquals() {
-        Expectation.valueOf(new ExpectValueOfCallback<Integer>() {
+    public void testReturnValueEquals() throws Throwable{
+        Expectations.valueOf(new ExpectValueOfCallback<Integer>() {
             @Override
             public Integer doIt() {
                 return 1;
@@ -22,8 +25,8 @@ public class ExpectValueOfTest {
     }
 
     @Test
-    public void testReturnValueEquals_MultipleIdentifiers() {
-        Expectation.valueOf(new ExpectValueOfCallback<Integer>() {
+    public void testReturnValueEquals_MultipleIdentifiers() throws Throwable {
+        Expectations.valueOf(new ExpectValueOfCallback<Integer>() {
             @Override
             public Integer doIt() {
                 return 1;
@@ -35,8 +38,8 @@ public class ExpectValueOfTest {
     }
 
     @Test(expected = AssertionError.class)
-    public void testReturnValueEquals_MultipleIdentifiers_OneFails() {
-        Expectation.valueOf(new ExpectValueOfCallback<Integer>() {
+    public void testReturnValueEquals_MultipleIdentifiers_OneFails() throws Throwable {
+        Expectations.valueOf(new ExpectValueOfCallback<Integer>() {
             @Override
             public Integer doIt() {
                 return 1;
@@ -48,8 +51,8 @@ public class ExpectValueOfTest {
     }
 
     @Test
-    public void testAssertion_Passes() {
-        Expectation.valueOf(new ExpectValueOfCallback<Integer>() {
+    public void testAssertion_Passes() throws Throwable {
+        Expectations.valueOf(new ExpectValueOfCallback<Integer>() {
             @Override
             public Integer doIt() {
                 return 1;
@@ -65,8 +68,8 @@ public class ExpectValueOfTest {
     }
 
     @Test(expected = AssertionError.class)
-    public void testAssertion_Fails() {
-        Expectation.valueOf(new ExpectValueOfCallback<Integer>() {
+    public void testAssertion_Fails() throws Throwable {
+        Expectations.valueOf(new ExpectValueOfCallback<Integer>() {
             @Override
             public Integer doIt() {
                 return 1;
@@ -82,8 +85,8 @@ public class ExpectValueOfTest {
     }
 
     @Test
-    public void testAssertion_NoAssertionFound() {
-        Expectation.valueOf(new ExpectValueOfCallback<Integer>() {
+    public void testAssertion_NoAssertionFound() throws Throwable {
+        Expectations.valueOf(new ExpectValueOfCallback<Integer>() {
             @Override
             public Integer doIt() {
                 return 1;

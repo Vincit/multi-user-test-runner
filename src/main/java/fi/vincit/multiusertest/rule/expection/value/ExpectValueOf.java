@@ -7,12 +7,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import fi.vincit.multiusertest.rule.Authentication;
-import fi.vincit.multiusertest.rule.Callback;
-import fi.vincit.multiusertest.rule.ExpectValueOfCallback;
+import fi.vincit.multiusertest.rule.expection.Callback;
+import fi.vincit.multiusertest.rule.expection.ExpectValueOfCallback;
+import fi.vincit.multiusertest.rule.expection.Expectation;
 import fi.vincit.multiusertest.util.Optional;
 import fi.vincit.multiusertest.util.UserIdentifier;
 
-public class ExpectValueOf<VALUE_TYPE> {
+public class ExpectValueOf<VALUE_TYPE> implements Expectation {
 
     private ExpectValueOfCallback<VALUE_TYPE> callback;
 
@@ -60,7 +61,8 @@ public class ExpectValueOf<VALUE_TYPE> {
         return this;
     }
 
-    public void execute(UserIdentifier identifier) {
+    @Override
+    public void execute(UserIdentifier identifier) throws Throwable {
         VALUE_TYPE returnValue = callback.doIt();
 
         if (!expectations.containsKey(identifier.toString())) {
