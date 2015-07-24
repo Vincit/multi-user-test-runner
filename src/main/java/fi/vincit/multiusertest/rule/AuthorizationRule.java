@@ -38,8 +38,8 @@ public class AuthorizationRule implements TestRule {
 
     private void addIdentifiers(Authentication identifiers) {
         dontExpectToFail();
-        for (String identifier : identifiers.getIdentifiers()) {
-            expectToFailOnRoles.add(UserIdentifier.parse(identifier));
+        for (UserIdentifier userIdentifier : identifiers.getIdentifiers()) {
+            expectToFailOnRoles.add(userIdentifier);
         }
         this.failMode = identifiers.getFailMode();
     }

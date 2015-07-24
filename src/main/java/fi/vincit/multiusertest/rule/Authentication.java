@@ -1,8 +1,13 @@
 package fi.vincit.multiusertest.rule;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import fi.vincit.multiusertest.util.UserIdentifier;
+
 public class Authentication {
 
-    private String[] identifiers;
+    private List<UserIdentifier> identifiers;
     private FailMode failMode;
 
     public static Authentication notToFail(Identifiers condition) {
@@ -31,7 +36,12 @@ public class Authentication {
     }
 
     private Authentication ifAnyOfIdentifiers(String... identifiers) {
-        this.identifiers = identifiers;
+        this.identifiers = new ArrayList<>();
+
+        for (String identifier : identifiers) {
+            this.identifiers.add(UserIdentifier.parse(identifier));
+        }
+
         return this;
     }
 
@@ -39,7 +49,7 @@ public class Authentication {
         this.failMode = failMode;
     }
 
-    public String[] getIdentifiers() {
+    public List<UserIdentifier> getIdentifiers() {
         return identifiers;
     }
 
