@@ -44,7 +44,7 @@ public class MultiUserTestRunner extends Suite {
     public static final String ROLE_PREFIX = "role:";
     public static final String USER_PREFIX = "user:";
 
-    private final ArrayList<Runner> runners = new ArrayList<Runner>();
+    private final List<Runner> runners = new ArrayList<Runner>();
     private Constructor runnerConstructor;
 
 
