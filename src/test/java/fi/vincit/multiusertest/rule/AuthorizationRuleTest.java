@@ -5,6 +5,7 @@ import static fi.vincit.multiusertest.rule.Authentication.notToFail;
 import static fi.vincit.multiusertest.rule.Authentication.toFail;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -19,6 +20,7 @@ import org.junit.runners.model.Statement;
 import org.springframework.security.access.AccessDeniedException;
 
 import fi.vincit.multiusertest.annotation.TestUsers;
+import fi.vincit.multiusertest.rule.expection.Expectation;
 import fi.vincit.multiusertest.util.UserIdentifier;
 
 @RunWith(Parameterized.class)
@@ -159,6 +161,17 @@ public class AuthorizationRuleTest {
         rule.dontExpectToFail();
 
         statement.evaluate();
+    }
+
+    @Test
+    public void expect() throws Throwable {
+        AuthorizationRule rule = new AuthorizationRule();
+        rule.setRole(UserIdentifier.parse("user:Foo"));
+        Expectation expectation = mock(Expectation.class);
+
+        rule.expect(expectation);
+
+        verify(expectation).execute(UserIdentifier.parse("user:Foo"));
     }
 
 

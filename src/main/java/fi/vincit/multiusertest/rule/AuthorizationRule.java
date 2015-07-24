@@ -26,7 +26,6 @@ public class AuthorizationRule implements TestRule {
     private FailMode failMode = FailMode.NONE;
     private Class<? extends Throwable> expectedException = AccessDeniedException.class;
     private static final Statement NO_BASE = null;
-    private Expectation expectation;
 
     public AuthorizationRule expect(Authentication identifiers) {
         addIdentifiers(identifiers);
