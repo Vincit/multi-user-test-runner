@@ -33,27 +33,22 @@ public class ExpectCall implements Expectation {
     }
 
     public ExpectCall toFail(Authentication.Identifiers identifiers) {
-        for (String identifier : identifiers.getIdentifiers()) {
-            expectations.put(
-                    UserIdentifier.parse(identifier),
-                    new Info(FailMode.EXPECT_FAIL, Optional.<Class<? extends Throwable>>of(AccessDeniedException.class))
-            );
+        for (UserIdentifier identifier : identifiers.getIdentifiers()) {
+            expectations.put(identifier, new Info(FailMode.EXPECT_FAIL, Optional.<Class<? extends Throwable>>of(AccessDeniedException.class)));
         }
         return this;
     }
 
     public ExpectCall toFailWithException(Class<? extends Throwable> exception, Authentication.Identifiers identifiers) {
-        for (String identifier : identifiers.getIdentifiers()) {
-            expectations.put(UserIdentifier.parse(identifier),
-                    new Info(FailMode.EXPECT_FAIL, Optional.<Class<? extends Throwable>>of(exception)));
+        for (UserIdentifier identifier : identifiers.getIdentifiers()) {
+            expectations.put(identifier, new Info(FailMode.EXPECT_FAIL, Optional.<Class<? extends Throwable>>of(exception)));
         }
         return this;
     }
 
     public ExpectCall notToFail(Authentication.Identifiers identifiers) {
-        for (String identifier : identifiers.getIdentifiers()) {
-            expectations.put(UserIdentifier.parse(identifier),
-                    new Info(FailMode.EXPECT_NOT_FAIL, Optional.<Class<? extends Throwable>>empty()));
+        for (UserIdentifier identifier : identifiers.getIdentifiers()) {
+            expectations.put(identifier, new Info(FailMode.EXPECT_NOT_FAIL, Optional.<Class<? extends Throwable>>empty()));
         }
         return this;
     }

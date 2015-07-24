@@ -35,14 +35,14 @@ public class ExpectValueOf<VALUE_TYPE> implements Expectation {
         }
     }
 
-    public Map<String, Info<VALUE_TYPE>> expectations = new HashMap<>();
+    public Map<UserIdentifier, Info<VALUE_TYPE>> expectations = new HashMap<>();
 
     public ExpectValueOf(ReturnValueCall<VALUE_TYPE> callback) {
         this.callback = callback;
     }
 
     public ExpectValueOf<VALUE_TYPE> toEqual(VALUE_TYPE value, Authentication.Identifiers identifiers) {
-        for (String identifier : identifiers.getIdentifiers()) {
+        for (UserIdentifier identifier : identifiers.getIdentifiers()) {
             expectations.put(identifier, new Info<>(
                             Optional.ofNullable(value),
                             Optional.<AssertionCall<VALUE_TYPE>>empty())
@@ -52,7 +52,7 @@ public class ExpectValueOf<VALUE_TYPE> implements Expectation {
     }
 
     public ExpectValueOf<VALUE_TYPE> toAssert(AssertionCall<VALUE_TYPE> assertionCallback, Authentication.Identifiers identifiers) {
-        for (String identifier : identifiers.getIdentifiers()) {
+        for (UserIdentifier identifier : identifiers.getIdentifiers()) {
             expectations.put(identifier, new Info<>(
                             Optional.<VALUE_TYPE>empty(),
                             Optional.of(assertionCallback))
@@ -65,11 +65,11 @@ public class ExpectValueOf<VALUE_TYPE> implements Expectation {
     public void execute(UserIdentifier identifier) throws Throwable {
         VALUE_TYPE returnValue = callback.call();
 
-        if (!expectations.containsKey(identifier.toString())) {
+        if (!expectations.containsKey(identifier)) {
             return;
         }
 
-        Info<VALUE_TYPE> info = expectations.get(identifier.toString());
+        Info<VALUE_TYPE> info = expectations.get(identifier);
         if (info.getAssertionCallback().isPresent()) {
             info.getAssertionCallback().get().call(returnValue);
         } else {

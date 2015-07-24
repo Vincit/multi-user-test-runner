@@ -23,13 +23,17 @@ public class Authentication {
     }
 
     public static class Identifiers {
-        private String[] identifiers;
+        private List<UserIdentifier> identifiers;
 
         public Identifiers(String... identifiers) {
-            this.identifiers = identifiers;
+            this.identifiers = new ArrayList<>();
+
+            for (String identifier : identifiers) {
+                this.identifiers.add(UserIdentifier.parse(identifier));
+            }
         }
 
-        public String[] getIdentifiers() {
+        public List<UserIdentifier> getIdentifiers() {
             return identifiers;
         }
 
@@ -42,6 +46,11 @@ public class Authentication {
             this.identifiers.add(UserIdentifier.parse(identifier));
         }
 
+        return this;
+    }
+
+    private Authentication ifAnyOfIdentifiers(List<UserIdentifier> userIdentifiers) {
+        this.identifiers = userIdentifiers;
         return this;
     }
 
