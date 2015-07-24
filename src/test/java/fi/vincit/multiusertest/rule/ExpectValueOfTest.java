@@ -7,18 +7,18 @@ import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
-import fi.vincit.multiusertest.rule.expection.Callback;
-import fi.vincit.multiusertest.rule.expection.ExpectValueOfCallback;
+import fi.vincit.multiusertest.rule.expection.AssertionCall;
 import fi.vincit.multiusertest.rule.expection.Expectations;
+import fi.vincit.multiusertest.rule.expection.ReturnValueCall;
 import fi.vincit.multiusertest.util.UserIdentifier;
 
 public class ExpectValueOfTest {
 
     @Test
     public void testReturnValueEquals() throws Throwable{
-        Expectations.valueOf(new ExpectValueOfCallback<Integer>() {
+        Expectations.valueOf(new ReturnValueCall<Integer>() {
             @Override
-            public Integer doIt() {
+            public Integer call() {
                 return 1;
             }
         }).toEqual(1, ifAnyOf("role:ROLE_USER")).execute(UserIdentifier.parse("role:ROLE_USER"));
@@ -26,9 +26,9 @@ public class ExpectValueOfTest {
 
     @Test
     public void testReturnValueEquals_MultipleIdentifiers() throws Throwable {
-        Expectations.valueOf(new ExpectValueOfCallback<Integer>() {
+        Expectations.valueOf(new ReturnValueCall<Integer>() {
             @Override
-            public Integer doIt() {
+            public Integer call() {
                 return 1;
             }
         })
@@ -39,9 +39,9 @@ public class ExpectValueOfTest {
 
     @Test(expected = AssertionError.class)
     public void testReturnValueEquals_MultipleIdentifiers_OneFails() throws Throwable {
-        Expectations.valueOf(new ExpectValueOfCallback<Integer>() {
+        Expectations.valueOf(new ReturnValueCall<Integer>() {
             @Override
-            public Integer doIt() {
+            public Integer call() {
                 return 1;
             }
         })
@@ -52,15 +52,15 @@ public class ExpectValueOfTest {
 
     @Test
     public void testAssertion_Passes() throws Throwable {
-        Expectations.valueOf(new ExpectValueOfCallback<Integer>() {
+        Expectations.valueOf(new ReturnValueCall<Integer>() {
             @Override
-            public Integer doIt() {
+            public Integer call() {
                 return 1;
             }
         })
-                .toAssert(new Callback<Integer>() {
+                .toAssert(new AssertionCall<Integer>() {
                     @Override
-                    public void doIt(Integer value) {
+                    public void call(Integer value) {
                         assertThat(value, is(1));
                     }
                 }, ifAnyOf("role:ROLE_USER"))
@@ -69,15 +69,15 @@ public class ExpectValueOfTest {
 
     @Test(expected = AssertionError.class)
     public void testAssertion_Fails() throws Throwable {
-        Expectations.valueOf(new ExpectValueOfCallback<Integer>() {
+        Expectations.valueOf(new ReturnValueCall<Integer>() {
             @Override
-            public Integer doIt() {
+            public Integer call() {
                 return 1;
             }
         })
-                .toAssert(new Callback<Integer>() {
+                .toAssert(new AssertionCall<Integer>() {
                     @Override
-                    public void doIt(Integer value) {
+                    public void call(Integer value) {
                         assertThat(value, is(2));
                     }
                 }, ifAnyOf("role:ROLE_USER"))
@@ -86,15 +86,15 @@ public class ExpectValueOfTest {
 
     @Test
     public void testAssertion_NoAssertionFound() throws Throwable {
-        Expectations.valueOf(new ExpectValueOfCallback<Integer>() {
+        Expectations.valueOf(new ReturnValueCall<Integer>() {
             @Override
-            public Integer doIt() {
+            public Integer call() {
                 return 1;
             }
         })
-                .toAssert(new Callback<Integer>() {
+                .toAssert(new AssertionCall<Integer>() {
                     @Override
-                    public void doIt(Integer value) {
+                    public void call(Integer value) {
                         assertThat(value, is(2));
                     }
                 }, ifAnyOf("role:ROLE_USER"))

@@ -7,21 +7,21 @@ import java.util.HashMap;
 import java.util.Map;
 
 import fi.vincit.multiusertest.rule.Authentication;
-import fi.vincit.multiusertest.rule.expection.Callback;
-import fi.vincit.multiusertest.rule.expection.ExpectValueOfCallback;
+import fi.vincit.multiusertest.rule.expection.AssertionCall;
 import fi.vincit.multiusertest.rule.expection.Expectation;
+import fi.vincit.multiusertest.rule.expection.ReturnValueCall;
 import fi.vincit.multiusertest.util.Optional;
 import fi.vincit.multiusertest.util.UserIdentifier;
 
 public class ExpectValueOf<VALUE_TYPE> implements Expectation {
 
-    private ExpectValueOfCallback<VALUE_TYPE> callback;
+    private ReturnValueCall<VALUE_TYPE> callback;
 
     private static class Info<VALUE_TYPE> {
         final Optional<VALUE_TYPE> value;
-        final Optional<Callback<VALUE_TYPE>> assertionCallback;
+        final Optional<AssertionCall<VALUE_TYPE>> assertionCallback;
 
-        public Info(Optional<VALUE_TYPE> value, Optional<Callback<VALUE_TYPE>> assertionCallback) {
+        public Info(Optional<VALUE_TYPE> value, Optional<AssertionCall<VALUE_TYPE>> assertionCallback) {
             this.value = value;
             this.assertionCallback = assertionCallback;
         }
@@ -30,14 +30,14 @@ public class ExpectValueOf<VALUE_TYPE> implements Expectation {
             return value;
         }
 
-        public Optional<Callback<VALUE_TYPE>> getAssertionCallback() {
+        public Optional<AssertionCall<VALUE_TYPE>> getAssertionCallback() {
             return assertionCallback;
         }
     }
 
     public Map<String, Info<VALUE_TYPE>> expectations = new HashMap<>();
 
-    public ExpectValueOf(ExpectValueOfCallback<VALUE_TYPE> callback) {
+    public ExpectValueOf(ReturnValueCall<VALUE_TYPE> callback) {
         this.callback = callback;
     }
 
@@ -45,13 +45,13 @@ public class ExpectValueOf<VALUE_TYPE> implements Expectation {
         for (String identifier : identifiers.getIdentifiers()) {
             expectations.put(identifier, new Info<>(
                             Optional.ofNullable(value),
-                            Optional.<Callback<VALUE_TYPE>>empty())
+                            Optional.<AssertionCall<VALUE_TYPE>>empty())
             );
         }
         return this;
     }
 
-    public ExpectValueOf<VALUE_TYPE> toAssert(Callback<VALUE_TYPE> assertionCallback, Authentication.Identifiers identifiers) {
+    public ExpectValueOf<VALUE_TYPE> toAssert(AssertionCall<VALUE_TYPE> assertionCallback, Authentication.Identifiers identifiers) {
         for (String identifier : identifiers.getIdentifiers()) {
             expectations.put(identifier, new Info<>(
                             Optional.<VALUE_TYPE>empty(),
@@ -63,7 +63,7 @@ public class ExpectValueOf<VALUE_TYPE> implements Expectation {
 
     @Override
     public void execute(UserIdentifier identifier) throws Throwable {
-        VALUE_TYPE returnValue = callback.doIt();
+        VALUE_TYPE returnValue = callback.call();
 
         if (!expectations.containsKey(identifier.toString())) {
             return;
@@ -71,7 +71,7 @@ public class ExpectValueOf<VALUE_TYPE> implements Expectation {
 
         Info<VALUE_TYPE> info = expectations.get(identifier.toString());
         if (info.getAssertionCallback().isPresent()) {
-            info.getAssertionCallback().get().doIt(returnValue);
+            info.getAssertionCallback().get().call(returnValue);
         } else {
             assertThat(returnValue, is(info.getValue().orElse(null)));
         }
