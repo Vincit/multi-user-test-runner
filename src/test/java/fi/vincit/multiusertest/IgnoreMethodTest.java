@@ -2,9 +2,9 @@ package fi.vincit.multiusertest;
 
 import fi.vincit.multiusertest.annotation.TestUsers;
 import fi.vincit.multiusertest.configuration.ConfiguredTest;
-import fi.vincit.multiusertest.runner.BlockMultiUserTestClassRunner;
-import fi.vincit.multiusertest.runner.MultiUserTestRunner;
-import org.junit.BeforeClass;
+import fi.vincit.multiusertest.runner.junit.framework.BlockMultiUserTestClassRunner;
+import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
