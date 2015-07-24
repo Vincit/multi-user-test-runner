@@ -6,4 +6,8 @@ public class Expectation {
         return new ExpectValueOf(value);
     }
 
+    public static ExpectCall call(FunctionCall functionCall) {
+        return new ExpectCall(functionCall);
+    }
+
 }
