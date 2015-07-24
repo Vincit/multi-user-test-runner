@@ -14,18 +14,12 @@ public class ExpectValueOf<VALUE_TYPE> {
     private ExpectValueOfCallback<VALUE_TYPE> callback;
 
     private static class Info<VALUE_TYPE> {
-        final Authentication.Identifiers identifiers;
         final Optional<VALUE_TYPE> value;
         final Optional<Callback<VALUE_TYPE>> assertionCallback;
 
-        public Info(Authentication.Identifiers identifiers, Optional<VALUE_TYPE> value, Optional<Callback<VALUE_TYPE>> assertionCallback) {
-            this.identifiers = identifiers;
+        public Info(Optional<VALUE_TYPE> value, Optional<Callback<VALUE_TYPE>> assertionCallback) {
             this.value = value;
             this.assertionCallback = assertionCallback;
-        }
-
-        public Authentication.Identifiers getIdentifiers() {
-            return identifiers;
         }
 
         public Optional<VALUE_TYPE> getValue() {
@@ -43,10 +37,9 @@ public class ExpectValueOf<VALUE_TYPE> {
         this.callback = callback;
     }
 
-    public ExpectValueOf toEqual(VALUE_TYPE value, Authentication.Identifiers identifiers) {
+    public ExpectValueOf<VALUE_TYPE> toEqual(VALUE_TYPE value, Authentication.Identifiers identifiers) {
         for (String identifier : identifiers.getIdentifiers()) {
             expectations.put(identifier, new Info<>(
-                            identifiers,
                             Optional.ofNullable(value),
                             Optional.<Callback<VALUE_TYPE>>empty())
             );
@@ -54,10 +47,9 @@ public class ExpectValueOf<VALUE_TYPE> {
         return this;
     }
 
-    public ExpectValueOf toAssert(Callback<VALUE_TYPE> assertionCallback, Authentication.Identifiers identifiers) {
+    public ExpectValueOf<VALUE_TYPE> toAssert(Callback<VALUE_TYPE> assertionCallback, Authentication.Identifiers identifiers) {
         for (String identifier : identifiers.getIdentifiers()) {
             expectations.put(identifier, new Info<>(
-                            identifiers,
                             Optional.<VALUE_TYPE>empty(),
                             Optional.of(assertionCallback))
             );
