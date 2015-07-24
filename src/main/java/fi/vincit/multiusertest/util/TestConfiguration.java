@@ -45,7 +45,7 @@ public class TestConfiguration {
     TestConfiguration(Collection<UserIdentifier> creatorIdentifiers, Collection<UserIdentifier> userIdentifiers, Class<?> runner) {
         this.creatorIdentifiers = creatorIdentifiers;
         this.userIdentifiers = userIdentifiers;
-        this.runner = Optional.ofNullable(runner);
+        this.runner = Optional.<Class<?>>ofNullable(runner);
     }
 
     public Collection<UserIdentifier> getCreatorIdentifiers() {

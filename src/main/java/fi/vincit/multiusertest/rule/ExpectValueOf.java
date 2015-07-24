@@ -46,9 +46,9 @@ public class ExpectValueOf<VALUE_TYPE> {
     public ExpectValueOf toEqual(VALUE_TYPE value, Authentication.Identifiers identifiers) {
         for (String identifier : identifiers.getIdentifiers()) {
             expectations.put(identifier, new Info<>(
-                    identifiers,
-                    Optional.ofNullable(value),
-                    Optional.<Callback<VALUE_TYPE>>empty())
+                            identifiers,
+                            Optional.ofNullable(value),
+                            Optional.<Callback<VALUE_TYPE>>empty())
             );
         }
         return this;
@@ -59,7 +59,7 @@ public class ExpectValueOf<VALUE_TYPE> {
             expectations.put(identifier, new Info<>(
                             identifiers,
                             Optional.<VALUE_TYPE>empty(),
-                            Optional.of(callback))
+                            Optional.of(assertionCallback))
             );
         }
         return this;

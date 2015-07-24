@@ -9,7 +9,7 @@ import java.util.Objects;
  */
 public class Optional<T> {
 
-    private static final Optional EMPTY = ofNullable(null);
+    private static final Optional<?> EMPTY = new Optional<>(null);
 
     private T value;
 
@@ -17,17 +17,18 @@ public class Optional<T> {
         this.value = value;
     }
 
-    public static <T> Optional ofNullable(T value) {
+    public static <T> Optional<T> ofNullable(T value) {
         return new Optional<>(value);
     }
 
-    public static <T> Optional of(T value) {
+    public static <T> Optional<T> of(T value) {
         Objects.requireNonNull(value);
         return new Optional<>(value);
     }
 
+    @SuppressWarnings("unchecked")
     public static <T> Optional<T> empty() {
-        return EMPTY;
+        return (Optional<T>)EMPTY;
     }
 
     public T get() {
