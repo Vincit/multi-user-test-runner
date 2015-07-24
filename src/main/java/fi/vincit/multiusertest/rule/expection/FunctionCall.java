@@ -1,4 +1,4 @@
-package fi.vincit.multiusertest.rule;
+package fi.vincit.multiusertest.rule.expection;
 
 public interface FunctionCall {
 

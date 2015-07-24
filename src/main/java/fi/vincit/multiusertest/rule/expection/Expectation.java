@@ -1,4 +1,9 @@
-package fi.vincit.multiusertest.rule;
+package fi.vincit.multiusertest.rule.expection;
+
+import fi.vincit.multiusertest.rule.ExpectCall;
+import fi.vincit.multiusertest.rule.ExpectValueOfCallback;
+import fi.vincit.multiusertest.rule.FunctionCall;
+import fi.vincit.multiusertest.rule.expection.value.ExpectValueOf;
 
 public class Expectation {
 

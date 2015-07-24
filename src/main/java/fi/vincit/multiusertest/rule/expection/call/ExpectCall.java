@@ -1,10 +1,13 @@
-package fi.vincit.multiusertest.rule;
+package fi.vincit.multiusertest.rule.expection.call;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.security.access.AccessDeniedException;
 
+import fi.vincit.multiusertest.rule.Authentication;
+import fi.vincit.multiusertest.rule.FailMode;
+import fi.vincit.multiusertest.rule.FunctionCall;
 import fi.vincit.multiusertest.util.Optional;
 import fi.vincit.multiusertest.util.UserIdentifier;
 

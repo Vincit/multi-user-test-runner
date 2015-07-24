@@ -1,4 +1,4 @@
-package fi.vincit.multiusertest.rule;
+package fi.vincit.multiusertest.rule.expection.value;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
@@ -6,6 +6,9 @@ import static org.junit.Assert.assertThat;
 import java.util.HashMap;
 import java.util.Map;
 
+import fi.vincit.multiusertest.rule.Authentication;
+import fi.vincit.multiusertest.rule.Callback;
+import fi.vincit.multiusertest.rule.ExpectValueOfCallback;
 import fi.vincit.multiusertest.util.Optional;
 import fi.vincit.multiusertest.util.UserIdentifier;
 
