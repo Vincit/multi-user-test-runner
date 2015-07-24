@@ -5,12 +5,12 @@ import java.util.Map;
 
 import org.springframework.security.access.AccessDeniedException;
 
-import fi.vincit.multiusertest.rule.Authentication;
 import fi.vincit.multiusertest.rule.FailMode;
 import fi.vincit.multiusertest.rule.expection.Expectation;
 import fi.vincit.multiusertest.rule.expection.FunctionCall;
 import fi.vincit.multiusertest.util.Optional;
 import fi.vincit.multiusertest.util.UserIdentifier;
+import fi.vincit.multiusertest.util.UserIdentifiers;
 
 public class ExpectCall implements Expectation {
 
@@ -32,21 +32,21 @@ public class ExpectCall implements Expectation {
         this.functionCall = functionCall;
     }
 
-    public ExpectCall toFail(Authentication.Identifiers identifiers) {
+    public ExpectCall toFail(UserIdentifiers identifiers) {
         for (UserIdentifier identifier : identifiers.getIdentifiers()) {
             expectations.put(identifier, new Info(FailMode.EXPECT_FAIL, Optional.<Class<? extends Throwable>>of(AccessDeniedException.class)));
         }
         return this;
     }
 
-    public ExpectCall toFailWithException(Class<? extends Throwable> exception, Authentication.Identifiers identifiers) {
+    public ExpectCall toFailWithException(Class<? extends Throwable> exception, UserIdentifiers identifiers) {
         for (UserIdentifier identifier : identifiers.getIdentifiers()) {
             expectations.put(identifier, new Info(FailMode.EXPECT_FAIL, Optional.<Class<? extends Throwable>>of(exception)));
         }
         return this;
     }
 
-    public ExpectCall notToFail(Authentication.Identifiers identifiers) {
+    public ExpectCall notToFail(UserIdentifiers identifiers) {
         for (UserIdentifier identifier : identifiers.getIdentifiers()) {
             expectations.put(identifier, new Info(FailMode.EXPECT_NOT_FAIL, Optional.<Class<? extends Throwable>>empty()));
         }

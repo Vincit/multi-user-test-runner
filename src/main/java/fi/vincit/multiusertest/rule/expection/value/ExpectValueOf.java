@@ -6,12 +6,12 @@ import static org.junit.Assert.assertThat;
 import java.util.HashMap;
 import java.util.Map;
 
-import fi.vincit.multiusertest.rule.Authentication;
 import fi.vincit.multiusertest.rule.expection.AssertionCall;
 import fi.vincit.multiusertest.rule.expection.Expectation;
 import fi.vincit.multiusertest.rule.expection.ReturnValueCall;
 import fi.vincit.multiusertest.util.Optional;
 import fi.vincit.multiusertest.util.UserIdentifier;
+import fi.vincit.multiusertest.util.UserIdentifiers;
 
 public class ExpectValueOf<VALUE_TYPE> implements Expectation {
 
@@ -41,7 +41,7 @@ public class ExpectValueOf<VALUE_TYPE> implements Expectation {
         this.callback = callback;
     }
 
-    public ExpectValueOf<VALUE_TYPE> toEqual(VALUE_TYPE value, Authentication.Identifiers identifiers) {
+    public ExpectValueOf<VALUE_TYPE> toEqual(VALUE_TYPE value, UserIdentifiers identifiers) {
         for (UserIdentifier identifier : identifiers.getIdentifiers()) {
             expectations.put(identifier, new Info<>(
                             Optional.ofNullable(value),
@@ -51,7 +51,7 @@ public class ExpectValueOf<VALUE_TYPE> implements Expectation {
         return this;
     }
 
-    public ExpectValueOf<VALUE_TYPE> toAssert(AssertionCall<VALUE_TYPE> assertionCallback, Authentication.Identifiers identifiers) {
+    public ExpectValueOf<VALUE_TYPE> toAssert(AssertionCall<VALUE_TYPE> assertionCallback, UserIdentifiers identifiers) {
         for (UserIdentifier identifier : identifiers.getIdentifiers()) {
             expectations.put(identifier, new Info<>(
                             Optional.<VALUE_TYPE>empty(),
