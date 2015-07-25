@@ -5,9 +5,14 @@
     <modelVersion>4.0.0</modelVersion>
     <packaging>jar</packaging>
 
-    <groupId>fi.vincit</groupId>
+    <parent>
+        <groupId>fi.vincit</groupId>
+        <artifactId>multi-user-test-runner-parent</artifactId>
+        <relativePath>../pom.xml</relativePath>
+        <version>${global.version}</version>
+    </parent>
+
     <artifactId>multi-user-test-runner</artifactId>
-    <version>0.2</version>
 
     <build>
         <finalName>multi-user-test-runner-${version}</finalName>
@@ -17,8 +22,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.3</version>
                 <configuration>
-                    <source>${java-version}</source>
-                    <target>${java-version}</target>
+                    <source>${global.java.target.version}</source>
+                    <target>${global.java.target.version}</target>
                 </configuration>
             </plugin>
         </plugins>
@@ -26,8 +31,6 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
-        <java-version>1.7</java-version>
 
         <!-- Dependency versions -->
         <spring-security-version>3.2.5.RELEASE</spring-security-version>
