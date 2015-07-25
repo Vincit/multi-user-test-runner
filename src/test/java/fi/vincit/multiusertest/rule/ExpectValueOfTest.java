@@ -1,7 +1,6 @@
 package fi.vincit.multiusertest.rule;
 
-
-import static fi.vincit.multiusertest.rule.Authentication.ifAnyOf;
+import static fi.vincit.multiusertest.util.UserIdentifiers.ifAnyOf;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 

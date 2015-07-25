@@ -4,11 +4,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserIdentifiers {
-    private List<UserIdentifier> identifiers;
+
+    private static final UserIdentifiers EMPTY = new UserIdentifiers();
+
+    private List<UserIdentifier> identifiers = new ArrayList<>();
+
+    public static UserIdentifiers empty() {
+        return EMPTY;
+    }
+
+    public static UserIdentifiers ifAnyOf(String... identifiers) {
+        return new UserIdentifiers(identifiers);
+    }
 
     public UserIdentifiers(String... identifiers) {
-        this.identifiers = new ArrayList<>();
-
         for (String identifier : identifiers) {
             this.identifiers.add(UserIdentifier.parse(identifier));
         }

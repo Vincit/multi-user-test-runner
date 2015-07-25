@@ -1,6 +1,6 @@
 package fi.vincit.multiusertest.rule;
 
-import static fi.vincit.multiusertest.rule.Authentication.ifAnyOf;
+import static fi.vincit.multiusertest.util.UserIdentifiers.ifAnyOf;
 
 import java.io.IOException;
 
