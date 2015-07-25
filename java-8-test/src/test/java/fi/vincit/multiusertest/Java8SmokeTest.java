@@ -1,7 +1,10 @@
 package fi.vincit.multiusertest;
 
 import static fi.vincit.multiusertest.rule.expection.Expectations.call;
+import static fi.vincit.multiusertest.rule.expection.Expectations.valueOf;
 import static fi.vincit.multiusertest.util.UserIdentifiers.ifAnyOf;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,6 +43,22 @@ public class Java8SmokeTest extends ConfiguredTest {
                 call(testService::noThrow)
                     .toFail(ifAnyOf("role:ROLE_ADMIN"))
                     .notToFail(ifAnyOf("role:ROLE_USER"))
+        );
+    }
+
+    @Test
+    public void expectAssert_toPass() throws Throwable {
+        authorization().expect(valueOf(() -> testService.returnsValue(3))
+                .toAssert((value) -> assertThat(value, is(3)), ifAnyOf("role:ROLE_ADMIN"))
+        );
+    }
+
+    @Test(expected = AssertionError.class)
+    public void expectAssert_toFail() throws Throwable {
+        logInAs(LoginRole.USER);
+        authorization().expect(valueOf(() -> testService.returnsValue(3))
+                        .toAssert((value) -> assertThat(value, is(3)), ifAnyOf("role:ROLE_ADMIN"))
+                        .toAssert((value) -> assertThat(value, is(1)), ifAnyOf("role:ROLE_USER"))
         );
     }
 }

@@ -9,4 +9,8 @@ public class TestService {
 
     public void noThrow() {
     }
+
+    public int returnsValue(int value) {
+        return value;
+    }
 }
