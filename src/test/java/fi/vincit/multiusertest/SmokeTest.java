@@ -1,8 +1,8 @@
 package fi.vincit.multiusertest;
 
-import static fi.vincit.multiusertest.rule.Authentication.ifAnyOf;
 import static fi.vincit.multiusertest.rule.Authentication.notToFail;
 import static fi.vincit.multiusertest.rule.Authentication.toFail;
+import static fi.vincit.multiusertest.util.UserIdentifiers.ifAnyOf;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -13,8 +13,8 @@ import org.junit.runner.RunWith;
 import fi.vincit.multiusertest.annotation.TestUsers;
 import fi.vincit.multiusertest.configuration.ConfiguredTest;
 import fi.vincit.multiusertest.rule.AuthorizationRule;
-import fi.vincit.multiusertest.runner.junit.framework.BlockMultiUserTestClassRunner;
 import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
+import fi.vincit.multiusertest.runner.junit.framework.BlockMultiUserTestClassRunner;
 import fi.vincit.multiusertest.util.LoginRole;
 
 @TestUsers(creators = {"role:ROLE_ADMIN"}, users = "role:ROLE_ADMIN",

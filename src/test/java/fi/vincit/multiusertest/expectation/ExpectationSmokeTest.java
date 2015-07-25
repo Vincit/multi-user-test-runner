@@ -1,8 +1,7 @@
 package fi.vincit.multiusertest.expectation;
 
-import static fi.vincit.multiusertest.rule.Authentication.ifAnyOf;
-import static fi.vincit.multiusertest.rule.expection.Expectations.call;
 import static fi.vincit.multiusertest.rule.expection.Expectations.valueOf;
+import static fi.vincit.multiusertest.util.UserIdentifiers.ifAnyOf;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
@@ -12,9 +11,10 @@ import org.springframework.security.access.AccessDeniedException;
 
 import fi.vincit.multiusertest.annotation.TestUsers;
 import fi.vincit.multiusertest.configuration.ConfiguredTest;
-import fi.vincit.multiusertest.rule.expection.Callback;
-import fi.vincit.multiusertest.rule.expection.ExpectValueOfCallback;
+import fi.vincit.multiusertest.rule.expection.AssertionCall;
+import fi.vincit.multiusertest.rule.expection.Expectations;
 import fi.vincit.multiusertest.rule.expection.FunctionCall;
+import fi.vincit.multiusertest.rule.expection.ReturnValueCall;
 import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
 import fi.vincit.multiusertest.runner.junit.framework.BlockMultiUserTestClassRunner;
 import fi.vincit.multiusertest.util.LoginRole;
@@ -34,7 +34,7 @@ public class ExpectationSmokeTest extends ConfiguredTest {
 
     @Test
     public void expectToFail_AsCreator_WhenAccessDeniedThrown() throws Throwable {
-        authorization().expect(call(
+        authorization().expect(Expectations.call(
                 new FunctionCall() {
                     @Override
                     public void call() throws Throwable {
@@ -46,7 +46,7 @@ public class ExpectationSmokeTest extends ConfiguredTest {
 
     @Test(expected = AssertionError.class)
     public void expectNotToFail_AsCreator_WhenAccessDeniedThrown() throws Throwable {
-        authorization().expect(call(
+        authorization().expect(Expectations.call(
                 new FunctionCall() {
                     @Override
                     public void call() throws Throwable {
@@ -59,7 +59,7 @@ public class ExpectationSmokeTest extends ConfiguredTest {
     @Test
     public void expectToFail_WhenAccessDeniedThrown() throws Throwable {
         logInAs(LoginRole.USER);
-        authorization().expect(call(
+        authorization().expect(Expectations.call(
                 new FunctionCall() {
                     @Override
                     public void call() throws Throwable {
@@ -72,7 +72,7 @@ public class ExpectationSmokeTest extends ConfiguredTest {
     @Test(expected = AssertionError.class)
     public void expectNotToFail_WhenAccessDeniedThrown() throws Throwable {
         logInAs(LoginRole.USER);
-        authorization().expect(call(
+        authorization().expect(Expectations.call(
                 new FunctionCall() {
                     @Override
                     public void call() throws Throwable {
@@ -86,15 +86,15 @@ public class ExpectationSmokeTest extends ConfiguredTest {
     public void assertionFails() throws Throwable {
         logInAs(LoginRole.USER);
         authorization().expect(valueOf(
-                new ExpectValueOfCallback<Integer>() {
+                new ReturnValueCall<Integer>() {
                     @Override
-                    public Integer doIt() {
+                    public Integer call() {
                         return returnValueCall();
                     }
                 }
-        ).toAssert(new Callback<Integer>() {
+        ).toAssert(new AssertionCall<Integer>() {
             @Override
-            public void doIt(Integer value) {
+            public void call(Integer value) {
                 assertThat(value, is(104));
             }
         }, ifAnyOf("role:ROLE_USER")));
@@ -104,15 +104,15 @@ public class ExpectationSmokeTest extends ConfiguredTest {
     public void assertionPasses() throws Throwable {
         logInAs(LoginRole.USER);
         authorization().expect(valueOf(
-                new ExpectValueOfCallback<Integer>() {
+                new ReturnValueCall<Integer>() {
                     @Override
-                    public Integer doIt() {
+                    public Integer call() {
                         return returnValueCall();
                     }
                 }
-        ).toAssert(new Callback<Integer>() {
+        ).toAssert(new AssertionCall<Integer>() {
             @Override
-            public void doIt(Integer value) {
+            public void call(Integer value) {
                 assertThat(value, is(103));
             }
         }, ifAnyOf("role:ROLE_USER")));

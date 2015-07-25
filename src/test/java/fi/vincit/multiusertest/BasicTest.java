@@ -1,8 +1,8 @@
 package fi.vincit.multiusertest;
 
-import static fi.vincit.multiusertest.rule.Authentication.ifAnyOf;
 import static fi.vincit.multiusertest.rule.Authentication.notToFail;
 import static fi.vincit.multiusertest.rule.Authentication.toFail;
+import static fi.vincit.multiusertest.util.UserIdentifiers.ifAnyOf;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
@@ -12,8 +12,8 @@ import org.springframework.security.access.AccessDeniedException;
 
 import fi.vincit.multiusertest.annotation.TestUsers;
 import fi.vincit.multiusertest.configuration.ConfiguredTest;
-import fi.vincit.multiusertest.runner.junit.framework.BlockMultiUserTestClassRunner;
 import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
+import fi.vincit.multiusertest.runner.junit.framework.BlockMultiUserTestClassRunner;
 import fi.vincit.multiusertest.util.LoginRole;
 import fi.vincit.multiusertest.util.SecurityUtil;
 import fi.vincit.multiusertest.util.User;
