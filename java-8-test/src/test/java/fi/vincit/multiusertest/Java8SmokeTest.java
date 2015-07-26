@@ -61,4 +61,20 @@ public class Java8SmokeTest extends ConfiguredTest {
                         .toAssert((value) -> assertThat(value, is(1)), ifAnyOf("role:ROLE_USER"))
         );
     }
+
+    @Test(expected = AssertionError.class)
+    public void expectEqual_toFail() throws Throwable {
+        logInAs(LoginRole.USER);
+        authorization().expect(valueOf(() -> testService.returnsValue(3))
+                        .toEqual(1, ifAnyOf("role:ROLE_USER"))
+        );
+    }
+
+    @Test
+    public void expectEqual_toPass() throws Throwable {
+        logInAs(LoginRole.USER);
+        authorization().expect(valueOf(() -> testService.returnsValue(3))
+                        .toEqual(3, ifAnyOf("role:ROLE_USER"))
+        );
+    }
 }
