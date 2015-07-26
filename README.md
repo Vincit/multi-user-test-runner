@@ -36,6 +36,40 @@ It is also possible to define a custom runner. The custom runner has to implemen
 has to have a constructor with following format: 
 `CustomRunner(Class<?> clazz, UserIdentifier creatorIdentifier, UserIdentifier userIdentifier)`.
 
+# Assertions
+
+## Simple authorization assertion
+
+Most simple way to add an multi user test assertion is to use:
+```java
+authorization().expect(toFail().ifAnyOf("role:ROLE_USER"));
+```
+This will simply fail/pass test depending if the following call throws/doesn't throw an exception.
+
+## Advanced assertions
+
+From version 0.2 onwards there are also advanced assertions which work best with Java 8 lambdas.
+
+Assert that call fails/doesn't fail:
+```java
+authorization().expect(call(() -> service.doSomething(value)).toFail(ifAnyOf("role:ROLE_ADMIN")));
+authorization().expect(call(() -> service.doSomething(value)).notToFail(ifAnyOf("role:ROLE_ADMIN")));
+```
+
+Compare method call return value:
+```java
+authorization().expect(valueOf(() -> service.getAllUsers(value))
+                .toEqual(10, ifAnyOf("role:ROLE_ADMIN"))
+                .toEqual(2, ifAnyOf("role:ROLE_USER"));
+```
+
+Use a custom assertion (e.g. JUnit `assertEquals` or `assertThat`:
+```java
+authorization().expect(valueOf(() -> service.getAllUsers(value))
+                .toAssert((value) -> assertThat(value, is(10)), ifAnyOf("role:ROLE_ADMIN"))
+                .toAssert((value) -> assertThat(value, is(2)), ifAnyOf("role:ROLE_USER"));
+```
+
 # Example
 
 ```java
@@ -155,3 +189,4 @@ public class ServiceIT extends AbstractConfiguredUserIT {
     
 }
 ```
+
