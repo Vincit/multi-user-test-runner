@@ -19,6 +19,7 @@
         <module>core</module>
         <module>integration-test</module>
         <module>java-8-test</module>
+        <module>spring3-test</module>
     </modules>
 
 </project>

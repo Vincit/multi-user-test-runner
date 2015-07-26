@@ -8,7 +8,6 @@ import java.util.Random;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.runner.RunWith;
-import org.springframework.transaction.annotation.Transactional;
 
 import fi.vincit.multiusertest.rule.AuthorizationRule;
 import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
@@ -35,7 +34,6 @@ public abstract class AbstractUserRoleIT<USER, ROLE> {
     public AuthorizationRule authorizationRule = new AuthorizationRule();
 
     @Before
-    @Transactional
     public void initializeUsers() {
         initializeCreator();
         initializeUser();

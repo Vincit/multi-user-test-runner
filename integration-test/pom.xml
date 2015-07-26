@@ -37,7 +37,6 @@
 
         <!-- Dependency versions -->
         <spring-security-version>3.2.5.RELEASE</spring-security-version>
-        <spring-data-jpa-version>1.7.1.RELEASE</spring-data-jpa-version>
         <spring-test-version>3.2.11.RELEASE</spring-test-version>
         <junit-version>4.12</junit-version>
         <mockito-version>1.10.19</mockito-version>
@@ -54,15 +53,11 @@
         </dependency>
 
         <!-- Spring dependencies -->
+        <!-- Actual dependencies since library only has them as provided -->
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-core</artifactId>
             <version>${spring-security-version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.data</groupId>
-            <artifactId>spring-data-jpa</artifactId>
-            <version>${spring-data-jpa-version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>

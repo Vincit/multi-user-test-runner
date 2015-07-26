@@ -12,11 +12,11 @@
         <version>${global.version}</version>
     </parent>
 
-    <artifactId>multi-user-test-runner-java-8-test</artifactId>
+    <artifactId>multi-user-test-runner-spring3-test</artifactId>
     <version>${global.version}</version>
 
     <build>
-        <finalName>multi-user-test-runner-java-8-${version}</finalName>
+        <finalName>multi-user-test-runner-spring3-${version}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -33,16 +33,14 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <java-version>1.8</java-version>
+        <java-version>1.7</java-version>
 
         <!-- Dependency versions -->
-        <spring-security-version>3.2.5.RELEASE</spring-security-version>
-        <spring-data-jpa-version>1.7.1.RELEASE</spring-data-jpa-version>
-        <spring-test-version>3.2.11.RELEASE</spring-test-version>
+        <spring-security-version>3.1.3.RELEASE</spring-security-version>
+        <spring-version>3.2.11.RELEASE</spring-version>
         <junit-version>4.12</junit-version>
         <mockito-version>1.10.19</mockito-version>
     </properties>
-
 
     <dependencies>
         <!-- SUT module -->
@@ -60,21 +58,30 @@
         </dependency>
 
         <!-- Spring dependencies -->
-        <!-- Actual dependencies since library only has them as provided -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+            <version>${spring-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>${spring-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${spring-version}</version>
+        </dependency>
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-core</artifactId>
             <version>${spring-security-version}</version>
         </dependency>
         <dependency>
-            <groupId>org.springframework.data</groupId>
-            <artifactId>spring-data-jpa</artifactId>
-            <version>${spring-data-jpa-version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
-            <version>${spring-test-version}</version>
+            <version>${spring-version}</version>
         </dependency>
 
         <!-- JUnit test runner dependencies -->
