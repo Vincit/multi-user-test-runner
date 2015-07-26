@@ -27,11 +27,27 @@ public class AuthorizationRule implements TestRule {
     private Class<? extends Throwable> expectedException = AccessDeniedException.class;
     private static final Statement NO_BASE = null;
 
+    /**
+     * Simple assertion for checking that method throws/doesn't throw an exception. If after the call no
+     * exceptions are expected the {@link AuthorizationRule#dontExpectToFail()} has to be called. To expect
+     * a custom exception, {@link AuthorizationRule#setExpectedException(Class)} can be used.
+     * @param identifiers Identifiers for which the calls after this method are expected to fail.
+     * @return
+     * @since 0.1
+     */
     public AuthorizationRule expect(Authentication identifiers) {
         addIdentifiers(identifiers);
         return this;
     }
 
+    /**
+     * Advanced assertion which makes use of expecations to form {@link fi.vincit.multiusertest.rule.expection.Expectations}.
+     * Immediately executes the call to the given method and makes defined assertions. Using this {@link AuthorizationRule#expect(Expectation)}
+     * method, the {@link AuthorizationRule#dontExpectToFail()} method isn't required to be called.
+     * @param expectation {@link Expectation} rule
+     * @throws Throwable
+     * @since 0.2
+     */
     public void expect(Expectation expectation) throws Throwable {
         expectation.execute(userIdentifier);
     }
@@ -52,6 +68,11 @@ public class AuthorizationRule implements TestRule {
         this.userIdentifier = new UserIdentifier(type, identifier);
     }
 
+    /**
+     * Set a custom exception to expect. Works only with {@link AuthorizationRule#expect(Authentication)}
+     * method (version 0.1 style simple assertion).
+     * @param expectedException Exception class to except
+     */
     public void setExpectedException(Class<? extends Throwable> expectedException) {
         this.expectedException = expectedException;
     }
@@ -61,6 +82,12 @@ public class AuthorizationRule implements TestRule {
         return new AuthChecker(base);
     }
 
+    /**
+     * Checks that if any previous calls should've failed and throws
+     * {@link AssertionError} if the calls haven't behaved as expected.
+     * If unexpected exception is thrown, throws {@link RuntimeException}.
+     * After this call don't expect any call to fail.
+     */
     public void dontExpectToFail() {
         try {
             new AuthChecker(NO_BASE).evaluate();
