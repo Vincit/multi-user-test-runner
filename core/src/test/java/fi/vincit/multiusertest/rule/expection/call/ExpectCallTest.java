@@ -24,6 +24,10 @@ public class ExpectCallTest {
         throw new IOException("IO Exception");
     }
 
+    void throwIllegalStateException() {
+        throw new IllegalStateException("Illegal state");
+    }
+
     @Test
     public void testExpectCallToFail() throws Throwable {
         Expectations.call(new FunctionCall() {
@@ -115,6 +119,54 @@ public class ExpectCallTest {
             }
         })
                 .notToFail(ifAnyOf("role:ROLE_USER"))
+                .execute(UserIdentifier.parse("role:ROLE_USER"));
+    }
+
+    @Test(expected = AssertionError.class)
+    public void testExpectToFail_WithCustomException_ButDoesntFail() throws Throwable {
+        Expectations.call(new FunctionCall() {
+            @Override
+            public void call() throws Throwable {
+                notThrow();
+            }
+        })
+                .toFailWithException(IllegalStateException.class, ifAnyOf("role:ROLE_USER"))
+                .execute(UserIdentifier.parse("role:ROLE_USER"));
+    }
+
+    @Test
+    public void testExpectToFail_WithCustomException() throws Throwable {
+        Expectations.call(new FunctionCall() {
+            @Override
+            public void call() throws Throwable {
+                throwIllegalStateException();
+            }
+        })
+                .toFailWithException(IllegalStateException.class, ifAnyOf("role:ROLE_USER"))
+                .execute(UserIdentifier.parse("role:ROLE_USER"));
+    }
+
+    @Test(expected = AssertionError.class)
+    public void testExpectToFail_WithCustomException_ButFails() throws Throwable {
+        Expectations.call(new FunctionCall() {
+            @Override
+            public void call() throws Throwable {
+                throwAccessDenied();
+            }
+        })
+                .toFailWithException(IllegalStateException.class, ifAnyOf("role:ROLE_USER"))
+                .execute(UserIdentifier.parse("role:ROLE_USER"));
+    }
+
+    @Test(expected = AssertionError.class)
+    public void testExpectToFail_WithCustomException_ButFailsWithUnexpected() throws Throwable {
+        Expectations.call(new FunctionCall() {
+            @Override
+            public void call() throws Throwable {
+                throwIOException();
+            }
+        })
+                .toFailWithException(IllegalStateException.class, ifAnyOf("role:ROLE_USER"))
                 .execute(UserIdentifier.parse("role:ROLE_USER"));
     }
 }
