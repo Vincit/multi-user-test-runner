@@ -15,7 +15,7 @@ public class Expectations {
      * @return ExpectValueOf object for defining assertion rules.
      */
     public static <T> ExpectValueOf<T> valueOf(ReturnValueCall<T> value) {
-        return new ExpectValueOf<T>(value);
+        return new ExpectValueOf<>(value);
     }
 
     /**

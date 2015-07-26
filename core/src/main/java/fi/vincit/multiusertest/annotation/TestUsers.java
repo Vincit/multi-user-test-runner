@@ -13,7 +13,6 @@ import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
 import fi.vincit.multiusertest.runner.junit.framework.SpringMultiUserTestClassRunner;
 import fi.vincit.multiusertest.util.UserIdentifier;
 
-;
 
 /**
  * This annotation works with MultiUserTestRunner. The creators parameter defines which
