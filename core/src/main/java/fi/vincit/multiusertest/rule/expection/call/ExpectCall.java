@@ -12,6 +12,11 @@ import fi.vincit.multiusertest.util.Optional;
 import fi.vincit.multiusertest.util.UserIdentifier;
 import fi.vincit.multiusertest.util.UserIdentifiers;
 
+/**
+ * Expect a function call to throw or not throw an exception. Default exception expected is
+ * {@link AccessDeniedException}. A custom exception can be given via {@link ExpectCall#toFailWithException(Class, UserIdentifiers)}
+ * method.
+ */
 public class ExpectCall implements Expectation {
 
     private final FunctionCall functionCall;
@@ -32,6 +37,12 @@ public class ExpectCall implements Expectation {
         this.functionCall = functionCall;
     }
 
+    /**
+     * Expect the call to fail with given users. If the call doesn't fail with AccessDenied exception,
+     * then AssertionError will be thrown.
+     * @param identifiers A set of user identifiers for which the call is expected to fail
+     * @return ExpectCall object for chaining
+     */
     public ExpectCall toFail(UserIdentifiers identifiers) {
         for (UserIdentifier identifier : identifiers.getIdentifiers()) {
             expectations.put(identifier, new Info(FailMode.EXPECT_FAIL, Optional.<Class<? extends Throwable>>of(AccessDeniedException.class)));
@@ -39,6 +50,13 @@ public class ExpectCall implements Expectation {
         return this;
     }
 
+    /**
+     * Expect the call to fail with a defined exception for given users. If the call doesn't fail with
+     * the specified exception, AssertionError will be thrown.
+     * @param exception Exception to expect
+     * @param identifiers A set of user identifiers for which the call is expected to fail
+     * @return ExpectCall object for chaining
+     */
     public ExpectCall toFailWithException(Class<? extends Throwable> exception, UserIdentifiers identifiers) {
         for (UserIdentifier identifier : identifiers.getIdentifiers()) {
             expectations.put(identifier, new Info(FailMode.EXPECT_FAIL, Optional.<Class<? extends Throwable>>of(exception)));
@@ -46,6 +64,12 @@ public class ExpectCall implements Expectation {
         return this;
     }
 
+    /**
+     * Don't expect the call to fail with given users. If the call does fail with any exception,
+     * then AssertionError will be thrown.
+     * @param identifiers A set of users for which the call is not expected to fail
+     * @return ExpectCall object for chaining
+     */
     public ExpectCall notToFail(UserIdentifiers identifiers) {
         for (UserIdentifier identifier : identifiers.getIdentifiers()) {
             expectations.put(identifier, new Info(FailMode.EXPECT_NOT_FAIL, Optional.<Class<? extends Throwable>>empty()));
