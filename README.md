@@ -54,6 +54,7 @@ Assert that call fails/doesn't fail:
 ```java
 authorization().expect(call(() -> service.doSomething(value)).toFail(ifAnyOf("role:ROLE_ADMIN")));
 authorization().expect(call(() -> service.doSomething(value)).notToFail(ifAnyOf("role:ROLE_ADMIN")));
+authorization().expect(call(() -> service.doSomething(value)).toFailWithException(IllegalStateException.class, ifAnyOf("role:ROLE_ADMIN")));
 ```
 
 Compare method call return value:
