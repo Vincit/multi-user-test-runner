@@ -1,4 +1,4 @@
-package fi.vincit.multiusertest.rule;
+package fi.vincit.multiusertest.rule.expection.call;
 
 import static fi.vincit.multiusertest.util.UserIdentifiers.ifAnyOf;
 

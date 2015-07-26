@@ -1,4 +1,4 @@
-package fi.vincit.multiusertest.rule;
+package fi.vincit.multiusertest.rule.expection.value;
 
 import static fi.vincit.multiusertest.util.UserIdentifiers.ifAnyOf;
 import static org.hamcrest.core.Is.is;
