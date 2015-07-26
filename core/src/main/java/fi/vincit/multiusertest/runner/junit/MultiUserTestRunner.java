@@ -1,13 +1,9 @@
 package fi.vincit.multiusertest.runner.junit;
 
-import java.lang.reflect.Constructor;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
 import org.junit.runner.Runner;
-import org.junit.runners.ParentRunner;
 import org.junit.runners.Suite;
 
 import fi.vincit.multiusertest.annotation.TestUsers;
@@ -44,22 +40,25 @@ public class MultiUserTestRunner extends Suite {
     public static final String ROLE_PREFIX = "role:";
     public static final String USER_PREFIX = "user:";
 
-    private final List<Runner> runners = new ArrayList<Runner>();
-    private Constructor runnerConstructor;
-
+    private final List<Runner> runners;
 
     public MultiUserTestRunner(Class<?> klass) throws Throwable {
         super(klass, NO_RUNNERS);
         TestConfiguration configuration = getConfigurationOrThrow();
-        createTestRunner(getConfigurationOrThrow());
-        createRunnersForRoles(configuration.getCreatorIdentifiers(), configuration.getUserIdentifiers());
+        TestRunnerFactory runnerFactory = createTestRunner(configuration);
+        this.runners = runnerFactory.createRunnersForRoles(
+                configuration.getCreatorIdentifiers(),
+                configuration.getUserIdentifiers()
+        );
     }
 
-    private void createTestRunner(TestConfiguration testConfiguration) throws NoSuchMethodException {
+    private TestRunnerFactory createTestRunner(TestConfiguration testConfiguration) throws NoSuchMethodException {
         if (testConfiguration.getRunner().isPresent()) {
             try {
-                runnerConstructor = testConfiguration.getRunner().get()
-                        .getConstructor(Class.class, UserIdentifier.class, UserIdentifier.class);
+                return new TestRunnerFactory(
+                        getTestClass(),
+                        testConfiguration.getRunner().get().getConstructor(Class.class, UserIdentifier.class, UserIdentifier.class)
+                );
             } catch (NoSuchMethodException e) {
                 throw new NoSuchMethodException("Runner must have constructor with class, UserIdentifier, UserIdentifier parameters");
             }
@@ -81,40 +80,6 @@ public class MultiUserTestRunner extends Suite {
                             + getTestClass().getName()
                             + " Use " + TestUsers.class.getName() + " class"
             );
-        }
-    }
-
-
-    private void createRunnersForRoles(Collection<UserIdentifier> creatorIdentifiers, Collection<UserIdentifier> userIdentifiers) throws Exception {
-        if (userIdentifiers.isEmpty()) {
-            userIdentifiers.add(UserIdentifier.getNewUser());
-        }
-        validateCreators(creatorIdentifiers);
-
-        for (UserIdentifier creatorIdentifier : creatorIdentifiers) {
-            for (UserIdentifier userIdentifier : userIdentifiers) {
-                Object parentRunner = runnerConstructor.newInstance(
-                        getTestClass().getJavaClass(),
-                        creatorIdentifier,
-                        userIdentifier
-                );
-                runners.add((ParentRunner) parentRunner);
-
-            }
-        }
-    }
-
-    private void validateCreators(Collection<UserIdentifier> creatorIdentifiers) {
-        if (creatorIdentifiers.isEmpty()) {
-            throw new IllegalArgumentException("Creator must be specified");
-        }
-
-        if (creatorIdentifiers.contains(UserIdentifier.getCreator())) {
-            throw new IllegalArgumentException("Creator can't use CREATOR role");
-        }
-
-        if (creatorIdentifiers.contains(UserIdentifier.getNewUser())) {
-            throw new IllegalArgumentException("Creator can't use NEW_USER role");
         }
     }
 
