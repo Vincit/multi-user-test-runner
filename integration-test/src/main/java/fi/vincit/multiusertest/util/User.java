@@ -3,7 +3,9 @@ package fi.vincit.multiusertest.util;
 public class User {
     public enum Role {
         ROLE_ADMIN,
-        ROLE_USER
+        ROLE_USER,
+        ROLE_SUPER_ADMIN,
+        ROLE_VISITOR
     }
 
     private String username;
