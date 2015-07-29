@@ -10,8 +10,8 @@ import org.junit.runners.model.FrameworkMethod;
 import fi.vincit.multiusertest.annotation.TestUsers;
 
 public class TestMethodFilter {
-    private UserIdentifier creatorIdentifier;
-    private UserIdentifier userIdentifier;
+    private final UserIdentifier creatorIdentifier;
+    private final UserIdentifier userIdentifier;
 
     public TestMethodFilter(UserIdentifier creatorIdentifier, UserIdentifier userIdentifier) {
         Objects.requireNonNull(creatorIdentifier);
