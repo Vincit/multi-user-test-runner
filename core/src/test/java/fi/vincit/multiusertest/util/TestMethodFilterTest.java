@@ -5,6 +5,8 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.Arrays;
+
 import org.junit.Test;
 import org.junit.runners.model.FrameworkMethod;
 
@@ -124,6 +126,43 @@ public class TestMethodFilterTest {
 
         FrameworkMethod method = mock(FrameworkMethod.class);
         assertThat(r.shouldRun(method), is(true));
+    }
+
+    @Test
+    public void testFilterMethods() {
+        TestMethodFilter filter = new TestMethodFilter(
+                UserIdentifier.parse("role:ROLE_USER"),
+                UserIdentifier.parse("role:ROLE_ADMIN"));
+
+        FrameworkMethod method1 = mock(FrameworkMethod.class);
+        mockTestUsers(method1,
+                new String[]{"role:ROLE_USER"},
+                new String[]{"role:ROLE_ADMIN"}
+        );
+
+        FrameworkMethod method2 = mock(FrameworkMethod.class);
+        mockTestUsers(method2,
+                new String[]{"role:ROLE_ADMIN"},
+                new String[]{"role:ROLE_ADMIN"}
+        );
+
+        FrameworkMethod method3 = mock(FrameworkMethod.class);
+        mockTestUsers(method3,
+                new String[]{"role:ROLE_USER", "role:ROLE_ADMIN"},
+                new String[]{"role:ROLE_ADMIN"}
+        );
+
+        assertThat(filter.filter(Arrays.asList(method1, method2, method3)),
+                is(Arrays.asList(method1, method3)));
+    }
+
+    @Test
+    public void testFilterMethods_EmptyList() {
+        TestMethodFilter filter = new TestMethodFilter(
+                UserIdentifier.parse("role:ROLE_USER"),
+                UserIdentifier.parse("role:ROLE_ADMIN"));
+
+        assertThat(filter.filter(Arrays.<FrameworkMethod>asList()).size(), is(0));
     }
 
     @Test(expected = NullPointerException.class)
