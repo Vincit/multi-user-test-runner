@@ -169,4 +169,16 @@ public class ExpectCallTest {
                 .toFailWithException(IllegalStateException.class, ifAnyOf("role:ROLE_USER"))
                 .execute(UserIdentifier.parse("role:ROLE_USER"));
     }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testExpectToFail_ButConfiguredIncorrectly() throws Throwable {
+        Expectations.call(new FunctionCall() {
+            @Override
+            public void call() throws Throwable {
+                throwIOException();
+            }
+        })
+                .toFailWithException(null, ifAnyOf("role:ROLE_USER"))
+                .execute(UserIdentifier.parse("role:ROLE_USER"));
+    }
 }

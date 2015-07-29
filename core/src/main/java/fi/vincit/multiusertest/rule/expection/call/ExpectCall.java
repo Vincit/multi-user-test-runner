@@ -48,6 +48,9 @@ public class ExpectCall implements Expectation {
      * @return ExpectCall object for chaining
      */
     public ExpectCall toFailWithException(Class<? extends Throwable> exception, UserIdentifiers identifiers) {
+        if (exception == null) {
+            throw new IllegalArgumentException("Exception must be given");
+        }
         for (UserIdentifier identifier : identifiers.getIdentifiers()) {
             expectations.put(identifier, new CallInfo(FailMode.EXPECT_FAIL, Optional.<Class<? extends Throwable>>of(exception)));
         }
