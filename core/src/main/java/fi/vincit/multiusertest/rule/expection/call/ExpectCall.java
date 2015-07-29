@@ -22,7 +22,7 @@ public class ExpectCall implements Expectation {
 
     private final FunctionCall functionCall;
 
-    private Map<UserIdentifier, CallInfo> expectations = new HashMap<>();
+    private final Map<UserIdentifier, CallInfo> expectations = new HashMap<>();
 
     public ExpectCall(FunctionCall functionCall) {
         this.functionCall = functionCall;

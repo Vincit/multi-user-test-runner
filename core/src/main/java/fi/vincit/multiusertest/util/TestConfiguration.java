@@ -8,9 +8,9 @@ import fi.vincit.multiusertest.annotation.TestUsers;
 
 public class TestConfiguration {
 
-    private Collection<UserIdentifier> creatorIdentifiers;
-    private Collection<UserIdentifier> userIdentifiers;
-    private Optional<Class<?>> runner;
+    private final Collection<UserIdentifier> creatorIdentifiers;
+    private final Collection<UserIdentifier> userIdentifiers;
+    private final Optional<Class<?>> runner;
 
     public static TestConfiguration fromTestUsers(TestUsers testUsers) {
         if (testUsers != null) {

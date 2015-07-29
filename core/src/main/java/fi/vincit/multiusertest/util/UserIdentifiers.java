@@ -7,7 +7,7 @@ public class UserIdentifiers {
 
     private static final UserIdentifiers EMPTY = new UserIdentifiers();
 
-    private List<UserIdentifier> identifiers = new ArrayList<>();
+    private final List<UserIdentifier> identifiers = new ArrayList<>();
 
     public static UserIdentifiers empty() {
         return EMPTY;

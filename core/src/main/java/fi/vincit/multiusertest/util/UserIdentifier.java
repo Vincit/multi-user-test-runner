@@ -33,8 +33,8 @@ public class UserIdentifier {
         USER
     }
 
-    private Type type;
-    private String identifier;
+    private final Type type;
+    private final String identifier;
 
     public static UserIdentifier parse(String identifierString) {
         if (identifierString.equals(TestUsers.CREATOR)) {

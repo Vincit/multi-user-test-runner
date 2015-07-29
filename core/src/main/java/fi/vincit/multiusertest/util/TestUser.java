@@ -25,10 +25,10 @@ public class TestUser<USER, ROLE> {
         EXISTING_USER
     }
 
-    private ROLE role;
-    private RoleMode mode;
-    private USER user;
-    private UserIdentifier userIdentifier;
+    private final ROLE role;
+    private final RoleMode mode;
+    private final USER user;
+    private final UserIdentifier userIdentifier;
 
 
     public TestUser(ROLE role, RoleMode mode, USER user, UserIdentifier userIdentifier) {

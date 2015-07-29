@@ -16,9 +16,9 @@ import fi.vincit.multiusertest.util.UserIdentifiers;
 
 public class ExpectValueOf<VALUE_TYPE> implements Expectation {
 
-    private ReturnValueCall<VALUE_TYPE> callback;
+    private final ReturnValueCall<VALUE_TYPE> callback;
 
-    public Map<UserIdentifier, ValueOfInfo<VALUE_TYPE>> expectations = new HashMap<>();
+    private final Map<UserIdentifier, ValueOfInfo<VALUE_TYPE>> expectations = new HashMap<>();
 
     public ExpectValueOf(ReturnValueCall<VALUE_TYPE> callback) {
         this.callback = callback;

@@ -11,7 +11,7 @@ public class Optional<T> {
 
     private static final Optional<?> EMPTY = new Optional<>(null);
 
-    private T value;
+    private final T value;
 
     Optional(T value) {
         this.value = value;

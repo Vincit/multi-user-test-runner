@@ -14,7 +14,7 @@ import fi.vincit.multiusertest.util.UserIdentifier;
  */
 public class BlockMultiUserTestClassRunner extends BlockJUnit4ClassRunner {
 
-    private RunnerDelegate runnerDelegate;
+    private final RunnerDelegate runnerDelegate;
 
     public BlockMultiUserTestClassRunner(Class<?> clazz, UserIdentifier creatorIdentifier, UserIdentifier userIdentifier) throws InitializationError {
         super(clazz);

@@ -10,9 +10,9 @@ import fi.vincit.multiusertest.test.AbstractUserRoleIT;
 
 public class RunnerDelegate {
 
-    private UserIdentifier creatorIdentifier;
-    private UserIdentifier userIdentifier;
-    private TestMethodFilter shouldRunChecker;
+    private final UserIdentifier creatorIdentifier;
+    private final UserIdentifier userIdentifier;
+    private final TestMethodFilter shouldRunChecker;
 
     public RunnerDelegate(UserIdentifier creatorIdentifier, UserIdentifier userIdentifier) {
         Objects.requireNonNull(creatorIdentifier);

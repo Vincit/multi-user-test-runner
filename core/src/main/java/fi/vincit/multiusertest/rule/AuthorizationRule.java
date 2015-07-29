@@ -21,7 +21,7 @@ import fi.vincit.multiusertest.util.UserIdentifier;
  */
 public class AuthorizationRule implements TestRule {
 
-    private Set<UserIdentifier> expectToFailOnRoles = new HashSet<>();
+    private final Set<UserIdentifier> expectToFailOnRoles = new HashSet<>();
     private UserIdentifier userIdentifier;
     private FailMode failMode = FailMode.NONE;
     private Class<? extends Throwable> expectedException = AccessDeniedException.class;
