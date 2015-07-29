@@ -1,5 +1,7 @@
 package fi.vincit.multiusertest.rule.expection;
 
+import java.util.Objects;
+
 import fi.vincit.multiusertest.rule.expection.call.ExpectCall;
 import fi.vincit.multiusertest.rule.expection.value.ExpectValueOf;
 
@@ -10,12 +12,13 @@ public class Expectations {
 
     /**
      * Expect a return value of a method to be specified.
-     * @param value Function to call as an anonymous class, lambda or method reference.
+     * @param valueCall Function to call as an anonymous class, lambda or method reference.
      * @param <T> Return value type
      * @return ExpectValueOf object for defining assertion rules.
      */
-    public static <T> ExpectValueOf<T> valueOf(ReturnValueCall<T> value) {
-        return new ExpectValueOf<>(value);
+    public static <T> ExpectValueOf<T> valueOf(ReturnValueCall<T> valueCall) {
+        Objects.requireNonNull(valueCall, "Value call must not be null");
+        return new ExpectValueOf<>(valueCall);
     }
 
     /**
@@ -24,6 +27,7 @@ public class Expectations {
      * @return ExpectCall object for defining assertion rules.
      */
     public static ExpectCall call(FunctionCall functionCall) {
+        Objects.requireNonNull(functionCall, "Function call must not be null");
         return new ExpectCall(functionCall);
     }
 
