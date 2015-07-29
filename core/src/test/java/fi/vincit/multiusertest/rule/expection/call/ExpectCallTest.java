@@ -170,7 +170,7 @@ public class ExpectCallTest {
                 .execute(UserIdentifier.parse("role:ROLE_USER"));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void testExpectToFail_ButConfiguredIncorrectly() throws Throwable {
         Expectations.call(new FunctionCall() {
             @Override
@@ -179,6 +179,42 @@ public class ExpectCallTest {
             }
         })
                 .toFailWithException(null, ifAnyOf("role:ROLE_USER"))
+                .execute(UserIdentifier.parse("role:ROLE_USER"));
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testExpectToFail_NullUserIdentifier() throws Throwable {
+        Expectations.call(new FunctionCall() {
+            @Override
+            public void call() throws Throwable {
+                throwIOException();
+            }
+        })
+                .toFail(null)
+                .execute(UserIdentifier.parse("role:ROLE_USER"));
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testExpectNotToFail_NullUserIdentifier() throws Throwable {
+        Expectations.call(new FunctionCall() {
+            @Override
+            public void call() throws Throwable {
+                throwIOException();
+            }
+        })
+                .notToFail(null)
+                .execute(UserIdentifier.parse("role:ROLE_USER"));
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testExpectToFailWithException_NullUserIdentifier() throws Throwable {
+        Expectations.call(new FunctionCall() {
+            @Override
+            public void call() throws Throwable {
+                throwIOException();
+            }
+        })
+                .toFailWithException(Throwable.class, null)
                 .execute(UserIdentifier.parse("role:ROLE_USER"));
     }
 }

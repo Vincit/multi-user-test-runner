@@ -2,6 +2,7 @@ package fi.vincit.multiusertest.rule.expection.call;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import org.springframework.security.access.AccessDeniedException;
 
@@ -34,6 +35,7 @@ public class ExpectCall implements Expectation {
      * @return ExpectCall object for chaining
      */
     public ExpectCall toFail(UserIdentifiers identifiers) {
+        Objects.requireNonNull(identifiers, "Identifiers must not be null");
         for (UserIdentifier identifier : identifiers.getIdentifiers()) {
             expectations.put(identifier, new CallInfo(FailMode.EXPECT_FAIL, Optional.<Class<? extends Throwable>>of(AccessDeniedException.class)));
         }
@@ -48,9 +50,9 @@ public class ExpectCall implements Expectation {
      * @return ExpectCall object for chaining
      */
     public ExpectCall toFailWithException(Class<? extends Throwable> exception, UserIdentifiers identifiers) {
-        if (exception == null) {
-            throw new IllegalArgumentException("Exception must be given");
-        }
+        Objects.requireNonNull(exception, "Exception must not be null");
+        Objects.requireNonNull(identifiers, "Identifiers must not be null");
+
         for (UserIdentifier identifier : identifiers.getIdentifiers()) {
             expectations.put(identifier, new CallInfo(FailMode.EXPECT_FAIL, Optional.<Class<? extends Throwable>>of(exception)));
         }
@@ -64,6 +66,7 @@ public class ExpectCall implements Expectation {
      * @return ExpectCall object for chaining
      */
     public ExpectCall notToFail(UserIdentifiers identifiers) {
+        Objects.requireNonNull(identifiers, "Identifiers must not be null");
         for (UserIdentifier identifier : identifiers.getIdentifiers()) {
             expectations.put(identifier, new CallInfo(FailMode.EXPECT_NOT_FAIL, Optional.<Class<? extends Throwable>>empty()));
         }
