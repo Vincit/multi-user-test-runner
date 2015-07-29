@@ -5,6 +5,7 @@ import static org.junit.Assert.assertThat;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import fi.vincit.multiusertest.rule.expection.AssertionCall;
 import fi.vincit.multiusertest.rule.expection.Expectation;
@@ -48,6 +49,9 @@ public class ExpectValueOf<VALUE_TYPE> implements Expectation {
      * @return ExpectValueOf object for chaining
      */
     public ExpectValueOf<VALUE_TYPE> toAssert(AssertionCall<VALUE_TYPE> assertionCallback, UserIdentifiers identifiers) {
+        Objects.requireNonNull(assertionCallback, "Assertion callback must not be null");
+        Objects.requireNonNull(assertionCallback, "Identifiers must not be null");
+
         for (UserIdentifier identifier : identifiers.getIdentifiers()) {
             expectations.put(identifier, new ValueOfInfo<>(
                             Optional.<VALUE_TYPE>empty(),

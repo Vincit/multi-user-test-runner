@@ -24,6 +24,36 @@ public class ExpectValueOfTest {
     }
 
     @Test
+    public void testReturnValueEqualsNull() throws Throwable{
+        Expectations.valueOf(new ReturnValueCall<Integer>() {
+            @Override
+            public Integer call() {
+                return null;
+            }
+        }).toEqual(null, ifAnyOf("role:ROLE_USER")).execute(UserIdentifier.parse("role:ROLE_USER"));
+    }
+
+    @Test(expected = AssertionError.class)
+    public void testReturnValueEqualsNull_FailsWhenNonNullReturned() throws Throwable{
+        Expectations.valueOf(new ReturnValueCall<Integer>() {
+            @Override
+            public Integer call() {
+                return 1;
+            }
+        }).toEqual(null, ifAnyOf("role:ROLE_USER")).execute(UserIdentifier.parse("role:ROLE_USER"));
+    }
+
+    @Test(expected = AssertionError.class)
+    public void testReturnValueEquals_FailsWhenNullReturned() throws Throwable{
+        Expectations.valueOf(new ReturnValueCall<Integer>() {
+            @Override
+            public Integer call() {
+                return null;
+            }
+        }).toEqual(1, ifAnyOf("role:ROLE_USER")).execute(UserIdentifier.parse("role:ROLE_USER"));
+    }
+
+    @Test
     public void testReturnValueEquals_MultipleIdentifiers() throws Throwable {
         Expectations.valueOf(new ReturnValueCall<Integer>() {
             @Override
@@ -98,6 +128,33 @@ public class ExpectValueOfTest {
                     }
                 }, ifAnyOf("role:ROLE_USER"))
                 .execute(UserIdentifier.parse("role:ROLE_ADMIN"));
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testReturnValue_CallIsNull() throws Throwable{
+        Expectations.valueOf(new ReturnValueCall<Integer>() {
+            @Override
+            public Integer call() {
+                return 1;
+            }
+        }).toAssert(null, ifAnyOf("role:ROLE_USER"))
+                .execute(UserIdentifier.parse("role:ROLE_USER"));
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testReturnValue_UserIdentifiersNull() throws Throwable{
+        Expectations.valueOf(new ReturnValueCall<Integer>() {
+            @Override
+            public Integer call() {
+                return 1;
+            }
+        }).toAssert(new AssertionCall<Integer>() {
+            @Override
+            public void call(Integer value) {
+
+            }
+        }, null)
+                .execute(UserIdentifier.parse("role:ROLE_USER"));
     }
 
 
