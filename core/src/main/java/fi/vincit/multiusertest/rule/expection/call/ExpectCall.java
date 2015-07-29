@@ -69,31 +69,17 @@ public class ExpectCall implements Expectation {
 
     @Override
     public void execute(UserIdentifier userIdentifier) throws Throwable {
-        Optional<CallInfo> possibleCallInfo = getFailInfo(userIdentifier);
         try {
             functionCall.call();
         } catch (Throwable e) {
-            if (possibleCallInfo.isPresent()) {
-                CallInfo callInfo = possibleCallInfo.get();
-
-                FailMode failMode = callInfo.getFailMode();
-                boolean isExpectedException = callInfo.isExceptionExpected(e);
-
-                if (failMode == FailMode.EXPECT_NOT_FAIL) {
-                    throw new AssertionError("Not expected to fail with user role " + userIdentifier.toString(), e);
-                } else {
-                    if(!isExpectedException){
-                        throw new AssertionError("Expected to fail with user role, but with different type of exception. " +
-                                "Expected <" + callInfo.getExceptionClass().get() + "> but was <" + e.getClass().getName() + ">", e);
-                    } else {
-                        return;
-                    }
-                }
-            } else {
-                throw new AssertionError("Not expected to fail with user role " + userIdentifier.toString(), e);
-            }
+            throwIfExpectionNotExpected(userIdentifier, e);
+            return;
         }
+        throwIfExceptionIsExpected(userIdentifier);
+    }
 
+    private void throwIfExceptionIsExpected(UserIdentifier userIdentifier) {
+        Optional<CallInfo> possibleCallInfo = getFailInfo(userIdentifier);
         if (possibleCallInfo.isPresent()) {
             CallInfo callInfo = possibleCallInfo.get();
 
@@ -101,7 +87,24 @@ public class ExpectCall implements Expectation {
                 throw new AssertionError("Expected to fail with exception " + callInfo.getExceptionClass().get().getName());
             }
         }
+    }
 
+    private void throwIfExpectionNotExpected(UserIdentifier userIdentifier, Throwable e) {
+        Optional<CallInfo> possibleCallInfo = getFailInfo(userIdentifier);
+        if (possibleCallInfo.isPresent()) {
+            CallInfo callInfo = possibleCallInfo.get();;
+
+            if (callInfo.getFailMode() == FailMode.EXPECT_NOT_FAIL) {
+                throw new AssertionError("Not expected to fail with user role " + userIdentifier.toString(), e);
+            } else {
+                if (!callInfo.isExceptionExpected(e)) {
+                    throw new AssertionError("Expected to fail with user role, but with different type of exception. " +
+                            "Expected <" + callInfo.getExceptionClass().get() + "> but was <" + e.getClass().getName() + ">", e);
+                }
+            }
+        } else {
+            throw new AssertionError("Not expected to fail with user role " + userIdentifier.toString(), e);
+        }
     }
 
     private Optional<CallInfo> getFailInfo(UserIdentifier userIdentifier) {
