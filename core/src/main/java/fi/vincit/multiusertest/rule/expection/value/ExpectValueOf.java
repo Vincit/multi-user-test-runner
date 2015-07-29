@@ -17,25 +17,7 @@ public class ExpectValueOf<VALUE_TYPE> implements Expectation {
 
     private ReturnValueCall<VALUE_TYPE> callback;
 
-    private static class Info<VALUE_TYPE> {
-        final Optional<VALUE_TYPE> value;
-        final Optional<AssertionCall<VALUE_TYPE>> assertionCallback;
-
-        public Info(Optional<VALUE_TYPE> value, Optional<AssertionCall<VALUE_TYPE>> assertionCallback) {
-            this.value = value;
-            this.assertionCallback = assertionCallback;
-        }
-
-        public Optional<VALUE_TYPE> getValue() {
-            return value;
-        }
-
-        public Optional<AssertionCall<VALUE_TYPE>> getAssertionCallback() {
-            return assertionCallback;
-        }
-    }
-
-    public Map<UserIdentifier, Info<VALUE_TYPE>> expectations = new HashMap<>();
+    public Map<UserIdentifier, ValueOfInfo<VALUE_TYPE>> expectations = new HashMap<>();
 
     public ExpectValueOf(ReturnValueCall<VALUE_TYPE> callback) {
         this.callback = callback;
@@ -50,7 +32,7 @@ public class ExpectValueOf<VALUE_TYPE> implements Expectation {
      */
     public ExpectValueOf<VALUE_TYPE> toEqual(VALUE_TYPE value, UserIdentifiers identifiers) {
         for (UserIdentifier identifier : identifiers.getIdentifiers()) {
-            expectations.put(identifier, new Info<>(
+            expectations.put(identifier, new ValueOfInfo<>(
                             Optional.ofNullable(value),
                             Optional.<AssertionCall<VALUE_TYPE>>empty())
             );
@@ -67,7 +49,7 @@ public class ExpectValueOf<VALUE_TYPE> implements Expectation {
      */
     public ExpectValueOf<VALUE_TYPE> toAssert(AssertionCall<VALUE_TYPE> assertionCallback, UserIdentifiers identifiers) {
         for (UserIdentifier identifier : identifiers.getIdentifiers()) {
-            expectations.put(identifier, new Info<>(
+            expectations.put(identifier, new ValueOfInfo<>(
                             Optional.<VALUE_TYPE>empty(),
                             Optional.of(assertionCallback))
             );
@@ -83,7 +65,7 @@ public class ExpectValueOf<VALUE_TYPE> implements Expectation {
             return;
         }
 
-        Info<VALUE_TYPE> info = expectations.get(identifier);
+        ValueOfInfo<VALUE_TYPE> info = expectations.get(identifier);
         if (info.getAssertionCallback().isPresent()) {
             info.getAssertionCallback().get().call(returnValue);
         } else {
