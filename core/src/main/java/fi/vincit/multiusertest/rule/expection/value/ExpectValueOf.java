@@ -26,10 +26,11 @@ public class ExpectValueOf<VALUE_TYPE> implements Expectation {
 
     /**
      * Expect return value of the function call to be the given value for the given users. If the
-     * return value is not the expected value, then AssertionError will be thrown.
+     * return value is not the expected value, then {@link AssertionError} will be thrown.
      * @param value Expected return value of the call
      * @param identifiers A set of user identifiers for which the comparison is made
      * @return ExpectValueOf object for chaining
+     * @throws AssertionError when assertion fails.
      */
     public ExpectValueOf<VALUE_TYPE> toEqual(VALUE_TYPE value, UserIdentifiers identifiers) {
         for (UserIdentifier identifier : identifiers.getIdentifiers()) {
@@ -43,7 +44,8 @@ public class ExpectValueOf<VALUE_TYPE> implements Expectation {
 
     /**
      * Expect the given assertion to pass for the given function call for the given users. If assertion
-     * fails, then AssertionError will be thrown.
+     * fails, then AssertionError will be thrown. If assertion callback throws an error it will be passed
+     * through as is.
      * @param assertionCallback Function which makes the assertion
      * @param identifiers A set of user identifiers for which the assertion is made
      * @return ExpectValueOf object for chaining

@@ -4,6 +4,8 @@ import static fi.vincit.multiusertest.util.UserIdentifiers.ifAnyOf;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
+import java.io.IOException;
+
 import org.junit.Test;
 
 import fi.vincit.multiusertest.rule.expection.AssertionCall;
@@ -157,6 +159,30 @@ public class ExpectValueOfTest {
                 .execute(UserIdentifier.parse("role:ROLE_USER"));
     }
 
+    @Test(expected = IOException.class)
+    public void testExceptionIsThrownFromToEquals() throws Throwable{
+        Expectations.valueOf(new ReturnValueCall<Integer>() {
+            @Override
+            public Integer call() throws IOException {
+                throw new IOException();
+            }
+        }).toEqual(1, ifAnyOf("role:ROLE_USER")).execute(UserIdentifier.parse("role:ROLE_USER"));
+    }
+
+    @Test(expected = IOException.class)
+    public void testExceptionIsThrownFromToAssert() throws Throwable{
+        Expectations.valueOf(new ReturnValueCall<Integer>() {
+            @Override
+            public Integer call() throws IOException {
+                return 1;
+            }
+        }).toAssert(new AssertionCall<Integer>() {
+            @Override
+            public void call(Integer value) throws Throwable {
+                throw new IOException();
+            }
+        }, ifAnyOf("role:ROLE_USER")).execute(UserIdentifier.parse("role:ROLE_USER"));
+    }
 
 
 }
