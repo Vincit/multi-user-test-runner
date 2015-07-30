@@ -20,6 +20,8 @@ import fi.vincit.multiusertest.util.UserIdentifiers;
  */
 public class ExpectCall implements Expectation {
 
+    private static final Class<AccessDeniedException> DEFAULT_EXCEPTION = AccessDeniedException.class;
+
     private final FunctionCall functionCall;
 
     private final Map<UserIdentifier, CallInfo> expectations = new HashMap<>();
@@ -30,21 +32,21 @@ public class ExpectCall implements Expectation {
 
     /**
      * Expect the call to fail with given users. If the call doesn't fail with AccessDenied exception,
-     * then AssertionError will be thrown.
+     * then the thrown exception will pass through as is.
      * @param identifiers A set of user identifiers for which the call is expected to fail
      * @return ExpectCall object for chaining
      */
     public ExpectCall toFail(UserIdentifiers identifiers) {
         Objects.requireNonNull(identifiers, "Identifiers must not be null");
         for (UserIdentifier identifier : identifiers.getIdentifiers()) {
-            expectations.put(identifier, new CallInfo(FailMode.EXPECT_FAIL, Optional.<Class<? extends Throwable>>of(AccessDeniedException.class)));
+            expectations.put(identifier, new CallInfo(FailMode.EXPECT_FAIL, Optional.<Class<? extends Throwable>>of(DEFAULT_EXCEPTION)));
         }
         return this;
     }
 
     /**
      * Expect the call to fail with a defined exception for given users. If the call doesn't fail with
-     * the specified exception, AssertionError will be thrown.
+     * the specified exception then the thrown exception will pass through as is.
      * @param exception Exception to expect
      * @param identifiers A set of user identifiers for which the call is expected to fail
      * @return ExpectCall object for chaining
@@ -61,7 +63,7 @@ public class ExpectCall implements Expectation {
 
     /**
      * Don't expect the call to fail with given users. If the call does fail with any exception,
-     * then AssertionError will be thrown.
+     * then the thrown exception will pass through as is.
      * @param identifiers A set of users for which the call is not expected to fail
      * @return ExpectCall object for chaining
      */
@@ -95,7 +97,7 @@ public class ExpectCall implements Expectation {
         }
     }
 
-    private void throwIfExpectionNotExpected(UserIdentifier userIdentifier, Throwable e) {
+    private void throwIfExpectionNotExpected(UserIdentifier userIdentifier, Throwable e)  throws Throwable {
         Optional<CallInfo> possibleCallInfo = getFailInfo(userIdentifier);
         if (possibleCallInfo.isPresent()) {
             CallInfo callInfo = possibleCallInfo.get();;
@@ -104,8 +106,7 @@ public class ExpectCall implements Expectation {
                 throw new AssertionError("Not expected to fail with user role " + userIdentifier.toString(), e);
             } else {
                 if (!callInfo.isExceptionExpected(e)) {
-                    throw new AssertionError("Expected to fail with user role, but with different type of exception. " +
-                            "Expected <" + callInfo.getExceptionClass().get() + "> but was <" + e.getClass().getName() + ">", e);
+                    throw e;
                 }
             }
         } else {

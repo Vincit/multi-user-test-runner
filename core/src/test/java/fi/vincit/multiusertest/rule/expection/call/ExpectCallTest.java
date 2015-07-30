@@ -74,7 +74,7 @@ public class ExpectCallTest {
                 .execute(UserIdentifier.parse("role:ROLE_USER"));
     }
 
-    @Test(expected = AssertionError.class)
+    @Test(expected = IOException.class)
     public void testThrowsUnexpectedException() throws Throwable {
         Expectations.call(new FunctionCall() {
             @Override
@@ -146,8 +146,8 @@ public class ExpectCallTest {
                 .execute(UserIdentifier.parse("role:ROLE_USER"));
     }
 
-    @Test(expected = AssertionError.class)
-    public void testExpectToFail_WithCustomException_ButFails() throws Throwable {
+    @Test(expected = AccessDeniedException.class)
+    public void testExpectToFail_WithCustomException_ButFailsWithDefaultException() throws Throwable {
         Expectations.call(new FunctionCall() {
             @Override
             public void call() throws Throwable {
@@ -158,7 +158,7 @@ public class ExpectCallTest {
                 .execute(UserIdentifier.parse("role:ROLE_USER"));
     }
 
-    @Test(expected = AssertionError.class)
+    @Test(expected = IOException.class)
     public void testExpectToFail_WithCustomException_ButFailsWithUnexpected() throws Throwable {
         Expectations.call(new FunctionCall() {
             @Override
