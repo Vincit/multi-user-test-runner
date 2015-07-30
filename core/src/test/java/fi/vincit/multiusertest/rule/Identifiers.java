@@ -7,12 +7,14 @@ import fi.vincit.multiusertest.annotation.TestUsers;
  */
 class Identifiers {
 
-    private String[] identifiers;
+    private final String[] identifiers;
 
     public static Identifiers of(String... identifiers) {
-        Identifiers self = new Identifiers();
-        self.identifiers = identifiers;
-        return self;
+        return new Identifiers(identifiers);
+    }
+
+    private Identifiers(String[] identifiers) {
+        this.identifiers = identifiers;
     }
 
     public String[] getIdentifiers() {
