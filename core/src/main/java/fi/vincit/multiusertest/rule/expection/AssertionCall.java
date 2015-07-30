@@ -5,5 +5,5 @@ package fi.vincit.multiusertest.rule.expection;
  * @param <VALUE_TYPE> Value type
  */
 public interface AssertionCall<VALUE_TYPE> {
-    void call(VALUE_TYPE value);
+    void call(VALUE_TYPE value) throws Throwable;
 }

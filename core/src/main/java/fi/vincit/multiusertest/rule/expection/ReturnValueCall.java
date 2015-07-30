@@ -5,5 +5,5 @@ package fi.vincit.multiusertest.rule.expection;
  * @param <RETURN_TYPE> Return value type
  */
 public interface ReturnValueCall<RETURN_TYPE> {
-    RETURN_TYPE call();
+    RETURN_TYPE call() throws Throwable;
 }
