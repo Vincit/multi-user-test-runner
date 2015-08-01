@@ -3,6 +3,8 @@ package fi.vincit.multiusertest;
 import static fi.vincit.multiusertest.rule.Authentication.notToFail;
 import static fi.vincit.multiusertest.rule.Authentication.toFail;
 import static fi.vincit.multiusertest.util.UserIdentifiers.ifAnyOf;
+import static fi.vincit.multiusertest.util.UserIdentifiers.roles;
+import static fi.vincit.multiusertest.util.UserIdentifiers.users;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -35,6 +37,12 @@ public class SmokeTest extends ConfiguredTest {
     public void passes() {
         logInAs(LoginRole.USER);
         authorization().expect(notToFail(ifAnyOf("role:ROLE_ADMIN")));
+    }
+
+    @Test
+    public void passes_users_roles_syntax() {
+        logInAs(LoginRole.USER);
+        authorization().expect(notToFail(ifAnyOf(roles("ROLE_ADMIN"), users("foo"))));
     }
 
     @Test
