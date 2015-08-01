@@ -42,7 +42,11 @@ has to have a constructor with following format:
 
 Most simple way to add an multi user test assertion is to use:
 ```java
-authorization().expect(toFail(ifAnyOf("role:ROLE_USER")));
+// In version 0.1
+authorization().expect(toFail(ifAnyOf("role:ROLE_USER", "role:ROLE_ADMIN", "user:User1")));
+
+// In version 0.2 also possible
+authorization().expect(toFail(ifAnyOf(roles("ROLE_USER", "ROLE_ADMIN"), users("User1"))));
 ```
 This will simply fail/pass test depending if the following call throws/doesn't throw an exception.
 
