@@ -5,7 +5,7 @@ Custom JUnit test runner for testing Spring webapps with multiple roles and user
 
 # Requirements
 
- * Java 7 or Java 8
+ * Java 7+
  * JUnit 4.12 (version tested)
  
 # Optional Requirements
