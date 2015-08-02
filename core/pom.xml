@@ -9,8 +9,10 @@
         <groupId>fi.vincit</groupId>
         <artifactId>multi-user-test-runner-parent</artifactId>
         <relativePath>../pom.xml</relativePath>
-        <version>${global.version}</version>
+        <version>0.2-SNAPSHOT</version>
     </parent>
+
+    <version>${parent.version}</version>
 
     <profiles>
         <profile>
@@ -24,7 +26,7 @@
     <artifactId>multi-user-test-runner</artifactId>
 
     <build>
-        <finalName>multi-user-test-runner-${version}</finalName>
+        <finalName>multi-user-test-runner-${project.>version}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

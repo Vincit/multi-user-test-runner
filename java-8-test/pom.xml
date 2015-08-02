@@ -9,14 +9,14 @@
         <groupId>fi.vincit</groupId>
         <artifactId>multi-user-test-runner-parent</artifactId>
         <relativePath>../pom.xml</relativePath>
-        <version>${global.version}</version>
+        <version>0.2-SNAPSHOT</version>
     </parent>
 
     <artifactId>multi-user-test-runner-java-8-test</artifactId>
-    <version>${global.version}</version>
+    <version>${parent.version}</version>
 
     <build>
-        <finalName>multi-user-test-runner-java-8-${version}</finalName>
+        <finalName>multi-user-test-runner-java-8-${project.version}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -49,13 +49,13 @@
         <dependency>
             <groupId>fi.vincit</groupId>
             <artifactId>multi-user-test-runner</artifactId>
-            <version>${version}</version>
+            <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>fi.vincit</groupId>
             <artifactId>multi-user-test-runner-it</artifactId>
-            <version>${version}</version>
+            <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
 

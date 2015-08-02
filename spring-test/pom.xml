@@ -9,11 +9,11 @@
         <groupId>fi.vincit</groupId>
         <artifactId>multi-user-test-runner-parent</artifactId>
         <relativePath>../pom.xml</relativePath>
-        <version>${global.version}</version>
+        <version>0.2-SNAPSHOT</version>
     </parent>
 
     <artifactId>multi-user-test-runner-spring-test-${global.spring-version}</artifactId>
-    <version>${global.version}</version>
+    <version>${parent.version}</version>
 
     <build>
         <finalName>multi-user-test-runner-spring-${global.spring-version}</finalName>
@@ -46,13 +46,13 @@
         <dependency>
             <groupId>fi.vincit</groupId>
             <artifactId>multi-user-test-runner</artifactId>
-            <version>${global.version}</version>
+            <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>fi.vincit</groupId>
             <artifactId>multi-user-test-runner-it</artifactId>
-            <version>${version}</version>
+            <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
 
