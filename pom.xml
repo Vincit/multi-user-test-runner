@@ -13,6 +13,7 @@
         <global.version>0.2</global.version>
         <global.java.target.version>1.7</global.java.target.version>
         <global.spring-version>4.0.7.RELEASE</global.spring-version>
+        <global.findbugs.skip>true</global.findbugs.skip>
     </properties>
 
     

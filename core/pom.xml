@@ -12,6 +12,15 @@
         <version>${global.version}</version>
     </parent>
 
+    <profiles>
+        <profile>
+            <id>findbugs</id>
+            <properties>
+                <global.findbugs.skip>false</global.findbugs.skip>
+            </properties>
+        </profile>
+    </profiles>
+
     <artifactId>multi-user-test-runner</artifactId>
 
     <build>
@@ -33,6 +42,7 @@
                 <artifactId>findbugs-maven-plugin</artifactId>
                 <version>3.0.0</version>
                 <configuration>
+                    <skip>${global.findbugs.skip}</skip>
                     <effort>Max</effort>
                     <failOnError>false</failOnError>
                     <threshold>Low</threshold>
