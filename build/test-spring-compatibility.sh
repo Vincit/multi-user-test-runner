@@ -4,7 +4,7 @@ SPRING_MAJOR_VERSION=$1
 SPRING_VERSION="${SPRING_MAJOR_VERSION}"
 SPRING_FOLDER="spring-test"
 
-SUT_VERSION=$2
+SUT_VERSION=${GO_PIPELINE_LABEL}
 
 echo "Testing against: "
 echo " Spring version: ${SPRING_VERSION}"
