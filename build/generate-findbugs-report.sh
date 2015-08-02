@@ -1,3 +1,3 @@
 #!/bin/bash
 
-mvn clean compile
+mvn clean compile -Dglobal.version=${GO_PIPELINE_LABEL}
