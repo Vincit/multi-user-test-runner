@@ -12,6 +12,7 @@
     <properties>
         <global.version>0.2</global.version>
         <global.java.target.version>1.7</global.java.target.version>
+        <global.spring-version>4.0.7.RELEASE</global.spring-version>
     </properties>
 
     
@@ -19,8 +20,7 @@
         <module>core</module>
         <module>integration-test</module>
         <module>java-8-test</module>
-        <module>spring3-test</module>
-        <module>spring4-test</module>
+        <module>spring-test</module>
     </modules>
 
 </project>
