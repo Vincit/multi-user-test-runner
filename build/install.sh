@@ -1,3 +1,3 @@
 #!/bin/bash
 
-mvn clean install -Dglobal.version=${GO_PIPELINE_LABEL} --projects core
+mvn clean install -Dglobal.version=${GO_PIPELINE_LABEL} --projects core,integration-test
