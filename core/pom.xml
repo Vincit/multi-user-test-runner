@@ -26,84 +26,65 @@
                     <target>${global.java.target.version}</target>
                 </configuration>
             </plugin>
-                <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>findbugs-maven-plugin</artifactId>
-                    <version>3.0.0</version>
-                    <configuration>
-                        <findbugsXmlOutput>true</findbugsXmlOutput>
-                        <effort>Max</effort>
-                        <threshold>Low</threshold>
-                        <xmlOutput>true</xmlOutput>
-                    </configuration>
-                    <executions>
-                        <execution>
-                            <id>analyze-compile</id>
-                            <phase>compile</phase>
-                            <goals>
-                                <goal>check</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-                <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>xml-maven-plugin</artifactId>
-                    <version>1.0</version>
-                    <configuration>
-                        <transformationSets>
-                            <transformationSet>
-                                <!-- Configures the source directory of XML files. -->
-                                <dir>${project.build.directory}/findbugs</dir>
-                                <!-- Configures the directory in which the FindBugs report is written.-->
-                                <outputDir>${project.build.directory}/findbugs</outputDir>
-                                <!-- Selects the used stylesheet. -->
-                                <!-- <stylesheet>fancy-hist.xsl</stylesheet> -->
-                                <stylesheet>default.xsl</stylesheet>
-                                <!--<stylesheet>plain.xsl</stylesheet>-->
-                                <!--<stylesheet>fancy.xsl</stylesheet>-->
-                                <!--<stylesheet>summary.xsl</stylesheet>-->
-                                <fileMappers>
-                                    <!-- Configures the file extension of the output files. -->
-                                    <fileMapper
-                                            implementation="org.codehaus.plexus.components.io.filemappers.FileExtensionMapper">
-                                        <targetExtension>.html</targetExtension>
-                                    </fileMapper>
-                                </fileMappers>
-                            </transformationSet>
-                        </transformationSets>
-                    </configuration>
-                    <executions>
-                        <!-- Ensures that the XSLT transformation is run when the project is compiled. -->
-                        <execution>
-                            <phase>compile</phase>
-                            <goals>
-                                <goal>transform</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                    <dependencies>
-                        <dependency>
-                            <groupId>com.google.code.findbugs</groupId>
-                            <artifactId>findbugs</artifactId>
-                            <version>3.0.1</version>
-                        </dependency>
-                    </dependencies>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>2.10.3</version>
-                    <configuration>
-                        <failOnError>false</failOnError>
-                        <reportSets>
-                            <reportSet>
-                                <id>html</id>
-                                <reports><report>javadoc</report></reports>
-                            </reportSet>
-                        </reportSets>
-                    </configuration>
-                </plugin>
+
+            <!-- Find Bugs report -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>findbugs-maven-plugin</artifactId>
+                <version>3.0.0</version>
+                <configuration>
+                    <effort>Max</effort>
+                    <failOnError>false</failOnError>
+                    <threshold>Low</threshold>
+                    <xmlOutput>true</xmlOutput>
+                    <findbugsXmlOutputDirectory>${project.build.directory}/findbugs</findbugsXmlOutputDirectory>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>analyze-compile</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <!-- http://stackoverflow.com/questions/7035112/any-easy-way-to-generate-a-findbug-html-report-from-maven-without-sitesite -->
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>xml-maven-plugin</artifactId>
+                <version>1.0</version>
+                <configuration>
+                    <transformationSets>
+                        <transformationSet>
+                            <dir>${project.build.directory}/findbugs</dir>
+                            <outputDir>${project.build.directory}/findbugs</outputDir>
+                            <stylesheet>plain.xsl</stylesheet>
+                            <fileMappers>
+                                <fileMapper implementation="org.codehaus.plexus.components.io.filemappers.FileExtensionMapper">
+                                    <targetExtension>.html</targetExtension>
+                                </fileMapper>
+                            </fileMappers>
+                        </transformationSet>
+                    </transformationSets>
+                </configuration>
+                <executions>
+                    <!-- Ensures that the XSLT transformation is run when the project is compiled. -->
+                    <execution>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>transform</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.google.code.findbugs</groupId>
+                        <artifactId>findbugs</artifactId>
+                        <version>3.0.0</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
         </plugins>
     </build>
 
