@@ -46,7 +46,7 @@
         <dependency>
             <groupId>fi.vincit</groupId>
             <artifactId>multi-user-test-runner</artifactId>
-            <version>${version}</version>
+            <version>${global.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
