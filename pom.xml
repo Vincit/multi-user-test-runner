@@ -5,6 +5,10 @@
     <modelVersion>4.0.0</modelVersion>
     <packaging>pom</packaging>
 
+    <scm>
+        <developerConnection>scm:git:https://bitbucket.com/juhasi/multi-user-test-runner.git</developerConnection>
+    </scm>
+
     <groupId>fi.vincit</groupId>
     <artifactId>multi-user-test-runner-parent</artifactId>
     <version>0.2-SNAPSHOT</version>
