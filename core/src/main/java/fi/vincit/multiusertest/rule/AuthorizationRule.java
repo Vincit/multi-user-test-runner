@@ -32,7 +32,7 @@ public class AuthorizationRule implements TestRule {
      * exceptions are expected the {@link AuthorizationRule#dontExpectToFail()} has to be called. To expect
      * a custom exception, {@link AuthorizationRule#setExpectedException(Class)} can be used.
      * @param identifiers Identifiers for which the calls after this method are expected to fail.
-     * @return
+     * @return AuthorizationRule for chaining calls
      * @since 0.1
      */
     public AuthorizationRule expect(Authentication identifiers) {
