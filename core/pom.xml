@@ -18,6 +18,10 @@
     <groupId>fi.vincit</groupId>
     <version>0.2-SNAPSHOT</version>
 
+    <scm>
+        <developerConnection>scm:git:https://bitbucket.com/juhasi/multi-user-test-runner.git</developerConnection>
+    </scm>
+
     <distributionManagement>
         <repository>
             <id>generic.release.repository</id>
