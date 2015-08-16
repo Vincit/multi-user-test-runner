@@ -3,7 +3,16 @@
 RELEASE_VERSION=${GO_PIPELINE_LABEL}
 DEVEL_VERSION="0.2-SNAPSHOT"
 
-mvn release:prepare-with-pom --batch-mode \
+mvn release:prepare --batch-mode \
+ --projects core \
+ -Dtag=${RELEASE_VERSION} \
+ -DreleaseVersion=${RELEASE_VERSION} \
+ -DdevelopmentVersion=${DEVEL_VERSION} \
+ -Dpassword=${SCM_PASSWORD} \
+ -Dusername=${SCM_USERNAME} \
+ -e
+
+mvn release:perform --batch-mode \
  --projects core \
  -Dtag=${RELEASE_VERSION} \
  -DreleaseVersion=${RELEASE_VERSION} \
