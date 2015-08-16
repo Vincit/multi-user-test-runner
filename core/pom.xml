@@ -18,6 +18,19 @@
     <groupId>fi.vincit</groupId>
     <version>0.2-SNAPSHOT</version>
 
+    <distributionManagement>
+        <repository>
+            <id>generic.release.repository</id>
+            <name>Internal Release Repository</name>
+            <url>${env.RELEASE_REPOSITORY}</url>
+        </repository>
+        <snapshotRepository>
+            <id>generic.snapshots.repository</id>
+            <name>Internal Snaphots Repository</name>
+            <url>${env.SNAPSHOTS_REPOSITORY}</url>
+        </snapshotRepository>
+    </distributionManagement>
+
     <build>
         <finalName>multi-user-test-runner-${project.version}</finalName>
         <plugins>
