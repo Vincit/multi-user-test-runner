@@ -14,11 +14,11 @@
 
     <artifactId>multi-user-test-runner</artifactId>
     <groupId>fi.vincit</groupId>
-    <version>0.2-36</version>
+    <version>0.2-SNAPSHOT</version>
 
     <scm>
         <developerConnection>scm:git:https://bitbucket.org/juhasi/multi-user-test-runner.git</developerConnection>
-      <tag>0.2-36</tag>
+      <tag>HEAD</tag>
   </scm>
 
     <distributionManagement>
