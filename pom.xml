@@ -35,6 +35,7 @@
         <module>integration-test</module>
         <module>java-8-test</module>
         <module>spring-test</module>
+        <module>spring-test-class-runner</module>
     </modules>
 
 </project>

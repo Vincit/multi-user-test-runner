@@ -6,19 +6,19 @@
     <packaging>jar</packaging>
 
     <groupId>fi.vincit</groupId>
-    <artifactId>multi-user-test-runner-spring-test-${spring-core-version}</artifactId>
-    <version>0.3.0-SNAPSHOT</version>
+    <artifactId>multi-user-test-runner-spring</artifactId>
+    <version>0.2-SNAPSHOT</version>
 
     <build>
-        <finalName>multi-user-test-runner-spring-${spring-core-version}</finalName>
+        <finalName>multi-user-test-runner-spring-${project.version}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.3</version>
                 <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
+                    <source>${java-version}</source>
+                    <target>${java-version}</target>
                 </configuration>
             </plugin>
         </plugins>
@@ -26,6 +26,8 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <java-version>1.7</java-version>
 
         <!-- Dependency versions -->
         <spring-core-version>4.0.7.RELEASE</spring-core-version>
@@ -40,19 +42,7 @@
             <groupId>fi.vincit</groupId>
             <artifactId>multi-user-test-runner</artifactId>
             <version>${project.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>fi.vincit</groupId>
-            <artifactId>multi-user-test-runner-it</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>fi.vincit</groupId>
-            <artifactId>multi-user-test-runner-spring</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
+            <scope>provided</scope>
         </dependency>
 
         <!-- Spring dependencies -->
@@ -87,7 +77,7 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>${junit-version}</version>
-            <scope>test</scope>
+            <scope>provided</scope>
         </dependency>
 
 
