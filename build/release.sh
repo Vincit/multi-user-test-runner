@@ -1,7 +1,7 @@
 #!/bin/bash
 
 RELEASE_VERSION=${GO_PIPELINE_LABEL}
-DEVEL_VERSION="0.2-SNAPSHOT"
+DEVEL_VERSION="${NEXT_VERSION}-SNAPSHOT"
 
 mvn release:prepare --batch-mode \
  --projects core \
