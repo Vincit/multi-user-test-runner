@@ -11,12 +11,9 @@
 
     <groupId>fi.vincit</groupId>
     <artifactId>multi-user-test-runner-parent</artifactId>
-    <version>0.2-SNAPSHOT</version>
+    <version>0.3.0-SNAPSHOT</version>
 
     <properties>
-        <global.version>0.2-SNAPSHOT</global.version>
-        <global.java.target.version>1.7</global.java.target.version>
-        <global.spring-version>4.0.7.RELEASE</global.spring-version>
         <global.findbugs.skip>true</global.findbugs.skip>
     </properties>
 

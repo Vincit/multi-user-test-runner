@@ -14,7 +14,7 @@
 
     <artifactId>multi-user-test-runner</artifactId>
     <groupId>fi.vincit</groupId>
-    <version>0.2-SNAPSHOT</version>
+    <version>0.3.0-SNAPSHOT</version>
 
     <scm>
         <developerConnection>scm:git:https://bitbucket.org/juhasi/multi-user-test-runner.git</developerConnection>
