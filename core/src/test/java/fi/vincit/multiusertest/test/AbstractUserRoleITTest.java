@@ -19,7 +19,10 @@ import org.mockito.InOrder;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
+import fi.vincit.multiusertest.annotation.MultiUserTestConfig;
+import fi.vincit.multiusertest.annotation.TestUsers;
 import fi.vincit.multiusertest.rule.AuthorizationRule;
+import fi.vincit.multiusertest.runner.junit.framework.BlockMultiUserTestClassRunner;
 import fi.vincit.multiusertest.util.LoginRole;
 import fi.vincit.multiusertest.util.UserIdentifier;
 
@@ -30,7 +33,9 @@ public class AbstractUserRoleITTest {
         ROLE2
     }
 
-    private static class TestClass extends AbstractUserRoleIT<String, Role> {
+    @TestUsers(creators = "role:ROLE1", users = "role:ROLE1")
+    @MultiUserTestConfig(runner = BlockMultiUserTestClassRunner.class)
+    public static class TestClass extends AbstractUserRoleIT<String, Role> {
         @Override
         protected void loginWithUser(String user) {
 
@@ -38,7 +43,7 @@ public class AbstractUserRoleITTest {
 
         @Override
         protected String createUser(String username, String firstName, String lastName, Role userRole, LoginRole loginRole) {
-            return null;
+            return username;
         }
 
         @Override
@@ -49,6 +54,10 @@ public class AbstractUserRoleITTest {
         @Override
         protected String getUserByUsername(String username) {
             return null;
+        }
+
+        @Test
+        public void mockTestMethod() {
         }
     }
 
