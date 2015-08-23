@@ -18,8 +18,8 @@
 
     <scm>
         <developerConnection>scm:git:https://bitbucket.org/juhasi/multi-user-test-runner.git</developerConnection>
-      <tag>HEAD</tag>
-  </scm>
+        <tag>HEAD</tag>
+    </scm>
 
     <distributionManagement>
         <repository>

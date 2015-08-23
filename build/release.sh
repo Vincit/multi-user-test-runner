@@ -13,7 +13,7 @@ fi
 DEVEL_SNAPSHOT_VERSION="${DEVELOPMENT_VERSION}-SNAPSHOT"
 
 mvn release:prepare --batch-mode \
- --projects core \
+ --projects core,spring-test-class-runner \
  -Dtag=${RELEASE_VERSION} \
  -DreleaseVersion=${RELEASE_VERSION} \
  -DdevelopmentVersion=${DEVEL_SNAPSHOT_VERSION} \
@@ -22,7 +22,7 @@ mvn release:prepare --batch-mode \
  -e
 
 mvn release:perform --batch-mode \
- --projects core \
+ --projects core,spring-test-class-runner \
  -Dtag=${RELEASE_VERSION} \
  -DreleaseVersion=${RELEASE_VERSION} \
  -DdevelopmentVersion=${DEVEL_SNAPSHOT_VERSION} \

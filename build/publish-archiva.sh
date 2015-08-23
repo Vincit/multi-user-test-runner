@@ -1,3 +1,3 @@
 #!/bin/bash
 
-mvn deploy --projects core -e
+mvn deploy --projects core,spring-test-class-runner -e
