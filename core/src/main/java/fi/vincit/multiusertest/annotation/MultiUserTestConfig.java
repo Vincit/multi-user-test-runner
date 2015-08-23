@@ -9,6 +9,10 @@ import java.lang.annotation.Target;
 
 import fi.vincit.multiusertest.runner.junit.framework.BlockMultiUserTestClassRunner;
 
+/**
+ * Configure test class to use desired runner and change the default expected
+ * exception.
+ */
 @Target({TYPE})
 @Retention(RUNTIME)
 @Inherited
