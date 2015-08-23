@@ -12,6 +12,7 @@ import org.junit.runner.RunWith;
 import fi.vincit.multiusertest.annotation.TestUsers;
 import fi.vincit.multiusertest.rule.AuthorizationRule;
 import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
+import fi.vincit.multiusertest.util.Defaults;
 import fi.vincit.multiusertest.util.LoginRole;
 import fi.vincit.multiusertest.util.TestConfiguration;
 import fi.vincit.multiusertest.util.TestUser;
@@ -194,10 +195,7 @@ public abstract class AbstractUserRoleIT<USER, ROLE> {
 
     public Class<? extends Throwable> getDefaultException() {
         TestConfiguration configuration = TestConfiguration.fromTestUsers(getClass().getAnnotation(TestUsers.class));
-        if (configuration.getDefaultException().isPresent()) {
-            return configuration.getDefaultException().get();
-        } else {
-            return null;
-        }
+        return configuration.getDefaultException()
+                .orElse(Defaults.getDefaultException());
     }
 }

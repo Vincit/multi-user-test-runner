@@ -1,6 +1,7 @@
 package fi.vincit.multiusertest.rule;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import org.junit.rules.TestRule;
@@ -23,7 +24,7 @@ public class AuthorizationRule implements TestRule {
     private final Set<UserIdentifier> expectToFailOnRoles = new HashSet<>();
     private UserIdentifier userIdentifier;
     private FailMode failMode = FailMode.NONE;
-    private Class<? extends Throwable> expectedException  = IllegalStateException.class;
+    private Class<? extends Throwable> expectedException;
     private static final Statement NO_BASE = null;
 
     /**
@@ -48,6 +49,7 @@ public class AuthorizationRule implements TestRule {
      * @since 0.2
      */
     public void expect(Expectation expectation) throws Throwable {
+        Objects.requireNonNull(expectedException, "Expected exception must be configured");
         expectation.setExpectedException(expectedException);
         expectation.execute(userIdentifier);
     }
@@ -74,6 +76,7 @@ public class AuthorizationRule implements TestRule {
      * @param expectedException Exception class to except
      */
     public void setExpectedException(Class<? extends Throwable> expectedException) {
+        Objects.requireNonNull(expectedException, "Cannot set expected exception class to null");
         this.expectedException = expectedException;
     }
 

@@ -110,6 +110,7 @@ public class AuthorizationRuleTest {
         }
 
         AuthorizationRule rule = new AuthorizationRule();
+        rule.setExpectedException(IllegalStateException.class);
 
         Statement statement = mockAndApply(rule);
 
@@ -131,6 +132,7 @@ public class AuthorizationRuleTest {
         }
 
         AuthorizationRule rule = new AuthorizationRule();
+        rule.setExpectedException(IllegalStateException.class);
 
         rule.setRole(usedIdentifier);
         if (failMode == Mode.FAIL_IF_ANY_OF) {
@@ -147,6 +149,7 @@ public class AuthorizationRuleTest {
         expectedException.expect(AssertionError.class);
 
         AuthorizationRule rule = new AuthorizationRule();
+        rule.setExpectedException(IllegalStateException.class);
 
         Statement statement = mockApplyAndThrow(rule);
 
@@ -165,6 +168,7 @@ public class AuthorizationRuleTest {
     @Test
     public void expect() throws Throwable {
         AuthorizationRule rule = new AuthorizationRule();
+        rule.setExpectedException(IllegalStateException.class);
         rule.setRole(UserIdentifier.parse("user:Foo"));
         Expectation expectation = mock(Expectation.class);
 

@@ -7,6 +7,7 @@ import java.util.Objects;
 import fi.vincit.multiusertest.rule.FailMode;
 import fi.vincit.multiusertest.rule.expection.Expectation;
 import fi.vincit.multiusertest.rule.expection.FunctionCall;
+import fi.vincit.multiusertest.util.Defaults;
 import fi.vincit.multiusertest.util.Optional;
 import fi.vincit.multiusertest.util.UserIdentifier;
 import fi.vincit.multiusertest.util.UserIdentifiers;
@@ -19,7 +20,7 @@ import fi.vincit.multiusertest.util.UserIdentifiers;
  */
 public class ExpectCall implements Expectation {
 
-    private Class<? extends Throwable> defaultExpectedException = IllegalStateException.class;
+    private Class<? extends Throwable> defaultExpectedException = Defaults.getDefaultException();
 
     private final FunctionCall functionCall;
 

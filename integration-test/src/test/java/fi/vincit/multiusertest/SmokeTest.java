@@ -47,6 +47,7 @@ public class SmokeTest extends ConfiguredTest {
 
     @Test
     public void fails() {
+        expectFailAuthRule.setExpectedException(IllegalStateException.class);
         expectedException.expect(AssertionError.class);
         logInAs(LoginRole.USER);
         expectFailAuthRule.expect(toFail(ifAnyOf("role:ROLE_ADMIN")));
