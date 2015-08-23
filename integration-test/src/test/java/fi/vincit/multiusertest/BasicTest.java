@@ -8,7 +8,6 @@ import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.security.access.AccessDeniedException;
 
 import fi.vincit.multiusertest.annotation.TestUsers;
 import fi.vincit.multiusertest.configuration.ConfiguredTest;
@@ -82,13 +81,13 @@ public class BasicTest extends ConfiguredTest {
     private void throwIfUserRole(String identifier) {
         User.Role identifierRole = stringToRole(UserIdentifier.parse(identifier).getIdentifier());
         if (SecurityUtil.getLoggedInUser().getRole() == identifierRole) {
-            throw new AccessDeniedException("Thrown when role was " + identifier);
+            throw new IllegalStateException("Thrown when role was " + identifier);
         }
     }
 
     private void throwIfUserIs(User user) {
         if (SecurityUtil.getLoggedInUser().getUsername().equals(user.getUsername())) {
-            throw new AccessDeniedException("Thrown when user was " + user);
+            throw new IllegalStateException("Thrown when user was " + user);
         }
     }
 

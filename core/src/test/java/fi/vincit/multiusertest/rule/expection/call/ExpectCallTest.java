@@ -5,27 +5,27 @@ import static fi.vincit.multiusertest.util.UserIdentifiers.ifAnyOf;
 import java.io.IOException;
 
 import org.junit.Test;
-import org.springframework.security.access.AccessDeniedException;
 
 import fi.vincit.multiusertest.rule.expection.Expectations;
 import fi.vincit.multiusertest.rule.expection.FunctionCall;
+import fi.vincit.multiusertest.util.AuthorizationFailedException;
 import fi.vincit.multiusertest.util.UserIdentifier;
 
 public class ExpectCallTest {
 
-    void throwAccessDenied() throws AccessDeniedException {
-        throw new AccessDeniedException("Denied");
+    void throwDefault() throws Throwable {
+        throw new IllegalStateException("Denied");
     }
 
-    void notThrow() throws AccessDeniedException {
+    void notThrow() {
     }
 
     void throwIOException() throws IOException {
         throw new IOException("IO Exception");
     }
 
-    void throwIllegalStateException() {
-        throw new IllegalStateException("Illegal state");
+    void throwCustomException() throws AuthorizationFailedException {
+        throw new AuthorizationFailedException("Illegal state");
     }
 
     @Test
@@ -33,7 +33,7 @@ public class ExpectCallTest {
         Expectations.call(new FunctionCall() {
             @Override
             public void call() throws Throwable {
-                throwAccessDenied();
+                throwDefault();
             }
         })
                 .toFail(ifAnyOf("role:ROLE_USER"))
@@ -45,7 +45,7 @@ public class ExpectCallTest {
         Expectations.call(new FunctionCall() {
             @Override
             public void call() throws Throwable {
-                throwAccessDenied();
+                throwDefault();
             }
         })
                 .toFail(ifAnyOf("role:ROLE_USER"))
@@ -103,7 +103,7 @@ public class ExpectCallTest {
         Expectations.call(new FunctionCall() {
             @Override
             public void call() throws Throwable {
-                throwAccessDenied();
+                throwDefault();
             }
         })
                 .notToFail(ifAnyOf("role:ROLE_USER"))
@@ -130,7 +130,7 @@ public class ExpectCallTest {
                 notThrow();
             }
         })
-                .toFailWithException(IllegalStateException.class, ifAnyOf("role:ROLE_USER"))
+                .toFailWithException(AuthorizationFailedException.class, ifAnyOf("role:ROLE_USER"))
                 .execute(UserIdentifier.parse("role:ROLE_USER"));
     }
 
@@ -139,22 +139,22 @@ public class ExpectCallTest {
         Expectations.call(new FunctionCall() {
             @Override
             public void call() throws Throwable {
-                throwIllegalStateException();
+                throwCustomException();
             }
         })
-                .toFailWithException(IllegalStateException.class, ifAnyOf("role:ROLE_USER"))
+                .toFailWithException(AuthorizationFailedException.class, ifAnyOf("role:ROLE_USER"))
                 .execute(UserIdentifier.parse("role:ROLE_USER"));
     }
 
-    @Test(expected = AccessDeniedException.class)
+    @Test(expected = RuntimeException.class)
     public void testExpectToFail_WithCustomException_ButFailsWithDefaultException() throws Throwable {
         Expectations.call(new FunctionCall() {
             @Override
             public void call() throws Throwable {
-                throwAccessDenied();
+                throwDefault();
             }
         })
-                .toFailWithException(IllegalStateException.class, ifAnyOf("role:ROLE_USER"))
+                .toFailWithException(AuthorizationFailedException.class, ifAnyOf("role:ROLE_USER"))
                 .execute(UserIdentifier.parse("role:ROLE_USER"));
     }
 
@@ -166,7 +166,7 @@ public class ExpectCallTest {
                 throwIOException();
             }
         })
-                .toFailWithException(IllegalStateException.class, ifAnyOf("role:ROLE_USER"))
+                .toFailWithException(AuthorizationFailedException.class, ifAnyOf("role:ROLE_USER"))
                 .execute(UserIdentifier.parse("role:ROLE_USER"));
     }
 

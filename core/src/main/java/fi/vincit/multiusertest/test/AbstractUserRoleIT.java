@@ -9,9 +9,11 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.runner.RunWith;
 
+import fi.vincit.multiusertest.annotation.TestUsers;
 import fi.vincit.multiusertest.rule.AuthorizationRule;
 import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
 import fi.vincit.multiusertest.util.LoginRole;
+import fi.vincit.multiusertest.util.TestConfiguration;
 import fi.vincit.multiusertest.util.TestUser;
 import fi.vincit.multiusertest.util.UserIdentifier;
 
@@ -40,6 +42,7 @@ public abstract class AbstractUserRoleIT<USER, ROLE> {
 
         // By default log in as creator so that user doesn't have to do it every time
         logInAs(LoginRole.CREATOR);
+        authorizationRule.setExpectedException(getDefaultException());
     }
 
     private void initializeUser() {
@@ -188,4 +191,13 @@ public abstract class AbstractUserRoleIT<USER, ROLE> {
      * @return User object
      */
     protected abstract USER getUserByUsername(String username);
+
+    public Class<? extends Throwable> getDefaultException() {
+        TestConfiguration configuration = TestConfiguration.fromTestUsers(getClass().getAnnotation(TestUsers.class));
+        if (configuration.getDefaultException().isPresent()) {
+            return configuration.getDefaultException().get();
+        } else {
+            return null;
+        }
+    }
 }

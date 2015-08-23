@@ -7,7 +7,6 @@ import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.security.access.AccessDeniedException;
 
 import fi.vincit.multiusertest.annotation.TestUsers;
 import fi.vincit.multiusertest.configuration.ConfiguredTest;
@@ -24,8 +23,8 @@ import fi.vincit.multiusertest.util.LoginRole;
 @RunWith(MultiUserTestRunner.class)
 public class ExpectationSmokeTest extends ConfiguredTest {
 
-    void throwAccessDenied() {
-        throw new AccessDeniedException("Denied");
+    void throwDefaultException() {
+        throw new IllegalStateException("Denied");
     }
 
     private int returnValueCall() {
@@ -38,7 +37,7 @@ public class ExpectationSmokeTest extends ConfiguredTest {
                 new FunctionCall() {
                     @Override
                     public void call() throws Throwable {
-                        throwAccessDenied();
+                        throwDefaultException();
                     }
                 }
         ).toFail(ifAnyOf(TestUsers.CREATOR)));
@@ -50,7 +49,7 @@ public class ExpectationSmokeTest extends ConfiguredTest {
                 new FunctionCall() {
                     @Override
                     public void call() throws Throwable {
-                        throwAccessDenied();
+                        throwDefaultException();
                     }
                 }
         ).toFail(ifAnyOf("role:ROLE_USER")));
@@ -63,7 +62,7 @@ public class ExpectationSmokeTest extends ConfiguredTest {
                 new FunctionCall() {
                     @Override
                     public void call() throws Throwable {
-                        throwAccessDenied();
+                        throwDefaultException();
                     }
                 }
         ).toFail(ifAnyOf("role:ROLE_USER")));
@@ -76,7 +75,7 @@ public class ExpectationSmokeTest extends ConfiguredTest {
                 new FunctionCall() {
                     @Override
                     public void call() throws Throwable {
-                        throwAccessDenied();
+                        throwDefaultException();
                     }
                 }
         ).toFail(ifAnyOf("role:ROLE_ADMIN")));

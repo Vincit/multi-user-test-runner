@@ -3,6 +3,9 @@ package fi.vincit.multiusertest.spring.configuration;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.Before;
+import org.springframework.security.access.AccessDeniedException;
+
 import fi.vincit.multiusertest.test.AbstractUserRoleIT;
 import fi.vincit.multiusertest.util.LoginRole;
 import fi.vincit.multiusertest.util.SecurityUtil;
@@ -11,6 +14,11 @@ import fi.vincit.multiusertest.util.User;
 public abstract class ConfiguredTest extends AbstractUserRoleIT<User, User.Role> {
 
     private static Map<String, User> users = new HashMap<>();
+
+    @Before
+    public void init() {
+        authorization().setExpectedException(AccessDeniedException.class);
+    }
 
     @Override
     protected void loginWithUser(User user) {

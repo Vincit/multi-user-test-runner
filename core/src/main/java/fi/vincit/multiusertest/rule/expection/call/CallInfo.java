@@ -14,9 +14,6 @@ class CallInfo {
     }
 
     private void validate(FailMode failMode, Optional<Class<? extends Throwable>> exceptionClass) {
-        if (failMode == FailMode.EXPECT_FAIL && !exceptionClass.isPresent()) {
-            throw new IllegalArgumentException("Exception must be given when failMode " + FailMode.EXPECT_FAIL);
-        }
         if (failMode == FailMode.EXPECT_NOT_FAIL && exceptionClass.isPresent()) {
             throw new IllegalArgumentException("Exception should not be given when failMode is " + FailMode.EXPECT_NOT_FAIL);
         }
@@ -33,8 +30,12 @@ class CallInfo {
         return exceptionClass;
     }
 
-    public boolean isExceptionExpected(Throwable e) {
-        return exceptionClass.isPresent() && exceptionClass.get().isInstance(e);
+    public boolean isExceptionExpected(Throwable e, Class<? extends Throwable> defaultException) {
+        if (this.failMode == FailMode.EXPECT_NOT_FAIL) {
+            return false;
+        } else {
+            return exceptionClass.orElse(defaultException).isInstance(e);
+        }
     }
 
 }

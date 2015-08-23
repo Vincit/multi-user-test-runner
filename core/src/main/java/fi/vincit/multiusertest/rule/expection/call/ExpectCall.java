@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import org.springframework.security.access.AccessDeniedException;
-
 import fi.vincit.multiusertest.rule.FailMode;
 import fi.vincit.multiusertest.rule.expection.Expectation;
 import fi.vincit.multiusertest.rule.expection.FunctionCall;
@@ -14,13 +12,14 @@ import fi.vincit.multiusertest.util.UserIdentifier;
 import fi.vincit.multiusertest.util.UserIdentifiers;
 
 /**
- * Expect a function call to throw or not throw an exception. Default exception expected is
- * {@link AccessDeniedException}. A custom exception can be given via {@link ExpectCall#toFailWithException(Class, UserIdentifiers)}
+ * Expect a function call to throw or not throw an exception. Default exception is
+ * {@link fi.vincit.multiusertest.rule.AuthorizationRule}'s exception.
+ * A custom exception can be given via {@link ExpectCall#toFailWithException(Class, UserIdentifiers)}
  * method.
  */
 public class ExpectCall implements Expectation {
 
-    private static final Class<AccessDeniedException> DEFAULT_EXCEPTION = AccessDeniedException.class;
+    private Class<? extends Throwable> defaultExpectedException = IllegalStateException.class;
 
     private final FunctionCall functionCall;
 
@@ -39,7 +38,7 @@ public class ExpectCall implements Expectation {
     public ExpectCall toFail(UserIdentifiers identifiers) {
         Objects.requireNonNull(identifiers, "Identifiers must not be null");
         for (UserIdentifier identifier : identifiers.getIdentifiers()) {
-            expectations.put(identifier, new CallInfo(FailMode.EXPECT_FAIL, Optional.<Class<? extends Throwable>>of(DEFAULT_EXCEPTION)));
+            expectations.put(identifier, new CallInfo(FailMode.EXPECT_FAIL, Optional.<Class<? extends Throwable>>empty()));
         }
         return this;
     }
@@ -86,13 +85,20 @@ public class ExpectCall implements Expectation {
         throwIfExceptionIsExpected(userIdentifier);
     }
 
+    @Override
+    public void setExpectedException(Class<? extends Throwable> expectedException) {
+        defaultExpectedException = expectedException;
+    }
+
     private void throwIfExceptionIsExpected(UserIdentifier userIdentifier) {
         Optional<CallInfo> possibleCallInfo = getFailInfo(userIdentifier);
         if (possibleCallInfo.isPresent()) {
             CallInfo callInfo = possibleCallInfo.get();
+            Class<? extends Throwable> exception =
+                    callInfo.getExceptionClass().orElse(defaultExpectedException);
 
             if (callInfo.getFailMode() == FailMode.EXPECT_FAIL) {
-                throw new AssertionError("Expected to fail with exception " + callInfo.getExceptionClass().get().getName());
+                throw new AssertionError("Expected to fail with exception " + exception.getName());
             }
         }
     }
@@ -105,7 +111,7 @@ public class ExpectCall implements Expectation {
             if (callInfo.getFailMode() == FailMode.EXPECT_NOT_FAIL) {
                 throw new AssertionError("Not expected to fail with user role " + userIdentifier.toString(), e);
             } else {
-                if (!callInfo.isExceptionExpected(e)) {
+                if (!callInfo.isExceptionExpected(e, defaultExpectedException)) {
                     throw e;
                 }
             }

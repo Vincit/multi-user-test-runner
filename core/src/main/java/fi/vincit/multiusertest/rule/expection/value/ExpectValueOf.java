@@ -78,4 +78,9 @@ public class ExpectValueOf<VALUE_TYPE> implements Expectation {
             assertThat(returnValue, is(info.getValue().orElse(null)));
         }
     }
+
+    @Override
+    public void setExpectedException(Class<? extends Throwable> expectedException) {
+        // NOOP, doesn't use exceptions
+    }
 }

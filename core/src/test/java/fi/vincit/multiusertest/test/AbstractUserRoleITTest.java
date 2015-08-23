@@ -1,13 +1,5 @@
 package fi.vincit.multiusertest.test;
 
-import fi.vincit.multiusertest.rule.AuthorizationRule;
-import fi.vincit.multiusertest.util.LoginRole;
-import fi.vincit.multiusertest.util.UserIdentifier;
-import org.junit.Test;
-import org.mockito.InOrder;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
-
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNot.not;
 import static org.hamcrest.core.IsNull.notNullValue;
@@ -15,7 +7,21 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import org.junit.Test;
+import org.mockito.InOrder;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+
+import fi.vincit.multiusertest.rule.AuthorizationRule;
+import fi.vincit.multiusertest.util.LoginRole;
+import fi.vincit.multiusertest.util.UserIdentifier;
 
 public class AbstractUserRoleITTest {
 

@@ -11,4 +11,5 @@ public interface Expectation {
      */
     void execute(UserIdentifier userIdentifier) throws Throwable;
 
+    void setExpectedException(Class<? extends Throwable> expectedException);
 }

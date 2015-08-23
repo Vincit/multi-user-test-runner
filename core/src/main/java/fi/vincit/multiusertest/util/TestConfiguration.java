@@ -11,13 +11,15 @@ public class TestConfiguration {
     private final Collection<UserIdentifier> creatorIdentifiers;
     private final Collection<UserIdentifier> userIdentifiers;
     private final Optional<Class<?>> runner;
+    private final Optional<Class<? extends Throwable>> defaultException;
 
     public static TestConfiguration fromTestUsers(TestUsers testUsers) {
         if (testUsers != null) {
             return new TestConfiguration(
                     getDefinitions(testUsers.creators()),
                     getDefinitions(testUsers.users()),
-                    testUsers.runner()
+                    testUsers.runner(),
+                    testUsers.defaultException()
             );
         } else {
             return new TestConfiguration();
@@ -40,12 +42,14 @@ public class TestConfiguration {
         this.creatorIdentifiers = Collections.emptySet();
         this.userIdentifiers = Collections.emptySet();
         this.runner = Optional.empty();
+        this.defaultException = Optional.empty();
     }
 
-    TestConfiguration(Collection<UserIdentifier> creatorIdentifiers, Collection<UserIdentifier> userIdentifiers, Class<?> runner) {
+    TestConfiguration(Collection<UserIdentifier> creatorIdentifiers, Collection<UserIdentifier> userIdentifiers, Class<?> runner, Class<? extends Throwable> defaultException) {
         this.creatorIdentifiers = creatorIdentifiers;
         this.userIdentifiers = userIdentifiers;
         this.runner = Optional.<Class<?>>ofNullable(runner);
+        this.defaultException = Optional.<Class<? extends Throwable>>ofNullable(defaultException);
     }
 
     public Collection<UserIdentifier> getCreatorIdentifiers() {
@@ -58,5 +62,9 @@ public class TestConfiguration {
 
     public Optional<Class<?>> getRunner() {
         return runner;
+    }
+
+    public Optional<Class<? extends Throwable>> getDefaultException() {
+        return defaultException;
     }
 }

@@ -49,7 +49,8 @@
 
         <!-- Dependency versions -->
         <spring-core-version>4.0.7.RELEASE</spring-core-version>
-        <spring-security-version>3.1.3.RELEASE</spring-security-version>
+        <spring-security-version>3.2.5.RELEASE</spring-security-version>
+        <spring-test-version>3.2.11.RELEASE</spring-test-version>
         <junit-version>4.12</junit-version>
         <mockito-version>1.10.19</mockito-version>
     </properties>
@@ -88,6 +89,13 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
             <version>${spring-core-version}</version>
+        </dependency>
+        <!-- Spring dependencies -->
+        <!-- Actual dependencies since library only has them as provided -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>${spring-test-version}</version>
         </dependency>
 
         <!-- JUnit test runner dependencies -->

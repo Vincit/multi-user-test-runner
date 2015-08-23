@@ -134,30 +134,12 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- Dependency versions -->
-        <spring-security-version>3.2.5.RELEASE</spring-security-version>
-        <spring-test-version>3.2.11.RELEASE</spring-test-version>
         <junit-version>4.12</junit-version>
         <mockito-version>1.10.19</mockito-version>
     </properties>
 
 
     <dependencies>
-        <!-- Spring dependencies -->
-        <!-- For AccessDenied exception -->
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-core</artifactId>
-            <version>${spring-security-version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <!-- For Spring JUnit runner -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-test</artifactId>
-            <version>${spring-test-version}</version>
-            <scope>provided</scope>
-        </dependency>
-
         <!-- JUnit test runner dependencies -->
         <dependency>
             <groupId>junit</groupId>

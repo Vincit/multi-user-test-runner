@@ -18,11 +18,6 @@ public class CallInfoTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testValidationFail_FailModeExpectToFail() {
-        new CallInfo(FailMode.EXPECT_FAIL, getEmptyException());
-    }
-
-    @Test(expected = IllegalArgumentException.class)
     public void testValidationFail_FailModeExpectNotToFail() {
         new CallInfo(FailMode.EXPECT_NOT_FAIL, getOptionalException());
     }

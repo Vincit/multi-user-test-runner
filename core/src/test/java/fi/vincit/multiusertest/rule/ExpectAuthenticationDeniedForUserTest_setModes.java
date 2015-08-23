@@ -13,7 +13,6 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
-import org.springframework.security.access.AccessDeniedException;
 
 import fi.vincit.multiusertest.annotation.TestUsers;
 import fi.vincit.multiusertest.util.UserIdentifier;
@@ -25,13 +24,13 @@ public class ExpectAuthenticationDeniedForUserTest_setModes {
 
     @Test
     public void dontCatchWrongExceptions() throws Throwable {
-        expectedException.expect(AccessDeniedException.class);
+        expectedException.expect(RuntimeException.class);
 
         AuthorizationRule rule = new AuthorizationRule();
         rule.setExpectedException(IllegalArgumentException.class);
         rule.setRole(UserIdentifier.getNewUser());
 
-        mockApplyAndThrow(rule, new AccessDeniedException("")).evaluate();
+        mockApplyAndThrow(rule, new RuntimeException("")).evaluate();
     }
 
     @Test

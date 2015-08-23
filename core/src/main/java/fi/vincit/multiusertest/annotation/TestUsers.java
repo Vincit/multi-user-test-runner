@@ -66,4 +66,9 @@ public @interface TestUsers {
      * Test runner class to use
      */
     Class runner() default BlockJUnit4ClassRunner.class;
+
+    /**
+     * Default class type for failed tests
+     */
+    Class<? extends Throwable> defaultException() default IllegalStateException.class;
 }

@@ -17,7 +17,6 @@ import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.model.Statement;
-import org.springframework.security.access.AccessDeniedException;
 
 import fi.vincit.multiusertest.annotation.TestUsers;
 import fi.vincit.multiusertest.rule.expection.Expectation;
@@ -183,7 +182,7 @@ public class AuthorizationRuleTest {
 
     protected Statement mockApplyAndThrow(AuthorizationRule rule) throws Throwable {
         Statement mockStatement = mock(Statement.class);
-        doThrow(new AccessDeniedException("Test expection")).when(mockStatement).evaluate();
+        doThrow(new IllegalStateException("Test expection")).when(mockStatement).evaluate();
         Description mockDescription = mock(Description.class);
         return rule.apply(mockStatement, mockDescription);
     }
