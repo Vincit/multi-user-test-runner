@@ -198,7 +198,7 @@ public abstract class AbstractUserRoleIT<USER, ROLE> {
     public Class<? extends Throwable> getDefaultException() {
         TestConfiguration configuration =
                 TestConfiguration.fromTestUsers(
-                        getClass().getAnnotation(TestUsers.class),
+                        Optional.ofNullable(getClass().getAnnotation(TestUsers.class)),
                         Optional.ofNullable(getClass().getAnnotation(MultiUserTestConfig.class))
                 );
         return configuration.getDefaultException()

@@ -76,7 +76,7 @@ public class MultiUserTestRunner extends Suite {
         Optional<MultiUserTestConfig> config =
                 Optional.ofNullable(getTestClass().getJavaClass().getAnnotation(MultiUserTestConfig.class));
         if (testRolesAnnotation.isPresent()) {
-            return TestConfiguration.fromTestUsers(testRolesAnnotation.get(), config);
+            return TestConfiguration.fromTestUsers(testRolesAnnotation, config);
         } else {
             throw new IllegalStateException(
                     "No users defined for test class "

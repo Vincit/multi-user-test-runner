@@ -15,17 +15,16 @@ public class TestConfiguration {
     private final Optional<Class<?>> runner;
     private final Optional<Class<? extends Throwable>> defaultException;
 
-    public static TestConfiguration fromTestUsers(TestUsers testUsers, Optional<MultiUserTestConfig> multiUserTestConfig) {
+    public static TestConfiguration fromTestUsers(Optional<TestUsers> testUsers, Optional<MultiUserTestConfig> multiUserTestConfig) {
 
-        // TODO: Null handling to Optional
         Collection<UserIdentifier> creatorIdentifiers = Collections.emptySet();
         Collection<UserIdentifier> userIdentifiers = Collections.emptySet();
         Class<?> runner = BlockMultiUserTestClassRunner.class;
         Class<? extends Throwable> defaultException = Defaults.getDefaultException();
 
-        if (testUsers != null) {
-            creatorIdentifiers = getDefinitions(testUsers.creators());
-            userIdentifiers = getDefinitions(testUsers.users());
+        if (testUsers.isPresent()) {
+            creatorIdentifiers = getDefinitions(testUsers.get().creators());
+            userIdentifiers = getDefinitions(testUsers.get().users());
         }
         if (multiUserTestConfig.isPresent()) {
             runner = multiUserTestConfig.get().runner();

@@ -25,7 +25,7 @@ public class TestMethodFilter {
     public boolean shouldRun(FrameworkMethod frameworkMethod) {
         TestConfiguration configuration =
                 TestConfiguration.fromTestUsers(
-                        frameworkMethod.getAnnotation(TestUsers.class),
+                        Optional.ofNullable(frameworkMethod.getAnnotation(TestUsers.class)),
                         Optional.<MultiUserTestConfig>empty()
                 );
 
