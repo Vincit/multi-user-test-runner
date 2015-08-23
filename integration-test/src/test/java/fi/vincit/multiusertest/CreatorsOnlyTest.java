@@ -9,11 +9,9 @@ import org.junit.runner.RunWith;
 import fi.vincit.multiusertest.annotation.TestUsers;
 import fi.vincit.multiusertest.configuration.ConfiguredTest;
 import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
-import fi.vincit.multiusertest.runner.junit.framework.BlockMultiUserTestClassRunner;
 import fi.vincit.multiusertest.util.User;
 
-@TestUsers(creators = {"role:ROLE_ADMIN", "role:ROLE_USER"},
-        runner = BlockMultiUserTestClassRunner.class)
+@TestUsers(creators = {"role:ROLE_ADMIN", "role:ROLE_USER"})
 @RunWith(MultiUserTestRunner.class)
 public class CreatorsOnlyTest extends ConfiguredTest {
 

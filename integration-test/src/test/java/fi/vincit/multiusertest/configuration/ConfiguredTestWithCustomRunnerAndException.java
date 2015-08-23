@@ -1,22 +1,19 @@
-package fi.vincit.multiusertest.spring.configuration;
+package fi.vincit.multiusertest.configuration;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.security.access.AccessDeniedException;
-
 import fi.vincit.multiusertest.annotation.MultiUserTestConfig;
-import fi.vincit.multiusertest.runner.junit.framework.SpringMultiUserTestClassRunner;
 import fi.vincit.multiusertest.test.AbstractUserRoleIT;
 import fi.vincit.multiusertest.util.LoginRole;
 import fi.vincit.multiusertest.util.SecurityUtil;
 import fi.vincit.multiusertest.util.User;
 
 @MultiUserTestConfig(
-        runner = SpringMultiUserTestClassRunner.class,
-        defaultException = AccessDeniedException.class
+        runner = MockTestRunner.class,
+        defaultException = IllegalArgumentException.class
 )
-public abstract class ConfiguredTest extends AbstractUserRoleIT<User, User.Role> {
+public abstract class ConfiguredTestWithCustomRunnerAndException extends AbstractUserRoleIT<User, User.Role> {
 
     private static Map<String, User> users = new HashMap<>();
 

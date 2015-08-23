@@ -9,18 +9,14 @@ import java.io.IOException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import fi.vincit.multiusertest.annotation.MultiUserTestConfig;
 import fi.vincit.multiusertest.annotation.TestUsers;
-import fi.vincit.multiusertest.configuration.ConfiguredTest;
+import fi.vincit.multiusertest.configuration.ConfiguredTestWithCustomRunnerAndException;
 import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
 import fi.vincit.multiusertest.util.LoginRole;
 
 @TestUsers(creators = {"role:ROLE_ADMIN"}, users = "role:ROLE_ADMIN")
-@MultiUserTestConfig(
-        defaultException = IndexOutOfBoundsException.class
-)
 @RunWith(MultiUserTestRunner.class)
-public class TestUsersDefaultException extends ConfiguredTest {
+public class TestUsersCustomRunnerAndException extends ConfiguredTestWithCustomRunnerAndException {
 
     @Test
     public void passes() {
@@ -32,7 +28,7 @@ public class TestUsersDefaultException extends ConfiguredTest {
     public void fails() {
         logInAs(LoginRole.USER);
         authorization().expect(toFail(ifAnyOf("role:ROLE_ADMIN")));
-        throw new IndexOutOfBoundsException();
+        throw new IllegalArgumentException();
     }
 
     @Test(expected = IOException.class)

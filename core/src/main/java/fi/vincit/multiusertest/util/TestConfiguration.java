@@ -4,7 +4,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 
+import fi.vincit.multiusertest.annotation.MultiUserTestConfig;
 import fi.vincit.multiusertest.annotation.TestUsers;
+import fi.vincit.multiusertest.runner.junit.framework.BlockMultiUserTestClassRunner;
 
 public class TestConfiguration {
 
@@ -13,17 +15,29 @@ public class TestConfiguration {
     private final Optional<Class<?>> runner;
     private final Optional<Class<? extends Throwable>> defaultException;
 
-    public static TestConfiguration fromTestUsers(TestUsers testUsers) {
+    public static TestConfiguration fromTestUsers(TestUsers testUsers, Optional<MultiUserTestConfig> multiUserTestConfig) {
+
+        // TODO: Null handling to Optional
+        Collection<UserIdentifier> creatorIdentifiers = Collections.emptySet();
+        Collection<UserIdentifier> userIdentifiers = Collections.emptySet();
+        Class<?> runner = BlockMultiUserTestClassRunner.class;
+        Class<? extends Throwable> defaultException = Defaults.getDefaultException();
+
         if (testUsers != null) {
-            return new TestConfiguration(
-                    getDefinitions(testUsers.creators()),
-                    getDefinitions(testUsers.users()),
-                    testUsers.runner(),
-                    testUsers.defaultException()
-            );
-        } else {
-            return new TestConfiguration();
+            creatorIdentifiers = getDefinitions(testUsers.creators());
+            userIdentifiers = getDefinitions(testUsers.users());
         }
+        if (multiUserTestConfig.isPresent()) {
+            runner = multiUserTestConfig.get().runner();
+            defaultException = multiUserTestConfig.get().defaultException();
+        }
+
+        return new TestConfiguration(
+                creatorIdentifiers,
+                userIdentifiers,
+                runner,
+                defaultException
+        );
     }
 
     private static Collection<UserIdentifier> getDefinitions(String[] definitions) {

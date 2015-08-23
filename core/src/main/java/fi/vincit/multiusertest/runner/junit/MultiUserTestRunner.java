@@ -6,6 +6,7 @@ import java.util.List;
 import org.junit.runner.Runner;
 import org.junit.runners.Suite;
 
+import fi.vincit.multiusertest.annotation.MultiUserTestConfig;
 import fi.vincit.multiusertest.annotation.TestUsers;
 import fi.vincit.multiusertest.util.Optional;
 import fi.vincit.multiusertest.util.TestConfiguration;
@@ -72,8 +73,10 @@ public class MultiUserTestRunner extends Suite {
     private TestConfiguration getConfigurationOrThrow() throws Exception {
         Optional<TestUsers> testRolesAnnotation =
                 Optional.ofNullable(getTestClass().getJavaClass().getAnnotation(TestUsers.class));
+        Optional<MultiUserTestConfig> config =
+                Optional.ofNullable(getTestClass().getJavaClass().getAnnotation(MultiUserTestConfig.class));
         if (testRolesAnnotation.isPresent()) {
-            return TestConfiguration.fromTestUsers(testRolesAnnotation.get());
+            return TestConfiguration.fromTestUsers(testRolesAnnotation.get(), config);
         } else {
             throw new IllegalStateException(
                     "No users defined for test class "

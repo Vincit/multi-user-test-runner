@@ -14,6 +14,7 @@ import org.junit.runners.ParentRunner;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
 
+import fi.vincit.multiusertest.annotation.MultiUserTestConfig;
 import fi.vincit.multiusertest.annotation.TestUsers;
 import fi.vincit.multiusertest.util.UserIdentifier;
 
@@ -67,32 +68,38 @@ public class MultiUserTestRunnerTest {
         }
     }
 
-    @TestUsers(creators = "role:ROLE_USERS", runner = TestRunnerNoProperConstructor.class)
+    @TestUsers(creators = "role:ROLE_USERS")
+    @MultiUserTestConfig(runner = TestRunnerNoProperConstructor.class)
     public static class NoProperConstructor {
 
     }
 
-    @TestUsers(creators = "role:ROLE_USERS", runner = TestRunner.class)
+    @TestUsers(creators = "role:ROLE_USERS")
+    @MultiUserTestConfig(runner = TestRunner.class)
     @Ignore
     public static class OneCreator {
     }
 
-    @TestUsers(creators = {}, runner = TestRunner.class)
+    @TestUsers(creators = {})
+    @MultiUserTestConfig(runner = TestRunner.class)
     @Ignore
     public static class NoCreators {
     }
 
-    @TestUsers(creators = TestUsers.CREATOR, runner = TestRunner.class)
+    @TestUsers(creators = TestUsers.CREATOR)
+    @MultiUserTestConfig(runner = TestRunner.class)
     @Ignore
     public static class CreatorCreator {
     }
 
-    @TestUsers(creators = TestUsers.NEW_USER, runner = TestRunner.class)
+    @TestUsers(creators = TestUsers.NEW_USER)
+    @MultiUserTestConfig(runner = TestRunner.class)
     @Ignore
     public static class NewUserCreator {
     }
 
-    @TestUsers(creators = "role:ROLE_USERS", users = {"user:Foo", "role:Bar"}, runner = TestRunner.class)
+    @TestUsers(creators = "role:ROLE_USERS", users = {"user:Foo", "role:Bar"})
+    @MultiUserTestConfig(runner = TestRunner.class)
     @Ignore
     public static class OneCreator_MultipleUsers {
     }

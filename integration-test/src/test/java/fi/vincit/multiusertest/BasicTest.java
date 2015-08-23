@@ -12,15 +12,13 @@ import org.junit.runner.RunWith;
 import fi.vincit.multiusertest.annotation.TestUsers;
 import fi.vincit.multiusertest.configuration.ConfiguredTest;
 import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
-import fi.vincit.multiusertest.runner.junit.framework.BlockMultiUserTestClassRunner;
 import fi.vincit.multiusertest.util.LoginRole;
 import fi.vincit.multiusertest.util.SecurityUtil;
 import fi.vincit.multiusertest.util.User;
 import fi.vincit.multiusertest.util.UserIdentifier;
 
 @TestUsers(creators = {"role:ROLE_ADMIN", "role:ROLE_USER"},
-        users = {"role:ROLE_ADMIN", "role:ROLE_USER"},
-        runner = BlockMultiUserTestClassRunner.class)
+        users = {"role:ROLE_ADMIN", "role:ROLE_USER"})
 @RunWith(MultiUserTestRunner.class)
 public class BasicTest extends ConfiguredTest {
 

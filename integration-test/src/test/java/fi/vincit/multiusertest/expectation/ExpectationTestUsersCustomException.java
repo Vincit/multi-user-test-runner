@@ -8,6 +8,7 @@ import static org.junit.Assert.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import fi.vincit.multiusertest.annotation.MultiUserTestConfig;
 import fi.vincit.multiusertest.annotation.TestUsers;
 import fi.vincit.multiusertest.configuration.ConfiguredTest;
 import fi.vincit.multiusertest.rule.expection.AssertionCall;
@@ -18,9 +19,11 @@ import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
 import fi.vincit.multiusertest.runner.junit.framework.BlockMultiUserTestClassRunner;
 import fi.vincit.multiusertest.util.LoginRole;
 
-@TestUsers(creators = "role:ROLE_USER", users = "role:ROLE_USER",
+@TestUsers(creators = "role:ROLE_USER", users = "role:ROLE_USER")
+@MultiUserTestConfig(
         runner = BlockMultiUserTestClassRunner.class,
-        defaultException = IndexOutOfBoundsException.class)
+        defaultException = IndexOutOfBoundsException.class
+)
 @RunWith(MultiUserTestRunner.class)
 public class ExpectationTestUsersCustomException extends ConfiguredTest {
 

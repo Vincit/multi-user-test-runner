@@ -10,7 +10,6 @@ import java.lang.annotation.Target;
 import org.junit.runners.model.FrameworkMethod;
 
 import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
-import fi.vincit.multiusertest.runner.junit.framework.BlockMultiUserTestClassRunner;
 import fi.vincit.multiusertest.util.UserIdentifier;
 
 
@@ -62,13 +61,4 @@ public @interface TestUsers {
      */
     String[] users() default {};
 
-    /**
-     * Test runner class to use
-     */
-    Class runner() default BlockMultiUserTestClassRunner.class;
-
-    /**
-     * Default class type for failed tests
-     */
-    Class<? extends Throwable> defaultException() default IllegalStateException.class;
 }

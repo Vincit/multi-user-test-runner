@@ -15,11 +15,9 @@ import fi.vincit.multiusertest.rule.expection.Expectations;
 import fi.vincit.multiusertest.rule.expection.FunctionCall;
 import fi.vincit.multiusertest.rule.expection.ReturnValueCall;
 import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
-import fi.vincit.multiusertest.runner.junit.framework.BlockMultiUserTestClassRunner;
 import fi.vincit.multiusertest.util.LoginRole;
 
-@TestUsers(creators = "role:ROLE_USER", users = "role:ROLE_USER",
-        runner = BlockMultiUserTestClassRunner.class)
+@TestUsers(creators = "role:ROLE_USER", users = "role:ROLE_USER")
 @RunWith(MultiUserTestRunner.class)
 public class ExpectationSmokeTest extends ConfiguredTest {
 
