@@ -30,14 +30,15 @@ public class ExpectCallTest {
 
     @Test
     public void testExpectCallToFail() throws Throwable {
-        Expectations.call(new FunctionCall() {
+        ExpectCall call = Expectations.call(new FunctionCall() {
             @Override
             public void call() throws Throwable {
                 throwDefault();
             }
         })
-                .toFail(ifAnyOf("role:ROLE_USER"))
-                .execute(UserIdentifier.parse("role:ROLE_USER"));
+                .toFail(ifAnyOf("role:ROLE_USER"));
+        call.setExpectedException(IllegalStateException.class);
+        call.execute(UserIdentifier.parse("role:ROLE_USER"));
     }
 
     @Test(expected = AssertionError.class)
@@ -64,26 +65,28 @@ public class ExpectCallTest {
 
     @Test(expected = AssertionError.class)
     public void testNoThrow_ExpectToFail() throws Throwable {
-        Expectations.call(new FunctionCall() {
+        ExpectCall call = Expectations.call(new FunctionCall() {
             @Override
             public void call() throws Throwable {
                 notThrow();
             }
         })
-                .toFail(ifAnyOf("role:ROLE_USER"))
-                .execute(UserIdentifier.parse("role:ROLE_USER"));
+                .toFail(ifAnyOf("role:ROLE_USER"));
+        call.setExpectedException(IllegalStateException.class);
+        call.execute(UserIdentifier.parse("role:ROLE_USER"));
     }
 
     @Test(expected = IOException.class)
     public void testThrowsUnexpectedException() throws Throwable {
-        Expectations.call(new FunctionCall() {
+        ExpectCall call = Expectations.call(new FunctionCall() {
             @Override
             public void call() throws Throwable {
                 throwIOException();
             }
         })
-                .toFail(ifAnyOf("role:ROLE_USER"))
-                .execute(UserIdentifier.parse("role:ROLE_USER"));
+                .toFail(ifAnyOf("role:ROLE_USER"));
+        call.setExpectedException(IllegalStateException.class);
+        call.execute(UserIdentifier.parse("role:ROLE_USER"));
     }
 
     @Test
