@@ -21,20 +21,36 @@ Library may work with other versions, but it has not been tested other than the 
 Usage is simple:
 
 1. Create a configured abstract class by extending `AbstractUserRole` class and implement methods
-2. Create a test class which is extended from your configured class.
-3. Add `@TestUsers` annotation for your test class
-4. Write test methods
-5. Add `authentication().expect(toFail().ifAnyOf("user:user"));` before method to test 
+2. Configure runner and default expected annotation with `MultiUserTestConfig`
+3. Create a test class which is extended from your configured class.
+4. Add `@TestUsers` annotation for your test class
+5. Write test methods
+6. Add `authentication().expect(toFail().ifAnyOf("user:user"));` before method to test 
    to mark which roles/users are expected to fail
 
-# Runner Classes
 
-By default there are two runner classes `SpringMultiUserTestClassRunner` and `BlockMultiUserTestClassRunner`. Spring
+# Test Configuration
+
+## Runner Classes
+
+By default `BlockMultiUserTestClassRunner` is used. When using with Spring `SpringMultiUserTestClassRunner` should be used
 runner loads the Spring context before the tests and the Block runner will works as a plain JUnit test runner.
-Used runner can be configured via `TestUsers` annotation's `runner` argument. Spring runner is used by default.
-It is also possible to define a custom runner. The custom runner has to implement JUnit's `ParentTestRunner` and
+Used runner can be configured via `MultiUserTestConfig` annotation's `runner` argument.
+It is also possible to create a custom runner. The custom runner has to implement JUnit's `ParentTestRunner` and
 has to have a constructor with following format: 
 `CustomRunner(Class<?> clazz, UserIdentifier creatorIdentifier, UserIdentifier userIdentifier)`.
+
+## Default Exception
+
+By default `IllegalStateException` is expected as the exception that is thrown on failure. Other
+exceptions are ignored by the runner. `MultiUserTestConfig` annotation can be used to change the
+default exception class for a test class. The annotation is inherited so it can be added to a
+configured base class to reduce boilerplate code.
+
+The other options to change the expected class are to do it in `@Before` method or in the
+test method itself. This can be achieved by calling `authentication().setExpectedException()`
+method.
+
 
 # Assertions
 
@@ -127,6 +143,9 @@ public class AbstractConfiguredUserIT extends AbstractUserRoleIT<User, Id<User>,
 // Test implementation
 @TestUsers(creators = {"role:ROLE_ADMIN", "role:ROLE_USER"},
         users = {TestUsers.CREATOR, "role:ROLE_ADMIN", "role:ROLE_USER", "user:existing-user-name"})
+@MultiUserTestConfig(
+        runner = SpringMultiUserTestClassRunner.class, 
+        defaultException = AccessDeninedException.class)
 public class ServiceIT extends AbstractConfiguredUserIT {
 
     @Test
