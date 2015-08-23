@@ -12,11 +12,9 @@ import org.junit.runner.RunWith;
 import fi.vincit.multiusertest.annotation.TestUsers;
 import fi.vincit.multiusertest.configuration.ConfiguredTest;
 import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
-import fi.vincit.multiusertest.runner.junit.framework.BlockMultiUserTestClassRunner;
 import fi.vincit.multiusertest.util.LoginRole;
 
 @TestUsers(creators = {"role:ROLE_ADMIN"}, users = "role:ROLE_ADMIN",
-        runner = BlockMultiUserTestClassRunner.class,
         defaultException = IndexOutOfBoundsException.class)
 @RunWith(MultiUserTestRunner.class)
 public class TestUsersDefaultException extends ConfiguredTest {

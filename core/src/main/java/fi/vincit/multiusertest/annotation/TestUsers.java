@@ -7,10 +7,10 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.FrameworkMethod;
 
 import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
+import fi.vincit.multiusertest.runner.junit.framework.BlockMultiUserTestClassRunner;
 import fi.vincit.multiusertest.util.UserIdentifier;
 
 
@@ -65,7 +65,7 @@ public @interface TestUsers {
     /**
      * Test runner class to use
      */
-    Class runner() default BlockJUnit4ClassRunner.class;
+    Class runner() default BlockMultiUserTestClassRunner.class;
 
     /**
      * Default class type for failed tests
