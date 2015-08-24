@@ -1,5 +1,3 @@
 #!/bin/bash
 
-cd core
-mvn javadoc:javadoc
-cd ..
+gradle :core:javadoc

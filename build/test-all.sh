@@ -1,3 +1,3 @@
 #!/bin/bash
 
-mvn clean test
+gradle clean test

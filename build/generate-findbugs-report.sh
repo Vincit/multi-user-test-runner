@@ -1,3 +1,3 @@
 #!/bin/bash
 
-mvn clean compile -Pfindbugs
+gradle findbugsMain
