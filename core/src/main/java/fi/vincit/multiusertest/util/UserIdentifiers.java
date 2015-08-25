@@ -1,7 +1,6 @@
 package fi.vincit.multiusertest.util;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class UserIdentifiers {
@@ -20,8 +19,8 @@ public class UserIdentifiers {
 
     public static UserIdentifiers ifAnyOf(UserIdentifierCollection... identifiers) {
         List<String> allIdentifiers = new ArrayList<>();
-        for (UserIdentifierCollection c : identifiers) {
-            Collections.addAll(allIdentifiers, c.getUserIdentifiers());
+        for (UserIdentifierCollection identifierCollection : identifiers) {
+            allIdentifiers.addAll(identifierCollection.getUserIdentifiers());
         }
         return new UserIdentifiers(allIdentifiers.toArray(new String[allIdentifiers.size()]));
     }
