@@ -1,3 +1,25 @@
+task tagRelease << {
+    version = System.env.RELEASE_VERSION ?: "test"
+
+    if (version == null) {
+        throw new java.lang.IllegalArgumentException("RELEASE_VERSION must be defined")
+    }
+    if (System.env.SCM_USERNAME == null) {
+        throw new java.lang.IllegalArgumentException("SCM_USERNAME must be defined")
+    }
+    if (System.env.SCM_PASSWORD == null) {
+        throw new java.lang.IllegalArgumentException("SCM_PASSWORD must be defined")
+    }
+    exec {
+        executable 'git'
+        args 'tag', version
+    }
+    exec{
+        executable 'git'
+        args 'push', "https://$System.env.SCM_USERNAME:$System.env.SCM_PASSWORD@$System.env.REPO_URL", "refs/tags/$version"
+    }
+}
+
 subprojects {
     apply plugin: 'java'
     apply plugin: 'maven'
@@ -45,6 +67,7 @@ subprojects {
     }
 
 }
+
 
 project(':core') {
     apply plugin: 'maven-publish'

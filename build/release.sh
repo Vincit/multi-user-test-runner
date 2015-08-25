@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 if [ -z "$RELEASE_VERSION" ]; then
     echo "RELEASE_VERSION is missing"
@@ -6,3 +7,4 @@ if [ -z "$RELEASE_VERSION" ]; then
 fi
 
 gradle uploadArchives
+gradle tagRelease
