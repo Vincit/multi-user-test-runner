@@ -6,26 +6,57 @@ Custom JUnit test runner for testing Spring webapps with multiple roles and user
 # Requirements
 
  * Java 7+
- * JUnit 4.12 (version tested)
+ * JUnit 4.12+
  
 # Optional Requirements
 
-## For SpringMultiUserTestClassRunner
+## For SpringMultiUserTestClassRunner (multi-user-test-runner-spring module)
  * Spring Framework 3.2.x or 4.0.x (versions tested)
  * Spring Security 3.2.x (version tested)
  
 Library may work with other versions, but it has not been tested other than the versions mentioned.
+
+# Getting
+
+## Maven
+
+```xml
+<dependency>
+    <groupId>fi.vincit</groupId>
+    <artifactId>multi-user-test-runner</artifactId>
+    <version>0.3.0-beta1</version>
+    <scope>test</scope>
+</dependency>
+
+<!-- Spring support (optional) -->
+<dependency>
+    <groupId>fi.vincit</groupId>
+    <artifactId>multi-user-test-runner-spring</artifactId>
+   <version>0.3.0-beta1</version>
+    <scope>test</scope>
+</dependency>
+```
+
+## Gradle
+
+```groovy
+dependencies {
+    test 'fi.vincit:multi-user-test-runner:0.3.0-beta1'
+    // Spring support (optional)
+    test 'fi.vincit:multi-user-test-runner-spring:0.3.0-beta1'
+}
+```
 
 # Usage
 
 Usage is simple:
 
 1. Create a configured abstract class by extending `AbstractUserRole` class and implement methods
-2. Configure runner and default expected annotation with `MultiUserTestConfig`
-3. Create a test class which is extended from your configured class.
-4. Add `@TestUsers` annotation for your test class
-5. Write test methods
-6. Add `authentication().expect(toFail().ifAnyOf("user:user"));` before method to test 
+1. Configure runner and default expected annotation with `MultiUserTestConfig`
+1. Create a test class which is extended from your configured class.
+1. Add `@TestUsers` annotation for your test class
+1. Write test methods
+1. Add `authentication().expect(toFail().ifAnyOf("user:user"));` before method to test 
    to mark which roles/users are expected to fail
 
 
