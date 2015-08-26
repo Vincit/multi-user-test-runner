@@ -7,31 +7,14 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import org.junit.runners.model.FrameworkMethod;
-
 import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
-import fi.vincit.multiusertest.util.UserIdentifier;
 
 
 /**
- * This annotation works with MultiUserTestRunner. The creators parameter defines which
+ * This annotation works with MultiUserTestRunner JUnit runner. The creators parameter defines which
  * roles are used to create content and users parameter defines which roles are used to
- * consume content. The syntax and possible values for defining users are same in
+ * consume content. The syntax and possible values for defining users are same as in
  * {@link MultiUserTestRunner} was described.
- *
- * The default test runner class can be changed by using {@link TestUsers#runner()}. The class has
- * to have a constructor with:
- * <ul>
- *     <li>class: Test class</li>
- *     <li>UserIdentifier: used creator identifier</li>
- *     <li>UserIdentifier: used user identifier</li>
- * </ul>
- *
- * When creating test class instance is created, the runner class should se used user roles
- * with {@link fi.vincit.multiusertest.test.AbstractUserRoleIT#setUsers(UserIdentifier, UserIdentifier)} method.
- * Overriding {@link org.junit.runners.BlockJUnit4ClassRunner#testName(FrameworkMethod)} and
- * {@link org.junit.runners.BlockJUnit4ClassRunner#getName()} is recommended to make the test names to
- * describe all the different combinations properly.
  *
  * Annotation can also be user with methods. Then the annotation will define with what users the method
  * will be executed. If {@link TestUsers#creators()} are set, the method will only be executed if any of the specified creators are
