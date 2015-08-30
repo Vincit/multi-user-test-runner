@@ -4,7 +4,9 @@ import java.util.List;
 
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
+import org.junit.runners.model.Statement;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.statements.RunBeforeTestMethodCallbacks;
 
 import fi.vincit.multiusertest.util.RunnerDelegate;
 import fi.vincit.multiusertest.util.UserIdentifier;
@@ -47,4 +49,15 @@ public class SpringMultiUserTestClassRunner extends SpringJUnit4ClassRunner {
         return runnerDelegate.createTest(super.createTest());
     }
 
+    @Override
+    protected Statement withBefores(FrameworkMethod frameworkMethod, final Object testInstance, Statement statement) {
+        Statement junitBefores = runnerDelegate.withBefores(
+                getTestClass(),
+                testInstance,
+                statement
+        );
+        return new RunBeforeTestMethodCallbacks(
+                junitBefores, testInstance, frameworkMethod.getMethod(), getTestContextManager()
+        );
+    }
 }

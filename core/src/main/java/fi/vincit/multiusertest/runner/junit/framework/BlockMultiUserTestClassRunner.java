@@ -5,6 +5,7 @@ import java.util.List;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
+import org.junit.runners.model.Statement;
 
 import fi.vincit.multiusertest.util.RunnerDelegate;
 import fi.vincit.multiusertest.util.UserIdentifier;
@@ -45,5 +46,15 @@ public class BlockMultiUserTestClassRunner extends BlockJUnit4ClassRunner {
     protected Object createTest() throws Exception {
         return runnerDelegate.createTest(super.createTest());
     }
+
+    @Override
+    protected Statement withBefores(FrameworkMethod method, final Object target, Statement statement) {
+        return runnerDelegate.withBefores(
+                getTestClass(),
+                target,
+                statement
+        );
+    }
+
 
 }

@@ -3,7 +3,10 @@ package fi.vincit.multiusertest.util;
 import java.util.List;
 import java.util.Objects;
 
+import org.junit.Before;
+import org.junit.internal.runners.statements.RunBefores;
 import org.junit.runners.model.FrameworkMethod;
+import org.junit.runners.model.Statement;
 import org.junit.runners.model.TestClass;
 
 import fi.vincit.multiusertest.test.AbstractUserRoleIT;
@@ -67,5 +70,21 @@ public class RunnerDelegate {
         } else {
             throw new IllegalStateException("Test class must be of type " + AbstractUserRoleIT.class.getSimpleName());
         }
+    }
+
+    public Statement withBefores(TestClass testClass, final Object target, final Statement statement) {
+        List<FrameworkMethod> befores = testClass.getAnnotatedMethods(
+                Before.class);
+        Statement runLoginBeforeTestMethod = new Statement() {
+            @Override
+            public void evaluate() throws Throwable {
+                if (target instanceof AbstractUserRoleIT) {
+                    ((AbstractUserRoleIT)target).logInAs(LoginRole.CREATOR);
+                }
+                statement.evaluate();
+            }
+        };
+        return befores.isEmpty() ? runLoginBeforeTestMethod : new RunBefores(runLoginBeforeTestMethod,
+                befores, target);
     }
 }

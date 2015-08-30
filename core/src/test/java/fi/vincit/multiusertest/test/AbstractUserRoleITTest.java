@@ -129,39 +129,6 @@ public class AbstractUserRoleITTest {
         spyClass.setUsers(UserIdentifier.getNewUser(), UserIdentifier.parse("user:user2"));
     }
 
-    @Test
-    public void testLoginAs_Creator() {
-        TestClass spyClass = mockTestClass();
-        spyClass.authorizationRule = mock(AuthorizationRule.class);
-
-        when(spyClass.getRandomUsername()).thenReturn("user1", "user2");
-
-        spyClass.setUsers(UserIdentifier.parse("role:ROLE1"), UserIdentifier.parse("role:ROLE2"));
-        spyClass.initializeUsers();
-
-        verify(spyClass).loginWithUser("user1");
-
-        verify(spyClass.authorizationRule).setRole(UserIdentifier.Type.CREATOR, null);
-    }
-
-    @Test
-    public void testLoginAs_ExistingCreator() {
-        TestClass spyClass = mockTestClass();
-        spyClass.authorizationRule = mock(AuthorizationRule.class);
-
-        when(spyClass.getRandomUsername()).thenReturn("user1", "user2");
-        when(spyClass.getUserByUsername("user3")).thenReturn("test-user3");
-
-        spyClass.setUsers(UserIdentifier.parse("user:user3"), UserIdentifier.parse("role:ROLE2"));
-        spyClass.initializeUsers();
-
-        verify(spyClass).logInAs(LoginRole.CREATOR);
-
-        verify(spyClass).loginWithUser("test-user3");
-
-        verify(spyClass.authorizationRule).setRole(UserIdentifier.Type.CREATOR, null);
-        verify(spyClass, times(1)).getUserByUsername("user3");
-    }
 
     @Test
     public void testLoginAs_RoleUser() {
@@ -175,10 +142,8 @@ public class AbstractUserRoleITTest {
         spyClass.logInAs(LoginRole.USER);
 
         InOrder order = inOrder(spyClass);
-        order.verify(spyClass).loginWithUser("user1");
         order.verify(spyClass).loginWithUser("user2");
 
-        verify(spyClass.authorizationRule).setRole(UserIdentifier.Type.CREATOR, null);
         verify(spyClass.authorizationRule).setRole(UserIdentifier.Type.ROLE, "ROLE2");
     }
 
@@ -196,10 +161,8 @@ public class AbstractUserRoleITTest {
 
 
         InOrder order = inOrder(spyClass);
-        order.verify(spyClass).loginWithUser("user1");
         order.verify(spyClass).loginWithUser("test-user2");
 
-        verify(spyClass.authorizationRule).setRole(UserIdentifier.Type.CREATOR, null);
         verify(spyClass.authorizationRule).setRole(UserIdentifier.Type.USER, "user2");
         verify(spyClass, times(1)).getUserByUsername("user2");
     }
@@ -220,9 +183,7 @@ public class AbstractUserRoleITTest {
 
         InOrder order = inOrder(spyClass);
         order.verify(spyClass).loginWithUser("user1");
-        order.verify(spyClass).loginWithUser("user1");
 
-        verify(spyClass.authorizationRule).setRole(UserIdentifier.Type.CREATOR, null);
         verify(spyClass.authorizationRule).setRole(UserIdentifier.getCreator());
     }
 

@@ -43,8 +43,6 @@ public abstract class AbstractUserRoleIT<USER, ROLE> {
         initializeCreator();
         initializeUser();
 
-        // By default log in as creator so that user doesn't have to do it every time
-        logInAs(LoginRole.CREATOR);
         authorizationRule.setExpectedException(getDefaultException());
     }
 
@@ -101,7 +99,7 @@ public abstract class AbstractUserRoleIT<USER, ROLE> {
         return user.getRole();
     }
 
-    protected void logInAs(LoginRole role) {
+    public void logInAs(LoginRole role) {
         if (role == LoginRole.CREATOR) {
             USER creatorUser = getCreator();
             assertThat("Trying to log in as creator but the creator doesn't exist", creatorUser, notNullValue());
