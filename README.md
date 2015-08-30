@@ -6,6 +6,7 @@ Library makes it easy to test many authorization scenarios with minimal configur
 
 Originally library was created to test security of Spring service layer methods. Library also works
 with any plain Java classes and has been successfully used with REST assured based API testing.
+
 # Requirements
 
  * Java 7+
@@ -76,7 +77,7 @@ has to have a constructor with following format:
 
 ### Custom Runner Classes
 
-When creating runner class it is important to note that `AbstractUserRoleIT.loginAsUser()` method 
+When creating runner class it is important to note that `AbstractUserRoleIT.logInAs(LoginRole)` method 
 has to be called *before* calling the test method and *after* `@Before` methods. This will
 enable creating users in `@Before` methods so that they can be used as creators.
 
