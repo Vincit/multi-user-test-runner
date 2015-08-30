@@ -71,16 +71,33 @@ It is also possible to create a custom runner. The custom runner has to implemen
 has to have a constructor with following format: 
 `CustomRunner(Class<?> clazz, UserIdentifier creatorIdentifier, UserIdentifier userIdentifier)`.
 
+### Custom Runner Classes
+
+When creating runner class it is important to note that `AbstractUserRoleIT.loginAsUser()` method 
+has to be called *before* calling the test method and *after* `@Before` methods. This will
+enable creating users in `@Before` methods so that they can be used as creators.
+
+`RunnerDelegate` class contains helper methods for creating custom runner class. Most of time
+the `RunnerDelegate` class methods can be just call throughs from the custom runner to the
+delegate.
+
 ## Default Exception
 
 By default `IllegalStateException` is expected as the exception that is thrown on failure. Other
-exceptions are ignored by the runner. `MultiUserTestConfig` annotation can be used to change the
-default exception class for a test class. The annotation is inherited so it can be added to a
-configured base class to reduce boilerplate code.
+exceptions are ignored by the runner and will be handled normally by the test method. 
+`MultiUserTestConfig`  annotation can be used to change the default exception class for a test 
+class. The annotation is  inherited so it can be added to a configured base class to reduce 
+boilerplate code.
 
 The other options to change the expected class are to do it in `@Before` method or in the
 test method itself. This can be achieved by calling `authentication().setExpectedException()`
 method.
+
+## Creating Custom Users
+
+In order to use custom users with `@TestUsers` annotation it is possible to create users
+in JUnit's `@Before` methods. Other method is to use a library like DBUnit to create the users to 
+database before the test method.
 
 
 # Assertions
