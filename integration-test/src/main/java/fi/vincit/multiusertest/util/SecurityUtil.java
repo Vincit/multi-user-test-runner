@@ -12,4 +12,8 @@ public class SecurityUtil {
         return loggedInUser;
     }
 
+    public static void clear() {
+        loggedInUser = null;
+    }
+
 }

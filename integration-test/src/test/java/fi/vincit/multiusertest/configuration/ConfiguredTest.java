@@ -3,6 +3,8 @@ package fi.vincit.multiusertest.configuration;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.After;
+
 import fi.vincit.multiusertest.annotation.MultiUserTestConfig;
 import fi.vincit.multiusertest.runner.junit.framework.BlockMultiUserTestClassRunner;
 import fi.vincit.multiusertest.test.AbstractUserRoleIT;
@@ -18,6 +20,11 @@ public abstract class ConfiguredTest extends AbstractUserRoleIT<User, User.Role>
     @Override
     protected void loginWithUser(User user) {
         SecurityUtil.logInUser(user);
+    }
+
+    @After
+    public void tearDown() {
+        SecurityUtil.clear();
     }
 
     @Override

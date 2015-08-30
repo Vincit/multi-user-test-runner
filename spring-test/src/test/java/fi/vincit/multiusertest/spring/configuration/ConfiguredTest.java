@@ -23,6 +23,7 @@ public abstract class ConfiguredTest extends AbstractUserRoleIT<User, User.Role>
 
     @Before
     public void tearDown() {
+        SecurityUtil.clear();
         userService.clear();
     }
 
