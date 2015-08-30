@@ -14,7 +14,7 @@ with any plain Java classes and has been successfully used with REST assured bas
 # Optional Requirements
 
 ## For SpringMultiUserTestClassRunner (multi-user-test-runner-spring module)
- * Spring Framework 3.2.x or 4.0.x (versions tested)
+ * Spring Framework 3.2.x, 4.0.x, 4.1.x, 4.2.x (versions tested)
  * Spring Security 3.2.x (version tested)
  
 Library may work with other versions, but it has not been tested other than the versions mentioned.
