@@ -1,11 +1,11 @@
 package fi.vincit.multiusertest.spring.configuration;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import org.junit.Before;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 
 import fi.vincit.multiusertest.annotation.MultiUserTestConfig;
+import fi.vincit.multiusertest.context.UserService;
 import fi.vincit.multiusertest.runner.junit.framework.SpringMultiUserTestClassRunner;
 import fi.vincit.multiusertest.test.AbstractUserRoleIT;
 import fi.vincit.multiusertest.util.LoginRole;
@@ -18,7 +18,13 @@ import fi.vincit.multiusertest.util.User;
 )
 public abstract class ConfiguredTest extends AbstractUserRoleIT<User, User.Role> {
 
-    private static Map<String, User> users = new HashMap<>();
+    @Autowired
+    private UserService userService;
+
+    @Before
+    public void tearDown() {
+        userService.clear();
+    }
 
     @Override
     protected void loginWithUser(User user) {
@@ -27,9 +33,7 @@ public abstract class ConfiguredTest extends AbstractUserRoleIT<User, User.Role>
 
     @Override
     protected User createUser(String username, String firstName, String lastName, User.Role userRole, LoginRole loginRole) {
-        User user = new User(username, userRole);
-        users.put(username, user);
-        return user;
+        return userService.addUser(new User(username, userRole));
     }
 
     @Override
@@ -39,6 +43,6 @@ public abstract class ConfiguredTest extends AbstractUserRoleIT<User, User.Role>
 
     @Override
     protected User getUserByUsername(String username) {
-        return users.get(username);
+        return userService.findByUsername(username);
     }
 }
