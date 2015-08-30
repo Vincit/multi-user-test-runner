@@ -14,6 +14,10 @@ import fi.vincit.multiusertest.util.Optional;
 import fi.vincit.multiusertest.util.UserIdentifier;
 import fi.vincit.multiusertest.util.UserIdentifiers;
 
+/**
+ * Use {@link fi.vincit.multiusertest.rule.expection.Expectations} to create instances.
+ * @param <VALUE_TYPE>
+ */
 public class ExpectValueOf<VALUE_TYPE> implements Expectation {
 
     private final ReturnValueCall<VALUE_TYPE> callback;

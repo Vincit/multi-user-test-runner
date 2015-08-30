@@ -16,6 +16,8 @@ import fi.vincit.multiusertest.util.UserIdentifiers;
  * {@link fi.vincit.multiusertest.rule.AuthorizationRule}'s exception.
  * A custom exception can be given via {@link ExpectCall#toFailWithException(Class, UserIdentifiers)}
  * method.
+ *
+ * Use {@link fi.vincit.multiusertest.rule.expection.Expectations} to create instances.
  */
 public class ExpectCall implements Expectation {
 
