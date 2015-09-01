@@ -12,10 +12,17 @@
         configuration to be able run tests with many different resource creator and
         user combinations.
     </p>
-    <ul>
-        <li>Test runner: {@link fi.vincit.multiusertest.runner.junit.MultiUserTestRunner}</li>
-        <li>TestUsers annotation: {@link fi.vincit.multiusertest.annotation.TestUsers}</li>
-        <li>Config annotation: {@link fi.vincit.multiusertest.annotation.MultiUserTestConfig}</li>
-    </ul>
+
+    <h2>Usage</h2>
+    <p>
+        <ol>
+            <li>Create a configured abstract class by extending {@link fi.vincit.multiusertest.test.AbstractUserRoleIT} class and implement methods. This will be your base class for your test class.</li>
+            <li>Configure runner and default expected annotation with {@link fi.vincit.multiusertest.annotation.MultiUserTestConfig}</li>
+            <li>Create a test class which is extended from your configured class.</li>
+            <li>Add {@link fi.vincit.multiusertest.annotation.TestUsers} annotation for your test class</li>
+            <li>Write test methods</li>
+            <li>Add <i>authentication().expect(toFail().ifAnyOf("user:user"));</i> before method to test to mark which roles/users are expected to fail</li>
+        </ol>
+    </p>
 </body>
 </html>
