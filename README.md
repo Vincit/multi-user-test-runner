@@ -55,7 +55,8 @@ dependencies {
 
 Usage is simple:
 
-1. Create a configured abstract class by extending `AbstractUserRole` class and implement methods
+1. Create a configured abstract class by extending `AbstractUserRoleIT` class and implement methods. 
+   This will be the base class for your tests.
 1. Configure runner and default expected annotation with `@MultiUserTestConfig`
 1. Create a test class which is extended from your configured class.
 1. Add `@TestUsers` annotation for your test class
