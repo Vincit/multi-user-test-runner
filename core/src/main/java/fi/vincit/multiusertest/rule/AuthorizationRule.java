@@ -13,11 +13,12 @@ import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
 import fi.vincit.multiusertest.util.UserIdentifier;
 
 /**
+ * <p>
  * Rule to be used with {@link MultiUserTestRunner} to define whether a test passes or
  * fails. Before a method to be tested is executed {@link AuthorizationRule#expect(Authentication)}
  * should be called with the users that are expected to fail. The user syntax is same as in
  * {@link MultiUserTestRunner}
- *
+ * </p>
  */
 public class AuthorizationRule implements TestRule {
 

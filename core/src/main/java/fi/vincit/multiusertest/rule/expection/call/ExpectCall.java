@@ -12,12 +12,15 @@ import fi.vincit.multiusertest.util.UserIdentifier;
 import fi.vincit.multiusertest.util.UserIdentifiers;
 
 /**
+ * <p>
  * Expect a function call to throw or not throw an exception. Default exception is
  * {@link fi.vincit.multiusertest.rule.AuthorizationRule}'s exception.
  * A custom exception can be given via {@link ExpectCall#toFailWithException(Class, UserIdentifiers)}
  * method.
- *
+ * </p>
+ * <p>
  * Use {@link fi.vincit.multiusertest.rule.expection.Expectations} to create instances.
+ * </p>
  */
 public class ExpectCall implements Expectation {
 

@@ -13,6 +13,7 @@ import fi.vincit.multiusertest.runner.junit.framework.BlockMultiUserTestClassRun
 import fi.vincit.multiusertest.util.UserIdentifier;
 
 /**
+ * <p>
  * Configure test class to use desired runner and change the default expected
  * exception. The default test runner class can be changed by using {@link #runner()}.
  * Custom runners can be used. The runner class has to have a constructor with:
@@ -21,12 +22,15 @@ import fi.vincit.multiusertest.util.UserIdentifier;
  *     <li>{@link fi.vincit.multiusertest.util.UserIdentifier}: used creator identifier</li>
  *     <li>{@link fi.vincit.multiusertest.util.UserIdentifier}: used user identifier</li>
  * </ul>
+ *</p>
  *
+ * <p>
  * When test class instance is created, the runner class should set user roles
  * with {@link fi.vincit.multiusertest.test.AbstractUserRoleIT#setUsers(UserIdentifier, UserIdentifier)}
  * method. Overriding {@link org.junit.runners.BlockJUnit4ClassRunner#testName(FrameworkMethod)} and
  * {@link org.junit.runners.BlockJUnit4ClassRunner#getName()} is recommended to make the test names to
  * describe all the different combinations properly.
+ * </p>
  */
 @Target({TYPE})
 @Retention(RUNTIME)
