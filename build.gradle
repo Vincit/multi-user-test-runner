@@ -76,6 +76,7 @@ project(':core') {
 
     javadoc {
         failOnError = false
+        options.overview = "src/main/java/overview.html"
     }
 
     dependencies {
