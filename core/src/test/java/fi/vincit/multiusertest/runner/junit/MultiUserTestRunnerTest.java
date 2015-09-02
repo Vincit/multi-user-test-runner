@@ -104,6 +104,12 @@ public class MultiUserTestRunnerTest {
     public static class OneCreator_MultipleUsers {
     }
 
+    @TestUsers(creators = "user:username", users = TestUsers.NEW_USER)
+    @MultiUserTestConfig(runner = TestRunner.class)
+    @Ignore
+    public static class ExistingCreatorNewUser {
+    }
+
     @Test(expected = IllegalStateException.class)
     public void testClassWithoutTestUsersAnnotation() throws Throwable {
         createMultiUserTestRunner(NoAnnotation.class);
@@ -159,6 +165,11 @@ public class MultiUserTestRunnerTest {
     @Test(expected = NoSuchMethodException.class)
     public void testClassWith_NotRunner() throws Throwable {
         createMultiUserTestRunner(NoProperConstructor.class);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testCreatorHasExistingUserAndUsersHaveNewUser() throws Throwable {
+        createMultiUserTestRunner(ExistingCreatorNewUser.class);
     }
 
     private MultiUserTestRunner createMultiUserTestRunner(Class testClass) throws Throwable {

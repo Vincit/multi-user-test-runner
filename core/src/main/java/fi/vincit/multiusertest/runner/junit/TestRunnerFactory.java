@@ -27,6 +27,7 @@ public class TestRunnerFactory {
             userIdentifiers.add(UserIdentifier.getNewUser());
         }
         validateCreators(creatorIdentifiers);
+        validateUsers(creatorIdentifiers, userIdentifiers);
 
         for (UserIdentifier creatorIdentifier : creatorIdentifiers) {
             for (UserIdentifier userIdentifier : userIdentifiers) {
@@ -40,6 +41,20 @@ public class TestRunnerFactory {
             }
         }
         return runners;
+    }
+
+    void validateUsers(Collection<UserIdentifier> creatorIdentifiers, Collection<UserIdentifier> userIdentifiers) {
+        boolean containsExistingUserDefinition = false;
+        for (UserIdentifier identifier : creatorIdentifiers) {
+            if (identifier.getType() == UserIdentifier.Type.USER) {
+                containsExistingUserDefinition = true;
+            }
+        }
+
+        if (containsExistingUserDefinition
+                && userIdentifiers.contains(UserIdentifier.getNewUser())) {
+            throw new IllegalArgumentException("User definitions can't contain NEW_USER when creators have a 'user' definition");
+        }
     }
 
     void validateCreators(Collection<UserIdentifier> creatorIdentifiers) {
