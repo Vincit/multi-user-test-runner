@@ -105,6 +105,32 @@ in JUnit's `@Before` methods. Other method is to use a library like DBUnit to cr
 database before the test method.
 
 
+# Defining Users
+
+`@TestUsers` annotation defines which users are used to run the tests. Users can be defined by role,
+by existing user, use the creator (`CREATOR`) user or use a user with the same role as the creator 
+(`NEW_USER`). When defining the user by role or with `NEW_USER`, a new user is created. The new user
+is created by calling `AbstractUserRoleIT#createUser(String, String, String, ROLE, LoginRole)` method.
+
+## By User
+
+You can run a test with an existing user by defining the user in format: `user:<user name>` 
+e.g. `user:test-user`. 
+
+## By Role
+
+You can run a test with a desired role by defining the user in format: `role:<role name>` e.g. 
+`role:ROLE_ADMIN`. 
+
+## Special Roles
+
+`TestUsers.CREATOR` can be used to use the current creator user as the user. A new user is not created
+but the same user is fetched with `AbstractUserRoleIT#getUserByUsername(String)` method.
+
+`TestUsers.NEW_USER` can be used to create a new user with the same role as the current creator user has. 
+This can't be used if the creator roles have one or more creators defined with existing user.
+
+
 # Assertions
 
 ## Simple authorization assertion
