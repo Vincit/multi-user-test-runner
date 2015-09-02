@@ -21,7 +21,7 @@
             <li>Create a test class which is extended from your configured class.</li>
             <li>Add {@link fi.vincit.multiusertest.annotation.TestUsers} annotation for your test class</li>
             <li>Write test methods</li>
-            <li>Add <i>authentication().expect(toFail().ifAnyOf("user:user"));</i> before method to test to mark which roles/users are expected to fail</li>
+            <li>Add e.g. <i>authentication().expect(toFail(ifAnyOf("user:user")));</i> before method to test to mark which roles/users are expected to fail</li>
         </ol>
     </p>
 </body>
