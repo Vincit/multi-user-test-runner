@@ -135,6 +135,9 @@ public class AuthorizationRule implements TestRule {
                     next.evaluate();
                 }
             } catch (Throwable e) {
+                if (expectedException == null) {
+                    throw new RuntimeException("Expected exception not set yet", e);
+                }
                 if (expectedException.isInstance(e)) {
                     if (!evaluateExpectToFailCondition()) {
                         throw new AssertionError("Not expected to fail with user role " + userIdentifier.toString(), e);

@@ -11,7 +11,7 @@ import fi.vincit.multiusertest.util.LoginRole;
 import fi.vincit.multiusertest.util.User;
 
 @TestUsers(creators = {"user:test-user"},
-        users = {"role:ROLE_ADMIN", "role:ROLE_USER"})
+        users = {TestUsers.CREATOR, "role:ROLE_ADMIN", "role:ROLE_USER"})
 @RunWith(MultiUserTestRunner.class)
 public class InitCreatorBeforeTest extends ConfiguredTest {
 
@@ -29,6 +29,8 @@ public class InitCreatorBeforeTest extends ConfiguredTest {
             if (!creatorCreated) {
                 throw new AssertionError("No creator created before logInAs call");
             }
+        } else {
+            super.logInAs(role);
         }
     }
 
@@ -37,6 +39,11 @@ public class InitCreatorBeforeTest extends ConfiguredTest {
         if (!getCreator().getUsername().equals("test-user")) {
             throw new AssertionError("Wrong creator user, should be test-user");
         }
+    }
+
+    @Test
+    public void logInAsUser() {
+        logInAs(LoginRole.USER);
     }
 
 }

@@ -187,6 +187,29 @@ public class AbstractUserRoleITTest {
         verify(spyClass.authorizationRule).setRole(UserIdentifier.getCreator());
     }
 
+    @Test(expected = IllegalStateException.class)
+    public void testNewUserNotAllowedWithExistingCreator() {
+        TestClass spyClass = mockTestClass();
+        spyClass.setUsers(UserIdentifier.parse("user:username"), UserIdentifier.getNewUser());
+        spyClass.initializeUsers();
+    }
+
+    @Test
+    public void testUserAsCreatorWhenCreatorExistingUser() {
+        TestClass spyClass = mockTestClass();
+        when(spyClass.getUserByUsername("username")).thenReturn("test-user");
+
+        spyClass.setUsers(UserIdentifier.parse("user:username"), UserIdentifier.getCreator());
+        spyClass.initializeUsers();
+
+        // Login so that LoginRole.USER uses the current creator
+        spyClass.logInAs(LoginRole.USER);
+
+
+        InOrder order = inOrder(spyClass);
+        order.verify(spyClass).loginWithUser("test-user");
+    }
+
     protected void mockDefaultCalls(TestClass spyClass) {
         when(spyClass.createUser(anyString(), anyString(), anyString(), any(Role.class), any(LoginRole.class)))
                 .thenAnswer(new Answer<String>() {

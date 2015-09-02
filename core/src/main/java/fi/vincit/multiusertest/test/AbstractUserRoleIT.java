@@ -52,9 +52,17 @@ public abstract class AbstractUserRoleIT<USER, ROLE> {
         if (user.getMode() == TestUser.RoleMode.SET_USER_ROLE) {
             this.user = user.withUser(createUser(getRandomUsername(), "Test", "User", getUserRole(), LoginRole.USER));
         } else if (user.getMode() == TestUser.RoleMode.CREATOR_USER) {
-            this.user = user.withUser(creator.getUser());
+            if (creator.getMode() == TestUser.RoleMode.EXISTING_USER) {
+                // Do nothing, user already set, using creator
+            } else {
+                this.user = user.withUser(creator.getUser());
+            }
         } else if (user.getMode() == TestUser.RoleMode.NEW_WITH_CREATOR_ROLE) {
-            this.user = user.withUser(createUser(getRandomUsername(), "Test", "User", getCreatorRole(), LoginRole.USER));
+            if (creator.getMode() == TestUser.RoleMode.EXISTING_USER) {
+                // NOOP
+            } else {
+                this.user = user.withUser(createUser(getRandomUsername(), "Test", "User", getCreatorRole(), LoginRole.USER));
+            }
         } else if (user.getMode() == TestUser.RoleMode.EXISTING_USER) {
             // Do nothing, user already set
         } else {
@@ -109,7 +117,13 @@ public abstract class AbstractUserRoleIT<USER, ROLE> {
 
             authorizationRule.setRole(UserIdentifier.Type.CREATOR, null);
         } else {
-            USER user = getUser();
+            USER user;
+            if (creator.getMode() == TestUser.RoleMode.EXISTING_USER) {
+                user = getCreator();
+            } else {
+                user = getUser();
+            }
+
             assertThat("Trying to log in as user but the user doesn't exist", user, notNullValue());
             loginWithUser(user);
 
@@ -148,6 +162,9 @@ public abstract class AbstractUserRoleIT<USER, ROLE> {
         if (identifier.getType() == UserIdentifier.Type.CREATOR) {
             this.user = TestUser.forCreatorUser(identifier);
         } else if (identifier.getType() == UserIdentifier.Type.NEW_USER) {
+            if (this.creator.getMode() == TestUser.RoleMode.EXISTING_USER) {
+                throw new IllegalStateException("Cannot use NEW_USER mode when creator uses existing user");
+            }
             this.user = TestUser.forNewUser(getCreatorRole(), identifier);
         } else if (identifier.getType() == UserIdentifier.Type.ROLE) {
             this.user = TestUser.forRole(stringToRole(identifier.getIdentifier()), identifier);
