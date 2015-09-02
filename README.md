@@ -61,7 +61,7 @@ Usage is simple:
 1. Create a test class which is extended from your configured class.
 1. Add `@TestUsers` annotation for your test class
 1. Write test methods
-1. Add `authentication().expect(toFail().ifAnyOf("user:user"));` before method to test 
+1. Add e.g. `authentication().expect(toFail(ifAnyOf("user:user")));` before method to test 
    to mark which roles/users are expected to fail
 
 
