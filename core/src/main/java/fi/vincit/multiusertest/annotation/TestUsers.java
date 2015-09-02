@@ -33,7 +33,8 @@ public @interface TestUsers {
      */
     String CREATOR = "__FI_VINCIT_MULTI_ROLE_TEST_CREATOR__";
     /**
-     * Login as a new user that has the same role as the creator
+     * Login as a new user that has the same role as the creator.
+     * Can't be used if creator role uses an existing user.
      */
     String NEW_USER = "__FI_VINCIT_MULTI_ROLE_TEST_NEW_USER__";
 
