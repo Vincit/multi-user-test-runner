@@ -28,7 +28,7 @@ Library may work with other versions, but it has not been tested other than the 
 <dependency>
     <groupId>fi.vincit</groupId>
     <artifactId>multi-user-test-runner</artifactId>
-        <version>0.3.0-beta2</version>
+        <version>0.3.0-beta3</version>
     <scope>test</scope>
 </dependency>
 
@@ -36,7 +36,7 @@ Library may work with other versions, but it has not been tested other than the 
 <dependency>
     <groupId>fi.vincit</groupId>
     <artifactId>multi-user-test-runner-spring</artifactId>
-       <version>0.3.0-beta2</version>
+        <version>0.3.0-beta3</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -45,9 +45,9 @@ Library may work with other versions, but it has not been tested other than the 
 
 ```groovy
 dependencies {
-    test 'fi.vincit:multi-user-test-runner:0.3.0-beta1'
+    test 'fi.vincit:multi-user-test-runner:0.3.0-beta3'
     // Spring support (optional)
-    test 'fi.vincit:multi-user-test-runner-spring:0.3.0-beta1'
+    test 'fi.vincit:multi-user-test-runner-spring:0.3.0-beta3'
 }
 ```
 
@@ -152,7 +152,6 @@ This will simply fail/pass test depending if the following call throws/doesn't t
 From version 0.2 onwards there are also advanced assertions which work best with Java 8 lambdas.
 
 Assert that call fails/doesn't fail:
-
 ```java
 authorization().expect(call(() -> service.doSomething(value)).toFail(ifAnyOf("role:ROLE_ADMIN")));
 authorization().expect(call(() -> service.doSomething(value)).notToFail(ifAnyOf("role:ROLE_ADMIN")));
@@ -264,7 +263,6 @@ This will run tests:
     * createAndUpdateTodo creator = role:ROLE_USER; user = user:existing-user-name;
     
 And if something fails due to authorization error, you will see error like:
-
 ```
 java.lang.AssertionError: Not expected to fail with user role role:ROLE_ADMIN
 <stack trace...>
@@ -273,7 +271,6 @@ Caused by: org.springframework.security.access.AccessDeniedException: Permission
 ```
 
 or if tested method doesn't fail when expected:
-
 ```
 java.lang.AssertionError: Expected to fail with user role role:ROLE_USER
 <stack trace...>
