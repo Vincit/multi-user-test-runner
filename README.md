@@ -28,7 +28,7 @@ Library may work with other versions, but it has not been tested other than the 
 <dependency>
     <groupId>fi.vincit</groupId>
     <artifactId>multi-user-test-runner</artifactId>
-    <version>0.3.0-beta2</version>
+        <version>0.3.0-beta2</version>
     <scope>test</scope>
 </dependency>
 
@@ -36,7 +36,7 @@ Library may work with other versions, but it has not been tested other than the 
 <dependency>
     <groupId>fi.vincit</groupId>
     <artifactId>multi-user-test-runner-spring</artifactId>
-   <version>0.3.0-beta2</version>
+        <version>0.3.0-beta2</version>
     <scope>test</scope>
 </dependency>
 ```

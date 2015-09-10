@@ -8,6 +8,11 @@ DOCS_BRANCH=gh-pages
 DOCS_DIR=docs
 PROJECT_DIR=../project
 
+echo " * Generate JavaDoc for version $RELEASE_VERSION"
+cd project
+./build/generate-javadoc.sh
+cd ..
+
 echo " * Cloning docs from $DOCS_GIT_REPO branch $DOCS_BRANCH to $DOCS_DIR"
 git clone $DOCS_FULL_URL -b $DOCS_BRANCH --single-branch $DOCS_DIR
 cd $DOCS_DIR
