@@ -136,6 +136,7 @@ This can't be used if the creator roles have one or more creators defined with e
 ## Simple authorization assertion
 
 Most simple way to add an multi user test assertion is to use:
+
 ```java
 // In version 0.1
 authorization().expect(toFail(ifAnyOf("role:ROLE_USER", "role:ROLE_ADMIN", "user:User1")));
@@ -143,6 +144,7 @@ authorization().expect(toFail(ifAnyOf("role:ROLE_USER", "role:ROLE_ADMIN", "user
 // In version 0.2 also possible
 authorization().expect(toFail(ifAnyOf(roles("ROLE_USER", "ROLE_ADMIN"), users("User1"))));
 ```
+
 This will simply fail/pass test depending if the following call throws/doesn't throw an exception.
 
 ## Advanced assertions
@@ -150,6 +152,7 @@ This will simply fail/pass test depending if the following call throws/doesn't t
 From version 0.2 onwards there are also advanced assertions which work best with Java 8 lambdas.
 
 Assert that call fails/doesn't fail:
+
 ```java
 authorization().expect(call(() -> service.doSomething(value)).toFail(ifAnyOf("role:ROLE_ADMIN")));
 authorization().expect(call(() -> service.doSomething(value)).notToFail(ifAnyOf("role:ROLE_ADMIN")));
@@ -157,6 +160,7 @@ authorization().expect(call(() -> service.doSomething(value)).toFailWithExceptio
 ```
 
 Compare method call return value:
+
 ```java
 authorization().expect(valueOf(() -> service.getAllUsers(value))
                 .toEqual(10, ifAnyOf("role:ROLE_ADMIN"))
@@ -164,6 +168,7 @@ authorization().expect(valueOf(() -> service.getAllUsers(value))
 ```
 
 Use a custom assertion (e.g. JUnit `assertEquals` or `assertThat`:
+
 ```java
 authorization().expect(valueOf(() -> service.getAllUsers(value))
                 .toAssert((value) -> assertThat(value, is(10)), ifAnyOf("role:ROLE_ADMIN"))
@@ -259,6 +264,7 @@ This will run tests:
     * createAndUpdateTodo creator = role:ROLE_USER; user = user:existing-user-name;
     
 And if something fails due to authorization error, you will see error like:
+
 ```
 java.lang.AssertionError: Not expected to fail with user role role:ROLE_ADMIN
 <stack trace...>
@@ -267,6 +273,7 @@ Caused by: org.springframework.security.access.AccessDeniedException: Permission
 ```
 
 or if tested method doesn't fail when expected:
+
 ```
 java.lang.AssertionError: Expected to fail with user role role:ROLE_USER
 <stack trace...>
