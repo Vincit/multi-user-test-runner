@@ -1,11 +1,11 @@
 Multi User Test Runner
 ======================
 
-Custom JUnit test runner for testing Spring webapps with multiple roles and users and their combinations. 
-Library makes it easy to test many authorization scenarios with minimal configuration.
+This custom JUnit test runner is for testing Spring web-apps with multiple roles, users and their combinations. 
+The library makes it easy to test many authorization scenarios with minimal configuration.
 
-Originally library was created to test security of Spring service layer methods. Library also works
-with any plain Java classes and has been successfully used with REST assured based API testing.
+Originally the library was created to test the security of Spring service-layer methods. The library also works
+with any plain Java classes and has been successfully used with REST-assured based API testing.
 
 # Requirements
 
@@ -15,10 +15,10 @@ with any plain Java classes and has been successfully used with REST assured bas
 # Optional Requirements
 
 ## For SpringMultiUserTestClassRunner (multi-user-test-runner-spring module)
- * Spring Framework 3.2.x, 4.0.x, 4.1.x, 4.2.x (versions tested)
- * Spring Security 3.2.x (version tested)
+ * Spring Framework 3.2.x, 4.0.x, 4.1.x, 4.2.x (tested)
+ * Spring Security 3.2.x (tested)
  
-Library may work with other versions, but it has not been tested other than the versions mentioned.
+The library may work with other versions but has not been tested with versions other than the ones mentioned above.
 
 # Getting
 
@@ -55,48 +55,54 @@ dependencies {
 
 Usage is simple:
 
+Configure the test class:
+
 1. Create a configured abstract class by extending `AbstractUserRoleIT` class and implement methods. 
    This will be the base class for your tests.
-1. Configure runner and default expected annotation with `@MultiUserTestConfig`
+1. Configure the runner and set the default exception to expect on failure with the annotation `@MultiUserTestConfig`
 1. Create a test class which is extended from your configured class.
-1. Add `@TestUsers` annotation for your test class
-1. Write test methods
-1. Add e.g. `authentication().expect(toFail(ifAnyOf("user:user")));` before method to test 
-   to mark which roles/users are expected to fail
+1. Add `@TestUsers` annotation for your test class and define roles/users to use in the tests
+
+Write the tests:
+
+1. Write the test methods
+1. Add an assertion. For example, `authentication().expect(toFail(ifAnyOf("user:user")));` before the method under test 
+   to define which roles/users are expected to fail
 
 
 # Test Configuration
 
 ## Runner Classes
 
-By default `BlockMultiUserTestClassRunner` is used. When using with Spring `SpringMultiUserTestClassRunner` should be used
-runner loads the Spring context before the tests and the Block runner will works as a plain JUnit test runner.
-Used runner can be configured via `MultiUserTestConfig` annotation's `runner` argument.
-It is also possible to create a custom runner. The custom runner has to implement JUnit's `ParentTestRunner` and
-has to have a constructor with following format: 
-`CustomRunner(Class<?> clazz, UserIdentifier creatorIdentifier, UserIdentifier userIdentifier)`.
+The default runner is the `BlockMultiUserTestClassRunner`. When using with Spring `SpringMultiUserTestClassRunner` should be used
+runner loads the Spring context before the tests. The used runner can be configured via `MultiUserTestConfig` 
+annotation's `runner` parameter.
 
 ### Custom Runner Classes
+
+It is also possible to create your own custom runner. The custom runner has to 
+implement JUnit's `ParentTestRunner` class and has to have a constructor with following signature:
+`CustomRunner(Class<?> clazz, UserIdentifier creatorIdentifier, UserIdentifier userIdentifier)`.
 
 When creating runner class it is important to note that `AbstractUserRoleIT.logInAs(LoginRole)` method 
 has to be called *before* calling the test method and *after* `@Before` methods. This will
 enable creating users in `@Before` methods so that they can be used as creators.
 
-`RunnerDelegate` class contains helper methods for creating custom runner class. Most of time
-the `RunnerDelegate` class methods can be just call throughs from the custom runner to the
+The `RunnerDelegate` class contains helper methods for creating custom runner class. Most of time
+the `RunnerDelegate` class methods can be just call-throughs from the custom runner to the
 delegate.
 
 ## Default Exception
 
 By default `IllegalStateException` is expected as the exception that is thrown on failure. Other
 exceptions are ignored by the runner and will be handled normally by the test method. 
-`MultiUserTestConfig`  annotation can be used to change the default exception class for a test 
-class. The annotation is  inherited so it can be added to a configured base class to reduce 
+`@MultiUserTestConfig` annotation can be used to change the default exception class for a test 
+class. The annotation is inherited so it can be added to a configured base class to reduce 
 boilerplate code.
 
 The other options to change the expected class are to do it in `@Before` method or in the
 test method itself. This can be achieved by calling `authentication().setExpectedException()`
-method.
+method. The default exception is reset before each test.
 
 ## Creating Custom Users
 
@@ -107,35 +113,51 @@ database before the test method.
 
 # Defining Users
 
-`@TestUsers` annotation defines which users are used to run the tests. Users can be defined by role,
-by existing user, use the creator (`CREATOR`) user or use a user with the same role as the creator 
-(`NEW_USER`). When defining the user by role or with `NEW_USER`, a new user is created. The new user
-is created by calling `AbstractUserRoleIT#createUser(String, String, String, ROLE, LoginRole)` method.
+`@TestUsers` annotation defines which users are used to run the tests. Users can be defined by role (`role`),
+by existing user (`user`), use the creator (`TestUsers.CREATOR`) user or use a user with the same role as the creator 
+(`TestUsers.NEW_USER`). All these definition types can be mixed. 
+
+When defining the user by role or with `NEW_USER`, a new user is created. Each role and
+`NEW_USER` definition will create new users for each test method separately. They are created by calling 
+`AbstractUserRoleIT#createUser(String, String, String, ROLE, LoginRole)` method.
 
 ## By User
 
-You can run a test with an existing user by defining the user in format: `user:<user name>` 
-e.g. `user:test-user`. 
+You can run a test with an existing user by defining the user in format: `user:<user name>`.
+
+```java
+@TestUsers(creators="user:admin-user", 
+           users="user:test-user")
+```
 
 ## By Role
 
-You can run a test with a desired role by defining the user in format: `role:<role name>` e.g. 
-`role:ROLE_ADMIN`. 
+You can run a test with a desired role by defining the user in format: `role:<role name>`. 
+
+```java
+@TestUsers(creators="role:ROLE_ADMIN", 
+           users="role:ROLE_USER")
+```
 
 ## Special Roles
 
 `TestUsers.CREATOR` can be used to use the current creator user as the user. A new user is not created
-but the same user is fetched with `AbstractUserRoleIT#getUserByUsername(String)` method.
+but the same user is fetched with `AbstractUserRoleIT#getUserByUsername(String)` method. This can't
+be used as a creator user definition.
 
 `TestUsers.NEW_USER` can be used to create a new user with the same role as the current creator user has. 
 This can't be used if the creator roles have one or more creators defined with existing user.
 
+```java
+@TestUsers(creators="role:ROLE_ADMIN", 
+           users={TestUsers.CREATOR, TestUsers.NEW_USER, "user:test-user"})
+```
 
 # Assertions
 
 ## Simple authorization assertion
 
-Most simple way to add an multi user test assertion is to use:
+The most simplest is way to add a multi user test assertion is to use:
 
 ```java
 // In version 0.1
