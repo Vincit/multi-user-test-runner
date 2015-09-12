@@ -153,6 +153,17 @@ authorization().expect(toFail(ifAnyOf(roles("ROLE_USER", "ROLE_ADMIN"), users("U
 
 This will simply fail/pass test depending if the following call throws/doesn't throw an exception.
 
+## Stop waiting for exceptions
+
+To stop waiting for a method to fail use:
+
+```java
+authorization().dontExpectToFail();
+```
+
+This call will first check if the methods between the previous assertion and this call was supposed to fail. 
+If they were, the `dontExpectToFail()` call will throw an `AssertionError` to make the test fail.
+
 ## Advanced assertions
 
 From version 0.2 onwards there are also advanced assertions which work best with Java 8 lambdas.
