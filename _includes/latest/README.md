@@ -1,11 +1,11 @@
 Multi User Test Runner
 ======================
 
-Custom JUnit test runner for testing Spring webapps with multiple roles and users and their combinations. 
-Library makes it easy to test many authorization scenarios with minimal configuration.
+This custom JUnit test runner is for testing Spring web-apps with multiple roles, users and their combinations. 
+The library makes it easy to test many authorization scenarios with minimal configuration.
 
-Originally library was created to test security of Spring service layer methods. Library also works
-with any plain Java classes and has been successfully used with REST assured based API testing.
+Originally the library was created to test the security of Spring service-layer methods. The library also works
+with any plain Java classes and has been successfully used with REST-assured based API testing.
 
 # Requirements
 
@@ -15,10 +15,10 @@ with any plain Java classes and has been successfully used with REST assured bas
 # Optional Requirements
 
 ## For SpringMultiUserTestClassRunner (multi-user-test-runner-spring module)
- * Spring Framework 3.2.x, 4.0.x, 4.1.x, 4.2.x (versions tested)
- * Spring Security 3.2.x (version tested)
+ * Spring Framework 3.2.x, 4.0.x, 4.1.x, 4.2.x (tested)
+ * Spring Security 3.2.x (tested)
  
-Library may work with other versions, but it has not been tested other than the versions mentioned.
+The library may work with other versions but has not been tested with versions other than the ones mentioned above.
 
 # Getting
 
@@ -55,110 +55,204 @@ dependencies {
 
 Usage is simple:
 
+## Configuring the Test Class
+
 1. Create a configured abstract class by extending `AbstractUserRoleIT` class and implement methods. 
    This will be the base class for your tests.
-1. Configure runner and default expected annotation with `@MultiUserTestConfig`
+1. Configure the runner and set the default exception to expect on failure with the annotation `@MultiUserTestConfig`
 1. Create a test class which is extended from your configured class.
-1. Add `@TestUsers` annotation for your test class
-1. Write test methods
-1. Add e.g. `authentication().expect(toFail(ifAnyOf("user:user")));` before method to test 
-   to mark which roles/users are expected to fail
+1. Add `@TestUsers` annotation for your test class and define roles/users to use in the tests
 
+Write the tests:
+
+1. Write the test methods
+1. Add an assertion. For example, `authentication().expect(toFail(ifAnyOf("user:user")));` before the method under test 
+   to define which roles/users are expected to fail
+
+If a method fails when not expected the following error is shown:
+
+## Assertion Error Messages
+
+If test method fails when not expected:
+
+```
+java.lang.AssertionError: Not expected to fail with user role role:ROLE_ADMIN
+<stack trace...>
+Caused by: org.springframework.security.access.AccessDeniedException: Permission denied
+<stack trace...>
+```
+
+If tested method doesn't fail when expected:
+
+```
+java.lang.AssertionError: Expected to fail with user role role:ROLE_USER
+<stack trace...>
+```
 
 # Test Configuration
 
 ## Runner Classes
 
-By default `BlockMultiUserTestClassRunner` is used. When using with Spring `SpringMultiUserTestClassRunner` should be used
-runner loads the Spring context before the tests and the Block runner will works as a plain JUnit test runner.
-Used runner can be configured via `MultiUserTestConfig` annotation's `runner` argument.
-It is also possible to create a custom runner. The custom runner has to implement JUnit's `ParentTestRunner` and
-has to have a constructor with following format: 
-`CustomRunner(Class<?> clazz, UserIdentifier creatorIdentifier, UserIdentifier userIdentifier)`.
+The default runner is the `BlockMultiUserTestClassRunner`. When using with Spring service-layer methods
+`SpringMultiUserTestClassRunner` from `multi-user-test-runner-spring` module should be used.
+The Spring runner loads the Spring context before the tests. This mean you can use Spring's dependency
+injection, `@ContextConfiguration` etc. with your test classes. The used runner can be configured using 
+`@MultiUserTestConfig` annotation's `runner` parameter.
 
 ### Custom Runner Classes
 
-When creating runner class it is important to note that `AbstractUserRoleIT.logInAs(LoginRole)` method 
-has to be called *before* calling the test method and *after* `@Before` methods. This will
+It is also possible to create your own custom runner. The custom runner has to  extend JUnit's 
+`org.junit.runners.ParentRunner` (doesn't have to be direct superclass) class and has to have 
+a constructor with following signature:
+
+`CustomRunner(Class<?> clazz, UserIdentifier creatorIdentifier, UserIdentifier userIdentifier)`.
+
+When creating a custom runner class it is important to note that `AbstractUserRoleIT.logInAs(LoginRole)` 
+method  has to be called *after* `@Before` methods and *before* calling the actual test method. This will
 enable creating users in `@Before` methods so that they can be used as creators.
 
-`RunnerDelegate` class contains helper methods for creating custom runner class. Most of time
-the `RunnerDelegate` class methods can be just call throughs from the custom runner to the
-delegate.
+The `RunnerDelegate` class contains helper methods for creating custom runner classes. Most of time
+the runner implementation can just call the `RunnerDelegate` class methods without any additional logic.
+But for example implementing the `withBefores` method may require some logic in order to make the
+`@Before` calls to work correctly (See implementation of `BlockMultiUserTestClassRunner#withBefore` method).
 
 ## Default Exception
 
 By default `IllegalStateException` is expected as the exception that is thrown on failure. Other
 exceptions are ignored by the runner and will be handled normally by the test method. 
-`MultiUserTestConfig`  annotation can be used to change the default exception class for a test 
-class. The annotation is  inherited so it can be added to a configured base class to reduce 
+`@MultiUserTestConfig` annotation can be used to change the default exception class for a test 
+class. The annotation is inherited so it can be added to a configured base class to reduce 
 boilerplate code.
 
 The other options to change the expected class are to do it in `@Before` method or in the
 test method itself. This can be achieved by calling `authentication().setExpectedException()`
-method.
+method. The exception is reset to default value before each test method.
 
 ## Creating Custom Users
 
 In order to use custom users with `@TestUsers` annotation it is possible to create users
-in JUnit's `@Before` methods. Other method is to use a library like DBUnit to create the users to 
-database before the test method.
+in JUnit's `@Before` methods. Another way to achieve this is to use a library like DBUnit to 
+create the users to database before the test method.
 
 
 # Defining Users
 
-`@TestUsers` annotation defines which users are used to run the tests. Users can be defined by role,
-by existing user, use the creator (`CREATOR`) user or use a user with the same role as the creator 
-(`NEW_USER`). When defining the user by role or with `NEW_USER`, a new user is created. The new user
-is created by calling `AbstractUserRoleIT#createUser(String, String, String, ROLE, LoginRole)` method.
+`@TestUsers` annotation defines which users are used to run the tests. Users can be defined by role (`role`),
+by existing user (`user`), use the creator (`TestUsers.CREATOR`) user or use a user with the same role as the creator 
+(`TestUsers.NEW_USER`). All these definition types can be mixed. The possible definitions are shown in the table below.
 
-## By User
+  Type   | Format | Example | Description
+---------|--------|---------|------------
+  user   | `user:<user name>` | `@TestUsers(creators="user:admin-user", users="user:test-user")` | Use existing user
+  role   | `role:<role name>` | `@TestUsers(creators="role:ROLE_ADMIN", users="role:ROLE_USER")` | Create new user with given role
+ creator | `TestUsers.CREATOR` | `@TestUsers(creators="role:ROLE_ADMIN", users={TestUsers.CREATOR, "user:test-user"})` | Use the creator as the user
+new user | `TestUsers.NEW_USER` | `@TestUsers(creators="role:ROLE_ADMIN", users={TestUsers.NEW_USER, "user:test-user"})` | Create new user, uses same role as the creator has
 
-You can run a test with an existing user by defining the user in format: `user:<user name>` 
-e.g. `user:test-user`. 
+Each role and `NEW_USER` definition will create new users for each test method separately. They are created by calling 
+`AbstractUserRoleIT#createUser(String, String, String, ROLE, LoginRole)` method.
 
-## By Role
+## Changing User During Test
 
-You can run a test with a desired role by defining the user in format: `role:<role name>` e.g. 
-`role:ROLE_ADMIN`. 
+By default the creator user is logged in by using the implemented `loginWithUser(USER user)` method. To change
+the test to use the user the `logInAs(LoginRole role)` method can be called at any point of the test method.
+This method takes `LoginRole.CREATOR` or `LoginRole.USER` as parameter. Normally after creating data with
+the creator user the user is changed before calling the method under test:
 
-## Special Roles
+```java
+@Test
+public void fetchProduct() {
+    String productId = productService.createProduct("Ice cream");
+
+    logInAs(LoginRole.USER);
+
+    authorization().expect(toFail(ifAnyOf("role:ROLE_ANONYMOUS")));
+    productService.fetchProduct(productId);
+}
+```
+
+## The Special Roles
 
 `TestUsers.CREATOR` can be used to use the current creator user as the user. A new user is not created
-but the same user is fetched with `AbstractUserRoleIT#getUserByUsername(String)` method.
+but the same user is fetched with `AbstractUserRoleIT#getUserByUsername(String)` method. This can't
+be used as a creator user definition.
 
 `TestUsers.NEW_USER` can be used to create a new user with the same role as the current creator user has. 
-This can't be used if the creator roles have one or more creators defined with existing user.
+This can't be used as a creator definitions or if the creator roles have one or more creators defined with 
+existing user definition.
+
+## Ignoring Test Method for Specified User Definitions
+
+It is also possible to run certain test methods with only specific user definitions by adding `@TestUsers` 
+annotation to the test method.
+
+```java
+@TestUsers(creators = {"role:ROLE_ADMIN", "role:ROLE_USER"},
+        users = {TestUsers.CREATOR, "role:ROLE_ADMIN", "role:ROLE_USER", "user:existing-user-name"})
+public class ServiceIT extends AbstractConfiguredUserIT {
+    @TestUsers(creators = {"role:ROLE_ADMIN"}, users = {"role:ROLE_USER", "user:existing-user-name"})
+    @Test
+    public void onlyForAdminCreatorAndUserUser() {
+        // Will be run only if creator is ROLE_ADMIN and user is either ROLE_USER or existing-user-name
+    }
+
+    @TestUsers(creators = {"role:ROLE_ADMIN"})
+    @Test
+    public void onlyForAdminAndAnyUser() {
+        // Will be run only if creator is ROLE_ADMIN. User can be any of the ones defined for class.
+    }
+
+}
+```
 
 
 # Assertions
 
-## Simple authorization assertion
+## Simple Authorization Assertion
 
-Most simple way to add an multi user test assertion is to use:
+Assertions are easy to write. They are made by calling `authorization().expect()` method. 
+The simplest way to assert is to use one of the following:
 
 ```java
 // In version 0.1
 authorization().expect(toFail(ifAnyOf("role:ROLE_USER", "role:ROLE_ADMIN", "user:User1")));
 
+authorization().expect(notToFail(ifAnyOf("role:ROLE_USER", "role:ROLE_ADMIN", "user:User1")));
+
 // In version 0.2 also possible
 authorization().expect(toFail(ifAnyOf(roles("ROLE_USER", "ROLE_ADMIN"), users("User1"))));
+
+authorization().expect(notToFail(ifAnyOf(roles("ROLE_USER", "ROLE_ADMIN"), users("User1"))));
 ```
 
-This will simply fail/pass test depending if the following call throws/doesn't throw an exception.
+This will simply fail/pass test depending if the following call throws/doesn't throw an exception
+with the current user.
 
-## Advanced assertions
+## Stop Waiting for Exceptions
+
+To stop waiting for a method to fail use:
+
+```java
+authorization().dontExpectToFail();
+```
+
+This call will first check if the methods between the previous assertion and this call were supposed to fail. 
+If they were, the `dontExpectToFail()` call will throw an `AssertionError` to make the test fail.
+
+## Advanced Assertions
 
 From version 0.2 onwards there are also advanced assertions which work best with Java 8 lambdas.
 
 Assert that call fails/doesn't fail:
+
 ```java
 authorization().expect(call(() -> service.doSomething(value)).toFail(ifAnyOf("role:ROLE_ADMIN")));
 authorization().expect(call(() -> service.doSomething(value)).notToFail(ifAnyOf("role:ROLE_ADMIN")));
-authorization().expect(call(() -> service.doSomething(value)).toFailWithException(IllegalStateException.class, ifAnyOf("role:ROLE_ADMIN")));
+authorization().expect(call(() -> service.doSomething(value)).toFailWithException(IllegalStateException.class, 
+                                                                                  ifAnyOf("role:ROLE_ADMIN"))
+                      );
 ```
 
-Compare method call return value:
+Compare the method call's return value:
 
 ```java
 authorization().expect(valueOf(() -> service.getAllUsers(value))
@@ -166,7 +260,7 @@ authorization().expect(valueOf(() -> service.getAllUsers(value))
                 .toEqual(2, ifAnyOf("role:ROLE_USER"));
 ```
 
-Use a custom assertion (e.g. JUnit `assertEquals` or `assertThat`:
+Use any JUnit's assertion (e.g. `assertEquals` or `assertThat`):
 
 ```java
 authorization().expect(valueOf(() -> service.getAllUsers(value))
@@ -176,9 +270,14 @@ authorization().expect(valueOf(() -> service.getAllUsers(value))
 
 # Example
 
+Configuring base class for tests:
+
 ```java
 
 // Webapp specific implementation of test class
+@MultiUserTestConfig(
+        runner = SpringMultiUserTestClassRunner.class, 
+        defaultException = AccessDeninedException.class)
 @RunWith(MultiUserTestRunner.class)
 public class AbstractConfiguredUserIT extends AbstractUserRoleIT<User, Id<User>, User.Role> {
     
@@ -221,14 +320,13 @@ public class AbstractConfiguredUserIT extends AbstractUserRoleIT<User, Id<User>,
 
 ```
 
+Writing tests in the test class:
+
 ```java
 
 // Test implementation
 @TestUsers(creators = {"role:ROLE_ADMIN", "role:ROLE_USER"},
         users = {TestUsers.CREATOR, "role:ROLE_ADMIN", "role:ROLE_USER", "user:existing-user-name"})
-@MultiUserTestConfig(
-        runner = SpringMultiUserTestClassRunner.class, 
-        defaultException = AccessDeninedException.class)
 public class ServiceIT extends AbstractConfiguredUserIT {
 
     @Test
@@ -250,7 +348,7 @@ public class ServiceIT extends AbstractConfiguredUserIT {
 
 ```
 
-This will run tests:
+This example test class will run tests:
 
 * ServiceIT
     * createAndUpdateTodo creator = role:ROLE_ADMIN; user = creator;
@@ -261,39 +359,4 @@ This will run tests:
     * createAndUpdateTodo creator = role:ROLE_USER; user = role:ROLE_ADMIN;
     * createAndUpdateTodo creator = role:ROLE_USER; user = role:ROLE_USER;
     * createAndUpdateTodo creator = role:ROLE_USER; user = user:existing-user-name;
-    
-And if something fails due to authorization error, you will see error like:
-```
-java.lang.AssertionError: Not expected to fail with user role role:ROLE_ADMIN
-<stack trace...>
-Caused by: org.springframework.security.access.AccessDeniedException: Permission denied
-<stack trace...>
-```
-
-or if tested method doesn't fail when expected:
-```
-java.lang.AssertionError: Expected to fail with user role role:ROLE_USER
-<stack trace...>
-```
-
-It is also possible to run certain test methods with only certain roles by adding `TestUsers` annotation to the method.
-
-```java
-@TestUsers(creators = {"role:ROLE_ADMIN", "role:ROLE_USER"},
-        users = {TestUsers.CREATOR, "role:ROLE_ADMIN", "role:ROLE_USER", "user:existing-user-name"})
-public class ServiceIT extends AbstractConfiguredUserIT {
-    @TestUsers(creators = {"role:ROLE_ADMIN"}, users = {"role:ROLE_USER", "user:existing-user-name"})
-    @Test
-    public void onlyForAdminCreatorAndUserUser() {
-        // Will be run only if creator is ROLE_ADMIN and user is either ROLE_USER or existing-user-name
-    }
-    
-    @TestUsers(creators = {"role:ROLE_ADMIN"})
-    @Test
-    public void onlyForAdminAndAnyUser() {
-        // Will be run only if creator is ROLE_ADMIN. User can be any of the ones defined for class.
-    }
-    
-}
-```
 
