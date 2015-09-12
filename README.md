@@ -115,49 +115,33 @@ database before the test method.
 
 `@TestUsers` annotation defines which users are used to run the tests. Users can be defined by role (`role`),
 by existing user (`user`), use the creator (`TestUsers.CREATOR`) user or use a user with the same role as the creator 
-(`TestUsers.NEW_USER`). All these definition types can be mixed. 
+(`TestUsers.NEW_USER`). All these definition types can be mixed. The possible definitions are shown in the table below.
 
-When defining the user by role or with `NEW_USER`, a new user is created. Each role and
-`NEW_USER` definition will create new users for each test method separately. They are created by calling 
+  Type   | Format | Example | Description
+---------|--------|---------|------------
+  user   | `user:<user name>` | `@TestUsers(creators="user:admin-user", users="user:test-user")` | Use existing user
+  role   | `role:<role name>` | `@TestUsers(creators="role:ROLE_ADMIN", users="role:ROLE_USER")` | Create new user with given role
+ creator | `TestUsers.CREATOR` | `@TestUsers(creators="role:ROLE_ADMIN", users={TestUsers.CREATOR, "user:test-user"})` | Use the creator as the user
+new user | `TestUsers.NEW_USER` | `@TestUsers(creators="role:ROLE_ADMIN", users={TestUsers.NEW_USER, "user:test-user"})` | Create new user, uses same role as the creator has
+
+Each role and `NEW_USER` definition will create new users for each test method separately. They are created by calling 
 `AbstractUserRoleIT#createUser(String, String, String, ROLE, LoginRole)` method.
 
-## By User
-
-You can run a test with an existing user by defining the user in format: `user:<user name>`.
-
-```java
-@TestUsers(creators="user:admin-user", 
-           users="user:test-user")
-```
-
-## By Role
-
-You can run a test with a desired role by defining the user in format: `role:<role name>`. 
-
-```java
-@TestUsers(creators="role:ROLE_ADMIN", 
-           users="role:ROLE_USER")
-```
-
-## Special Roles
+## The Special Roles
 
 `TestUsers.CREATOR` can be used to use the current creator user as the user. A new user is not created
 but the same user is fetched with `AbstractUserRoleIT#getUserByUsername(String)` method. This can't
 be used as a creator user definition.
 
 `TestUsers.NEW_USER` can be used to create a new user with the same role as the current creator user has. 
-This can't be used if the creator roles have one or more creators defined with existing user.
-
-```java
-@TestUsers(creators="role:ROLE_ADMIN", 
-           users={TestUsers.CREATOR, TestUsers.NEW_USER, "user:test-user"})
-```
+This can't be used as a creator definitions or if the creator roles have one or more creators defined with 
+existing user definition.
 
 # Assertions
 
 ## Simple authorization assertion
 
-The most simplest is way to add a multi user test assertion is to use:
+The most simplest is way to assert is to use one of the following:
 
 ```java
 // In version 0.1
