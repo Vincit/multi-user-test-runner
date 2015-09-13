@@ -75,7 +75,7 @@ project(':core') {
     archivesBaseName = 'multi-user-test-runner'
 
     javadoc {
-        failOnError = false
+        failOnError = true
         options.overview = "src/main/java/overview.html"
     }
 
