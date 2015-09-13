@@ -132,8 +132,24 @@ new user | `TestUsers.NEW_USER` | `@TestUsers(creators="role:ROLE_ADMIN", users=
 Each role and `NEW_USER` definition will create new users for each test method separately. They are created by calling 
 `AbstractUserRoleIT#createUser(String, String, String, ROLE, LoginRole)` method.
 
--- TODO: Changing user in the test
-## Changing user in the test method
+## Changing user during test
+
+By default the creator user is logged in by using the implmented `loginWithUser(USER user)` method. To change
+the test to use the user the `logInAs(LoginRole role)` method can be called at any point of the test method.
+This method takes `LoginRole.CREATOR` or `LoginRole.USER` as parameter. Normally after creating data with
+the creator user the user is changed before calling the method under test:
+
+```java
+@Test
+public void fetchProduct() {
+    String productId = productService.createProduct("Ice cream");
+
+    logInAs(LoginRole.USER);
+
+    authorization().expect(toFail(ifAnyOf("role:ROLE_ANONYMOUS")));
+    productService.fetchProduct(productId);
+}
+```
 
 ## The Special Roles
 
