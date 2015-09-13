@@ -134,7 +134,7 @@ Each role and `NEW_USER` definition will create new users for each test method s
 
 ## Changing user during test
 
-By default the creator user is logged in by using the implmented `loginWithUser(USER user)` method. To change
+By default the creator user is logged in by using the implemented `loginWithUser(USER user)` method. To change
 the test to use the user the `logInAs(LoginRole role)` method can be called at any point of the test method.
 This method takes `LoginRole.CREATOR` or `LoginRole.USER` as parameter. Normally after creating data with
 the creator user the user is changed before calling the method under test:
