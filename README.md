@@ -226,6 +226,8 @@ authorization().expect(valueOf(() -> service.getAllUsers(value))
 
 # Example
 
+Configuring base class for tests:
+
 ```java
 
 // Webapp specific implementation of test class
@@ -271,6 +273,8 @@ public class AbstractConfiguredUserIT extends AbstractUserRoleIT<User, Id<User>,
 
 ```
 
+Writing tests in the test class:
+
 ```java
 
 // Test implementation
@@ -300,7 +304,7 @@ public class ServiceIT extends AbstractConfiguredUserIT {
 
 ```
 
-This will run tests:
+This example test class will run tests:
 
 * ServiceIT
     * createAndUpdateTodo creator = role:ROLE_ADMIN; user = creator;
