@@ -8,6 +8,7 @@ public interface Expectation {
      * Executes the call and processes the outcome
      * @param userIdentifier UserIdentifier to use for the call context.
      * @throws AssertionError if the outcome is not expected.
+     * @throws Throwable if error occurs
      */
     void execute(UserIdentifier userIdentifier) throws Throwable;
 

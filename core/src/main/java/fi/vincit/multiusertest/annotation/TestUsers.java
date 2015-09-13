@@ -40,11 +40,13 @@ public @interface TestUsers {
 
     /**
      * Creator roles/users to be used
+     * @return users/roles
      */
     String[] creators() default {};
 
     /**
      * User roles/users to be used
+     * @return users/roles
      */
     String[] users() default {};
 

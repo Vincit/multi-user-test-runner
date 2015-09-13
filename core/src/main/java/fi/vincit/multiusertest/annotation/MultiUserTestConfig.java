@@ -17,12 +17,13 @@ import fi.vincit.multiusertest.util.UserIdentifier;
  * Configure test class to use desired runner and change the default expected
  * exception. The default test runner class can be changed by using {@link #runner()}.
  * Custom runners can be used. The runner class has to have a constructor with:
+ * </p>
+ * 
  * <ul>
  *     <li>{@link }java.lang.Class}: Test class</li>
  *     <li>{@link fi.vincit.multiusertest.util.UserIdentifier}: used creator identifier</li>
  *     <li>{@link fi.vincit.multiusertest.util.UserIdentifier}: used user identifier</li>
  * </ul>
- *</p>
  *
  * <p>
  * When test class instance is created, the runner class should set user roles
@@ -38,11 +39,13 @@ import fi.vincit.multiusertest.util.UserIdentifier;
 public @interface MultiUserTestConfig {
     /**
      * Test runner class to use
+     * @return Test runner
      */
     Class runner() default BlockMultiUserTestClassRunner.class;
 
     /**
      * Default class type for failed tests
+     * @return Default exception
      */
     Class<? extends Throwable> defaultException() default IllegalStateException.class;
 }

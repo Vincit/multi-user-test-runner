@@ -46,7 +46,7 @@ public class AuthorizationRule implements TestRule {
      * Immediately executes the call to the given method and makes defined assertions. Using this {@link AuthorizationRule#expect(Expectation)}
      * method, the {@link AuthorizationRule#dontExpectToFail()} method isn't required to be called.
      * @param expectation {@link Expectation} rule
-     * @throws Throwable
+     * @throws Throwable If error occurs
      * @since 0.2
      */
     public void expect(Expectation expectation) throws Throwable {

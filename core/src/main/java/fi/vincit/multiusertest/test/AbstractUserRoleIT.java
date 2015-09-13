@@ -26,8 +26,8 @@ import fi.vincit.multiusertest.util.UserIdentifier;
  * with just a system specific configurations.
  * </p>
  *
- * @param <USER> User model type. Type of users the {@link this#createUser(String, String, String, Object, LoginRole)} creates.
- * @param <ROLE> Role enum or object. Type of user roles the {@link this#stringToRole(String)}.
+ * @param <USER> User model type. Type of users the {@link #createUser(String, String, String, Object, LoginRole)} creates.
+ * @param <ROLE> Role enum or object. Type of user roles the {@link #stringToRole(String)}.
  */
 @RunWith(MultiUserTestRunner.class)
 public abstract class AbstractUserRoleIT<USER, ROLE> {
