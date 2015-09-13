@@ -165,14 +165,19 @@ existing user definition.
 
 ## Simple authorization assertion
 
+Assertions are easy to write. They are made by calling `authorization().expect()` method. 
 The simplest way to assert is to use one of the following:
 
 ```java
 // In version 0.1
 authorization().expect(toFail(ifAnyOf("role:ROLE_USER", "role:ROLE_ADMIN", "user:User1")));
 
+authorization().expect(notToFail(ifAnyOf("role:ROLE_USER", "role:ROLE_ADMIN", "user:User1")));
+
 // In version 0.2 also possible
 authorization().expect(toFail(ifAnyOf(roles("ROLE_USER", "ROLE_ADMIN"), users("User1"))));
+
+authorization().expect(notToFail(ifAnyOf(roles("ROLE_USER", "ROLE_ADMIN"), users("User1"))));
 ```
 
 This will simply fail/pass test depending if the following call throws/doesn't throw an exception
@@ -198,10 +203,12 @@ Assert that call fails/doesn't fail:
 ```java
 authorization().expect(call(() -> service.doSomething(value)).toFail(ifAnyOf("role:ROLE_ADMIN")));
 authorization().expect(call(() -> service.doSomething(value)).notToFail(ifAnyOf("role:ROLE_ADMIN")));
-authorization().expect(call(() -> service.doSomething(value)).toFailWithException(IllegalStateException.class, ifAnyOf("role:ROLE_ADMIN")));
+authorization().expect(call(() -> service.doSomething(value)).toFailWithException(IllegalStateException.class, 
+                                                                                  ifAnyOf("role:ROLE_ADMIN"))
+                      );
 ```
 
-Compare method call return value:
+Compare the method call's return value:
 
 ```java
 authorization().expect(valueOf(() -> service.getAllUsers(value))
@@ -209,7 +216,7 @@ authorization().expect(valueOf(() -> service.getAllUsers(value))
                 .toEqual(2, ifAnyOf("role:ROLE_USER"));
 ```
 
-Use a custom assertion (e.g. JUnit `assertEquals` or `assertThat`):
+Use any JUnit's assertion (e.g. `assertEquals` or `assertThat`):
 
 ```java
 authorization().expect(valueOf(() -> service.getAllUsers(value))
