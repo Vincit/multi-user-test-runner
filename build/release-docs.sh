@@ -27,6 +27,7 @@ cp -r $PROJECT_DIR/core/build/docs/javadoc/** $JAVA_VERSION_DOC_DIR
 
 echo " * Copying JavaDocs to $JAVA_LATEST_DOC_DIR"
 mkdir -p $JAVA_LATEST_DOC_DIR
+rm -rf $JAVA_LATEST_DOC_DIR/*
 cp -r $PROJECT_DIR/core/build/docs/javadoc/** $JAVA_LATEST_DOC_DIR
 
 # Copy README.md
