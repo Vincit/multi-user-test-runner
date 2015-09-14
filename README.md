@@ -231,6 +231,9 @@ Configuring base class for tests:
 ```java
 
 // Webapp specific implementation of test class
+@MultiUserTestConfig(
+        runner = SpringMultiUserTestClassRunner.class, 
+        defaultException = AccessDeninedException.class)
 @RunWith(MultiUserTestRunner.class)
 public class AbstractConfiguredUserIT extends AbstractUserRoleIT<User, Id<User>, User.Role> {
     
@@ -280,9 +283,6 @@ Writing tests in the test class:
 // Test implementation
 @TestUsers(creators = {"role:ROLE_ADMIN", "role:ROLE_USER"},
         users = {TestUsers.CREATOR, "role:ROLE_ADMIN", "role:ROLE_USER", "user:existing-user-name"})
-@MultiUserTestConfig(
-        runner = SpringMultiUserTestClassRunner.class, 
-        defaultException = AccessDeninedException.class)
 public class ServiceIT extends AbstractConfiguredUserIT {
 
     @Test
