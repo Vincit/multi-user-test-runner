@@ -71,7 +71,7 @@ Write the tests:
 
 If a method fails when not expected the following error is shown:
 
-## Error Messages
+## Assertion Error Messages
 
 If test method fails when not expected:
 
