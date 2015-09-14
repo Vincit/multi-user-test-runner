@@ -161,6 +161,31 @@ be used as a creator user definition.
 This can't be used as a creator definitions or if the creator roles have one or more creators defined with 
 existing user definition.
 
+## Ignoring test method for specified user definitions
+
+It is also possible to run certain test methods with only specific user definitions by adding `@TestUsers` 
+annotation to the test method.
+
+```java
+@TestUsers(creators = {"role:ROLE_ADMIN", "role:ROLE_USER"},
+        users = {TestUsers.CREATOR, "role:ROLE_ADMIN", "role:ROLE_USER", "user:existing-user-name"})
+public class ServiceIT extends AbstractConfiguredUserIT {
+    @TestUsers(creators = {"role:ROLE_ADMIN"}, users = {"role:ROLE_USER", "user:existing-user-name"})
+    @Test
+    public void onlyForAdminCreatorAndUserUser() {
+        // Will be run only if creator is ROLE_ADMIN and user is either ROLE_USER or existing-user-name
+    }
+
+    @TestUsers(creators = {"role:ROLE_ADMIN"})
+    @Test
+    public void onlyForAdminAndAnyUser() {
+        // Will be run only if creator is ROLE_ADMIN. User can be any of the ones defined for class.
+    }
+
+}
+```
+
+
 # Assertions
 
 ## Simple authorization assertion
@@ -331,26 +356,3 @@ or if tested method doesn't fail when expected to fail:
 java.lang.AssertionError: Expected to fail with user role role:ROLE_USER
 <stack trace...>
 ```
-
-It is also possible to run certain test methods with only specific roles by adding `@TestUsers` 
-annotation to the method.
-
-```java
-@TestUsers(creators = {"role:ROLE_ADMIN", "role:ROLE_USER"},
-        users = {TestUsers.CREATOR, "role:ROLE_ADMIN", "role:ROLE_USER", "user:existing-user-name"})
-public class ServiceIT extends AbstractConfiguredUserIT {
-    @TestUsers(creators = {"role:ROLE_ADMIN"}, users = {"role:ROLE_USER", "user:existing-user-name"})
-    @Test
-    public void onlyForAdminCreatorAndUserUser() {
-        // Will be run only if creator is ROLE_ADMIN and user is either ROLE_USER or existing-user-name
-    }
-    
-    @TestUsers(creators = {"role:ROLE_ADMIN"})
-    @Test
-    public void onlyForAdminAndAnyUser() {
-        // Will be run only if creator is ROLE_ADMIN. User can be any of the ones defined for class.
-    }
-    
-}
-```
-
