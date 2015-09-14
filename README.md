@@ -55,7 +55,7 @@ dependencies {
 
 Usage is simple:
 
-## Configuring the test class
+## Configuring the Test Class
 
 1. Create a configured abstract class by extending `AbstractUserRoleIT` class and implement methods. 
    This will be the base class for your tests.
@@ -71,7 +71,7 @@ Write the tests:
 
 If a method fails when not expected the following error is shown:
 
-## Error messages
+## Error Messages
 
 If test method fails when not expected:
 
@@ -151,7 +151,7 @@ new user | `TestUsers.NEW_USER` | `@TestUsers(creators="role:ROLE_ADMIN", users=
 Each role and `NEW_USER` definition will create new users for each test method separately. They are created by calling 
 `AbstractUserRoleIT#createUser(String, String, String, ROLE, LoginRole)` method.
 
-## Changing user during test
+## Changing User During Test
 
 By default the creator user is logged in by using the implemented `loginWithUser(USER user)` method. To change
 the test to use the user the `logInAs(LoginRole role)` method can be called at any point of the test method.
@@ -180,7 +180,7 @@ be used as a creator user definition.
 This can't be used as a creator definitions or if the creator roles have one or more creators defined with 
 existing user definition.
 
-## Ignoring test method for specified user definitions
+## Ignoring Test Method for Specified User Definitions
 
 It is also possible to run certain test methods with only specific user definitions by adding `@TestUsers` 
 annotation to the test method.
@@ -207,7 +207,7 @@ public class ServiceIT extends AbstractConfiguredUserIT {
 
 # Assertions
 
-## Simple authorization assertion
+## Simple Authorization Assertion
 
 Assertions are easy to write. They are made by calling `authorization().expect()` method. 
 The simplest way to assert is to use one of the following:
@@ -227,7 +227,7 @@ authorization().expect(notToFail(ifAnyOf(roles("ROLE_USER", "ROLE_ADMIN"), users
 This will simply fail/pass test depending if the following call throws/doesn't throw an exception
 with the current user.
 
-## Stop waiting for exceptions
+## Stop Waiting for Exceptions
 
 To stop waiting for a method to fail use:
 
@@ -238,7 +238,7 @@ authorization().dontExpectToFail();
 This call will first check if the methods between the previous assertion and this call were supposed to fail. 
 If they were, the `dontExpectToFail()` call will throw an `AssertionError` to make the test fail.
 
-## Advanced assertions
+## Advanced Assertions
 
 From version 0.2 onwards there are also advanced assertions which work best with Java 8 lambdas.
 
