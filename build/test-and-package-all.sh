@@ -1,3 +1,3 @@
 #!/bin/bash
 
-gradle build -x findbugsMain -x findbugsTest
+gradle build -x findbugsMain -x findbugsTest -x signArchives

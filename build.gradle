@@ -1,3 +1,6 @@
+def projectId = 'multi-user-test-runner'
+def scmOrganization = 'Vincit'
+
 task tagRelease << {
     version = System.env.RELEASE_VERSION ?: "test"
 
@@ -24,6 +27,7 @@ subprojects {
     apply plugin: 'java'
     apply plugin: 'maven'
     apply plugin: 'findbugs'
+    apply plugin: 'signing'
 
     group = 'fi.vincit'
     sourceCompatibility = 1.7
@@ -40,9 +44,37 @@ subprojects {
         }
     }
 
+    signing {
+        sign configurations.archives
+    }
+
+    gradle.taskGraph.whenReady { taskGraph ->
+        if (taskGraph.allTasks.any { it instanceof Sign }) {
+            allprojects { ext."signing.keyId" = System.env.SIGNING_KEY_ID }
+            allprojects { ext."signing.secretKeyRingFile" = System.env.SIGNING_KEY_RING_FILE }
+            allprojects { ext."signing.password" = System.env.SIGNING_PASSWORD }
+        }
+    }
+
+    task javadocJar(type: Jar) {
+        classifier = 'javadoc'
+        from javadoc
+    }
+
+    task sourcesJar(type: Jar) {
+        classifier = 'sources'
+        from sourceSets.main.allSource
+    }
+
+    artifacts {
+        archives javadocJar, sourcesJar
+    }
+    
     uploadArchives {
         repositories {
             mavenDeployer {
+                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
                 repository(url: "$System.env.REPOSITORY_URL") {
                     authentication(
                             userName: "$System.env.DEPLOY_USERNAME",
@@ -55,9 +87,49 @@ subprojects {
                 addFilter('spring-test-class-runner') {artifact, file ->
                     artifact.name == 'multi-user-test-runner-spring'
                 }
+
+                def pomMetadata = {
+                    name 'Multi User Test Runner'
+                    packaging 'jar'
+                    description '''
+JUnit 4.12+ test runner for testing authentication with multiple users. Makes testing
+authorization with multiple user/role combination easier and reduces amount of boilerplate
+code.
+'''
+                    url "https://${scmOrganization}.github.io/$projectId/"
+
+                    scm {
+                        connection "scm:git:git@github.com/$scmOrganization/${projectId}.git"
+                        developerConnection "scm:git:git@github.com/$scmOrganization/${projectId}.git"
+                        url "https://github.com/$scmOrganization/$projectId"
+                    }
+
+                    licenses {
+                        license {
+                            name 'The Apache License, Version 2.0'
+                            url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        }
+                    }
+
+                    developers {
+                        developer {
+                            id 'juhasipo'
+                            name 'Juha Siponen'
+                        }
+                    }
+                }
+                pom('core').project pomMetadata
+                pom('spring-test-class-runner').project pomMetadata
+                pom('spring-test-class-runner').project {
+                    description 'Spring service testing support for Multi User Test Runner'
+                }
+
             }
         }
     }
+
+    install.repositories.mavenInstaller.pom = uploadArchives.repositories.mavenDeployer.pom('core')
+
 
     tasks.withType(FindBugs) {
         reports {
@@ -66,11 +138,11 @@ subprojects {
         }
     }
 
+
 }
 
 
 project(':core') {
-    apply plugin: 'maven-publish'
 
     archivesBaseName = 'multi-user-test-runner'
 
