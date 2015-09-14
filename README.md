@@ -55,7 +55,7 @@ dependencies {
 
 Usage is simple:
 
-Configure the test class:
+## Configuring the test class
 
 1. Create a configured abstract class by extending `AbstractUserRoleIT` class and implement methods. 
    This will be the base class for your tests.
@@ -69,6 +69,25 @@ Write the tests:
 1. Add an assertion. For example, `authentication().expect(toFail(ifAnyOf("user:user")));` before the method under test 
    to define which roles/users are expected to fail
 
+If a method fails when not expected the following error is shown:
+
+## Error messages
+
+If test method fails when not expected:
+
+```
+java.lang.AssertionError: Not expected to fail with user role role:ROLE_ADMIN
+<stack trace...>
+Caused by: org.springframework.security.access.AccessDeniedException: Permission denied
+<stack trace...>
+```
+
+If tested method doesn't fail when expected:
+
+```
+java.lang.AssertionError: Expected to fail with user role role:ROLE_USER
+<stack trace...>
+```
 
 # Test Configuration
 
@@ -340,19 +359,4 @@ This example test class will run tests:
     * createAndUpdateTodo creator = role:ROLE_USER; user = role:ROLE_ADMIN;
     * createAndUpdateTodo creator = role:ROLE_USER; user = role:ROLE_USER;
     * createAndUpdateTodo creator = role:ROLE_USER; user = user:existing-user-name;
-    
-And if something fails due to authorization error, you will see error like:
 
-```
-java.lang.AssertionError: Not expected to fail with user role role:ROLE_ADMIN
-<stack trace...>
-Caused by: org.springframework.security.access.AccessDeniedException: Permission denied
-<stack trace...>
-```
-
-or if tested method doesn't fail when expected to fail:
-
-```
-java.lang.AssertionError: Expected to fail with user role role:ROLE_USER
-<stack trace...>
-```
