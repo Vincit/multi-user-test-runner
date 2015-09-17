@@ -32,12 +32,14 @@ cp -r $PROJECT_DIR/core/build/docs/javadoc/** $JAVA_LATEST_DOC_DIR
 
 # Copy README.md
 README_FILE="README.md"
+CHANGELOG_FILE="CHANGELOG.md"
 LATEST_DIR="_includes/latest"
 VERSION_DIR="_includes/$VERSION"
 
 echo " * Copying $README_FILE to $LATEST_DIR"
 mkdir -p LATEST_DIR
 cp $PROJECT_DIR/$README_FILE $LATEST_DIR/$README_FILE
+cp $PROJECT_DIR/$CHANGELOG_FILE $LATEST_DIR/$CHANGELOG_FILE
 
 echo " * Copying $README_FILE to $VERSION_DIR"
 mkdir -p $VERSION_DIR
@@ -49,6 +51,7 @@ git add $JAVA_VERSION_DOC_DIR/**
 git add $JAVA_LATEST_DOC_DIR/**
 git add $VERSION_DIR/$README_FILE
 git add $LATEST_DIR/$README_FILE
+git add $LATEST_DIR/$CHANGELOG_FILE
 
 git commit -m "Release $VERSION docs"
 
