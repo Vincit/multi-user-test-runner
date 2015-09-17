@@ -423,3 +423,13 @@ Small Device Styles
   }
 
 }
+
+.m-header-link {
+  margin-right: 10px
+}
+.p-header-link {
+  padding: 10px 15px;
+}
+.button-header {
+  background-color: #303030;
+}
