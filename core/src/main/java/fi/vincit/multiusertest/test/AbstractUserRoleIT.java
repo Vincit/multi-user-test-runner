@@ -23,7 +23,7 @@ import fi.vincit.multiusertest.util.UserIdentifier;
 /**
  * <p>
  * Abstract test class implementation that can be used for running MultiUserTestRunner tests
- * with just a system specific configurations.
+ * with a system specific configurations.
  * </p>
  *
  * @param <USER> User model type. Type of users the {@link #createUser(String, String, String, Object, LoginRole)} creates.
@@ -84,6 +84,13 @@ public abstract class AbstractUserRoleIT<USER, ROLE> {
         return authorizationRule;
     }
 
+    /**
+     * Sets user identifiers. Validates that they are valid. If they are invalid
+     * throws an exception.
+     * @param creatorIdentifier Creator identifier
+     * @param userIdentifier User identifier
+     * @throws IllegalArgumentException If one or more identifiers are invalid.
+     */
     public void setUsers(UserIdentifier creatorIdentifier, UserIdentifier userIdentifier) {
         setCreatorIdentifier(creatorIdentifier);
         setUserIdentifier(userIdentifier);
@@ -212,6 +219,10 @@ public abstract class AbstractUserRoleIT<USER, ROLE> {
      */
     protected abstract USER getUserByUsername(String username);
 
+    /**
+     * Returns the default exception configured for the test.
+     * @return Default configuration
+     */
     public Class<? extends Throwable> getDefaultException() {
         TestConfiguration configuration =
                 TestConfiguration.fromTestUsers(

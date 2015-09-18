@@ -15,7 +15,7 @@ import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
  * This annotation works with MultiUserTestRunner JUnit runner. The creators parameter defines which
  * roles are used to create content and users parameter defines which roles are used to
  * consume content. The syntax and possible values for defining users are same as in
- * {@link MultiUserTestRunner} was described.
+ * {@link MultiUserTestRunner}.
  * </p>
  * <p>
  * Annotation can also be user with methods. Then the annotation will define with what users the method

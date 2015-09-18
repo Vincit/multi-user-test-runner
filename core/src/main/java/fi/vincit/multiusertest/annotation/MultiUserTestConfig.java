@@ -7,30 +7,28 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import org.junit.runners.model.FrameworkMethod;
-
 import fi.vincit.multiusertest.runner.junit.framework.BlockMultiUserTestClassRunner;
-import fi.vincit.multiusertest.util.UserIdentifier;
 
 /**
  * <p>
- * Configure test class to use desired runner and change the default expected
- * exception. The default test runner class can be changed by using {@link #runner()}.
- * Custom runners can be used. The runner class has to have a constructor with:
+ * Configure the test class to use the desired runner and change the default expected
+ * exception. The default test class runner can be changed by using the {@link #runner()}
+ * property. This annotation can be inherited so it can be set for a base class.
  * </p>
- * 
+ *
+ * <p>
+ * If the provided class runners don't suit the needs custom class runner can be created.
+ * Helper class {@link fi.vincit.multiusertest.util.RunnerDelegate} implements the basic
+ * functionality of the class runner.
+ * The runner class has to have a constructor with:
+ * </p>
  * <ul>
  *     <li>{@link }java.lang.Class}: Test class</li>
  *     <li>{@link fi.vincit.multiusertest.util.UserIdentifier}: used creator identifier</li>
  *     <li>{@link fi.vincit.multiusertest.util.UserIdentifier}: used user identifier</li>
  * </ul>
- *
  * <p>
- * When test class instance is created, the runner class should set user roles
- * with {@link fi.vincit.multiusertest.test.AbstractUserRoleIT#setUsers(UserIdentifier, UserIdentifier)}
- * method. Overriding {@link org.junit.runners.BlockJUnit4ClassRunner#testName(FrameworkMethod)} and
- * {@link org.junit.runners.BlockJUnit4ClassRunner#getName()} is recommended to make the test names to
- * describe all the different combinations properly.
+ * For more information please see the existing implementations.
  * </p>
  */
 @Target({TYPE})
@@ -38,7 +36,7 @@ import fi.vincit.multiusertest.util.UserIdentifier;
 @Inherited
 public @interface MultiUserTestConfig {
     /**
-     * Test runner class to use
+     * Test class runner to use
      * @return Test runner
      */
     Class runner() default BlockMultiUserTestClassRunner.class;

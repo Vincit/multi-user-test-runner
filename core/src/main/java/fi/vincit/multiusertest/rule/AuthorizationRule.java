@@ -16,8 +16,7 @@ import fi.vincit.multiusertest.util.UserIdentifier;
  * <p>
  * Rule to be used with {@link MultiUserTestRunner} to define whether a test passes or
  * fails. Before a method to be tested is executed {@link AuthorizationRule#expect(Authentication)}
- * should be called with the users that are expected to fail. The user syntax is same as in
- * {@link MultiUserTestRunner}
+ * should be called with the identifiers or expectation.
  * </p>
  */
 public class AuthorizationRule implements TestRule {
@@ -42,9 +41,9 @@ public class AuthorizationRule implements TestRule {
     }
 
     /**
-     * Advanced assertion which makes use of expecations to form {@link fi.vincit.multiusertest.rule.expection.Expectations}.
-     * Immediately executes the call to the given method and makes defined assertions. Using this {@link AuthorizationRule#expect(Expectation)}
-     * method, the {@link AuthorizationRule#dontExpectToFail()} method isn't required to be called.
+     * Advanced assertion which makes use of expectations to form {@link fi.vincit.multiusertest.rule.expection.Expectations}.
+     * Immediately executes the call to the given method and applies defined assertions. Using this {@link this#expect(Expectation)}
+     * method, the {@link this#dontExpectToFail()} method isn't required to be called.
      * @param expectation {@link Expectation} rule
      * @throws Throwable If error occurs
      * @since 0.2
