@@ -9,8 +9,8 @@ with any plain Java classes and has been successfully used with REST-assured bas
 
 # Requirements
 
- * Java 7+
- * JUnit 4.12+
+ * Java 7 or newer
+ * JUnit 4.12 or newer
  
 # Optional Requirements
 
