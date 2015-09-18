@@ -2,10 +2,13 @@ Multi User Test Runner
 ======================
 
 This custom JUnit test runner is for testing Spring web-apps with multiple roles, users and their combinations. 
-The library makes it easy to test many authorization scenarios with minimal configuration.
+The library makes it easy to test many authorization scenarios with minimal configuration. It is
+easy to verify that your system denies and permits the access for correct users even in more complex 
+scenarios where the authorization depends on multiple users and their roles.
 
-Originally the library was created to test the security of Spring service-layer methods. The library also works
-with any plain Java classes and has been successfully used with REST-assured based API testing.
+Originally the library was created to test the security of Spring service-layer methods. Now the core 
+library also with any plain Java classes and has been successfully used with REST-assured based API testing.
+For the Spring support, use the `multi-user-test-runner-spring` module.
 
 # Requirements
 
