@@ -60,6 +60,8 @@ Usage is simple:
 
 ## Configuring the Test Class
 
+Configure the base test class:
+
 1. Create a configured abstract class by extending `AbstractUserRoleIT` class and implement methods. 
    This will be the base class for your tests.
 1. Configure the runner and set the default exception to expect on failure with the annotation `@MultiUserTestConfig`
