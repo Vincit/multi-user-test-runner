@@ -341,7 +341,7 @@ public class ServiceIT extends AbstractConfiguredUserIT {
         TodoDto updateDto = new TodoDto(todo);
         updateDto.setName("Write better documentation");
         
-        authorization().expect(toFail().ifAnyOf("role:ROLE_USER", "user:existing-user-name"));
+        authorization().expect(toFail(ifAnyOf("role:ROLE_USER", "user:existing-user-name")));
         todoService.update(updateDto);
     }
 }
