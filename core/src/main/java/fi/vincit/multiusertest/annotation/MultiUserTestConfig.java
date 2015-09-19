@@ -23,7 +23,7 @@ import fi.vincit.multiusertest.runner.junit.framework.BlockMultiUserTestClassRun
  * The runner class has to have a constructor with:
  * </p>
  * <ul>
- *     <li>{@link }java.lang.Class}: Test class</li>
+ *     <li>{@link java.lang.Class}: Test class</li>
  *     <li>{@link fi.vincit.multiusertest.util.UserIdentifier}: used creator identifier</li>
  *     <li>{@link fi.vincit.multiusertest.util.UserIdentifier}: used user identifier</li>
  * </ul>
