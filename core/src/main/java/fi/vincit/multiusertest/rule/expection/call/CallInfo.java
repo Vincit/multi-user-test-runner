@@ -4,10 +4,13 @@ import fi.vincit.multiusertest.rule.FailMode;
 import fi.vincit.multiusertest.util.Optional;
 
 class CallInfo {
+
     private final FailMode failMode;
     private final Optional<Class<? extends Throwable>> exceptionClass;
+    private final ExceptionAssertionCall exceptionAssertionCall;
 
-    public CallInfo(FailMode failMode, Optional<Class<? extends Throwable>> exceptionClass) {
+    public CallInfo(FailMode failMode, Optional<Class<? extends Throwable>> exceptionClass, ExceptionAssertionCall exceptionAssertionCall) {
+        this.exceptionAssertionCall = exceptionAssertionCall;
         validate(failMode, exceptionClass);
         this.failMode = failMode;
         this.exceptionClass = exceptionClass;
@@ -30,12 +33,24 @@ class CallInfo {
         return exceptionClass;
     }
 
+    public ExceptionAssertionCall getExceptionAssertionCall() {
+        return exceptionAssertionCall;
+    }
+
+    public void assertException(Throwable e) {
+        exceptionAssertionCall.assertException(e);
+    }
+
     public boolean isExceptionExpected(Throwable e, Class<? extends Throwable> defaultException) {
         if (this.failMode == FailMode.EXPECT_NOT_FAIL) {
             return false;
         } else {
-            return exceptionClass.orElse(defaultException).isInstance(e);
+            return getException(defaultException).isInstance(e);
         }
+    }
+
+    private Class<? extends Throwable> getException(Class<? extends Throwable> defaultException) {
+        return exceptionClass.orElse(defaultException);
     }
 
 }

@@ -9,28 +9,28 @@ public class CallInfoTest {
 
     @Test
     public void testValidationPass_FailModeExpectToFail() {
-        new CallInfo(FailMode.EXPECT_FAIL, getOptionalException());
+        new CallInfo(FailMode.EXPECT_FAIL, getOptionalException(), ExpectCall.NOOP_ASSERTION);
     }
 
     @Test
     public void testValidationPass_FailModeExpectNotToFail() {
-        new CallInfo(FailMode.EXPECT_NOT_FAIL, getEmptyException());
+        new CallInfo(FailMode.EXPECT_NOT_FAIL, getEmptyException(), ExpectCall.NOOP_ASSERTION);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testValidationFail_FailModeExpectNotToFail() {
-        new CallInfo(FailMode.EXPECT_NOT_FAIL, getOptionalException());
+        new CallInfo(FailMode.EXPECT_NOT_FAIL, getOptionalException(), ExpectCall.NOOP_ASSERTION);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testValidationFail_FailModeNone_WithException() {
-        new CallInfo(FailMode.NONE, getOptionalException());
+        new CallInfo(FailMode.NONE, getOptionalException(), ExpectCall.NOOP_ASSERTION);
 
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testValidationFail_FailModeNone_WithoutException() {
-        new CallInfo(FailMode.NONE, getEmptyException());
+        new CallInfo(FailMode.NONE, getEmptyException(), ExpectCall.NOOP_ASSERTION);
     }
 
     private Optional<Class<? extends Throwable>> getOptionalException() {

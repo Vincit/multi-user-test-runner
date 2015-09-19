@@ -7,4 +7,6 @@ public interface ExpectCallFail extends Expectation {
     ExpectCallFail toFail(UserIdentifiers identifiers);
 
     ExpectCallFail toFailWithException(Class<? extends Throwable> exception, UserIdentifiers identifiers);
+
+    ExpectCallFail toFailWithException(Class<? extends Throwable> exception, UserIdentifiers identifiers, ExceptionAssertionCall exceptionAssertionCall);
 }

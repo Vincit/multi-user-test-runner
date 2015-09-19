@@ -1,5 +1,6 @@
 package fi.vincit.multiusertest;
 
+import static fi.vincit.multiusertest.rule.expection.Expectations.call;
 import static fi.vincit.multiusertest.rule.expection.Expectations.valueOf;
 import static fi.vincit.multiusertest.util.UserIdentifiers.ifAnyOf;
 import static org.hamcrest.core.Is.is;
@@ -10,6 +11,7 @@ import org.junit.runner.RunWith;
 
 import fi.vincit.multiusertest.annotation.TestUsers;
 import fi.vincit.multiusertest.configuration.ConfiguredTest;
+import fi.vincit.multiusertest.rule.expection.call.ExpectCall;
 import fi.vincit.multiusertest.rule.expection.value.ExpectValueOf;
 import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
 import fi.vincit.multiusertest.util.LoginRole;
@@ -76,6 +78,37 @@ public class ChainedTest extends ConfiguredTest {
                         .toAssert((value) -> assertThat(value, is(92)), ifAnyOf("role:ROLE_USER"))
                         .toAssert((value) -> assertThat(value, is(93)), ifAnyOf("role:ROLE_SUPER_ADMIN"))
                         .toAssert((value) -> assertThat(value, is(94)), ifAnyOf("role:ROLE_VISITOR"))
+        );
+    }
+
+    public void expectAssert_toFailWithException_toPass() throws Throwable {
+        ExpectCall expectValueOf = call(testService::throwAccessDenied);
+
+        logInAs(LoginRole.USER);
+        authorization().expect(expectValueOf
+                        .toFailWithException(
+                                IllegalStateException.class,
+                                ifAnyOf("role:ROLE_ADMIN"),
+                                exception -> {
+                                    assertThat(exception.getMessage(), is("Denied"));
+                                }
+                        )
+        );
+    }
+
+    @Test(expected = AssertionError.class)
+    public void expectAssert_toFailWithException_toFail() throws Throwable {
+        ExpectCall expectValueOf = call(() -> testService.throwAccessDenied());
+
+        logInAs(LoginRole.USER);
+        authorization().expect(expectValueOf
+                        .toFailWithException(
+                                IllegalStateException.class,
+                                ifAnyOf("role:ROLE_ADMIN"),
+                                exception -> {
+                                    assertThat(exception.getMessage(), is("Foo"));
+                                }
+                        )
         );
     }
 

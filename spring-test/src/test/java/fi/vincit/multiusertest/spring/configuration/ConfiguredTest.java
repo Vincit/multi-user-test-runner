@@ -28,7 +28,7 @@ public abstract class ConfiguredTest extends AbstractUserRoleIT<User, User.Role>
     }
 
     @Override
-    protected void loginWithUser(User user) {
+    public void loginWithUser(User user) {
         if (user != null) {
             SecurityUtil.logInUser(user);
         } else {
@@ -37,17 +37,17 @@ public abstract class ConfiguredTest extends AbstractUserRoleIT<User, User.Role>
     }
 
     @Override
-    protected User createUser(String username, String firstName, String lastName, User.Role userRole, LoginRole loginRole) {
+    public User createUser(String username, String firstName, String lastName, User.Role userRole, LoginRole loginRole) {
         return userService.addUser(new User(username, userRole));
     }
 
     @Override
-    protected User.Role stringToRole(String role) {
+    public User.Role stringToRole(String role) {
         return User.Role.valueOf(role);
     }
 
     @Override
-    protected User getUserByUsername(String username) {
+    public User getUserByUsername(String username) {
         return userService.findByUsername(username);
     }
 }
