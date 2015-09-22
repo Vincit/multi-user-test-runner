@@ -25,6 +25,10 @@ Multi User Test Runner
 
 * Add new advanced assertions. Java 8 syntactic sugar.
 
+## Braking changes
+
+* AbstractUserRoleIT doesn't take `USER_ID` generic parameter. Now the class signature is `AbstractUserRoleIT<USER, ROLE>`
+
 # 0.1 - internal release
 
 ## Changes/Features
