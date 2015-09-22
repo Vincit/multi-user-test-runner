@@ -10,7 +10,7 @@ Multi User Test Runner
 * Support for creating users in `@Before` methods
 * Improved documentation
 
-## Breaking changes
+## Breaking Changes
 
 * `SpringMultiUserTestClassRunner` is in its own artefact: spring-test-class-runner
 * Default TestUsers runner is changed from `SpringMultiUserTestClassRunner` to `BlockMultiUserTestClassRunner`
@@ -19,17 +19,17 @@ Multi User Test Runner
   it was called in `AbstractUserRoleIT`class's `@Before` method which made impossible to create custom users
   which could be used as creator user.
 
-# 0.2 - internal release
+# 0.2 (Internal Release)
 
 ## Changes
 
 * Add new advanced assertions. Java 8 syntactic sugar.
 
-## Braking changes
+## Breaking Changes
 
 * AbstractUserRoleIT doesn't take `USER_ID` generic parameter. Now the class signature is `AbstractUserRoleIT<USER, ROLE>`
 
-# 0.1 - internal release
+# 0.1 (Internal Release)
 
 ## Changes/Features
 
