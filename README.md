@@ -282,9 +282,9 @@ Configuring base class for tests:
 // Webapp specific implementation of test class
 @MultiUserTestConfig(
         runner = SpringMultiUserTestClassRunner.class, 
-        defaultException = AccessDeninedException.class)
+        defaultException = AccessDeniedException.class)
 @RunWith(MultiUserTestRunner.class)
-public class AbstractConfiguredUserIT extends AbstractUserRoleIT<User, Id<User>, User.Role> {
+public class AbstractConfiguredUserIT extends AbstractUserRoleIT<User, User.Role> {
     
     @Autowired
     protected UserService userService;
