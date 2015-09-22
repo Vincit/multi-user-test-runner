@@ -104,6 +104,7 @@ code.
                         url "https://github.com/$scmOrganization/$projectId"
                     }
 
+                    inceptionYear '2015'
                     licenses {
                         license {
                             name 'The Apache License, Version 2.0'
