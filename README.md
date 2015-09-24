@@ -303,6 +303,12 @@ Configuring base class for tests:
 ```java
 
 // Webapp specific implementation of test class
+@ContextConfiguration(classes = {IntegrationTestContext.class})
+@TestExecutionListeners({
+    DependencyInjectionTestExecutionListener.class,
+    DirtiesContextTestExecutionListener.class,
+    TransactionalTestExecutionListener.class
+})
 @MultiUserTestConfig(
         runner = SpringMultiUserTestClassRunner.class, 
         defaultException = AccessDeniedException.class)
