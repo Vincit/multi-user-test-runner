@@ -210,6 +210,23 @@ public class AbstractUserRoleITTest {
         order.verify(spyClass).loginWithUser("test-user");
     }
 
+    @Test
+    public void testUserWhenCreatorExistingUser() {
+        TestClass spyClass = mockTestClass();
+        when(spyClass.getUserByUsername("username")).thenReturn("test-user");
+        when(spyClass.getUserByUsername("username2")).thenReturn("test-user2");
+
+        spyClass.setUsers(UserIdentifier.parse("user:username"), UserIdentifier.parse("user:username2"));
+        spyClass.initializeUsers();
+
+        // Login so that LoginRole.USER uses the current creator
+        spyClass.logInAs(LoginRole.USER);
+
+
+        InOrder order = inOrder(spyClass);
+        order.verify(spyClass).loginWithUser("test-user2");
+    }
+
     protected void mockDefaultCalls(TestClass spyClass) {
         when(spyClass.createUser(anyString(), anyString(), anyString(), any(Role.class), any(LoginRole.class)))
                 .thenAnswer(new Answer<String>() {

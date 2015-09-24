@@ -125,7 +125,8 @@ public abstract class AbstractUserRoleIT<USER, ROLE> {
             authorizationRule.setRole(UserIdentifier.Type.CREATOR, null);
         } else {
             USER user;
-            if (creator.getMode() == TestUser.RoleMode.EXISTING_USER) {
+            if (this.user.getMode() == TestUser.RoleMode.CREATOR_USER
+                    && creator.getMode() == TestUser.RoleMode.EXISTING_USER) {
                 user = getCreator();
             } else {
                 user = getUser();
