@@ -140,6 +140,17 @@ create the users to database before the test method.
 
 # Defining Users
 
+## Creator and User
+
+There are two types of users: *creator* and *user*. *Creator* user is meant for creating resources (project,
+task, users in the system etc.) that the *user* then uses. Operations done with the *creator* user 
+should always succeed. The assertions should be done with the *user*. If there is need to test if creating
+a resource succeeds with a specific user or role it should be done with the *user* (not *creator* user).
+Otherwise the tests end up testing too many things at once. This library already adds a little bit of
+complexity to the test methods so the tests should be kept as simple as possible.
+
+## Definitions
+
 `@TestUsers` annotation defines which users are used to run the tests. Users can be defined by role (`role`),
 by existing user (`user`), use the creator (`TestUsers.CREATOR`) user or use a user with the same role as the creator 
 (`TestUsers.NEW_USER`). All these definition types can be mixed. The possible definitions are shown in the table below.
@@ -211,6 +222,15 @@ public class ServiceIT extends AbstractConfiguredUserIT {
 
 # Assertions
 
+## Definitions in Assertions
+
+The user definition in the assertion must be same as in defined in the
+`@TestUsers` annotation. For example if the `@TestUsers` has `user:admin` and that user has `ROLE_ADMIN` role
+it can be only asserted with `user:admin` and not `role:ROLE_ADMIN`. Also creator users can only be 
+asserted with `TestUsers.CREATOR` definition and not with user or role. Users specified with special
+definitions (`TestUsers.CREATOR` and `TestUsers.NEW_USER`) can only be asserted with the corresponding
+special definitions. These limitations may be removed in later versions.
+
 ## Simple Authorization Assertion
 
 Assertions are easy to write. They are made by calling `authorization().expect()` method. 
@@ -229,7 +249,8 @@ authorization().expect(notToFail(ifAnyOf(roles("ROLE_USER", "ROLE_ADMIN"), users
 ```
 
 This will simply fail/pass test depending if the following call throws/doesn't throw the expected exception
-with the current logged in user.
+with the current logged in user. 
+
 
 ## Stop Waiting for Exceptions
 
@@ -282,6 +303,12 @@ Configuring base class for tests:
 ```java
 
 // Webapp specific implementation of test class
+@ContextConfiguration(classes = {IntegrationTestContext.class})
+@TestExecutionListeners({
+    DependencyInjectionTestExecutionListener.class,
+    DirtiesContextTestExecutionListener.class,
+    TransactionalTestExecutionListener.class
+})
 @MultiUserTestConfig(
         runner = SpringMultiUserTestClassRunner.class, 
         defaultException = AccessDeniedException.class)
