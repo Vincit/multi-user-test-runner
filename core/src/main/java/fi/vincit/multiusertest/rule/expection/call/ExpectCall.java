@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.Objects;
 
 import fi.vincit.multiusertest.rule.FailMode;
-import fi.vincit.multiusertest.rule.expection.Expectation;
 import fi.vincit.multiusertest.rule.expection.FunctionCall;
 import fi.vincit.multiusertest.util.Optional;
 import fi.vincit.multiusertest.util.UserIdentifier;
@@ -19,16 +18,24 @@ import fi.vincit.multiusertest.util.UserIdentifiers;
  * method.
  * </p>
  * <p>
+ * toFail* and notToFail methods can't be mixed together. I.e. only <pre>toFail(...).toFailWithException(...)</pre> and
+ * <pre>notToFail(...).notToFail(...)</pre> calls are allowed. Not <pre>toFail(...).notToFail(...)</pre>.
+ * Otherwise it would be difficult to determine what to do with the definitions that are not defined since
+ * the expectation doesn't have access to all available definitions.
+ * </p>
+ * <p>
  * Use {@link fi.vincit.multiusertest.rule.expection.Expectations} to create instances.
  * </p>
  */
-public class ExpectCall implements Expectation {
+public class ExpectCall implements ExpectCallFail, ExpectCallNotFail {
 
     private Class<? extends Throwable> defaultExpectedException;
 
     private final FunctionCall functionCall;
 
     private final Map<UserIdentifier, CallInfo> expectations = new HashMap<>();
+
+    private FailMode generalFailMode = FailMode.NONE;
 
     public ExpectCall(FunctionCall functionCall) {
         this.functionCall = functionCall;
@@ -40,8 +47,10 @@ public class ExpectCall implements Expectation {
      * @param identifiers A set of user identifiers for which the call is expected to fail
      * @return ExpectCall object for chaining
      */
-    public ExpectCall toFail(UserIdentifiers identifiers) {
+    @Override
+    public ExpectCallFail toFail(UserIdentifiers identifiers) {
         Objects.requireNonNull(identifiers, "Identifiers must not be null");
+        generalFailMode = FailMode.EXPECT_FAIL;
         for (UserIdentifier identifier : identifiers.getIdentifiers()) {
             expectations.put(identifier, new CallInfo(FailMode.EXPECT_FAIL, Optional.<Class<? extends Throwable>>empty()));
         }
@@ -55,10 +64,12 @@ public class ExpectCall implements Expectation {
      * @param identifiers A set of user identifiers for which the call is expected to fail
      * @return ExpectCall object for chaining
      */
-    public ExpectCall toFailWithException(Class<? extends Throwable> exception, UserIdentifiers identifiers) {
+    @Override
+    public ExpectCallFail toFailWithException(Class<? extends Throwable> exception, UserIdentifiers identifiers) {
         Objects.requireNonNull(exception, "Exception must not be null");
         Objects.requireNonNull(identifiers, "Identifiers must not be null");
 
+        generalFailMode = FailMode.EXPECT_FAIL;
         for (UserIdentifier identifier : identifiers.getIdentifiers()) {
             expectations.put(identifier, new CallInfo(FailMode.EXPECT_FAIL, Optional.<Class<? extends Throwable>>of(exception)));
         }
@@ -71,8 +82,10 @@ public class ExpectCall implements Expectation {
      * @param identifiers A set of users for which the call is not expected to fail
      * @return ExpectCall object for chaining
      */
-    public ExpectCall notToFail(UserIdentifiers identifiers) {
+    @Override
+    public ExpectCallNotFail notToFail(UserIdentifiers identifiers) {
         Objects.requireNonNull(identifiers, "Identifiers must not be null");
+        generalFailMode = FailMode.EXPECT_NOT_FAIL;
         for (UserIdentifier identifier : identifiers.getIdentifiers()) {
             expectations.put(identifier, new CallInfo(FailMode.EXPECT_NOT_FAIL, Optional.<Class<? extends Throwable>>empty()));
         }
@@ -84,7 +97,7 @@ public class ExpectCall implements Expectation {
         try {
             functionCall.call();
         } catch (Throwable e) {
-            throwIfExpectionNotExpected(userIdentifier, e);
+            throwIfExpectationNotExpected(userIdentifier, e);
             return;
         }
         throwIfExceptionIsExpected(userIdentifier);
@@ -108,7 +121,7 @@ public class ExpectCall implements Expectation {
         }
     }
 
-    private void throwIfExpectionNotExpected(UserIdentifier userIdentifier, Throwable e)  throws Throwable {
+    private void throwIfExpectationNotExpected(UserIdentifier userIdentifier, Throwable e)  throws Throwable {
         Optional<CallInfo> possibleCallInfo = getFailInfo(userIdentifier);
         if (possibleCallInfo.isPresent()) {
             CallInfo callInfo = possibleCallInfo.get();;
@@ -121,7 +134,9 @@ public class ExpectCall implements Expectation {
                 }
             }
         } else {
-            throw new AssertionError("Not expected to fail with user role " + userIdentifier.toString(), e);
+            if (generalFailMode != FailMode.EXPECT_NOT_FAIL) {
+                throw new AssertionError("Not expected to fail with user role " + userIdentifier.toString(), e);
+            }
         }
     }
 

@@ -18,6 +18,9 @@ Multi User Test Runner
 * Creator is logged after `@Before` methods but just before calling the test method. Previously 
   it was called in `AbstractUserRoleIT`class's `@Before` method which made impossible to create custom users
   which could be used as creator user.
+* ExpectCall only allows to use `toFail(UserIdentifiers)` and `toFailWithException(UserIdentifier, Throwable` or
+  `notToFail(UserIdentifier)` methods together. I.e. `toFail(ifAnyOf("role:ROLE_USER")).notToFail(ifAnyOf("role:ROLE_ADMIN"))`
+  call chain is not possible anymore.
 
 # 0.2 (Internal Release)
 

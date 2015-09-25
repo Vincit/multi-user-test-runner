@@ -6,6 +6,7 @@ import java.io.IOException;
 
 import org.junit.Test;
 
+import fi.vincit.multiusertest.rule.expection.Expectation;
 import fi.vincit.multiusertest.rule.expection.Expectations;
 import fi.vincit.multiusertest.rule.expection.FunctionCall;
 import fi.vincit.multiusertest.util.AuthorizationFailedException;
@@ -30,7 +31,7 @@ public class ExpectCallTest {
 
     @Test
     public void testExpectCallToFail() throws Throwable {
-        ExpectCall call = Expectations.call(new FunctionCall() {
+        Expectation call = Expectations.call(new FunctionCall() {
             @Override
             public void call() throws Throwable {
                 throwDefault();
@@ -65,7 +66,7 @@ public class ExpectCallTest {
 
     @Test(expected = AssertionError.class)
     public void testNoThrow_ExpectToFail() throws Throwable {
-        ExpectCall call = Expectations.call(new FunctionCall() {
+        Expectation call = Expectations.call(new FunctionCall() {
             @Override
             public void call() throws Throwable {
                 notThrow();
@@ -78,7 +79,7 @@ public class ExpectCallTest {
 
     @Test(expected = IOException.class)
     public void testThrowsUnexpectedException() throws Throwable {
-        ExpectCall call = Expectations.call(new FunctionCall() {
+        Expectation call = Expectations.call(new FunctionCall() {
             @Override
             public void call() throws Throwable {
                 throwIOException();
@@ -218,6 +219,30 @@ public class ExpectCallTest {
             }
         })
                 .toFailWithException(Throwable.class, null)
+                .execute(UserIdentifier.parse("role:ROLE_USER"));
+    }
+
+    @Test(expected = AssertionError.class)
+    public void testExpectNotToFail_FailsCurrentRole() throws Throwable {
+        Expectations.call(new FunctionCall() {
+            @Override
+            public void call() throws Throwable {
+                throwDefault();
+            }
+        })
+                .notToFail(ifAnyOf("role:ROLE_USER"))
+                .execute(UserIdentifier.parse("role:ROLE_USER"));
+    }
+
+    @Test
+    public void testExpectNotToFail_FailsWithDifferentRole() throws Throwable {
+        Expectations.call(new FunctionCall() {
+            @Override
+            public void call() throws Throwable {
+                throwDefault();
+            }
+        })
+                .notToFail(ifAnyOf("role:ROLE_ADMIN"))
                 .execute(UserIdentifier.parse("role:ROLE_USER"));
     }
 }
