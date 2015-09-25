@@ -35,16 +35,6 @@ public class Java8SmokeTest extends ConfiguredTest {
     }
 
     @Test
-    public void expectNotToFail_Chained() throws Throwable {
-        logInAs(LoginRole.USER);
-        authorization().expect(
-                call(testService::noThrow)
-                    .toFail(ifAnyOf("role:ROLE_ADMIN"))
-                    .notToFail(ifAnyOf("role:ROLE_USER"))
-        );
-    }
-
-    @Test
     public void expectAssert_toPass() throws Throwable {
         authorization().expect(valueOf(() -> testService.returnsValue(3))
                 .toAssert((value) -> assertThat(value, is(3)), ifAnyOf("role:ROLE_ADMIN"))
