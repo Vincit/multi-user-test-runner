@@ -18,7 +18,7 @@ public abstract class ConfiguredTestWithRoleAlias extends AbstractUserRoleIT<Use
     private static Map<String, User> users = new HashMap<>();
 
     @Override
-    protected void loginWithUser(User user) {
+    public void loginWithUser(User user) {
         SecurityUtil.logInUser(user);
     }
 
@@ -28,14 +28,14 @@ public abstract class ConfiguredTestWithRoleAlias extends AbstractUserRoleIT<Use
     }
 
     @Override
-    protected User createUser(String username, String firstName, String lastName, User.Role userRole, LoginRole loginRole) {
+    public User createUser(String username, String firstName, String lastName, User.Role userRole, LoginRole loginRole) {
         User user = new User(username, userRole);
         users.put(username, user);
         return user;
     }
 
     @Override
-    protected User.Role stringToRole(String role) {
+    public User.Role stringToRole(String role) {
         switch(role) {
             case "NORMAL": return User.Role.ROLE_USER;
             case "ANONYMOUS": return User.Role.ROLE_VISITOR;
@@ -44,7 +44,7 @@ public abstract class ConfiguredTestWithRoleAlias extends AbstractUserRoleIT<Use
     }
 
     @Override
-    protected User getUserByUsername(String username) {
+    public User getUserByUsername(String username) {
         return users.get(username);
     }
 }

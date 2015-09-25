@@ -49,21 +49,21 @@ public class RunnerDelegateTest {
     @Ignore
     private static class TestConfig extends AbstractUserRoleIT<String, String> {
         @Override
-        protected void loginWithUser(String s) {
+        public void loginWithUser(String s) {
         }
 
         @Override
-        protected String createUser(String username, String firstName, String lastName, String userRole, LoginRole loginRole) {
+        public String createUser(String username, String firstName, String lastName, String userRole, LoginRole loginRole) {
             return null;
         }
 
         @Override
-        protected String stringToRole(String role) {
+        public String stringToRole(String role) {
             return null;
         }
 
         @Override
-        protected String getUserByUsername(String username) {
+        public String getUserByUsername(String username) {
             return null;
         }
 

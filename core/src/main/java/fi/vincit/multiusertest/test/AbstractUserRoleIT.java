@@ -27,7 +27,7 @@ import fi.vincit.multiusertest.util.UserIdentifier;
  * @param <ROLE> Role enum or object. Type of user roles the {@link #stringToRole(String)}.
  */
 @RunWith(MultiUserTestRunner.class)
-public abstract class AbstractUserRoleIT<USER, ROLE> {
+public abstract class AbstractUserRoleIT<USER, ROLE> implements UserRoleIT<USER,ROLE> {
 
     private TestUser<USER, ROLE> user;
     private TestUser<USER, ROLE> creator;
@@ -85,18 +85,13 @@ public abstract class AbstractUserRoleIT<USER, ROLE> {
         return authorizationRule;
     }
 
-    /**
-     * Sets user identifiers. Validates that they are valid. If they are invalid
-     * throws an exception.
-     * @param creatorIdentifier Creator identifier
-     * @param userIdentifier User identifier
-     * @throws IllegalArgumentException If one or more identifiers are invalid.
-     */
+    @Override
     public void setUsers(UserIdentifier creatorIdentifier, UserIdentifier userIdentifier) {
         setCreatorIdentifier(creatorIdentifier);
         setUserIdentifier(userIdentifier);
     }
 
+    @Override
     public USER getUser() {
         if (user.getMode() == TestUser.RoleMode.EXISTING_USER) {
             return getUserByUsername(user.getIdentifier());
@@ -107,6 +102,7 @@ public abstract class AbstractUserRoleIT<USER, ROLE> {
         }
     }
 
+    @Override
     public USER getCreator() {
         if (creator.getMode() == TestUser.RoleMode.EXISTING_USER) {
             return getUserByUsername(creator.getIdentifier());
@@ -121,6 +117,11 @@ public abstract class AbstractUserRoleIT<USER, ROLE> {
         return user.getRole();
     }
 
+    public ROLE getCreatorRole() {
+        return creator.getRole();
+    }
+
+    @Override
     public void logInAs(LoginRole role) {
         if (role == LoginRole.CREATOR) {
             USER creatorUser = getCreator();
@@ -161,15 +162,14 @@ public abstract class AbstractUserRoleIT<USER, ROLE> {
         }
     }
 
-    protected ROLE getCreatorRole() {
-        return creator.getRole();
+    /**
+     * "Log in" anonymous user. By default users {@link #loginWithUser(Object)}
+     * using null as the user. Can be overridden to change the behaviour.
+     */
+    protected void loginAnonymous() {
+        loginWithUser(null);
     }
 
-    /**
-     * Generates a random username
-     * @return Random username
-     * @since 0.3.0
-     */
     protected String getRandomUsername() {
         return "testuser" + random.nextInt();
     }
@@ -215,48 +215,10 @@ public abstract class AbstractUserRoleIT<USER, ROLE> {
     }
 
     /**
-     * Log in user with given user
-     * @param user User that should be logged in, null if no user logged in
-     */
-    protected abstract void loginWithUser(USER user);
-
-    /**
-     * "Log in" anonymous user. By default users {@link #loginWithUser(Object)}
-     * using null as the user. Can be overridden to change the behaviour.
-     */
-    protected void loginAnonymous() {
-        loginWithUser(null);
-    }
-
-    /**
-     * Creates new user to the system and returns it
-     * @param username Random user name
-     * @param firstName First name
-     * @param lastName Last name
-     * @param userRole User role
-     * @param loginRole Login role
-     * @return Created user
-     */
-    protected abstract USER createUser(String username, String firstName, String lastName, ROLE userRole, LoginRole loginRole);
-
-    /**
-     * Returns given role string as system role object/enum.
-     * @param role Role as string.
-     * @return Role object/enum
-     */
-    protected abstract ROLE stringToRole(String role);
-
-    /**
-     * Search user by username
-     * @param username User's username
-     * @return User object
-     */
-    protected abstract USER getUserByUsername(String username);
-
-    /**
      * Returns the default exception configured for the test.
      * @return Default configuration
      */
+    @Override
     public Class<? extends Throwable> getDefaultException() {
         TestConfiguration configuration =
                 TestConfiguration.fromTestUsers(

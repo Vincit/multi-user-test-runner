@@ -37,7 +37,7 @@ public class AbstractUserRoleITTest {
     @MultiUserTestConfig(runner = BlockMultiUserTestClassRunner.class)
     public static class TestClass extends AbstractUserRoleIT<String, Role> {
         @Override
-        protected void loginWithUser(String user) {
+        public void loginWithUser(String user) {
 
         }
 
@@ -47,17 +47,17 @@ public class AbstractUserRoleITTest {
         }
 
         @Override
-        protected String createUser(String username, String firstName, String lastName, Role userRole, LoginRole loginRole) {
+        public String createUser(String username, String firstName, String lastName, Role userRole, LoginRole loginRole) {
             return username;
         }
 
         @Override
-        protected Role stringToRole(String role) {
+        public Role stringToRole(String role) {
             return Role.valueOf(role);
         }
 
         @Override
-        protected String getUserByUsername(String username) {
+        public String getUserByUsername(String username) {
             return null;
         }
 

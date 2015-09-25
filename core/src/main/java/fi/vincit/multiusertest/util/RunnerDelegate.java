@@ -10,6 +10,7 @@ import org.junit.runners.model.Statement;
 import org.junit.runners.model.TestClass;
 
 import fi.vincit.multiusertest.test.AbstractUserRoleIT;
+import fi.vincit.multiusertest.test.UserRoleIT;
 
 public class RunnerDelegate {
 
@@ -62,9 +63,9 @@ public class RunnerDelegate {
         return String.format("creator = %s; user = %s", creatorIdentifier, userIdentifier);
     }
 
-    public AbstractUserRoleIT createTest(Object testInstance) {
-        if (testInstance instanceof AbstractUserRoleIT) {
-            AbstractUserRoleIT roleItInstance = (AbstractUserRoleIT) testInstance;
+    public UserRoleIT createTest(Object testInstance) {
+        if (testInstance instanceof UserRoleIT) {
+            UserRoleIT roleItInstance = (UserRoleIT) testInstance;
             roleItInstance.setUsers(creatorIdentifier, userIdentifier);
             return roleItInstance;
         } else {
@@ -78,8 +79,8 @@ public class RunnerDelegate {
         Statement runLoginBeforeTestMethod = new Statement() {
             @Override
             public void evaluate() throws Throwable {
-                if (target instanceof AbstractUserRoleIT) {
-                    ((AbstractUserRoleIT)target).logInAs(LoginRole.CREATOR);
+                if (target instanceof UserRoleIT) {
+                    ((UserRoleIT)target).logInAs(LoginRole.CREATOR);
                 }
                 statement.evaluate();
             }
