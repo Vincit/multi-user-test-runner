@@ -18,8 +18,8 @@ import fi.vincit.multiusertest.util.UserIdentifiers;
  * method.
  * </p>
  * <p>
- * toFail* and notToFail methods can't be mixed together. I.e. only <pre>toFail(...).toFailWithException(...)</pre> and
- * <pre>notToFail(...).notToFail(...)</pre> calls are allowed. Not <pre>toFail(...).notToFail(...)</pre>.
+ * toFail* and notToFail methods can't be mixed together. I.e. only <code>toFail(...).toFailWithException(...)</code> and
+ * <code>notToFail(...).notToFail(...)</code> calls are allowed. <b>Not</b> <code>toFail(...).notToFail(...)</code>.
  * Otherwise it would be difficult to determine what to do with the definitions that are not defined since
  * the expectation doesn't have access to all available definitions.
  * </p>
