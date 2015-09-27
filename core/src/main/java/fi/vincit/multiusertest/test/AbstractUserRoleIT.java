@@ -140,7 +140,7 @@ public abstract class AbstractUserRoleIT<USER, ROLE> {
             } else if (this.user.getMode() == TestUser.RoleMode.CREATOR_USER) {
                 authorizationRule.setRole(UserIdentifier.getCreator());
             } else {
-                authorizationRule.setRole(UserIdentifier.Type.ROLE, getUserRole().toString());
+                authorizationRule.setRole(UserIdentifier.Type.ROLE, this.user.getIdentifier());
             }
         }
     }
