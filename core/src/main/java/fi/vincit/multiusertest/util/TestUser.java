@@ -18,11 +18,16 @@ public class TestUser<USER, ROLE> {
         return new TestUser<>(null, RoleMode.EXISTING_USER, null, identifier);
     }
 
+    public static <USER, ROLE> TestUser<USER, ROLE> forUnregisteredUser() {
+        return new TestUser<>(null, RoleMode.UNREGISTERED, null, null);
+    }
+
     public enum RoleMode {
         CREATOR_USER,
         NEW_WITH_CREATOR_ROLE,
         SET_USER_ROLE,
-        EXISTING_USER
+        EXISTING_USER,
+        UNREGISTERED
     }
 
     private final ROLE role;

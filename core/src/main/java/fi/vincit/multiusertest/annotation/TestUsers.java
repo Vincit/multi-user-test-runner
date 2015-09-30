@@ -39,6 +39,11 @@ public @interface TestUsers {
     String NEW_USER = "__FI_VINCIT_MULTI_ROLE_TEST_NEW_USER__";
 
     /**
+     * Don't login at all
+     */
+    String UNREGISTERED = "__FI_VINCIT_MULTI_ROLE_TEST_UNREGISTERED__";
+
+    /**
      * Creator roles/users to be used
      * @return users/roles
      */

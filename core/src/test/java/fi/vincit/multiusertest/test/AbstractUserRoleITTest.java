@@ -42,6 +42,11 @@ public class AbstractUserRoleITTest {
         }
 
         @Override
+        protected void loginUnregistered() {
+            super.loginUnregistered();
+        }
+
+        @Override
         protected String createUser(String username, String firstName, String lastName, Role userRole, LoginRole loginRole) {
             return username;
         }
@@ -225,6 +230,38 @@ public class AbstractUserRoleITTest {
 
         InOrder order = inOrder(spyClass);
         order.verify(spyClass).loginWithUser("test-user2");
+    }
+
+    @Test
+    public void testUserWhenUnregistered() {
+        TestClass spyClass = mockTestClass();
+        when(spyClass.getUserByUsername("username")).thenReturn("test-user");
+
+        spyClass.setUsers(UserIdentifier.parse("user:username"), UserIdentifier.getUnregistered());
+        spyClass.initializeUsers();
+
+        spyClass.logInAs(LoginRole.USER);
+
+
+        InOrder order = inOrder(spyClass);
+        order.verify(spyClass).loginUnregistered();
+        order.verify(spyClass).loginWithUser(null);
+    }
+
+    @Test
+    public void testCreatorWhenUnregistered() {
+        TestClass spyClass = mockTestClass();
+        when(spyClass.getUserByUsername("username")).thenReturn("test-user");
+
+        spyClass.setUsers(UserIdentifier.getUnregistered(), UserIdentifier.parse("user:username"));
+        spyClass.initializeUsers();
+
+        spyClass.logInAs(LoginRole.CREATOR);
+
+
+        InOrder order = inOrder(spyClass);
+        order.verify(spyClass).loginUnregistered();
+        order.verify(spyClass).loginWithUser(null);
     }
 
     protected void mockDefaultCalls(TestClass spyClass) {

@@ -16,7 +16,7 @@ import fi.vincit.multiusertest.spring.configuration.ConfiguredTest;
 import fi.vincit.multiusertest.util.LoginRole;
 
 @TestUsers(
-        creators = {"role:ROLE_ADMIN"}, users = "role:ROLE_USER"
+        creators = {"role:ROLE_ADMIN"}, users = {"role:ROLE_USER", TestUsers.UNREGISTERED}
 )
 @ContextConfiguration(classes = {TestConfiguration.class})
 public class SmokeTest extends ConfiguredTest {
@@ -24,13 +24,13 @@ public class SmokeTest extends ConfiguredTest {
     @Test
     public void testNotFail() {
         logInAs(LoginRole.USER);
-        authorization().expect(notToFail(ifAnyOf("role:ROLE_USER")));
+        authorization().expect(notToFail(ifAnyOf("role:ROLE_USER", TestUsers.UNREGISTERED)));
     }
 
     @Test
     public void testFail() {
         logInAs(LoginRole.USER);
-        authorization().expect(toFail(ifAnyOf("role:ROLE_USER")));
+        authorization().expect(toFail(ifAnyOf("role:ROLE_USER", TestUsers.UNREGISTERED)));
         throw new AccessDeniedException("Denied");
     }
 
@@ -38,7 +38,7 @@ public class SmokeTest extends ConfiguredTest {
     public void testFail_CustomException() throws IOException {
         authorization().setExpectedException(IOException.class);
         logInAs(LoginRole.USER);
-        authorization().expect(toFail(ifAnyOf("role:ROLE_USER")));
+        authorization().expect(toFail(ifAnyOf("role:ROLE_USER", TestUsers.UNREGISTERED)));
         throw new IOException("IO Fail");
     }
 }

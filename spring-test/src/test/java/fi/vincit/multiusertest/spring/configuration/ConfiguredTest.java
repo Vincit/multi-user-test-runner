@@ -29,7 +29,11 @@ public abstract class ConfiguredTest extends AbstractUserRoleIT<User, User.Role>
 
     @Override
     protected void loginWithUser(User user) {
-        SecurityUtil.logInUser(user);
+        if (user != null) {
+            SecurityUtil.logInUser(user);
+        } else {
+            SecurityUtil.logInUser(null);
+        }
     }
 
     @Override
