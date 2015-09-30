@@ -195,6 +195,16 @@ be used as a creator user definition.
 This definition can't be used as a creator definitions or if the creator roles have one or more creators defined with 
 existing user definition.
 
+## Role Aliasing and Multi Role Support
+
+The role definitions don't have to use the exact same role as the role enum has. By implementing the
+`AbstractUserRoleIT#stringToRole(String)` method appropriately the role definitions can have any value
+which is then mapped to the real role.
+
+Role aliasing feature can be used to implement a simple support for multiple roles per user. Mapping the
+role definitions to multiple roles can be done for example in `AbstractUserRoleIT#createUser(String, String, String, ROLE, LoginRole)`
+method.
+
 ## Ignoring a Test Method for Specific User Definitions
 
 It is possible to run certain test methods with only specific user definitions by adding `@TestUsers` 
