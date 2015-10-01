@@ -34,7 +34,7 @@ public class UserIdentifier {
         /**
          * Not logged in user.
          */
-        UNREGISTERED
+        ANONYMOUS
     }
 
     private final Type type;
@@ -45,8 +45,8 @@ public class UserIdentifier {
             return getCreator();
         } else if (identifierString.equals(TestUsers.NEW_USER)) {
             return getNewUser();
-        } else if (identifierString.equals(TestUsers.UNREGISTERED)) {
-            return getUnregistered();
+        } else if (identifierString.equals(TestUsers.ANONYMOUS)) {
+            return getAnonymous();
         } else if (identifierString.startsWith(MultiUserTestRunner.USER_PREFIX) || identifierString.startsWith(MultiUserTestRunner.ROLE_PREFIX)) {
             String[] data = identifierString.split(":", 2);
             return new UserIdentifier(Type.valueOf(data[0].toUpperCase()), data[1]);
@@ -56,8 +56,8 @@ public class UserIdentifier {
         }
     }
 
-    public static UserIdentifier getUnregistered() {
-        return new UserIdentifier(Type.UNREGISTERED, null);
+    public static UserIdentifier getAnonymous() {
+        return new UserIdentifier(Type.ANONYMOUS, null);
     }
 
     public static UserIdentifier getCreator() {

@@ -17,10 +17,10 @@ import fi.vincit.multiusertest.util.SecurityUtil;
 import fi.vincit.multiusertest.util.User;
 import fi.vincit.multiusertest.util.UserIdentifier;
 
-@TestUsers(creators = {TestUsers.UNREGISTERED},
+@TestUsers(creators = {TestUsers.ANONYMOUS},
         users = {"role:ROLE_ADMIN", "role:ROLE_USER"})
 @RunWith(MultiUserTestRunner.class)
-public class UnregisteredCreatorTest extends ConfiguredTest {
+public class AnonymousCreatorTest extends ConfiguredTest {
 
     @Test
     public void creatorLoggedIn() {
@@ -42,10 +42,10 @@ public class UnregisteredCreatorTest extends ConfiguredTest {
     }
 
     @Test
-    public void expectFailureUnregisteredCreator() {
+    public void expectFailureAnonymousCreator() {
         logInAs(LoginRole.CREATOR);
         authorization().expect(toFail(ifAnyOf(TestUsers.CREATOR)));
-        throwIfUserRole(TestUsers.UNREGISTERED);
+        throwIfUserRole(TestUsers.ANONYMOUS);
     }
 
     @Test
@@ -54,8 +54,8 @@ public class UnregisteredCreatorTest extends ConfiguredTest {
     }
 
     private void throwIfUserRole(String identifier) {
-        if (identifier.equals(TestUsers.UNREGISTERED)) {
-            throw new IllegalStateException("Thrown when role was UNREGISTERED");
+        if (identifier.equals(TestUsers.ANONYMOUS)) {
+            throw new IllegalStateException("Thrown when role was ANONYMOUS");
         } else {
             User.Role identifierRole = stringToRole(UserIdentifier.parse(identifier).getIdentifier());
             if (SecurityUtil.getLoggedInUser().getRole() == identifierRole) {

@@ -36,7 +36,7 @@ import fi.vincit.multiusertest.util.UserIdentifier;
  * creates a new user with the same role as the creator had.
  * </p>
  * <p>
- * There is also a special role {@link fi.vincit.multiusertest.annotation.TestUsers#UNREGISTERED} both for
+ * There is also a special role {@link fi.vincit.multiusertest.annotation.TestUsers#ANONYMOUS} both for
  * the creator and the user. This means that the current user or creator isn't logged in.
  * </p>
  * <p>

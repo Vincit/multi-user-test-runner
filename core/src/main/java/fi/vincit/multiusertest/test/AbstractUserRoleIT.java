@@ -62,7 +62,7 @@ public abstract class AbstractUserRoleIT<USER, ROLE> {
             }
         } else if (user.getMode() == TestUser.RoleMode.EXISTING_USER) {
             // Do nothing, user already set
-        } else if (user.getMode() == TestUser.RoleMode.UNREGISTERED) {
+        } else if (user.getMode() == TestUser.RoleMode.ANONYMOUS) {
             // Do nothing, user is not used
         } else {
             throw new IllegalArgumentException("Invalid user mode: " + user.getMode());
@@ -74,7 +74,7 @@ public abstract class AbstractUserRoleIT<USER, ROLE> {
             this.creator = creator.withUser(createUser(getRandomUsername(), "Test", "Creator", creator.getRole(), LoginRole.CREATOR));
         } else if (creator.getMode() == TestUser.RoleMode.EXISTING_USER) {
             // Do nothing, user already set
-        } else if (creator.getMode() == TestUser.RoleMode.UNREGISTERED) {
+        } else if (creator.getMode() == TestUser.RoleMode.ANONYMOUS) {
             // Do nothing, user is not used
         } else {
             throw new IllegalArgumentException("Invalid creator user mode: " + creator.getMode());
@@ -100,7 +100,7 @@ public abstract class AbstractUserRoleIT<USER, ROLE> {
     public USER getUser() {
         if (user.getMode() == TestUser.RoleMode.EXISTING_USER) {
             return getUserByUsername(user.getIdentifier());
-        } else if (user.getMode() == TestUser.RoleMode.UNREGISTERED) {
+        } else if (user.getMode() == TestUser.RoleMode.ANONYMOUS) {
             return null;
         } else {
             return user.getUser();
@@ -110,7 +110,7 @@ public abstract class AbstractUserRoleIT<USER, ROLE> {
     public USER getCreator() {
         if (creator.getMode() == TestUser.RoleMode.EXISTING_USER) {
             return getUserByUsername(creator.getIdentifier());
-        } else if (creator.getMode() == TestUser.RoleMode.UNREGISTERED) {
+        } else if (creator.getMode() == TestUser.RoleMode.ANONYMOUS) {
             return null;
         } else {
             return creator.getUser();
@@ -143,8 +143,8 @@ public abstract class AbstractUserRoleIT<USER, ROLE> {
                 authorizationRule.setRole(UserIdentifier.Type.USER, this.user.getIdentifier());
             } else if (this.user.getMode() == TestUser.RoleMode.CREATOR_USER) {
                 authorizationRule.setRole(UserIdentifier.getCreator());
-            } else if (this.user.getMode() == TestUser.RoleMode.UNREGISTERED) {
-                authorizationRule.setRole(UserIdentifier.getUnregistered());
+            } else if (this.user.getMode() == TestUser.RoleMode.ANONYMOUS) {
+                authorizationRule.setRole(UserIdentifier.getAnonymous());
             } else {
                 authorizationRule.setRole(UserIdentifier.Type.ROLE, this.user.getIdentifier());
             }
@@ -155,7 +155,7 @@ public abstract class AbstractUserRoleIT<USER, ROLE> {
         if (loginUser != null) {
             loginWithUser(loginUser);
         } else {
-            loginUnregistered();
+            loginAnonymous();
         }
     }
 
@@ -170,8 +170,8 @@ public abstract class AbstractUserRoleIT<USER, ROLE> {
     private void setCreatorIdentifier(UserIdentifier identifier) {
         if (identifier.getType() == UserIdentifier.Type.USER) {
             this.creator = TestUser.forExistingUser(identifier);
-        } else if (identifier.getType() == UserIdentifier.Type.UNREGISTERED) {
-            this.creator = TestUser.forUnregisteredUser();
+        } else if (identifier.getType() == UserIdentifier.Type.ANONYMOUS) {
+            this.creator = TestUser.forAnonymousUser();
         } else if (identifier.getType() == UserIdentifier.Type.ROLE) {
             this.creator = TestUser.forRole(
                     stringToRole(identifier.getIdentifier()),
@@ -190,8 +190,8 @@ public abstract class AbstractUserRoleIT<USER, ROLE> {
                 throw new IllegalStateException("Cannot use NEW_USER mode when creator uses existing user");
             }
             this.user = TestUser.forNewUser(getCreatorRole(), identifier);
-        } else if (identifier.getType() == UserIdentifier.Type.UNREGISTERED) {
-            this.user = TestUser.forUnregisteredUser();
+        } else if (identifier.getType() == UserIdentifier.Type.ANONYMOUS) {
+            this.user = TestUser.forAnonymousUser();
         } else if (identifier.getType() == UserIdentifier.Type.ROLE) {
             this.user = TestUser.forRole(stringToRole(identifier.getIdentifier()), identifier);
         } else {
@@ -214,10 +214,10 @@ public abstract class AbstractUserRoleIT<USER, ROLE> {
     protected abstract void loginWithUser(USER user);
 
     /**
-     * "Log in" unregistered user. By default users {@link #loginWithUser(Object)}
+     * "Log in" anonymous user. By default users {@link #loginWithUser(Object)}
      * using null as the user. Can be overridden to change the behaviour.
      */
-    protected void loginUnregistered() {
+    protected void loginAnonymous() {
         loginWithUser(null);
     }
 

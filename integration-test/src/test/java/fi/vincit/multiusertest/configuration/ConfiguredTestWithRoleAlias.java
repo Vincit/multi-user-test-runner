@@ -38,7 +38,7 @@ public abstract class ConfiguredTestWithRoleAlias extends AbstractUserRoleIT<Use
     protected User.Role stringToRole(String role) {
         switch(role) {
             case "NORMAL": return User.Role.ROLE_USER;
-            case "UNREGISTERED": return User.Role.ROLE_VISITOR;
+            case "ANONYMOUS": return User.Role.ROLE_VISITOR;
             default: return User.Role.valueOf("ROLE_" + role);
         }
     }

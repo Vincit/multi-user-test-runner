@@ -17,8 +17,8 @@ public class IdentifiersTest {
                     "user:username",
                     TestUsers.NEW_USER,
                     TestUsers.CREATOR,
-                    TestUsers.UNREGISTERED).toString(),
-                is("role:ROLE_USER, user:username, new user, creator, unregistered")
+                    TestUsers.ANONYMOUS).toString(),
+                is("role:ROLE_USER, user:username, new user, creator, anonymous")
         );
     }
 }

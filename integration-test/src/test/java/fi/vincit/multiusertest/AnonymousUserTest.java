@@ -18,9 +18,9 @@ import fi.vincit.multiusertest.util.User;
 import fi.vincit.multiusertest.util.UserIdentifier;
 
 @TestUsers(creators = {"role:ROLE_ADMIN", "role:ROLE_USER"},
-        users = {TestUsers.UNREGISTERED})
+        users = {TestUsers.ANONYMOUS})
 @RunWith(MultiUserTestRunner.class)
-public class UnregisteredUserTest extends ConfiguredTest {
+public class AnonymousUserTest extends ConfiguredTest {
 
     @Test
     public void creatorLoggedIn() {
@@ -41,10 +41,10 @@ public class UnregisteredUserTest extends ConfiguredTest {
     }
 
     @Test
-    public void expectFailureUnregisteredUser() {
+    public void expectFailureAnonymousUser() {
         logInAs(LoginRole.USER);
-        authorization().expect(toFail(ifAnyOf(TestUsers.UNREGISTERED)));
-        throwIfUserRole(TestUsers.UNREGISTERED);
+        authorization().expect(toFail(ifAnyOf(TestUsers.ANONYMOUS)));
+        throwIfUserRole(TestUsers.ANONYMOUS);
     }
 
     @Test
@@ -53,7 +53,7 @@ public class UnregisteredUserTest extends ConfiguredTest {
     }
 
     private void throwIfUserRole(String identifier) {
-        if (identifier.equals(TestUsers.UNREGISTERED)) {
+        if (identifier.equals(TestUsers.ANONYMOUS)) {
             throw new IllegalStateException("Thrown when role was " + identifier);
         } else {
             User.Role identifierRole = stringToRole(UserIdentifier.parse(identifier).getIdentifier());

@@ -42,8 +42,8 @@ public class AbstractUserRoleITTest {
         }
 
         @Override
-        protected void loginUnregistered() {
-            super.loginUnregistered();
+        protected void loginAnonymous() {
+            super.loginAnonymous();
         }
 
         @Override
@@ -233,34 +233,34 @@ public class AbstractUserRoleITTest {
     }
 
     @Test
-    public void testUserWhenUnregistered() {
+    public void testUserWhenAnonymous() {
         TestClass spyClass = mockTestClass();
         when(spyClass.getUserByUsername("username")).thenReturn("test-user");
 
-        spyClass.setUsers(UserIdentifier.parse("user:username"), UserIdentifier.getUnregistered());
+        spyClass.setUsers(UserIdentifier.parse("user:username"), UserIdentifier.getAnonymous());
         spyClass.initializeUsers();
 
         spyClass.logInAs(LoginRole.USER);
 
 
         InOrder order = inOrder(spyClass);
-        order.verify(spyClass).loginUnregistered();
+        order.verify(spyClass).loginAnonymous();
         order.verify(spyClass).loginWithUser(null);
     }
 
     @Test
-    public void testCreatorWhenUnregistered() {
+    public void testCreatorWhenAnonymous() {
         TestClass spyClass = mockTestClass();
         when(spyClass.getUserByUsername("username")).thenReturn("test-user");
 
-        spyClass.setUsers(UserIdentifier.getUnregistered(), UserIdentifier.parse("user:username"));
+        spyClass.setUsers(UserIdentifier.getAnonymous(), UserIdentifier.parse("user:username"));
         spyClass.initializeUsers();
 
         spyClass.logInAs(LoginRole.CREATOR);
 
 
         InOrder order = inOrder(spyClass);
-        order.verify(spyClass).loginUnregistered();
+        order.verify(spyClass).loginAnonymous();
         order.verify(spyClass).loginWithUser(null);
     }
 
