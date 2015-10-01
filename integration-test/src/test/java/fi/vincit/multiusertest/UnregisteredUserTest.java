@@ -1,9 +1,9 @@
 package fi.vincit.multiusertest;
 
-import static fi.vincit.multiusertest.rule.Authentication.notToFail;
 import static fi.vincit.multiusertest.rule.Authentication.toFail;
 import static fi.vincit.multiusertest.util.UserIdentifiers.ifAnyOf;
 import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
@@ -18,9 +18,9 @@ import fi.vincit.multiusertest.util.User;
 import fi.vincit.multiusertest.util.UserIdentifier;
 
 @TestUsers(creators = {"role:ROLE_ADMIN", "role:ROLE_USER"},
-        users = {"role:ROLE_USER", TestUsers.UNREGISTERED})
+        users = {TestUsers.UNREGISTERED})
 @RunWith(MultiUserTestRunner.class)
-public class UnregisteredTest extends ConfiguredTest {
+public class UnregisteredUserTest extends ConfiguredTest {
 
     @Test
     public void creatorLoggedIn() {
@@ -30,7 +30,7 @@ public class UnregisteredTest extends ConfiguredTest {
     @Test
     public void userLoggedIn() {
         logInAs(LoginRole.USER);
-        assertThat(SecurityUtil.getLoggedInUser().getUsername(), is(getUser().getUsername()));
+        assertThat(SecurityUtil.getLoggedInUser(), nullValue());
     }
 
     @Test
@@ -41,34 +41,10 @@ public class UnregisteredTest extends ConfiguredTest {
     }
 
     @Test
-    public void expectFailureCreator() {
-        authorization().expect(toFail(ifAnyOf(TestUsers.CREATOR)));
-        throwIfUserIs(getCreator());
-    }
-
-    @Test
-    public void expectFailureNewUser() {
-        authorization().expect(toFail(ifAnyOf(TestUsers.NEW_USER)));
-        throwIfUserIs(getUser());
-    }
-
-    @Test
-    public void expectFailureNotCreator() {
-        authorization().expect(notToFail(ifAnyOf(TestUsers.CREATOR)));
-        throwIfUserIs(getUser());
-    }
-
-    @Test
-    public void expectFailureNotNewUser() {
-        authorization().expect(notToFail(ifAnyOf(TestUsers.NEW_USER)));
-        throwIfUserIs(getCreator());
-    }
-
-    @Test
-    public void expectFailureUser() {
+    public void expectFailureUnregisteredUser() {
         logInAs(LoginRole.USER);
-        authorization().expect(toFail(ifAnyOf("role:ROLE_USER")));
-        throwIfUserRole("role:ROLE_USER");
+        authorization().expect(toFail(ifAnyOf(TestUsers.UNREGISTERED)));
+        throwIfUserRole(TestUsers.UNREGISTERED);
     }
 
     @Test
@@ -77,15 +53,13 @@ public class UnregisteredTest extends ConfiguredTest {
     }
 
     private void throwIfUserRole(String identifier) {
-        User.Role identifierRole = stringToRole(UserIdentifier.parse(identifier).getIdentifier());
-        if (SecurityUtil.getLoggedInUser().getRole() == identifierRole) {
+        if (identifier.equals(TestUsers.UNREGISTERED)) {
             throw new IllegalStateException("Thrown when role was " + identifier);
-        }
-    }
-
-    private void throwIfUserIs(User user) {
-        if (SecurityUtil.getLoggedInUser().getUsername().equals(user.getUsername())) {
-            throw new IllegalStateException("Thrown when user was " + user);
+        } else {
+            User.Role identifierRole = stringToRole(UserIdentifier.parse(identifier).getIdentifier());
+            if (SecurityUtil.getLoggedInUser().getRole() == identifierRole) {
+                throw new IllegalStateException("Thrown when role was " + identifier);
+            }
         }
     }
 
