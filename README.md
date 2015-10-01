@@ -152,15 +152,16 @@ complexity to the test methods so the tests should be kept as simple as possible
 ## Definitions
 
 `@TestUsers` annotation defines which users are used to run the tests. Users can be defined by role (`role`),
-by existing user (`user`), use the creator (`TestUsers.CREATOR`) user or use a user with the same role as the creator 
-(`TestUsers.NEW_USER`). All these definition types can be mixed. The possible definitions are shown in the table below.
+by existing user (`user`), use the creator (`TestUsers.CREATOR`) user, use a user with the same role as the creator 
+(`TestUsers.NEW_USER`) or not log in at all (`TestUsers.UNREGISTERED`). All these definition types can be mixed. The possible definitions are shown in the table below.
 
-  Type   | Format | Example | Description
----------|--------|---------|------------
-  user   | `user:<user name>` | `@TestUsers(creators="user:admin-user", users="user:test-user")` | Use existing user
-  role   | `role:<role name>` | `@TestUsers(creators="role:ROLE_ADMIN", users="role:ROLE_USER")` | Create new user with given role
- creator | `TestUsers.CREATOR` | `@TestUsers(creators="role:ROLE_ADMIN", users={TestUsers.CREATOR, "user:test-user"})` | Use the creator as the user
-new user | `TestUsers.NEW_USER` | `@TestUsers(creators="role:ROLE_ADMIN", users={TestUsers.NEW_USER, "user:test-user"})` | Create new user, uses same role as the creator has
+  Type       | Format | Example | Description
+-------------|--------|---------|------------
+  user       | `user:<user name>` | `@TestUsers(creators="user:admin-user", users="user:test-user")` | Use existing user
+  role       | `role:<role name>` | `@TestUsers(creators="role:ROLE_ADMIN", users="role:ROLE_USER")` | Create new user with given role
+ creator     | `TestUsers.CREATOR` | `@TestUsers(creators="role:ROLE_ADMIN", users={TestUsers.CREATOR, "user:test-user"})` | Use the creator as the user
+new user     | `TestUsers.NEW_USER` | `@TestUsers(creators="role:ROLE_ADMIN", users={TestUsers.NEW_USER, "user:test-user"})` | Create new user, uses same role as the creator has
+unregistered | `TestUsers.UNREGISTERED` | `@TestUsers(creators="role:ROLE_ADMIN", users={TestUsers.UNREGISTERED, "user:test-user"})` | Don't log in. `loginWithUser(User)` is called with null user
 
 Each role definition and `NEW_USER` definition will create new users for each test method separately. They are created by calling 
 `AbstractUserRoleIT#createUser(String, String, String, ROLE, LoginRole)` method. `TestUsers.CREATOR` and 
@@ -194,6 +195,10 @@ be used as a creator user definition.
 `TestUsers.NEW_USER` can be used to create a new user with the same role as the current creator user has. 
 This definition can't be used as a creator definitions or if the creator roles have one or more creators defined with 
 existing user definition.
+
+`TestUsers.UNREGISTERED` means that user should not be logged in and previous log in should be cleared
+if necessary. `AbstractUserRoleIT#loginWithUser(USER)` will be called with null value by default. This 
+behaviour can be changed by overriding `AbstractUserRoleIT#loginUnregistered` method.
 
 ## Role Aliasing and Multi Role Support
 
@@ -238,7 +243,7 @@ The user definition in the assertion must be same as in defined in the
 `@TestUsers` annotation. For example if the `@TestUsers` has `user:admin` and that user has `ROLE_ADMIN` role
 it can be only asserted with `user:admin` and not `role:ROLE_ADMIN`. Also creator users can only be 
 asserted with `TestUsers.CREATOR` definition and not with user or role. Users specified with special
-definitions (`TestUsers.CREATOR` and `TestUsers.NEW_USER`) can only be asserted with the corresponding
+definitions (`TestUsers.CREATOR`, `TestUsers.NEW_USER` and `TestUsers.UNREGISTERED`) can only be asserted with the corresponding
 special definitions. These limitations may be removed in later versions.
 
 ## Simple Authorization Assertion
