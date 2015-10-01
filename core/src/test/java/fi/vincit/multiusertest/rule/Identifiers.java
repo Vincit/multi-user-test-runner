@@ -35,6 +35,7 @@ class Identifiers {
         switch (identifier) {
             case TestUsers.CREATOR: return "creator";
             case TestUsers.NEW_USER: return "new user";
+            case TestUsers.UNREGISTERED: return "unregistered";
             default: return identifier;
         }
     }
