@@ -308,6 +308,8 @@ authorization().expect(valueOf(() -> service.getAllUsers(value))
 
 # Example
 
+For all examples, please visit [multi-user-test-runner-examples](https://github.com/Vincit/multi-user-test-runner-examples/blob/master/README.md)
+
 Configuring base class for tests:
 
 ```java
