@@ -9,6 +9,7 @@ Multi User Test Runner
 * Better configuration support
 * Support for creating users in `@Before` methods
 * Improved documentation
+* `TestUsers.ANONYMOUS` definition to use for unauthenticated users
 
 ## Breaking Changes
 
