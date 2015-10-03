@@ -6,4 +6,4 @@ if [ -z "$RELEASE_VERSION" ]; then
     exit 1
 fi
 
-gradle uploadArchives
+gradle tagRelease
