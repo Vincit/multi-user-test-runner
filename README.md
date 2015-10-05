@@ -239,12 +239,16 @@ public class ServiceIT extends AbstractConfiguredUserIT {
 
 ## Definitions in Assertions
 
-The user definition in the assertion must be same as in defined in the
+The user definitions `role`, `user`, `TestUsers.CREATOR` and `TestUsers.ANONYMOUS` must be same in the assertion and in the
 `@TestUsers` annotation. For example if the `@TestUsers` has `user:admin` and that user has `ROLE_ADMIN` role
 it can be only asserted with `user:admin` and not `role:ROLE_ADMIN`. Also creator users can only be 
 asserted with `TestUsers.CREATOR` definition and not with user or role. Users specified with special
-definitions (`TestUsers.CREATOR`, `TestUsers.NEW_USER` and `TestUsers.ANONYMOUS`) can only be asserted with the corresponding
-special definitions. These limitations may be removed in later versions.
+definitions `TestUsers.CREATOR` and `TestUsers.ANONYMOUS` can only be asserted with the exact same
+special definitions.
+
+`TestUsers.NEW_USER` is an exception to above. It can't be used in the assertions. Instead the corresponding
+creator user definition has to be used. For example if creator is `role:ROLE_ADMIN` and user is `TestUsers.NEW_USER`
+the correct way to reference the user in an assertion is `role:ROLE_ADMIN`.
 
 ## Simple Authorization Assertion
 

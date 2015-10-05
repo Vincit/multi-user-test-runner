@@ -145,6 +145,8 @@ public abstract class AbstractUserRoleIT<USER, ROLE> {
                 authorizationRule.setRole(UserIdentifier.getCreator());
             } else if (this.user.getMode() == TestUser.RoleMode.ANONYMOUS) {
                 authorizationRule.setRole(UserIdentifier.getAnonymous());
+            } else if (this.user.getMode() == TestUser.RoleMode.NEW_WITH_CREATOR_ROLE) {
+                authorizationRule.setRole(UserIdentifier.Type.ROLE, this.creator.getIdentifier());
             } else {
                 authorizationRule.setRole(UserIdentifier.Type.ROLE, this.user.getIdentifier());
             }

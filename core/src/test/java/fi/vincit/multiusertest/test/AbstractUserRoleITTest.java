@@ -76,8 +76,23 @@ public class AbstractUserRoleITTest {
         verify(spyClass).createUser(anyString(), eq("Test"), eq("Creator"), eq(Role.ROLE1), eq(LoginRole.CREATOR));
         verify(spyClass).createUser(anyString(), eq("Test"), eq("User"), eq(Role.ROLE1), eq(LoginRole.USER));
 
+        spyClass.logInAs(LoginRole.USER);
+
         assertThat(spyClass.getUser(), notNullValue());
         assertThat(spyClass.getUser(), is(not((spyClass.getCreator()))));
+        verify(spyClass.authorizationRule).setRole(UserIdentifier.Type.ROLE, "ROLE1");
+    }
+
+    @Test
+    public void testLoginWithNewUser() {
+        TestClass spyClass = mockTestClass();
+
+        spyClass.setUsers(UserIdentifier.parse("role:ROLE1"), UserIdentifier.getNewUser());
+        spyClass.initializeUsers();
+
+        spyClass.logInAs(LoginRole.USER);
+
+        verify(spyClass.authorizationRule).setRole(UserIdentifier.Type.ROLE, "ROLE1");
     }
 
     @Test
@@ -90,6 +105,18 @@ public class AbstractUserRoleITTest {
         verify(spyClass).createUser(anyString(), eq("Test"), eq("Creator"), eq(Role.ROLE1), eq(LoginRole.CREATOR));
         assertThat(spyClass.getUser(), notNullValue());
         assertThat(spyClass.getUser(), is(spyClass.getCreator()));
+    }
+
+    @Test
+    public void testLoginWithCreatorRole() {
+        TestClass spyClass = mockTestClass();
+
+        spyClass.setUsers(UserIdentifier.parse("role:ROLE1"), UserIdentifier.getCreator());
+        spyClass.initializeUsers();
+
+        spyClass.logInAs(LoginRole.USER);
+
+        verify(spyClass.authorizationRule).setRole(UserIdentifier.getCreator());
     }
 
     @Test
@@ -277,6 +304,7 @@ public class AbstractUserRoleITTest {
     private TestClass mockTestClass() {
         TestClass testClass = new TestClass();
         TestClass spyClass = spy(testClass);
+        spyClass.authorizationRule = mock(AuthorizationRule.class);
 
         mockDefaultCalls(spyClass);
         return spyClass;
