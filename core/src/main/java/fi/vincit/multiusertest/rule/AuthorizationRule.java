@@ -64,11 +64,7 @@ public class AuthorizationRule implements TestRule {
     }
 
     public void setRole(UserIdentifier identifier) {
-        setRole(identifier.getType(), identifier.getIdentifier());
-    }
-
-    public void setRole(UserIdentifier.Type type, String identifier) {
-        this.userIdentifier = new UserIdentifier(type, identifier);
+        this.userIdentifier = new UserIdentifier(identifier.getType(), identifier.getIdentifier());
     }
 
     /**

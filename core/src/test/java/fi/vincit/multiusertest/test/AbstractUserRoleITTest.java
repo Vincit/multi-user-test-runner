@@ -80,7 +80,7 @@ public class AbstractUserRoleITTest {
 
         assertThat(spyClass.getUser(), notNullValue());
         assertThat(spyClass.getUser(), is(not((spyClass.getCreator()))));
-        verify(spyClass.authorizationRule).setRole(UserIdentifier.Type.ROLE, "ROLE1");
+        verify(spyClass.authorizationRule).setRole(new UserIdentifier(UserIdentifier.Type.ROLE, "ROLE1"));
     }
 
     @Test
@@ -92,7 +92,7 @@ public class AbstractUserRoleITTest {
 
         spyClass.logInAs(LoginRole.USER);
 
-        verify(spyClass.authorizationRule).setRole(UserIdentifier.Type.ROLE, "ROLE1");
+        verify(spyClass.authorizationRule).setRole(new UserIdentifier(UserIdentifier.Type.ROLE, "ROLE1"));
     }
 
     @Test
@@ -176,7 +176,7 @@ public class AbstractUserRoleITTest {
         InOrder order = inOrder(spyClass);
         order.verify(spyClass).loginWithUser("user2");
 
-        verify(spyClass.authorizationRule).setRole(UserIdentifier.Type.ROLE, "ROLE2");
+        verify(spyClass.authorizationRule).setRole(new UserIdentifier(UserIdentifier.Type.ROLE, "ROLE2"));
     }
 
     @Test
@@ -195,7 +195,7 @@ public class AbstractUserRoleITTest {
         InOrder order = inOrder(spyClass);
         order.verify(spyClass).loginWithUser("test-user2");
 
-        verify(spyClass.authorizationRule).setRole(UserIdentifier.Type.USER, "user2");
+        verify(spyClass.authorizationRule).setRole(new UserIdentifier(UserIdentifier.Type.USER, "user2"));
         verify(spyClass, times(1)).getUserByUsername("user2");
     }
 

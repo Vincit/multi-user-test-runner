@@ -87,8 +87,8 @@ public abstract class AbstractUserRoleIT<USER, ROLE> implements UserRoleIT<USER,
 
     @Override
     public void setUsers(UserIdentifier creatorIdentifier, UserIdentifier userIdentifier) {
-        setCreatorIdentifier(creatorIdentifier);
-        setUserIdentifier(userIdentifier);
+        this.creator = resolveCreatorFromIdentifier(creatorIdentifier);
+        this.user = resolveUserFromIdentifier(userIdentifier);
     }
 
     @Override
@@ -123,44 +123,29 @@ public abstract class AbstractUserRoleIT<USER, ROLE> implements UserRoleIT<USER,
 
     @Override
     public void logInAs(LoginRole role) {
-        if (role == LoginRole.CREATOR) {
-            USER creatorUser = getCreator();
-
-            loginInternal(creatorUser);
-
-            authorizationRule.setRole(UserIdentifier.Type.CREATOR, null);
-        } else {
-            USER loginUser;
-            if (this.user.getMode() == TestUser.RoleMode.CREATOR_USER
-                    && creator.getMode() == TestUser.RoleMode.EXISTING_USER) {
-                loginUser = getCreator();
-            } else {
-                loginUser = getUser();
-            }
-
-            loginInternal(loginUser);
-
-            if (this.user.getMode() == TestUser.RoleMode.EXISTING_USER) {
-                authorizationRule.setRole(UserIdentifier.Type.USER, this.user.getIdentifier());
-            } else if (this.user.getMode() == TestUser.RoleMode.CREATOR_USER) {
-                authorizationRule.setRole(UserIdentifier.getCreator());
-            } else if (this.user.getMode() == TestUser.RoleMode.ANONYMOUS) {
-                authorizationRule.setRole(UserIdentifier.getAnonymous());
-            } else if (this.user.getMode() == TestUser.RoleMode.NEW_WITH_CREATOR_ROLE) {
-                authorizationRule.setRole(UserIdentifier.Type.ROLE, this.creator.getIdentifier());
-            } else {
-                authorizationRule.setRole(UserIdentifier.Type.ROLE, this.user.getIdentifier());
-            }
-        }
-    }
-
-    private void loginInternal(USER loginUser) {
-        if (loginUser != null) {
-            loginWithUser(loginUser);
+        USER userToLoginWith = resolveUserToLoginWith(role);
+        if (userToLoginWith != null) {
+            loginWithUser(userToLoginWith);
         } else {
             loginAnonymous();
         }
+
+        IdentifierResolver<USER, ROLE> identifierResolver =
+                new IdentifierResolver<>(user, creator);
+        authorizationRule.setRole(identifierResolver.getIdentifierFor(role));
     }
+
+    private USER resolveUserToLoginWith(LoginRole loginRole) {
+        if (loginRole == LoginRole.CREATOR) {
+            return getCreator();
+        } else if (user.getMode() == TestUser.RoleMode.CREATOR_USER
+                && creator.getMode() == TestUser.RoleMode.EXISTING_USER) {
+            return getCreator();
+        } else {
+            return getUser();
+        }
+    }
+
 
     /**
      * "Log in" anonymous user. By default users {@link #loginWithUser(Object)}
@@ -174,13 +159,13 @@ public abstract class AbstractUserRoleIT<USER, ROLE> implements UserRoleIT<USER,
         return "testuser" + random.nextInt();
     }
 
-    private void setCreatorIdentifier(UserIdentifier identifier) {
+    private TestUser<USER, ROLE> resolveCreatorFromIdentifier(UserIdentifier identifier) {
         if (identifier.getType() == UserIdentifier.Type.USER) {
-            this.creator = TestUser.forExistingUser(identifier);
+            return TestUser.forExistingUser(identifier);
         } else if (identifier.getType() == UserIdentifier.Type.ANONYMOUS) {
-            this.creator = TestUser.forAnonymousUser();
+            return TestUser.forAnonymousUser();
         } else if (identifier.getType() == UserIdentifier.Type.ROLE) {
-            this.creator = TestUser.forRole(
+            return TestUser.forRole(
                     stringToRole(identifier.getIdentifier()),
                     identifier
             );
@@ -189,20 +174,20 @@ public abstract class AbstractUserRoleIT<USER, ROLE> implements UserRoleIT<USER,
         }
     }
 
-    private void setUserIdentifier(UserIdentifier identifier) {
+    private TestUser<USER, ROLE> resolveUserFromIdentifier(UserIdentifier identifier) {
         if (identifier.getType() == UserIdentifier.Type.CREATOR) {
-            this.user = TestUser.forCreatorUser(identifier);
+            return TestUser.forCreatorUser(identifier);
         } else if (identifier.getType() == UserIdentifier.Type.NEW_USER) {
             if (this.creator.getMode() == TestUser.RoleMode.EXISTING_USER) {
                 throw new IllegalStateException("Cannot use NEW_USER mode when creator uses existing user");
             }
-            this.user = TestUser.forNewUser(getCreatorRole(), identifier);
+            return TestUser.forNewUser(getCreatorRole(), identifier);
         } else if (identifier.getType() == UserIdentifier.Type.ANONYMOUS) {
-            this.user = TestUser.forAnonymousUser();
+            return TestUser.forAnonymousUser();
         } else if (identifier.getType() == UserIdentifier.Type.ROLE) {
-            this.user = TestUser.forRole(stringToRole(identifier.getIdentifier()), identifier);
+            return TestUser.forRole(stringToRole(identifier.getIdentifier()), identifier);
         } else {
-            this.user = TestUser.forExistingUser(identifier);
+            return TestUser.forExistingUser(identifier);
         }
     }
 
