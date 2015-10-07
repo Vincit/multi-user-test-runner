@@ -1,7 +1,13 @@
 Multi User Test Runner
 ======================
 
-# 0.3.0
+# 0.3.0-RC2
+
+## Changes
+
+* Fixed `TestUsers.NEW_USER` handling in assertions
+
+# 0.3.0-RC1
 
 ## Changes
 
