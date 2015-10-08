@@ -6,6 +6,7 @@ Multi User Test Runner
 ## Changes
 
 * Fixed `TestUsers.NEW_USER` handling in assertions
+* Make `AbstractUserRoleIT#getRandomUsername` protected (was package local)
 
 # 0.3.0-RC1
 
