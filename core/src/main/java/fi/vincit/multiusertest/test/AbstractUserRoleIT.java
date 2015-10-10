@@ -165,6 +165,11 @@ public abstract class AbstractUserRoleIT<USER, ROLE> {
         return creator.getRole();
     }
 
+    /**
+     * Generates a random username
+     * @return Random username
+     * @since 0.3.0
+     */
     protected String getRandomUsername() {
         return "testuser" + random.nextInt();
     }
