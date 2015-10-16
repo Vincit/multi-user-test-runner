@@ -47,12 +47,6 @@ public class ExpectCall implements ExpectCallFail, ExpectCallNotFail {
         this.functionCall = functionCall;
     }
 
-    /**
-     * Expect the call to fail with given users. If the call doesn't fail with AccessDenied exception,
-     * then the thrown exception will pass through as is.
-     * @param identifiers A set of user identifiers for which the call is expected to fail
-     * @return ExpectCall object for chaining
-     */
     @Override
     public ExpectCallFail toFail(UserIdentifiers identifiers) {
         Objects.requireNonNull(identifiers, "Identifiers must not be null");
@@ -67,13 +61,6 @@ public class ExpectCall implements ExpectCallFail, ExpectCallNotFail {
         return this;
     }
 
-    /**
-     * Expect the call to fail with a defined exception for given users. If the call doesn't fail with
-     * the specified exception then the thrown exception will pass through as is.
-     * @param exception Exception to expect
-     * @param identifiers A set of user identifiers for which the call is expected to fail
-     * @return ExpectCall object for chaining
-     */
     @Override
     public ExpectCallFail toFailWithException(Class<? extends Throwable> exception, UserIdentifiers identifiers) {
         return toFailWithException(exception, identifiers, NOOP_ASSERTION);
@@ -96,13 +83,6 @@ public class ExpectCall implements ExpectCallFail, ExpectCallNotFail {
         return this;
     }
 
-
-    /**
-     * Don't expect the call to fail with given users. If the call does fail with any exception,
-     * then the thrown exception will pass through as is.
-     * @param identifiers A set of users for which the call is not expected to fail
-     * @return ExpectCall object for chaining
-     */
     @Override
     public ExpectCallNotFail notToFail(UserIdentifiers identifiers) {
         Objects.requireNonNull(identifiers, "Identifiers must not be null");
