@@ -29,8 +29,11 @@ import fi.vincit.multiusertest.util.UserIdentifier;
 @RunWith(MultiUserTestRunner.class)
 public abstract class AbstractUserRoleIT<USER, ROLE> implements UserRoleIT<USER,ROLE> {
 
-    private TestUser<USER, ROLE> user;
-    private TestUser<USER, ROLE> creator;
+    private TestUser<ROLE> user;
+    private USER resolvedUser;
+
+    private TestUser<ROLE> creator;
+    private USER resolvedCreator;
 
     private Random random = new Random(System.currentTimeMillis());
 
@@ -47,18 +50,18 @@ public abstract class AbstractUserRoleIT<USER, ROLE> implements UserRoleIT<USER,
 
     private void initializeUser() {
         if (user.getMode() == TestUser.RoleMode.SET_USER_ROLE) {
-            this.user = user.withUser(createUser(getRandomUsername(), "Test", "User", getUserRole(), LoginRole.USER));
+            resolvedUser = createUser(getRandomUsername(), "Test", "User", getUserRole(), LoginRole.USER);
         } else if (user.getMode() == TestUser.RoleMode.CREATOR_USER) {
             if (creator.getMode() == TestUser.RoleMode.EXISTING_USER) {
                 // Do nothing, user already set, using creator
             } else {
-                this.user = user.withUser(creator.getUser());
+                resolvedUser = resolvedCreator;
             }
         } else if (user.getMode() == TestUser.RoleMode.NEW_WITH_CREATOR_ROLE) {
             if (creator.getMode() == TestUser.RoleMode.EXISTING_USER) {
                 // NOOP
             } else {
-                this.user = user.withUser(createUser(getRandomUsername(), "Test", "User", getCreatorRole(), LoginRole.USER));
+                resolvedUser = createUser(getRandomUsername(), "Test", "User", getCreatorRole(), LoginRole.USER);
             }
         } else if (user.getMode() == TestUser.RoleMode.EXISTING_USER) {
             // Do nothing, user already set
@@ -71,7 +74,7 @@ public abstract class AbstractUserRoleIT<USER, ROLE> implements UserRoleIT<USER,
 
     private void initializeCreator() {
         if (creator.getMode() == TestUser.RoleMode.SET_USER_ROLE) {
-            this.creator = creator.withUser(createUser(getRandomUsername(), "Test", "Creator", creator.getRole(), LoginRole.CREATOR));
+            resolvedCreator = createUser(getRandomUsername(), "Test", "Creator", creator.getRole(), LoginRole.CREATOR);
         } else if (creator.getMode() == TestUser.RoleMode.EXISTING_USER) {
             // Do nothing, user already set
         } else if (creator.getMode() == TestUser.RoleMode.ANONYMOUS) {
@@ -98,7 +101,7 @@ public abstract class AbstractUserRoleIT<USER, ROLE> implements UserRoleIT<USER,
         } else if (user.getMode() == TestUser.RoleMode.ANONYMOUS) {
             return null;
         } else {
-            return user.getUser();
+            return resolvedUser;
         }
     }
 
@@ -109,7 +112,7 @@ public abstract class AbstractUserRoleIT<USER, ROLE> implements UserRoleIT<USER,
         } else if (creator.getMode() == TestUser.RoleMode.ANONYMOUS) {
             return null;
         } else {
-            return creator.getUser();
+            return resolvedCreator;
         }
     }
 
@@ -159,7 +162,7 @@ public abstract class AbstractUserRoleIT<USER, ROLE> implements UserRoleIT<USER,
         return "testuser" + random.nextInt();
     }
 
-    private TestUser<USER, ROLE> resolveCreatorFromIdentifier(UserIdentifier identifier) {
+    private TestUser<ROLE> resolveCreatorFromIdentifier(UserIdentifier identifier) {
         if (identifier.getType() == UserIdentifier.Type.USER) {
             return TestUser.forExistingUser(identifier);
         } else if (identifier.getType() == UserIdentifier.Type.ANONYMOUS) {
@@ -174,7 +177,7 @@ public abstract class AbstractUserRoleIT<USER, ROLE> implements UserRoleIT<USER,
         }
     }
 
-    private TestUser<USER, ROLE> resolveUserFromIdentifier(UserIdentifier identifier) {
+    private TestUser<ROLE> resolveUserFromIdentifier(UserIdentifier identifier) {
         if (identifier.getType() == UserIdentifier.Type.CREATOR) {
             return TestUser.forCreatorUser(identifier);
         } else if (identifier.getType() == UserIdentifier.Type.NEW_USER) {
@@ -191,11 +194,11 @@ public abstract class AbstractUserRoleIT<USER, ROLE> implements UserRoleIT<USER,
         }
     }
 
-    protected TestUser<USER, ROLE> getUserModel() {
+    protected TestUser<ROLE> getUserModel() {
         return user;
     }
 
-    protected TestUser<USER, ROLE> getCreatorModel() {
+    protected TestUser<ROLE> getCreatorModel() {
         return creator;
     }
 

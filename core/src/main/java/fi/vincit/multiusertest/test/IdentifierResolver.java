@@ -6,10 +6,10 @@ import fi.vincit.multiusertest.util.UserIdentifier;
 
 public class IdentifierResolver<USER, ROLE> {
 
-    private TestUser<USER, ROLE> user;
-    private TestUser<USER, ROLE> creator;
+    private TestUser<ROLE> user;
+    private TestUser<ROLE> creator;
 
-    public IdentifierResolver(TestUser<USER, ROLE> user, TestUser<USER, ROLE> creator) {
+    public IdentifierResolver(TestUser<ROLE> user, TestUser<ROLE> creator) {
         this.user = user;
         this.creator = creator;
     }

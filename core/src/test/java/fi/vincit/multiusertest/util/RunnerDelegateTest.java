@@ -67,11 +67,11 @@ public class RunnerDelegateTest {
             return null;
         }
 
-        public TestUser<String, String> getUserModel() {
+        public TestUser<String> getUserModel() {
             return super.getUserModel();
         }
 
-        public TestUser<String, String> getCreatorModel() {
+        public TestUser<String> getCreatorModel() {
             return super.getCreatorModel();
         }
     }

@@ -1,25 +1,25 @@
 package fi.vincit.multiusertest.util;
 
-public class TestUser<USER, ROLE> {
+public class TestUser<ROLE> {
 
-    public static <USER, ROLE> TestUser<USER, ROLE> forCreatorUser(UserIdentifier identifier) {
-        return new TestUser<>(null, RoleMode.CREATOR_USER, null, identifier);
+    public static <ROLE> TestUser<ROLE> forCreatorUser(UserIdentifier identifier) {
+        return new TestUser<>(null, RoleMode.CREATOR_USER, identifier);
     }
 
-    public static <USER, ROLE> TestUser<USER, ROLE> forNewUser(ROLE role, UserIdentifier identifier) {
-        return new TestUser<>(role, RoleMode.NEW_WITH_CREATOR_ROLE, null, identifier);
+    public static <ROLE> TestUser<ROLE> forNewUser(ROLE role, UserIdentifier identifier) {
+        return new TestUser<>(role, RoleMode.NEW_WITH_CREATOR_ROLE, identifier);
     }
 
-    public static <USER, ROLE> TestUser<USER, ROLE> forRole(ROLE role, UserIdentifier identifier) {
-        return new TestUser<>(role, RoleMode.SET_USER_ROLE, null, identifier);
+    public static <ROLE> TestUser<ROLE> forRole(ROLE role, UserIdentifier identifier) {
+        return new TestUser<>(role, RoleMode.SET_USER_ROLE, identifier);
     }
 
-    public static <USER, ROLE> TestUser<USER, ROLE> forExistingUser(UserIdentifier identifier) {
-        return new TestUser<>(null, RoleMode.EXISTING_USER, null, identifier);
+    public static <ROLE> TestUser<ROLE> forExistingUser(UserIdentifier identifier) {
+        return new TestUser<>(null, RoleMode.EXISTING_USER, identifier);
     }
 
-    public static <USER, ROLE> TestUser<USER, ROLE> forAnonymousUser() {
-        return new TestUser<>(null, RoleMode.ANONYMOUS, null, null);
+    public static <ROLE> TestUser<ROLE> forAnonymousUser() {
+        return new TestUser<>(null, RoleMode.ANONYMOUS, null);
     }
 
     public enum RoleMode {
@@ -32,14 +32,12 @@ public class TestUser<USER, ROLE> {
 
     private final ROLE role;
     private final RoleMode mode;
-    private final USER user;
     private final UserIdentifier userIdentifier;
 
 
-    public TestUser(ROLE role, RoleMode mode, USER user, UserIdentifier userIdentifier) {
+    TestUser(ROLE role, RoleMode mode, UserIdentifier userIdentifier) {
         this.role = role;
         this.mode = mode;
-        this.user = user;
         this.userIdentifier = userIdentifier;
     }
 
@@ -53,20 +51,12 @@ public class TestUser<USER, ROLE> {
         return mode;
     }
 
-    public USER getUser() {
-        assert user != null : "User must not be null";
-        return user;
-    }
-
-    public TestUser<USER, ROLE> withUser(USER user) {
-        return new TestUser<>(this.role, this.mode, user, this.userIdentifier);
-    }
 
     public UserIdentifier getUserIdentifier() {
         assert userIdentifier != null : "UserIdentifier must not be null";
         return userIdentifier;
     }
-
+    
     public String getIdentifier() {
         return getUserIdentifier().getIdentifier();
     }
