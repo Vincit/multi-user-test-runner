@@ -80,7 +80,7 @@ public class ExpectCall implements ExpectCallFail, ExpectCallNotFail {
     }
 
     @Override
-    public ExpectCall toFailWithException(Class<? extends Throwable> exception, UserIdentifiers identifiers, ExceptionAssertionCall exceptionAssertionCall) {
+    public ExpectCallFail toFailWithException(Class<? extends Throwable> exception, UserIdentifiers identifiers, ExceptionAssertionCall exceptionAssertionCall) {
         Objects.requireNonNull(exception, "Exception must not be null");
         Objects.requireNonNull(exceptionAssertionCall, "ExceptionAssertionCall must not be null");
         Objects.requireNonNull(identifiers, "Identifiers must not be null");
