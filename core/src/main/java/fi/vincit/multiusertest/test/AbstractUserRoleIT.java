@@ -30,9 +30,7 @@ import fi.vincit.multiusertest.util.UserIdentifier;
 public abstract class AbstractUserRoleIT<USER, ROLE>
         implements UserRoleIT<USER>, UserFactory<USER, ROLE>, RoleConverter<ROLE> {
 
-    private TestUser<ROLE> user;
-    private TestUser<ROLE> creator;
-    private UserContainer<USER, ROLE> userContainer;
+    private UserResolver<USER, ROLE> userResolver;
 
     private Random random = new Random(System.currentTimeMillis());
 
@@ -41,7 +39,7 @@ public abstract class AbstractUserRoleIT<USER, ROLE>
 
     @Before
     public void initializeUsers() {
-        userContainer = UserContainer.initialize(this, creator, user);
+        userResolver.resolve();
 
         authorizationRule.setExpectedException(getDefaultException());
     }
@@ -52,18 +50,17 @@ public abstract class AbstractUserRoleIT<USER, ROLE>
 
     @Override
     public void setUsers(UserIdentifier creatorIdentifier, UserIdentifier userIdentifier) {
-        this.creator = resolveCreatorFromIdentifier(creatorIdentifier);
-        this.user = resolveUserFromIdentifier(userIdentifier);
+        userResolver = new UserResolver<>(this, this, creatorIdentifier, userIdentifier);
     }
 
     @Override
     public USER getUser() {
-        return userContainer.getUser();
+        return userResolver.resolveUser();
     }
 
     @Override
     public USER getCreator() {
-        return userContainer.getCreator();
+        return userResolver.resolverCreator();
     }
 
     @Override
@@ -76,15 +73,15 @@ public abstract class AbstractUserRoleIT<USER, ROLE>
         }
 
         IdentifierResolver<USER, ROLE> identifierResolver =
-                new IdentifierResolver<>(user, creator);
+                new IdentifierResolver<>(userResolver.getUser(), userResolver.getCreator());
         authorizationRule.setRole(identifierResolver.getIdentifierFor(role));
     }
 
     private USER resolveUserToLoginWith(LoginRole loginRole) {
         if (loginRole == LoginRole.CREATOR) {
             return getCreator();
-        } else if (user.getMode() == TestUser.RoleMode.CREATOR_USER
-                && creator.getMode() == TestUser.RoleMode.EXISTING_USER) {
+        } else if (userResolver.getUser().getMode() == TestUser.RoleMode.CREATOR_USER
+                && userResolver.getCreator().getMode() == TestUser.RoleMode.EXISTING_USER) {
             return getCreator();
         } else {
             return getUser();
@@ -105,44 +102,12 @@ public abstract class AbstractUserRoleIT<USER, ROLE>
         return "testuser-" + random.nextInt(Integer.MAX_VALUE);
     }
 
-    private TestUser<ROLE> resolveCreatorFromIdentifier(UserIdentifier identifier) {
-        if (identifier.getType() == UserIdentifier.Type.USER) {
-            return TestUser.forExistingUser(identifier);
-        } else if (identifier.getType() == UserIdentifier.Type.ANONYMOUS) {
-            return TestUser.forAnonymousUser();
-        } else if (identifier.getType() == UserIdentifier.Type.ROLE) {
-            return TestUser.forRole(
-                    stringToRole(identifier.getIdentifier()),
-                    identifier
-            );
-        } else {
-            throw new IllegalArgumentException("Invalid identifier for creator: " + identifier.getType());
-        }
-    }
-
-    private TestUser<ROLE> resolveUserFromIdentifier(UserIdentifier identifier) {
-        if (identifier.getType() == UserIdentifier.Type.CREATOR) {
-            return TestUser.forCreatorUser(identifier);
-        } else if (identifier.getType() == UserIdentifier.Type.NEW_USER) {
-            if (this.creator.getMode() == TestUser.RoleMode.EXISTING_USER) {
-                throw new IllegalStateException("Cannot use NEW_USER mode when creator uses existing user");
-            }
-            return TestUser.forNewUser(creator.getRole(), identifier);
-        } else if (identifier.getType() == UserIdentifier.Type.ANONYMOUS) {
-            return TestUser.forAnonymousUser();
-        } else if (identifier.getType() == UserIdentifier.Type.ROLE) {
-            return TestUser.forRole(stringToRole(identifier.getIdentifier()), identifier);
-        } else {
-            return TestUser.forExistingUser(identifier);
-        }
-    }
-
     protected TestUser<ROLE> getUserModel() {
-        return user;
+        return userResolver.getUser();
     }
 
     protected TestUser<ROLE> getCreatorModel() {
-        return creator;
+        return userResolver.getCreator();
     }
 
     /**
