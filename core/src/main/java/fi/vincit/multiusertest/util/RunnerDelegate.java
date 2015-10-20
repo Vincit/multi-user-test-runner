@@ -9,7 +9,6 @@ import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.Statement;
 import org.junit.runners.model.TestClass;
 
-import fi.vincit.multiusertest.test.AbstractUserRoleIT;
 import fi.vincit.multiusertest.test.UserRoleIT;
 
 public class RunnerDelegate {
@@ -69,7 +68,7 @@ public class RunnerDelegate {
             roleItInstance.setUsers(creatorIdentifier, userIdentifier);
             return roleItInstance;
         } else {
-            throw new IllegalStateException("Test class must be of type " + AbstractUserRoleIT.class.getSimpleName());
+            throw new IllegalStateException("Test class must be of type " + UserRoleIT.class.getSimpleName());
         }
     }
 

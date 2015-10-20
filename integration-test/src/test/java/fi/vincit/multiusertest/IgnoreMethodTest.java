@@ -19,27 +19,27 @@ public class IgnoreMethodTest extends ConfiguredTest {
     @Test
     @TestUsers(creators = {"role:ROLE_ADMIN"})
     public void runCreatorAdmin() {
-        assertThat(getCreatorRole(), is(User.Role.ROLE_ADMIN));
+        assertThat(getCreatorModel().getRole(), is(User.Role.ROLE_ADMIN));
     }
 
     @Test
     @TestUsers(users = {"role:ROLE_USER"})
     public void runUserIsUser() {
-        assertThat(getUserRole(), is(User.Role.ROLE_USER));
+        assertThat(getUserModel().getRole(), is(User.Role.ROLE_USER));
     }
 
     @Test
     @TestUsers(users = {"role:ROLE_ADMIN"}, creators = {"role:ROLE_ADMIN"})
     public void runUserAdminAndCreatorAdmin() {
-        assertThat(getUserRole(), is(User.Role.ROLE_ADMIN));
-        assertThat(getCreatorRole(), is(User.Role.ROLE_ADMIN));
+        assertThat(getUserModel().getRole(), is(User.Role.ROLE_ADMIN));
+        assertThat(getCreatorModel().getRole(), is(User.Role.ROLE_ADMIN));
     }
 
     @Test
     @TestUsers(users = {"role:ROLE_USER"}, creators = {"role:ROLE_ADMIN"})
     public void runUserUserAndCreatorAdmin() {
-        assertThat(getCreatorRole(), is(User.Role.ROLE_ADMIN));
-        assertThat(getUserRole(), is(User.Role.ROLE_USER));
+        assertThat(getCreatorModel().getRole(), is(User.Role.ROLE_ADMIN));
+        assertThat(getUserModel().getRole(), is(User.Role.ROLE_USER));
     }
 
     @Test

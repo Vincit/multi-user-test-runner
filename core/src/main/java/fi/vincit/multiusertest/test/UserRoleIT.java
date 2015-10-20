@@ -4,7 +4,7 @@ import fi.vincit.multiusertest.util.LoginRole;
 import fi.vincit.multiusertest.util.UserIdentifier;
 
 
-public interface UserRoleIT<USER, ROLE> {
+public interface UserRoleIT<USER> {
     /**
      * Sets user identifiers. Validates that they are valid. If they are invalid
      * throws an exception.
@@ -31,31 +31,6 @@ public interface UserRoleIT<USER, ROLE> {
      * @param role Which user should be logged in
      */
     void logInAs(LoginRole role);
-
-    /**
-     * Search user by username
-     * @param username User's username
-     * @return User object
-     */
-    USER getUserByUsername(String username);
-
-    /**
-     * Returns given role string as system role object/enum.
-     * @param role Role as string.
-     * @return Role object/enum
-     */
-    ROLE stringToRole(String role);
-
-    /**
-     * Creates new user to the system and returns it
-     * @param username Random user name
-     * @param firstName First name
-     * @param lastName Last name
-     * @param userRole User role
-     * @param loginRole Login role
-     * @return Created user
-     */
-    USER createUser(String username, String firstName, String lastName, ROLE userRole, LoginRole loginRole);
 
     /**
      * Log in user with given user
