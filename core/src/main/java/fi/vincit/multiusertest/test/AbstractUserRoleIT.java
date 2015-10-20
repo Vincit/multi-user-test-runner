@@ -78,9 +78,6 @@ public abstract class AbstractUserRoleIT<USER, ROLE>
     private USER resolveUserToLoginWith(LoginRole loginRole) {
         if (loginRole == LoginRole.CREATOR) {
             return getCreator();
-        } else if (userResolver.getUser().getMode() == TestUser.RoleMode.CREATOR_USER
-                && userResolver.getCreator().getMode() == TestUser.RoleMode.EXISTING_USER) {
-            return getCreator();
         } else {
             return getUser();
         }

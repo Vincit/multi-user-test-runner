@@ -101,6 +101,8 @@ public class UserResolver<USER, ROLE> {
             return userFactory.getUserByUsername(user.getIdentifier());
         } else if (user.getMode() == TestUser.RoleMode.ANONYMOUS) {
             return null;
+        } else if (user.getMode() == TestUser.RoleMode.CREATOR_USER) {
+            return resolverCreator();
         } else {
             return userUser;
         }
