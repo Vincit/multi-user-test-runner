@@ -102,7 +102,7 @@ public abstract class AbstractUserRoleIT<USER, ROLE>
 
     @Override
     public String getRandomUsername() {
-        return "testuser" + random.nextInt();
+        return "testuser-" + random.nextInt(Integer.MAX_VALUE);
     }
 
     private TestUser<ROLE> resolveCreatorFromIdentifier(UserIdentifier identifier) {
