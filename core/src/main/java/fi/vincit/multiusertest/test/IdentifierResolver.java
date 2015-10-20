@@ -32,6 +32,9 @@ public class IdentifierResolver<USER, ROLE> {
         } else if (roleMode == TestUser.RoleMode.ANONYMOUS) {
             return UserIdentifier.getAnonymous();
         } else if (roleMode == TestUser.RoleMode.NEW_WITH_CREATOR_ROLE) {
+            if (creator.getMode() != TestUser.RoleMode.SET_USER_ROLE) {
+                throw new IllegalStateException("Cannot use NEW_WITH_CREATOR_ROLE when creator doesn't have role");
+            }
             return new UserIdentifier(UserIdentifier.Type.ROLE, creator.getIdentifier());
         } else {
             return new UserIdentifier(UserIdentifier.Type.ROLE, user.getIdentifier());

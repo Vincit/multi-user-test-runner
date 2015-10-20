@@ -37,7 +37,7 @@ public class UserResolver<USER, ROLE> {
 
     private TestUser<ROLE> resolveUserFromIdentifier(UserIdentifier identifier) {
         if (identifier.getType() == UserIdentifier.Type.CREATOR) {
-            return TestUser.forCreatorUser(identifier);
+            return TestUser.forCreatorUser();
         } else if (identifier.getType() == UserIdentifier.Type.NEW_USER) {
             if (this.creator.getMode() == TestUser.RoleMode.EXISTING_USER) {
                 throw new IllegalStateException("Cannot use NEW_USER mode when creator uses existing user");

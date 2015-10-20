@@ -2,8 +2,8 @@ package fi.vincit.multiusertest.util;
 
 public class TestUser<ROLE> {
 
-    public static <ROLE> TestUser<ROLE> forCreatorUser(UserIdentifier identifier) {
-        return new TestUser<>(null, RoleMode.CREATOR_USER, identifier);
+    public static <ROLE> TestUser<ROLE> forCreatorUser() {
+        return new TestUser<>(null, RoleMode.CREATOR_USER, UserIdentifier.getCreator());
     }
 
     public static <ROLE> TestUser<ROLE> forNewUser(ROLE role, UserIdentifier identifier) {
