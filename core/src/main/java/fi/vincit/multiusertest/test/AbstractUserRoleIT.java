@@ -72,9 +72,7 @@ public abstract class AbstractUserRoleIT<USER, ROLE>
             loginAnonymous();
         }
 
-        IdentifierResolver<USER, ROLE> identifierResolver =
-                new IdentifierResolver<>(userResolver.getUser(), userResolver.getCreator());
-        authorizationRule.setRole(identifierResolver.getIdentifierFor(role));
+        authorizationRule.setRole(new IdentifierResolver<>(userResolver).getIdentifierFor(role));
     }
 
     private USER resolveUserToLoginWith(LoginRole loginRole) {

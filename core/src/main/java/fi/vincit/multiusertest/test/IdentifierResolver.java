@@ -9,9 +9,9 @@ public class IdentifierResolver<USER, ROLE> {
     private TestUser<ROLE> user;
     private TestUser<ROLE> creator;
 
-    public IdentifierResolver(TestUser<ROLE> user, TestUser<ROLE> creator) {
-        this.user = user;
-        this.creator = creator;
+    public IdentifierResolver(UserResolver<USER, ROLE> userResolver) {
+        this.user = userResolver.getUser();
+        this.creator = userResolver.getCreator();
     }
 
     public UserIdentifier getIdentifierFor(LoginRole loginRole) {
