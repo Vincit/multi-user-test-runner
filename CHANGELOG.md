@@ -22,16 +22,16 @@ Multi User Test Runner
   `notToFail(UserIdentifier)` methods together. I.e. `toFail(ifAnyOf("role:ROLE_USER")).notToFail(ifAnyOf("role:ROLE_ADMIN"))`
   call chain is not possible anymore.
 
-# 0.3.0-RC2
+## 0.3.0-RC2
 
-## Changes
+### Changes
 
 * Fixed `TestUsers.NEW_USER` handling in assertions
 * Make `AbstractUserRoleIT#getRandomUsername` protected (was package local)
 
-# 0.3.0-RC1
+## 0.3.0-RC1
 
-## Changes
+### Changes
 
 * First public release
 * Better configuration support
@@ -39,7 +39,7 @@ Multi User Test Runner
 * Improved documentation
 * `TestUsers.ANONYMOUS` definition to use for unauthenticated users
 
-## Breaking Changes
+### Breaking Changes
 
 * `SpringMultiUserTestClassRunner` is in its own artefact: spring-test-class-runner
 * Default TestUsers runner is changed from `SpringMultiUserTestClassRunner` to `BlockMultiUserTestClassRunner`
