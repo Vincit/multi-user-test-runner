@@ -19,7 +19,7 @@ For the Spring support, use the `multi-user-test-runner-spring` module.
 
 ## For SpringMultiUserTestClassRunner (multi-user-test-runner-spring module)
  * Spring Framework 3.2.x, 4.0.x, 4.1.x, 4.2.x (tested)
- * Spring Security 3.2.x (tested)
+ * Spring Security 3.2.x, 4.0.x (tested)
  
 The library may work with other versions but has not been tested with versions other than the ones mentioned above.
 
