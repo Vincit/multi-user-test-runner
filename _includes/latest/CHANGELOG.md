@@ -1,16 +1,37 @@
 Multi User Test Runner
 ======================
 
-# 0.3.0-RC2
+# 0.3.0
 
 ## Changes
+
+* Better configuration support
+* Support for creating users in JUnit's `@Before` methods
+* `TestUsers.ANONYMOUS` definition to use for unauthenticated users
+* Make `AbstractUserRoleIT#getRandomUsername` protected (was package local)
+
+## Breaking Changes
+
+* `SpringMultiUserTestClassRunner` is in its own artefact: spring-test-class-runner
+* Default TestUsers runner is changed from `SpringMultiUserTestClassRunner` to `BlockMultiUserTestClassRunner`
+* Runner configuration is done via `MultiUserTestConfig` annotation. Annotation can be added to a base class to reduce boilerplate code.
+* Creator is logged after `@Before` methods but just before calling the test method. Previously 
+  it was called in `AbstractUserRoleIT`class's `@Before` method which made impossible to create custom users
+  which could be used as creator user.
+* ExpectCall only allows to use `toFail(UserIdentifiers)` and `toFailWithException(UserIdentifier, Throwable` or
+  `notToFail(UserIdentifier)` methods together. I.e. `toFail(ifAnyOf("role:ROLE_USER")).notToFail(ifAnyOf("role:ROLE_ADMIN"))`
+  call chain is not possible anymore.
+
+## 0.3.0-RC2
+
+### Changes
 
 * Fixed `TestUsers.NEW_USER` handling in assertions
 * Make `AbstractUserRoleIT#getRandomUsername` protected (was package local)
 
-# 0.3.0-RC1
+## 0.3.0-RC1
 
-## Changes
+### Changes
 
 * First public release
 * Better configuration support
@@ -18,11 +39,11 @@ Multi User Test Runner
 * Improved documentation
 * `TestUsers.ANONYMOUS` definition to use for unauthenticated users
 
-## Breaking Changes
+### Breaking Changes
 
 * `SpringMultiUserTestClassRunner` is in its own artefact: spring-test-class-runner
 * Default TestUsers runner is changed from `SpringMultiUserTestClassRunner` to `BlockMultiUserTestClassRunner`
-* Runner configuration is done via `MultiUserTestConfig` annotation. Annotation can be added to a base class to reduce boilerplage code.
+* Runner configuration is done via `MultiUserTestConfig` annotation. Annotation can be added to a base class to reduce boilerplate code.
 * Creator is logged after `@Before` methods but just before calling the test method. Previously 
   it was called in `AbstractUserRoleIT`class's `@Before` method which made impossible to create custom users
   which could be used as creator user.
