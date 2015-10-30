@@ -18,10 +18,17 @@ public class IdentifierResolverTest {
         ROLE2
     }
 
+    private static RoleConverter<Role> resolver = new RoleConverter<Role>() {
+        @Override
+        public Role stringToRole(String role) {
+            return Role.valueOf(role.toUpperCase());
+        }
+    };
+
     @Test
     public void userRole() {
-        RoleContainer creator = RoleContainer.forRole(Role.ROLE1, UserIdentifier.parse("role:role1"));
-        RoleContainer user = RoleContainer.forRole(Role.ROLE2, UserIdentifier.parse("role:role2"));
+        RoleContainer creator = RoleContainer.forCreator(UserIdentifier.parse("role:role1"), resolver);
+        RoleContainer user = RoleContainer.forUser(UserIdentifier.parse("role:role2"), creator, resolver);
 
         IdentifierResolver resolver = new IdentifierResolver(mockUserResolver(creator, user));
 
@@ -31,8 +38,8 @@ public class IdentifierResolverTest {
 
     @Test
     public void creator_role() {
-        RoleContainer creator = RoleContainer.forRole(Role.ROLE1, UserIdentifier.parse("role:role1"));
-        RoleContainer user = RoleContainer.forCreatorUser();
+        RoleContainer creator = RoleContainer.forCreator(UserIdentifier.parse("role:role1"), resolver);
+        RoleContainer user = RoleContainer.forUser(UserIdentifier.getCreator(), creator, resolver);
 
         IdentifierResolver resolver = new IdentifierResolver(mockUserResolver(creator, user));
 
@@ -42,8 +49,8 @@ public class IdentifierResolverTest {
 
     @Test
     public void creator_user() {
-        RoleContainer creator = RoleContainer.forExistingUser(UserIdentifier.parse("user:user1"));
-        RoleContainer user = RoleContainer.forCreatorUser();
+        RoleContainer creator = RoleContainer.forCreator(UserIdentifier.parse("user:user1"), resolver);
+        RoleContainer user = RoleContainer.forUser(UserIdentifier.getCreator(), creator, resolver);
 
         IdentifierResolver resolver = new IdentifierResolver(mockUserResolver(creator, user));
 
@@ -53,8 +60,8 @@ public class IdentifierResolverTest {
 
     @Test
     public void existingUser() {
-        RoleContainer creator = RoleContainer.forExistingUser(UserIdentifier.parse("user:user1"));
-        RoleContainer user = RoleContainer.forExistingUser(UserIdentifier.parse("user:user2"));
+        RoleContainer creator = RoleContainer.forCreator(UserIdentifier.parse("user:user1"), resolver);
+        RoleContainer user = RoleContainer.forUser(UserIdentifier.parse("user:user2"), creator, resolver);
 
         IdentifierResolver resolver = new IdentifierResolver(mockUserResolver(creator, user));
 
@@ -64,8 +71,8 @@ public class IdentifierResolverTest {
 
     @Test
     public void anonymous() {
-        RoleContainer creator = RoleContainer.forAnonymousUser();
-        RoleContainer user = RoleContainer.forAnonymousUser();
+        RoleContainer creator = RoleContainer.forCreator(UserIdentifier.getAnonymous(), resolver);
+        RoleContainer user = RoleContainer.forUser(UserIdentifier.getAnonymous(), creator, resolver);
 
         IdentifierResolver resolver = new IdentifierResolver(mockUserResolver(creator, user));
 
@@ -75,8 +82,8 @@ public class IdentifierResolverTest {
 
     @Test
     public void newUserWithCreatorRole() {
-        RoleContainer creator = RoleContainer.forRole(Role.ROLE1, UserIdentifier.parse("role:role1"));
-        RoleContainer user = RoleContainer.forNewUser(Role.ROLE1, UserIdentifier.getNewUser());
+        RoleContainer creator = RoleContainer.forCreator(UserIdentifier.parse("role:role1"), resolver);
+        RoleContainer user = RoleContainer.forUser(UserIdentifier.getNewUser(), creator, resolver);
 
         IdentifierResolver resolver = new IdentifierResolver(mockUserResolver(creator, user));
 
@@ -86,8 +93,8 @@ public class IdentifierResolverTest {
 
     @Test(expected = IllegalStateException.class)
     public void newUserWithCreatorRole_failsBecauseCreatorHasNoRole() {
-        RoleContainer creator = RoleContainer.forExistingUser(UserIdentifier.parse("user:user1"));
-        RoleContainer user = RoleContainer.forNewUser(null, UserIdentifier.getNewUser());
+        RoleContainer creator = RoleContainer.forCreator(UserIdentifier.parse("user:user1"), resolver);
+        RoleContainer user = RoleContainer.forUser(UserIdentifier.getNewUser(), creator, resolver);
 
         IdentifierResolver resolver = new IdentifierResolver(mockUserResolver(creator, user));
 

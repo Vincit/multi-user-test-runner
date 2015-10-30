@@ -13,45 +13,11 @@ public class UserResolver<USER, ROLE> {
     private USER user;
 
     private final UserFactory<USER, ROLE> userFactory;
-    private final RoleConverter<ROLE> roleConverter;
 
     public UserResolver(UserFactory<USER, ROLE> userFactory, RoleConverter<ROLE> roleConverter, UserIdentifier creator, UserIdentifier user) {
         this.userFactory = userFactory;
-        this.roleConverter = roleConverter;
-        this.creatorRoleContainer = resolveCreatorFromIdentifier(creator);
-        this.userRoleContainer = resolveUserFromIdentifier(user);
-    }
-
-    private RoleContainer<ROLE> resolveCreatorFromIdentifier(UserIdentifier identifier) {
-        if (identifier.getType() == UserIdentifier.Type.USER) {
-            return RoleContainer.forExistingUser(identifier);
-        } else if (identifier.getType() == UserIdentifier.Type.ANONYMOUS) {
-            return RoleContainer.forAnonymousUser();
-        } else if (identifier.getType() == UserIdentifier.Type.ROLE) {
-            return RoleContainer.forRole(
-                    roleConverter.stringToRole(identifier.getIdentifier()),
-                    identifier
-            );
-        } else {
-            throw new IllegalArgumentException("Invalid identifier for creator: " + identifier.getType());
-        }
-    }
-
-    private RoleContainer<ROLE> resolveUserFromIdentifier(UserIdentifier identifier) {
-        if (identifier.getType() == UserIdentifier.Type.CREATOR) {
-            return RoleContainer.forCreatorUser();
-        } else if (identifier.getType() == UserIdentifier.Type.NEW_USER) {
-            if (creatorRoleContainer.getMode() == RoleContainer.RoleMode.EXISTING_USER) {
-                throw new IllegalStateException("Cannot use NEW_USER mode when creator uses existing user");
-            }
-            return RoleContainer.forNewUser(creatorRoleContainer.getRole(), identifier);
-        } else if (identifier.getType() == UserIdentifier.Type.ANONYMOUS) {
-            return RoleContainer.forAnonymousUser();
-        } else if (identifier.getType() == UserIdentifier.Type.ROLE) {
-            return RoleContainer.forRole(roleConverter.stringToRole(identifier.getIdentifier()), identifier);
-        } else {
-            return RoleContainer.forExistingUser(identifier);
-        }
+        this.creatorRoleContainer = RoleContainer.forCreator(creator, roleConverter);
+        this.userRoleContainer = RoleContainer.forUser(user, creatorRoleContainer, roleConverter);
     }
 
     private void initializeUser() {
