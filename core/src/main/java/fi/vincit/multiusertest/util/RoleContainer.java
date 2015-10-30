@@ -1,25 +1,25 @@
 package fi.vincit.multiusertest.util;
 
-public class TestUser<ROLE> {
+public class RoleContainer<ROLE> {
 
-    public static <ROLE> TestUser<ROLE> forCreatorUser() {
-        return new TestUser<>(null, RoleMode.CREATOR_USER, UserIdentifier.getCreator());
+    public static <ROLE> RoleContainer<ROLE> forCreatorUser() {
+        return new RoleContainer<>(null, RoleMode.CREATOR_USER, UserIdentifier.getCreator());
     }
 
-    public static <ROLE> TestUser<ROLE> forNewUser(ROLE role, UserIdentifier identifier) {
-        return new TestUser<>(role, RoleMode.NEW_WITH_CREATOR_ROLE, identifier);
+    public static <ROLE> RoleContainer<ROLE> forNewUser(ROLE role, UserIdentifier identifier) {
+        return new RoleContainer<>(role, RoleMode.NEW_WITH_CREATOR_ROLE, identifier);
     }
 
-    public static <ROLE> TestUser<ROLE> forRole(ROLE role, UserIdentifier identifier) {
-        return new TestUser<>(role, RoleMode.SET_USER_ROLE, identifier);
+    public static <ROLE> RoleContainer<ROLE> forRole(ROLE role, UserIdentifier identifier) {
+        return new RoleContainer<>(role, RoleMode.SET_USER_ROLE, identifier);
     }
 
-    public static <ROLE> TestUser<ROLE> forExistingUser(UserIdentifier identifier) {
-        return new TestUser<>(null, RoleMode.EXISTING_USER, identifier);
+    public static <ROLE> RoleContainer<ROLE> forExistingUser(UserIdentifier identifier) {
+        return new RoleContainer<>(null, RoleMode.EXISTING_USER, identifier);
     }
 
-    public static <ROLE> TestUser<ROLE> forAnonymousUser() {
-        return new TestUser<>(null, RoleMode.ANONYMOUS, null);
+    public static <ROLE> RoleContainer<ROLE> forAnonymousUser() {
+        return new RoleContainer<>(null, RoleMode.ANONYMOUS, UserIdentifier.getAnonymous());
     }
 
     public enum RoleMode {
@@ -35,7 +35,7 @@ public class TestUser<ROLE> {
     private final UserIdentifier userIdentifier;
 
 
-    TestUser(ROLE role, RoleMode mode, UserIdentifier userIdentifier) {
+    RoleContainer(ROLE role, RoleMode mode, UserIdentifier userIdentifier) {
         this.role = role;
         this.mode = mode;
         this.userIdentifier = userIdentifier;

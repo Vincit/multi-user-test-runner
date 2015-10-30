@@ -67,11 +67,11 @@ public class RunnerDelegateTest {
             return null;
         }
 
-        public TestUser<String> getUserModel() {
+        public RoleContainer<String> getUserModel() {
             return super.getUserModel();
         }
 
-        public TestUser<String> getCreatorModel() {
+        public RoleContainer<String> getCreatorModel() {
             return super.getCreatorModel();
         }
     }

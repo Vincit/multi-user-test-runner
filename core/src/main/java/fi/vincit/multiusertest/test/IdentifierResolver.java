@@ -1,13 +1,13 @@
 package fi.vincit.multiusertest.test;
 
 import fi.vincit.multiusertest.util.LoginRole;
-import fi.vincit.multiusertest.util.TestUser;
+import fi.vincit.multiusertest.util.RoleContainer;
 import fi.vincit.multiusertest.util.UserIdentifier;
 
 public class IdentifierResolver<USER, ROLE> {
 
-    private TestUser<ROLE> user;
-    private TestUser<ROLE> creator;
+    private RoleContainer<ROLE> user;
+    private RoleContainer<ROLE> creator;
 
     public IdentifierResolver(UserResolver<USER, ROLE> userResolver) {
         this.user = userResolver.getUser();
@@ -23,16 +23,16 @@ public class IdentifierResolver<USER, ROLE> {
     }
 
     private UserIdentifier getUserIdentifier() {
-        TestUser.RoleMode roleMode = user.getMode();
+        RoleContainer.RoleMode roleMode = user.getMode();
 
-        if (roleMode == TestUser.RoleMode.EXISTING_USER) {
+        if (roleMode == RoleContainer.RoleMode.EXISTING_USER) {
             return new UserIdentifier(UserIdentifier.Type.USER, user.getIdentifier());
-        } else if (roleMode == TestUser.RoleMode.CREATOR_USER) {
+        } else if (roleMode == RoleContainer.RoleMode.CREATOR_USER) {
             return UserIdentifier.getCreator();
-        } else if (roleMode == TestUser.RoleMode.ANONYMOUS) {
+        } else if (roleMode == RoleContainer.RoleMode.ANONYMOUS) {
             return UserIdentifier.getAnonymous();
-        } else if (roleMode == TestUser.RoleMode.NEW_WITH_CREATOR_ROLE) {
-            if (creator.getMode() != TestUser.RoleMode.SET_USER_ROLE) {
+        } else if (roleMode == RoleContainer.RoleMode.NEW_WITH_CREATOR_ROLE) {
+            if (creator.getMode() != RoleContainer.RoleMode.SET_USER_ROLE) {
                 throw new IllegalStateException("Cannot use NEW_WITH_CREATOR_ROLE when creator doesn't have role");
             }
             return new UserIdentifier(UserIdentifier.Type.ROLE, creator.getIdentifier());

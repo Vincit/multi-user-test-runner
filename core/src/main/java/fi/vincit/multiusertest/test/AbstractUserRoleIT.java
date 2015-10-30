@@ -13,8 +13,8 @@ import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
 import fi.vincit.multiusertest.util.Defaults;
 import fi.vincit.multiusertest.util.LoginRole;
 import fi.vincit.multiusertest.util.Optional;
+import fi.vincit.multiusertest.util.RoleContainer;
 import fi.vincit.multiusertest.util.TestConfiguration;
-import fi.vincit.multiusertest.util.TestUser;
 import fi.vincit.multiusertest.util.UserIdentifier;
 
 /**
@@ -97,11 +97,11 @@ public abstract class AbstractUserRoleIT<USER, ROLE>
         return "testuser-" + random.nextInt(Integer.MAX_VALUE);
     }
 
-    protected TestUser<ROLE> getUserModel() {
+    protected RoleContainer<ROLE> getUserModel() {
         return userResolver.getUser();
     }
 
-    protected TestUser<ROLE> getCreatorModel() {
+    protected RoleContainer<ROLE> getCreatorModel() {
         return userResolver.getCreator();
     }
 

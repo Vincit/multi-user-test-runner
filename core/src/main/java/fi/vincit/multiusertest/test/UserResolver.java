@@ -1,15 +1,15 @@
 package fi.vincit.multiusertest.test;
 
 import fi.vincit.multiusertest.util.LoginRole;
-import fi.vincit.multiusertest.util.TestUser;
+import fi.vincit.multiusertest.util.RoleContainer;
 import fi.vincit.multiusertest.util.UserIdentifier;
 
 public class UserResolver<USER, ROLE> {
 
-    private final TestUser<ROLE> creatorModel;
+    private final RoleContainer<ROLE> creatorRoleContainer;
     private USER creator;
 
-    private final TestUser<ROLE> userModel;
+    private final RoleContainer<ROLE> userRoleContainer;
     private USER user;
 
     private final UserFactory<USER, ROLE> userFactory;
@@ -18,17 +18,17 @@ public class UserResolver<USER, ROLE> {
     public UserResolver(UserFactory<USER, ROLE> userFactory, RoleConverter<ROLE> roleConverter, UserIdentifier creator, UserIdentifier user) {
         this.userFactory = userFactory;
         this.roleConverter = roleConverter;
-        this.creatorModel = resolveCreatorFromIdentifier(creator);
-        this.userModel = resolveUserFromIdentifier(user);
+        this.creatorRoleContainer = resolveCreatorFromIdentifier(creator);
+        this.userRoleContainer = resolveUserFromIdentifier(user);
     }
 
-    private TestUser<ROLE> resolveCreatorFromIdentifier(UserIdentifier identifier) {
+    private RoleContainer<ROLE> resolveCreatorFromIdentifier(UserIdentifier identifier) {
         if (identifier.getType() == UserIdentifier.Type.USER) {
-            return TestUser.forExistingUser(identifier);
+            return RoleContainer.forExistingUser(identifier);
         } else if (identifier.getType() == UserIdentifier.Type.ANONYMOUS) {
-            return TestUser.forAnonymousUser();
+            return RoleContainer.forAnonymousUser();
         } else if (identifier.getType() == UserIdentifier.Type.ROLE) {
-            return TestUser.forRole(
+            return RoleContainer.forRole(
                     roleConverter.stringToRole(identifier.getIdentifier()),
                     identifier
             );
@@ -37,73 +37,73 @@ public class UserResolver<USER, ROLE> {
         }
     }
 
-    private TestUser<ROLE> resolveUserFromIdentifier(UserIdentifier identifier) {
+    private RoleContainer<ROLE> resolveUserFromIdentifier(UserIdentifier identifier) {
         if (identifier.getType() == UserIdentifier.Type.CREATOR) {
-            return TestUser.forCreatorUser();
+            return RoleContainer.forCreatorUser();
         } else if (identifier.getType() == UserIdentifier.Type.NEW_USER) {
-            if (creatorModel.getMode() == TestUser.RoleMode.EXISTING_USER) {
+            if (creatorRoleContainer.getMode() == RoleContainer.RoleMode.EXISTING_USER) {
                 throw new IllegalStateException("Cannot use NEW_USER mode when creator uses existing user");
             }
-            return TestUser.forNewUser(creatorModel.getRole(), identifier);
+            return RoleContainer.forNewUser(creatorRoleContainer.getRole(), identifier);
         } else if (identifier.getType() == UserIdentifier.Type.ANONYMOUS) {
-            return TestUser.forAnonymousUser();
+            return RoleContainer.forAnonymousUser();
         } else if (identifier.getType() == UserIdentifier.Type.ROLE) {
-            return TestUser.forRole(roleConverter.stringToRole(identifier.getIdentifier()), identifier);
+            return RoleContainer.forRole(roleConverter.stringToRole(identifier.getIdentifier()), identifier);
         } else {
-            return TestUser.forExistingUser(identifier);
+            return RoleContainer.forExistingUser(identifier);
         }
     }
 
     private void initializeUser() {
-        if (userModel.getMode() == TestUser.RoleMode.SET_USER_ROLE) {
-            user = userFactory.createUser(userFactory.getRandomUsername(), "Test", "User", userModel.getRole(), LoginRole.USER);
-        } else if (userModel.getMode() == TestUser.RoleMode.CREATOR_USER) {
-            if (creatorModel.getMode() == TestUser.RoleMode.EXISTING_USER) {
+        if (userRoleContainer.getMode() == RoleContainer.RoleMode.SET_USER_ROLE) {
+            user = userFactory.createUser(userFactory.getRandomUsername(), "Test", "User", userRoleContainer.getRole(), LoginRole.USER);
+        } else if (userRoleContainer.getMode() == RoleContainer.RoleMode.CREATOR_USER) {
+            if (creatorRoleContainer.getMode() == RoleContainer.RoleMode.EXISTING_USER) {
                 // Do nothing, resolved in getter
             } else {
                 user = creator;
             }
-        } else if (userModel.getMode() == TestUser.RoleMode.NEW_WITH_CREATOR_ROLE) {
-            if (creatorModel.getMode() == TestUser.RoleMode.EXISTING_USER) {
+        } else if (userRoleContainer.getMode() == RoleContainer.RoleMode.NEW_WITH_CREATOR_ROLE) {
+            if (creatorRoleContainer.getMode() == RoleContainer.RoleMode.EXISTING_USER) {
                 // NOOP
             } else {
-                user = userFactory.createUser(userFactory.getRandomUsername(), "Test", "User", creatorModel.getRole(), LoginRole.USER);
+                user = userFactory.createUser(userFactory.getRandomUsername(), "Test", "User", creatorRoleContainer.getRole(), LoginRole.USER);
             }
-        } else if (userModel.getMode() == TestUser.RoleMode.EXISTING_USER) {
+        } else if (userRoleContainer.getMode() == RoleContainer.RoleMode.EXISTING_USER) {
             // Do nothing, resolved in getter
-        } else if (userModel.getMode() == TestUser.RoleMode.ANONYMOUS) {
+        } else if (userRoleContainer.getMode() == RoleContainer.RoleMode.ANONYMOUS) {
             // Do nothing, user is not used
         } else {
-            throw new IllegalArgumentException("Invalid user mode: " + userModel.getMode());
+            throw new IllegalArgumentException("Invalid user mode: " + userRoleContainer.getMode());
         }
     }
 
     private void initializeCreator() {
-        if (creatorModel.getMode() == TestUser.RoleMode.SET_USER_ROLE) {
-            creator = userFactory.createUser(userFactory.getRandomUsername(), "Test", "Creator", creatorModel.getRole(), LoginRole.CREATOR);
-        } else if (creatorModel.getMode() == TestUser.RoleMode.EXISTING_USER) {
+        if (creatorRoleContainer.getMode() == RoleContainer.RoleMode.SET_USER_ROLE) {
+            creator = userFactory.createUser(userFactory.getRandomUsername(), "Test", "Creator", creatorRoleContainer.getRole(), LoginRole.CREATOR);
+        } else if (creatorRoleContainer.getMode() == RoleContainer.RoleMode.EXISTING_USER) {
             // Do nothing, resolved in getter
-        } else if (creatorModel.getMode() == TestUser.RoleMode.ANONYMOUS) {
+        } else if (creatorRoleContainer.getMode() == RoleContainer.RoleMode.ANONYMOUS) {
             // Do nothing, user is not used
         } else {
-            throw new IllegalArgumentException("Invalid creator user mode: " + creatorModel.getMode());
+            throw new IllegalArgumentException("Invalid creator user mode: " + creatorRoleContainer.getMode());
         }
     }
 
-    public TestUser<ROLE> getCreator() {
-        return creatorModel;
+    public RoleContainer<ROLE> getCreator() {
+        return creatorRoleContainer;
     }
 
-    public TestUser<ROLE> getUser() {
-        return userModel;
+    public RoleContainer<ROLE> getUser() {
+        return userRoleContainer;
     }
 
     public USER resolveUser() {
-        if (userModel.getMode() == TestUser.RoleMode.EXISTING_USER) {
-            return userFactory.getUserByUsername(userModel.getIdentifier());
-        } else if (userModel.getMode() == TestUser.RoleMode.ANONYMOUS) {
+        if (userRoleContainer.getMode() == RoleContainer.RoleMode.EXISTING_USER) {
+            return userFactory.getUserByUsername(userRoleContainer.getIdentifier());
+        } else if (userRoleContainer.getMode() == RoleContainer.RoleMode.ANONYMOUS) {
             return null;
-        } else if (userModel.getMode() == TestUser.RoleMode.CREATOR_USER) {
+        } else if (userRoleContainer.getMode() == RoleContainer.RoleMode.CREATOR_USER) {
             return resolverCreator();
         } else {
             return user;
@@ -111,9 +111,9 @@ public class UserResolver<USER, ROLE> {
     }
 
     public USER resolverCreator() {
-        if (creatorModel.getMode() == TestUser.RoleMode.EXISTING_USER) {
-            return userFactory.getUserByUsername(creatorModel.getIdentifier());
-        } else if (creatorModel.getMode() == TestUser.RoleMode.ANONYMOUS) {
+        if (creatorRoleContainer.getMode() == RoleContainer.RoleMode.EXISTING_USER) {
+            return userFactory.getUserByUsername(creatorRoleContainer.getIdentifier());
+        } else if (creatorRoleContainer.getMode() == RoleContainer.RoleMode.ANONYMOUS) {
             return null;
         } else {
             return creator;
