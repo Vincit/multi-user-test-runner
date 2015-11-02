@@ -342,7 +342,7 @@ public class AbstractConfiguredUserIT extends AbstractUserRoleIT<User, User.Role
     protected UserSecurityService userSecurityService;
 
     @Override
-    protected void loginWithUser(User user) {
+    public void loginWithUser(User user) {
         final Set<SimpleGrantedAuthority> authorities = Collections
                 .singleton(new SimpleGrantedAuthority(user.getRole().toString()));
 
@@ -351,24 +351,24 @@ public class AbstractConfiguredUserIT extends AbstractUserRoleIT<User, User.Role
     }
 
     @Override
-    protected void loginAnonymous() {
+    public void loginAnonymous() {
         SecurityContextHolder.getContext().setAuthentication(null);
     }
 
     @Override
-    protected User createUser(String username, String firstName, String lastName, User.Role userRole, LoginRole loginRole) {
+    public User createUser(String username, String firstName, String lastName, User.Role userRole, LoginRole loginRole) {
         User user = userService.createUser(username, firstName, lastName, userRole);
         userSecurityService.setUserPassword(user, loginRole.toString());
         return user;
     }
 
     @Override
-    protected User.Role stringToRole(String role) {
+    public User.Role stringToRole(String role) {
         return User.Role.valueOf(role);
     }
 
     @Override
-    protected User getUserByUsername(String username) {
+    public User getUserByUsername(String username) {
         return userService.findByUsername(username);
     }
 }
