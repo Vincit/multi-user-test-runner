@@ -1,6 +1,31 @@
 Multi User Test Runner
 ======================
 
+# 0.4.0
+
+## Changes
+
+* `AbstractUserRoleIT` implements interfaces `UserRoleIT<USER>`, `RoleConverter<ROLE>` and `UserFactory<USER, ROLE>`.
+* Internal implementation is refactored
+* `ExpectCall#toFailWithException(Class<? extends Throwable> exception, UserIdentifiers identifiers, ExceptionAssertionCall exceptionAssertionCall)`
+for asserting that exception contains correct values.
+* Default `AbstractUserRoleIT#getRandomUsername()` returns username always in format `testuser-<number>`.
+  Previously this was either `testuser-<number>` or `testuser<number>`.
+
+## Breaking Changes
+
+* Introduction of new interfaces requires some protected `AbstractUserRoleIT` methods to become public. 
+   * `USER createUser(String username, String firstName, String lastName, ROLE userRole, LoginRole loginRole)`
+   * `String getRandomUsername()`
+   * `USER getUserByUsername(String username)`
+   * `ROLE stringToRole(String role)`
+   * `void logInAs(LoginRole role)`
+   * `void loginWithUser(USER user)`
+   * `Class<? extends Throwable> getDefaultException()`
+   * `USER getCreator()`
+   * `USER getUser()`
+   * `void setUsers(UserIdentifier creatorIdentifier, UserIdentifier userIdentifier)`
+
 # 0.3.0
 
 ## Changes
