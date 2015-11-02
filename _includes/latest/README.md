@@ -343,11 +343,6 @@ public class AbstractConfiguredUserIT extends AbstractUserRoleIT<User, User.Role
 
     @Override
     protected void loginWithUser(User user) {
-        authenticateUser(user);
-    }
-
-    @Override
-    protected void authenticateUser(User user) {
         final Set<SimpleGrantedAuthority> authorities = Collections
                 .singleton(new SimpleGrantedAuthority(user.getRole().toString()));
 
