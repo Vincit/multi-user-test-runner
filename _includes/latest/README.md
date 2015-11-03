@@ -349,6 +349,11 @@ public class AbstractConfiguredUserIT extends AbstractUserRoleIT<User, User.Role
         SecurityContextHolder.getContext().setAuthentication(
                 new UsernamePasswordAuthenticationToken(UserInfo.createFromUser(user), user.getUsername(), authorities));
     }
+    
+    @Override
+    protected void loginAnonymous() {
+        SecurityContextHolder.getContext().setAuthentication(null);
+    }
 
     @Override
     protected User createUser(String username, String firstName, String lastName, User.Role userRole, LoginRole loginRole) {
