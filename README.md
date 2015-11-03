@@ -351,6 +351,11 @@ public class AbstractConfiguredUserIT extends AbstractUserRoleIT<User, User.Role
     }
 
     @Override
+    protected void loginAnonymous() {
+        SecurityContextHolder.getContext().setAuthentication(null);
+    }
+
+    @Override
     protected User createUser(String username, String firstName, String lastName, User.Role userRole, LoginRole loginRole) {
         User user = userService.createUser(username, firstName, lastName, userRole);
         userSecurityService.setUserPassword(user, loginRole.toString());
