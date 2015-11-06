@@ -39,7 +39,7 @@ public class ExpectCall implements ExpectCallFail, ExpectCallNotFail {
 
     private final FunctionCall functionCall;
 
-    private final Map<UserIdentifier, CallInfo> expectations = new HashMap<>();
+    private final Map<UserIdentifier, ExpectationInfo> expectations = new HashMap<>();
 
     private FailMode generalFailMode = FailMode.NONE;
 
@@ -52,7 +52,7 @@ public class ExpectCall implements ExpectCallFail, ExpectCallNotFail {
         Objects.requireNonNull(identifiers, "Identifiers must not be null");
         generalFailMode = FailMode.EXPECT_FAIL;
         for (UserIdentifier identifier : identifiers.getIdentifiers()) {
-            expectations.put(identifier, new CallInfo(
+            expectations.put(identifier, new ExpectationInfo(
                     FailMode.EXPECT_FAIL,
                     Optional.<Class<? extends Throwable>>empty(),
                     NOOP_ASSERTION
@@ -74,7 +74,7 @@ public class ExpectCall implements ExpectCallFail, ExpectCallNotFail {
 
         generalFailMode = FailMode.EXPECT_FAIL;
         for (UserIdentifier identifier : identifiers.getIdentifiers()) {
-            expectations.put(identifier, new CallInfo(
+            expectations.put(identifier, new ExpectationInfo(
                     FailMode.EXPECT_FAIL,
                     Optional.<Class<? extends Throwable>>of(exception),
                     exceptionAssertionCall
@@ -88,7 +88,7 @@ public class ExpectCall implements ExpectCallFail, ExpectCallNotFail {
         Objects.requireNonNull(identifiers, "Identifiers must not be null");
         generalFailMode = FailMode.EXPECT_NOT_FAIL;
         for (UserIdentifier identifier : identifiers.getIdentifiers()) {
-            expectations.put(identifier, new CallInfo(FailMode.EXPECT_NOT_FAIL, Optional.<Class<? extends Throwable>>empty(), NOOP_ASSERTION));
+            expectations.put(identifier, new ExpectationInfo(FailMode.EXPECT_NOT_FAIL, Optional.<Class<? extends Throwable>>empty(), NOOP_ASSERTION));
         }
         return this;
     }
@@ -110,30 +110,30 @@ public class ExpectCall implements ExpectCallFail, ExpectCallNotFail {
     }
 
     private void throwIfExceptionIsExpected(UserIdentifier userIdentifier) {
-        Optional<CallInfo> possibleCallInfo = getFailInfo(userIdentifier);
+        Optional<ExpectationInfo> possibleCallInfo = getFailInfo(userIdentifier);
         if (possibleCallInfo.isPresent()) {
-            CallInfo callInfo = possibleCallInfo.get();
+            ExpectationInfo expectationInfo = possibleCallInfo.get();
             Class<? extends Throwable> exception =
-                    callInfo.getExceptionClass().orElse(defaultExpectedException);
+                    expectationInfo.getExceptionClass().orElse(defaultExpectedException);
 
-            if (callInfo.getFailMode() == FailMode.EXPECT_FAIL) {
+            if (expectationInfo.getFailMode() == FailMode.EXPECT_FAIL) {
                 throw new AssertionError("Expected to fail with exception " + exception.getName());
             }
         }
     }
 
     private void throwIfExpectationNotExpected(UserIdentifier userIdentifier, Throwable e)  throws Throwable {
-        Optional<CallInfo> possibleCallInfo = getFailInfo(userIdentifier);
+        Optional<ExpectationInfo> possibleCallInfo = getFailInfo(userIdentifier);
         if (possibleCallInfo.isPresent()) {
-            CallInfo callInfo = possibleCallInfo.get();;
+            ExpectationInfo expectationInfo = possibleCallInfo.get();;
 
-            if (callInfo.getFailMode() == FailMode.EXPECT_NOT_FAIL) {
+            if (expectationInfo.getFailMode() == FailMode.EXPECT_NOT_FAIL) {
                 throw new AssertionError("Not expected to fail with user role " + userIdentifier.toString(), e);
             } else {
-                if (!callInfo.isExceptionExpected(e, defaultExpectedException)) {
+                if (!expectationInfo.isExceptionExpected(e, defaultExpectedException)) {
                     throw e;
                 }
-                callInfo.assertException(e);
+                expectationInfo.assertException(e);
             }
         } else {
             if (generalFailMode != FailMode.EXPECT_NOT_FAIL) {
@@ -142,7 +142,7 @@ public class ExpectCall implements ExpectCallFail, ExpectCallNotFail {
         }
     }
 
-    private Optional<CallInfo> getFailInfo(UserIdentifier userIdentifier) {
+    private Optional<ExpectationInfo> getFailInfo(UserIdentifier userIdentifier) {
         if (expectations.containsKey(userIdentifier)) {
             return Optional.of(expectations.get(userIdentifier));
         } else {

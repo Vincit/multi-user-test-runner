@@ -5,32 +5,32 @@ import org.junit.Test;
 import fi.vincit.multiusertest.rule.FailMode;
 import fi.vincit.multiusertest.util.Optional;
 
-public class CallInfoTest {
+public class ExpectationInfoTest {
 
     @Test
     public void testValidationPass_FailModeExpectToFail() {
-        new CallInfo(FailMode.EXPECT_FAIL, getOptionalException(), ExpectCall.NOOP_ASSERTION);
+        new ExpectationInfo(FailMode.EXPECT_FAIL, getOptionalException(), ExpectCall.NOOP_ASSERTION);
     }
 
     @Test
     public void testValidationPass_FailModeExpectNotToFail() {
-        new CallInfo(FailMode.EXPECT_NOT_FAIL, getEmptyException(), ExpectCall.NOOP_ASSERTION);
+        new ExpectationInfo(FailMode.EXPECT_NOT_FAIL, getEmptyException(), ExpectCall.NOOP_ASSERTION);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testValidationFail_FailModeExpectNotToFail() {
-        new CallInfo(FailMode.EXPECT_NOT_FAIL, getOptionalException(), ExpectCall.NOOP_ASSERTION);
+        new ExpectationInfo(FailMode.EXPECT_NOT_FAIL, getOptionalException(), ExpectCall.NOOP_ASSERTION);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testValidationFail_FailModeNone_WithException() {
-        new CallInfo(FailMode.NONE, getOptionalException(), ExpectCall.NOOP_ASSERTION);
+        new ExpectationInfo(FailMode.NONE, getOptionalException(), ExpectCall.NOOP_ASSERTION);
 
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testValidationFail_FailModeNone_WithoutException() {
-        new CallInfo(FailMode.NONE, getEmptyException(), ExpectCall.NOOP_ASSERTION);
+        new ExpectationInfo(FailMode.NONE, getEmptyException(), ExpectCall.NOOP_ASSERTION);
     }
 
     private Optional<Class<? extends Throwable>> getOptionalException() {

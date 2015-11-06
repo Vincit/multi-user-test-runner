@@ -3,13 +3,13 @@ package fi.vincit.multiusertest.rule.expection.call;
 import fi.vincit.multiusertest.rule.FailMode;
 import fi.vincit.multiusertest.util.Optional;
 
-class CallInfo {
+class ExpectationInfo {
 
     private final FailMode failMode;
     private final Optional<Class<? extends Throwable>> exceptionClass;
     private final ExceptionAssertionCall exceptionAssertionCall;
 
-    public CallInfo(FailMode failMode, Optional<Class<? extends Throwable>> exceptionClass, ExceptionAssertionCall exceptionAssertionCall) {
+    public ExpectationInfo(FailMode failMode, Optional<Class<? extends Throwable>> exceptionClass, ExceptionAssertionCall exceptionAssertionCall) {
         this.exceptionAssertionCall = exceptionAssertionCall;
         validate(failMode, exceptionClass);
         this.failMode = failMode;
@@ -31,10 +31,6 @@ class CallInfo {
 
     public Optional<Class<? extends Throwable>> getExceptionClass() {
         return exceptionClass;
-    }
-
-    public ExceptionAssertionCall getExceptionAssertionCall() {
-        return exceptionAssertionCall;
     }
 
     public void assertException(Throwable e) {
