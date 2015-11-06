@@ -29,6 +29,7 @@ public interface ExpectCallFail extends Expectation {
      * @param identifiers A set of user identifiers for which the call is expected to fail
      * @param exceptionAssertionCall Anonymous class or lambda expression where thrown expected exception values can be verified
      * @return ExpectCall object for chaining
+     * @since 0.4
      */
     ExpectCallFail toFailWithException(Class<? extends Throwable> exception, UserIdentifiers identifiers, ExceptionAssertionCall exceptionAssertionCall);
 }
