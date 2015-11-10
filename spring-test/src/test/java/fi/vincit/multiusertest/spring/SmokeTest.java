@@ -10,13 +10,13 @@ import org.junit.Test;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.test.context.ContextConfiguration;
 
-import fi.vincit.multiusertest.annotation.TestUsers;
+import fi.vincit.multiusertest.annotation.RunWithUsers;
 import fi.vincit.multiusertest.context.TestConfiguration;
 import fi.vincit.multiusertest.spring.configuration.ConfiguredTest;
 import fi.vincit.multiusertest.util.LoginRole;
 
-@TestUsers(
-        creators = {"role:ROLE_ADMIN"}, users = "role:ROLE_USER"
+@RunWithUsers(
+        producers = {"role:ROLE_ADMIN"}, consumers = "role:ROLE_USER"
 )
 @ContextConfiguration(classes = {TestConfiguration.class})
 public class SmokeTest extends ConfiguredTest {

@@ -14,7 +14,7 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 
-import fi.vincit.multiusertest.annotation.TestUsers;
+import fi.vincit.multiusertest.annotation.RunWithUsers;
 import fi.vincit.multiusertest.util.UserIdentifier;
 
 public class ExpectAuthenticationDeniedForUserTest_setModes {
@@ -72,7 +72,7 @@ public class ExpectAuthenticationDeniedForUserTest_setModes {
         expectedException.expectMessage("Expected to fail with user role");
 
         AuthorizationRule rule = new AuthorizationRule();
-        rule.expect(toFail(ifAnyOf(TestUsers.NEW_USER)));
+        rule.expect(toFail(ifAnyOf(RunWithUsers.WITH_PRODUCER_ROLE)));
         rule.setExpectedException(AssertionError.class);
         rule.setRole(UserIdentifier.getNewUser());
 

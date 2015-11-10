@@ -9,12 +9,12 @@ import java.io.IOException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import fi.vincit.multiusertest.annotation.TestUsers;
+import fi.vincit.multiusertest.annotation.RunWithUsers;
 import fi.vincit.multiusertest.configuration.ConfiguredTestWithCustomRunnerAndException;
 import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
 import fi.vincit.multiusertest.util.LoginRole;
 
-@TestUsers(creators = {"role:ROLE_ADMIN"}, users = "role:ROLE_ADMIN")
+@RunWithUsers(producers = {"role:ROLE_ADMIN"}, consumers = "role:ROLE_ADMIN")
 @RunWith(MultiUserTestRunner.class)
 public class TestUsersCustomRunnerAndException extends ConfiguredTestWithCustomRunnerAndException {
 

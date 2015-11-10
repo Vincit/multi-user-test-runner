@@ -19,8 +19,8 @@ import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
  * </p>
  * <p>
  * Annotation can also be user with methods. Then the annotation will define with what users the method
- * will be executed. If {@link RunWithUsers#creators()} are set, the method will only be executed if any of the specified creators are
- * being used as the creator. Same applies for the {@link RunWithUsers#users()}. If both creators and users are defined then
+ * will be executed. If {@link RunWithUsers#producers()} are set, the method will only be executed if any of the specified creators are
+ * being used as the creator. Same applies for the {@link RunWithUsers#consumers()}. If both creators and users are defined then
  * the method will be run only if any combination of creators and users are being used.
  * </p>
  */
@@ -36,7 +36,7 @@ public @interface RunWithUsers {
      * Login as a new user that has the same role as the creator.
      * Can't be used if creator role uses an existing user.
      */
-    String WITH_PRODUCED_ROLE = "__FI_VINCIT_MULTI_ROLE_TEST_NEW_USER__";
+    String WITH_PRODUCER_ROLE = "__FI_VINCIT_MULTI_ROLE_TEST_NEW_USER__";
 
     /**
      * Don't login at all or clear login details

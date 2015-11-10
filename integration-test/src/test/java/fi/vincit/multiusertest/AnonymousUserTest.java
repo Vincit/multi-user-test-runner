@@ -9,7 +9,7 @@ import static org.junit.Assert.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import fi.vincit.multiusertest.annotation.TestUsers;
+import fi.vincit.multiusertest.annotation.RunWithUsers;
 import fi.vincit.multiusertest.configuration.ConfiguredTest;
 import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
 import fi.vincit.multiusertest.util.LoginRole;
@@ -17,8 +17,8 @@ import fi.vincit.multiusertest.util.SecurityUtil;
 import fi.vincit.multiusertest.util.User;
 import fi.vincit.multiusertest.util.UserIdentifier;
 
-@TestUsers(creators = {"role:ROLE_ADMIN", "role:ROLE_USER"},
-        users = {TestUsers.ANONYMOUS})
+@RunWithUsers(producers = {"role:ROLE_ADMIN", "role:ROLE_USER"},
+        consumers = {RunWithUsers.ANONYMOUS})
 @RunWith(MultiUserTestRunner.class)
 public class AnonymousUserTest extends ConfiguredTest {
 
@@ -43,8 +43,8 @@ public class AnonymousUserTest extends ConfiguredTest {
     @Test
     public void expectFailureAnonymousUser() {
         logInAs(LoginRole.USER);
-        authorization().expect(toFail(ifAnyOf(TestUsers.ANONYMOUS)));
-        throwIfUserRole(TestUsers.ANONYMOUS);
+        authorization().expect(toFail(ifAnyOf(RunWithUsers.ANONYMOUS)));
+        throwIfUserRole(RunWithUsers.ANONYMOUS);
     }
 
     @Test
@@ -53,7 +53,7 @@ public class AnonymousUserTest extends ConfiguredTest {
     }
 
     private void throwIfUserRole(String identifier) {
-        if (identifier.equals(TestUsers.ANONYMOUS)) {
+        if (identifier.equals(RunWithUsers.ANONYMOUS)) {
             throw new IllegalStateException("Thrown when role was " + identifier);
         } else {
             User.Role identifierRole = stringToRole(UserIdentifier.parse(identifier).getIdentifier());

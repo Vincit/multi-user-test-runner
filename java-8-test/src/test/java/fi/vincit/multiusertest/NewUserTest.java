@@ -6,7 +6,7 @@ import static fi.vincit.multiusertest.util.UserIdentifiers.ifAnyOf;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import fi.vincit.multiusertest.annotation.TestUsers;
+import fi.vincit.multiusertest.annotation.RunWithUsers;
 import fi.vincit.multiusertest.configuration.ConfiguredTest;
 import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
 import fi.vincit.multiusertest.util.LoginRole;
@@ -14,8 +14,8 @@ import fi.vincit.multiusertest.util.SecurityUtil;
 import fi.vincit.multiusertest.util.User;
 import fi.vincit.multiusertest.util.UserIdentifier;
 
-@TestUsers(creators = {"role:ROLE_ADMIN", "role:ROLE_USER"},
-        users = {TestUsers.NEW_USER})
+@RunWithUsers(producers = {"role:ROLE_ADMIN", "role:ROLE_USER"},
+        consumers = {RunWithUsers.WITH_PRODUCER_ROLE})
 @RunWith(MultiUserTestRunner.class)
 public class NewUserTest extends ConfiguredTest {
 
@@ -23,7 +23,7 @@ public class NewUserTest extends ConfiguredTest {
     public void expectFailureNewUser() throws Throwable {
         logInAs(LoginRole.USER);
         authorization().expect(call(this::throwException)
-                        .toFail(ifAnyOf(TestUsers.NEW_USER))
+                        .toFail(ifAnyOf(RunWithUsers.WITH_PRODUCER_ROLE))
         );
     }
 

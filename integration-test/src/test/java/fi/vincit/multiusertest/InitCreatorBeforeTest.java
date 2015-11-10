@@ -4,14 +4,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import fi.vincit.multiusertest.annotation.TestUsers;
+import fi.vincit.multiusertest.annotation.RunWithUsers;
 import fi.vincit.multiusertest.configuration.ConfiguredTest;
 import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
 import fi.vincit.multiusertest.util.LoginRole;
 import fi.vincit.multiusertest.util.User;
 
-@TestUsers(creators = {"user:test-user"},
-        users = {TestUsers.CREATOR, "role:ROLE_ADMIN", "role:ROLE_USER"})
+@RunWithUsers(producers = {"user:test-user"},
+        consumers = {RunWithUsers.PRODUCER, "role:ROLE_ADMIN", "role:ROLE_USER"})
 @RunWith(MultiUserTestRunner.class)
 public class InitCreatorBeforeTest extends ConfiguredTest {
 

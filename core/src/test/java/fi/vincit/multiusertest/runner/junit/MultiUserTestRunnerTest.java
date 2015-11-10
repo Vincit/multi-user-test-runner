@@ -15,7 +15,7 @@ import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
 
 import fi.vincit.multiusertest.annotation.MultiUserTestConfig;
-import fi.vincit.multiusertest.annotation.TestUsers;
+import fi.vincit.multiusertest.annotation.RunWithUsers;
 import fi.vincit.multiusertest.util.UserIdentifier;
 
 public class MultiUserTestRunnerTest {
@@ -68,43 +68,43 @@ public class MultiUserTestRunnerTest {
         }
     }
 
-    @TestUsers(creators = "role:ROLE_USERS")
+    @RunWithUsers(producers = "role:ROLE_USERS")
     @MultiUserTestConfig(runner = TestRunnerNoProperConstructor.class)
     public static class NoProperConstructor {
 
     }
 
-    @TestUsers(creators = "role:ROLE_USERS")
+    @RunWithUsers(producers = "role:ROLE_USERS")
     @MultiUserTestConfig(runner = TestRunner.class)
     @Ignore
     public static class OneCreator {
     }
 
-    @TestUsers(creators = {})
+    @RunWithUsers(producers = {})
     @MultiUserTestConfig(runner = TestRunner.class)
     @Ignore
     public static class NoCreators {
     }
 
-    @TestUsers(creators = TestUsers.CREATOR)
+    @RunWithUsers(producers = RunWithUsers.PRODUCER)
     @MultiUserTestConfig(runner = TestRunner.class)
     @Ignore
     public static class CreatorCreator {
     }
 
-    @TestUsers(creators = TestUsers.NEW_USER)
+    @RunWithUsers(producers = RunWithUsers.WITH_PRODUCER_ROLE)
     @MultiUserTestConfig(runner = TestRunner.class)
     @Ignore
     public static class NewUserCreator {
     }
 
-    @TestUsers(creators = "role:ROLE_USERS", users = {"user:Foo", "role:Bar"})
+    @RunWithUsers(producers = "role:ROLE_USERS", consumers = {"user:Foo", "role:Bar"})
     @MultiUserTestConfig(runner = TestRunner.class)
     @Ignore
     public static class OneCreator_MultipleUsers {
     }
 
-    @TestUsers(creators = "user:username", users = TestUsers.NEW_USER)
+    @RunWithUsers(producers = "user:username", consumers = RunWithUsers.WITH_PRODUCER_ROLE)
     @MultiUserTestConfig(runner = TestRunner.class)
     @Ignore
     public static class ExistingCreatorNewUser {

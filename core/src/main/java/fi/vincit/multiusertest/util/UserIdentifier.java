@@ -1,6 +1,6 @@
 package fi.vincit.multiusertest.util;
 
-import fi.vincit.multiusertest.annotation.TestUsers;
+import fi.vincit.multiusertest.annotation.RunWithUsers;
 import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
 
 /**
@@ -41,18 +41,18 @@ public class UserIdentifier {
     private final String identifier;
 
     public static UserIdentifier parse(String identifierString) {
-        if (identifierString.equals(TestUsers.CREATOR)) {
+        if (identifierString.equals(RunWithUsers.PRODUCER)) {
             return getCreator();
-        } else if (identifierString.equals(TestUsers.NEW_USER)) {
+        } else if (identifierString.equals(RunWithUsers.WITH_PRODUCER_ROLE)) {
             return getNewUser();
-        } else if (identifierString.equals(TestUsers.ANONYMOUS)) {
+        } else if (identifierString.equals(RunWithUsers.ANONYMOUS)) {
             return getAnonymous();
         } else if (identifierString.startsWith(MultiUserTestRunner.USER_PREFIX) || identifierString.startsWith(MultiUserTestRunner.ROLE_PREFIX)) {
             String[] data = identifierString.split(":", 2);
             return new UserIdentifier(Type.valueOf(data[0].toUpperCase()), data[1]);
         } else {
             throw new IllegalArgumentException("invalid creator parameter: <" + identifierString +
-                    ">. Parameter has to start with \"role:\" or \"user:\" or it has to be TestUsers.CREATOR or TestUsers.NEW_USER.");
+                    ">. Parameter has to start with \"role:\" or \"user:\" or it has to be RunWithUsers.PRODUCER or RunWithUsers.WITH_PRODUCER_ROLE.");
         }
     }
 

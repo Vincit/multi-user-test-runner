@@ -9,15 +9,15 @@ import static org.junit.Assert.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import fi.vincit.multiusertest.annotation.TestUsers;
+import fi.vincit.multiusertest.annotation.RunWithUsers;
 import fi.vincit.multiusertest.configuration.ConfiguredTest;
 import fi.vincit.multiusertest.rule.expection.call.ExpectCall;
 import fi.vincit.multiusertest.rule.expection.value.ExpectValueOf;
 import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
 import fi.vincit.multiusertest.util.LoginRole;
 
-@TestUsers(creators = {"role:ROLE_SUPER_ADMIN", "role:ROLE_ADMIN", "role:ROLE_USER", },
-        users = {"role:ROLE_ADMIN", "role:ROLE_USER", "role:ROLE_VISITOR"})
+@RunWithUsers(producers = {"role:ROLE_SUPER_ADMIN", "role:ROLE_ADMIN", "role:ROLE_USER", },
+        consumers = {"role:ROLE_ADMIN", "role:ROLE_USER", "role:ROLE_VISITOR"})
 @RunWith(MultiUserTestRunner.class)
 public class ChainedTest extends ConfiguredTest {
 

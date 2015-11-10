@@ -17,7 +17,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.model.Statement;
 
-import fi.vincit.multiusertest.annotation.TestUsers;
+import fi.vincit.multiusertest.annotation.RunWithUsers;
 import fi.vincit.multiusertest.util.UserIdentifier;
 
 @RunWith(Parameterized.class)
@@ -59,30 +59,30 @@ public class AuthorizationRuleDataDriveTest {
     @Parameterized.Parameters(name = "Given used by {0}. When {1} <{2}>. Then {3}")
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
-                {UserIdentifier.getCreator(), Mode.FAIL_IF_ANY_OF, Identifiers.of(TestUsers.CREATOR), ExceptionMode.EXPECT},
-                {UserIdentifier.getCreator(), Mode.FAIL_IF_ANY_OF, Identifiers.of("role:foo", TestUsers.CREATOR), ExceptionMode.EXPECT},
-                {UserIdentifier.getNewUser(), Mode.FAIL_IF_ANY_OF, Identifiers.of(TestUsers.NEW_USER), ExceptionMode.EXPECT},
-                {UserIdentifier.parse("role:foo"), Mode.FAIL_IF_ANY_OF, Identifiers.of(TestUsers.NEW_USER, "role:foo", "user:bar"), ExceptionMode.EXPECT},
-                {UserIdentifier.parse("user:bar"), Mode.FAIL_IF_ANY_OF, Identifiers.of(TestUsers.NEW_USER, "role:foo", "user:bar"), ExceptionMode.EXPECT},
+                {UserIdentifier.getCreator(), Mode.FAIL_IF_ANY_OF, Identifiers.of(RunWithUsers.PRODUCER), ExceptionMode.EXPECT},
+                {UserIdentifier.getCreator(), Mode.FAIL_IF_ANY_OF, Identifiers.of("role:foo", RunWithUsers.PRODUCER), ExceptionMode.EXPECT},
+                {UserIdentifier.getNewUser(), Mode.FAIL_IF_ANY_OF, Identifiers.of(RunWithUsers.WITH_PRODUCER_ROLE), ExceptionMode.EXPECT},
+                {UserIdentifier.parse("role:foo"), Mode.FAIL_IF_ANY_OF, Identifiers.of(RunWithUsers.WITH_PRODUCER_ROLE, "role:foo", "user:bar"), ExceptionMode.EXPECT},
+                {UserIdentifier.parse("user:bar"), Mode.FAIL_IF_ANY_OF, Identifiers.of(RunWithUsers.WITH_PRODUCER_ROLE, "role:foo", "user:bar"), ExceptionMode.EXPECT},
 
-                {UserIdentifier.getCreator(), Mode.NOT_FAIL_IF_ANY_OF, Identifiers.of(TestUsers.CREATOR), ExceptionMode.DONT_EXPECT},
-                {UserIdentifier.getCreator(), Mode.NOT_FAIL_IF_ANY_OF, Identifiers.of("role:foo", TestUsers.CREATOR), ExceptionMode.DONT_EXPECT},
-                {UserIdentifier.getNewUser(), Mode.NOT_FAIL_IF_ANY_OF, Identifiers.of(TestUsers.NEW_USER), ExceptionMode.DONT_EXPECT},
-                {UserIdentifier.parse("role:foo"), Mode.NOT_FAIL_IF_ANY_OF, Identifiers.of(TestUsers.NEW_USER, "role:foo", "user:bar"), ExceptionMode.DONT_EXPECT},
-                {UserIdentifier.parse("user:bar"), Mode.NOT_FAIL_IF_ANY_OF, Identifiers.of(TestUsers.NEW_USER, "role:foo", "user:bar"), ExceptionMode.DONT_EXPECT},
+                {UserIdentifier.getCreator(), Mode.NOT_FAIL_IF_ANY_OF, Identifiers.of(RunWithUsers.PRODUCER), ExceptionMode.DONT_EXPECT},
+                {UserIdentifier.getCreator(), Mode.NOT_FAIL_IF_ANY_OF, Identifiers.of("role:foo", RunWithUsers.PRODUCER), ExceptionMode.DONT_EXPECT},
+                {UserIdentifier.getNewUser(), Mode.NOT_FAIL_IF_ANY_OF, Identifiers.of(RunWithUsers.WITH_PRODUCER_ROLE), ExceptionMode.DONT_EXPECT},
+                {UserIdentifier.parse("role:foo"), Mode.NOT_FAIL_IF_ANY_OF, Identifiers.of(RunWithUsers.WITH_PRODUCER_ROLE, "role:foo", "user:bar"), ExceptionMode.DONT_EXPECT},
+                {UserIdentifier.parse("user:bar"), Mode.NOT_FAIL_IF_ANY_OF, Identifiers.of(RunWithUsers.WITH_PRODUCER_ROLE, "role:foo", "user:bar"), ExceptionMode.DONT_EXPECT},
 
 
                 {UserIdentifier.getCreator(), Mode.NOT_FAIL_IF_ANY_OF, Identifiers.of("user:user"), ExceptionMode.EXPECT},
                 {UserIdentifier.getCreator(), Mode.NOT_FAIL_IF_ANY_OF, Identifiers.of("role:foo", "user:user"), ExceptionMode.EXPECT},
                 {UserIdentifier.getNewUser(), Mode.NOT_FAIL_IF_ANY_OF, Identifiers.of("role:foo"), ExceptionMode.EXPECT},
-                {UserIdentifier.parse("role:foo"), Mode.NOT_FAIL_IF_ANY_OF, Identifiers.of(TestUsers.NEW_USER, "user:bar"), ExceptionMode.EXPECT},
-                {UserIdentifier.parse("user:bar"), Mode.NOT_FAIL_IF_ANY_OF, Identifiers.of(TestUsers.NEW_USER, "role:foo"), ExceptionMode.EXPECT},
+                {UserIdentifier.parse("role:foo"), Mode.NOT_FAIL_IF_ANY_OF, Identifiers.of(RunWithUsers.WITH_PRODUCER_ROLE, "user:bar"), ExceptionMode.EXPECT},
+                {UserIdentifier.parse("user:bar"), Mode.NOT_FAIL_IF_ANY_OF, Identifiers.of(RunWithUsers.WITH_PRODUCER_ROLE, "role:foo"), ExceptionMode.EXPECT},
 
                 {UserIdentifier.getCreator(), Mode.FAIL_IF_ANY_OF, Identifiers.of("user:user"), ExceptionMode.DONT_EXPECT},
                 {UserIdentifier.getCreator(), Mode.FAIL_IF_ANY_OF, Identifiers.of("role:foo", "user:user"), ExceptionMode.DONT_EXPECT},
                 {UserIdentifier.getNewUser(), Mode.FAIL_IF_ANY_OF, Identifiers.of("role:foo"), ExceptionMode.DONT_EXPECT},
-                {UserIdentifier.parse("role:foo"), Mode.FAIL_IF_ANY_OF, Identifiers.of(TestUsers.NEW_USER, "user:bar"), ExceptionMode.DONT_EXPECT},
-                {UserIdentifier.parse("user:bar"), Mode.FAIL_IF_ANY_OF, Identifiers.of(TestUsers.NEW_USER, "role:foo"), ExceptionMode.DONT_EXPECT}
+                {UserIdentifier.parse("role:foo"), Mode.FAIL_IF_ANY_OF, Identifiers.of(RunWithUsers.WITH_PRODUCER_ROLE, "user:bar"), ExceptionMode.DONT_EXPECT},
+                {UserIdentifier.parse("user:bar"), Mode.FAIL_IF_ANY_OF, Identifiers.of(RunWithUsers.WITH_PRODUCER_ROLE, "role:foo"), ExceptionMode.DONT_EXPECT}
         });
     }
 

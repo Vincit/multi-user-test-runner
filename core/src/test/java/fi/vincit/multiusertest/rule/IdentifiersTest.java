@@ -5,7 +5,7 @@ import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
-import fi.vincit.multiusertest.annotation.TestUsers;
+import fi.vincit.multiusertest.annotation.RunWithUsers;
 
 public class IdentifiersTest {
 
@@ -15,9 +15,9 @@ public class IdentifiersTest {
                 Identifiers.of(
                     "role:ROLE_USER",
                     "user:username",
-                    TestUsers.NEW_USER,
-                    TestUsers.CREATOR,
-                    TestUsers.ANONYMOUS).toString(),
+                    RunWithUsers.WITH_PRODUCER_ROLE,
+                    RunWithUsers.PRODUCER,
+                    RunWithUsers.ANONYMOUS).toString(),
                 is("role:ROLE_USER, user:username, new user, creator, anonymous")
         );
     }

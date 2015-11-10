@@ -1,12 +1,13 @@
 package fi.vincit.multiusertest.util;
 
-import fi.vincit.multiusertest.annotation.TestUsers;
-import org.junit.Test;
-
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNot.not;
 import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertThat;
+
+import org.junit.Test;
+
+import fi.vincit.multiusertest.annotation.RunWithUsers;
 
 public class UserIdentifierTest {
 
@@ -126,7 +127,7 @@ public class UserIdentifierTest {
 
     @Test
     public void testParseNewUser() {
-        UserIdentifier identifier = UserIdentifier.parse(TestUsers.NEW_USER);
+        UserIdentifier identifier = UserIdentifier.parse(RunWithUsers.WITH_PRODUCER_ROLE);
 
         assertThat(identifier.getType(), is(UserIdentifier.Type.NEW_USER));
         assertThat(identifier.getIdentifier(), nullValue());
@@ -134,7 +135,7 @@ public class UserIdentifierTest {
 
     @Test
     public void testParseCreator() {
-        UserIdentifier identifier = UserIdentifier.parse(TestUsers.CREATOR);
+        UserIdentifier identifier = UserIdentifier.parse(RunWithUsers.PRODUCER);
 
         assertThat(identifier.getType(), is(UserIdentifier.Type.CREATOR));
         assertThat(identifier.getIdentifier(), nullValue());

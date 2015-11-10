@@ -8,7 +8,7 @@ import static org.junit.Assert.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import fi.vincit.multiusertest.annotation.TestUsers;
+import fi.vincit.multiusertest.annotation.RunWithUsers;
 import fi.vincit.multiusertest.configuration.ConfiguredTest;
 import fi.vincit.multiusertest.rule.expection.AssertionCall;
 import fi.vincit.multiusertest.rule.expection.Expectations;
@@ -17,7 +17,7 @@ import fi.vincit.multiusertest.rule.expection.ReturnValueCall;
 import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
 import fi.vincit.multiusertest.util.LoginRole;
 
-@TestUsers(creators = "role:ROLE_USER", users = "role:ROLE_USER")
+@RunWithUsers(producers = "role:ROLE_USER", consumers = "role:ROLE_USER")
 @RunWith(MultiUserTestRunner.class)
 public class ExpectationSmokeTest extends ConfiguredTest {
 
@@ -38,7 +38,7 @@ public class ExpectationSmokeTest extends ConfiguredTest {
                         throwDefaultException();
                     }
                 }
-        ).toFail(ifAnyOf(TestUsers.CREATOR)));
+        ).toFail(ifAnyOf(RunWithUsers.PRODUCER)));
     }
 
     @Test(expected = AssertionError.class)

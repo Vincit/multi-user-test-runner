@@ -1,6 +1,6 @@
 package fi.vincit.multiusertest.rule;
 
-import fi.vincit.multiusertest.annotation.TestUsers;
+import fi.vincit.multiusertest.annotation.RunWithUsers;
 
 /**
  * Util class to make parameter name easy to read
@@ -33,9 +33,9 @@ class Identifiers {
 
     private String identifierToString(String identifier) {
         switch (identifier) {
-            case TestUsers.CREATOR: return "creator";
-            case TestUsers.NEW_USER: return "new user";
-            case TestUsers.ANONYMOUS: return "anonymous";
+            case RunWithUsers.PRODUCER: return "creator";
+            case RunWithUsers.WITH_PRODUCER_ROLE: return "new user";
+            case RunWithUsers.ANONYMOUS: return "anonymous";
             default: return identifier;
         }
     }

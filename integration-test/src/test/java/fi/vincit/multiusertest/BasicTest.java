@@ -9,7 +9,7 @@ import static org.junit.Assert.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import fi.vincit.multiusertest.annotation.TestUsers;
+import fi.vincit.multiusertest.annotation.RunWithUsers;
 import fi.vincit.multiusertest.configuration.ConfiguredTest;
 import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
 import fi.vincit.multiusertest.util.LoginRole;
@@ -17,8 +17,8 @@ import fi.vincit.multiusertest.util.SecurityUtil;
 import fi.vincit.multiusertest.util.User;
 import fi.vincit.multiusertest.util.UserIdentifier;
 
-@TestUsers(creators = {"role:ROLE_ADMIN", "role:ROLE_USER"},
-        users = {"role:ROLE_ADMIN", "role:ROLE_USER"})
+@RunWithUsers(producers = {"role:ROLE_ADMIN", "role:ROLE_USER"},
+        consumers = {"role:ROLE_ADMIN", "role:ROLE_USER"})
 @RunWith(MultiUserTestRunner.class)
 public class BasicTest extends ConfiguredTest {
 
@@ -42,25 +42,25 @@ public class BasicTest extends ConfiguredTest {
 
     @Test
     public void expectFailureCreator() {
-        authorization().expect(toFail(ifAnyOf(TestUsers.CREATOR)));
+        authorization().expect(toFail(ifAnyOf(RunWithUsers.PRODUCER)));
         throwIfUserIs(getCreator());
     }
 
     @Test
     public void expectFailureNewUser() {
-        authorization().expect(toFail(ifAnyOf(TestUsers.NEW_USER)));
+        authorization().expect(toFail(ifAnyOf(RunWithUsers.WITH_PRODUCER_ROLE)));
         throwIfUserIs(getUser());
     }
 
     @Test
     public void expectFailureNotCreator() {
-        authorization().expect(notToFail(ifAnyOf(TestUsers.CREATOR)));
+        authorization().expect(notToFail(ifAnyOf(RunWithUsers.PRODUCER)));
         throwIfUserIs(getUser());
     }
 
     @Test
     public void expectFailureNotNewUser() {
-        authorization().expect(notToFail(ifAnyOf(TestUsers.NEW_USER)));
+        authorization().expect(notToFail(ifAnyOf(RunWithUsers.WITH_PRODUCER_ROLE)));
         throwIfUserIs(getCreator());
     }
 
