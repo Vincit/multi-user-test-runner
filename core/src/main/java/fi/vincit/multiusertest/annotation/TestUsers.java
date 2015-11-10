@@ -23,7 +23,9 @@ import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
  * being used as the creator. Same applies for the {@link TestUsers#users()}. If both creators and users are defined then
  * the method will be run only if any combination of creators and users are being used.
  * </p>
+ * @deprecated Please use {@link RunWithUsers }
  */
+@Deprecated
 @Target({TYPE, METHOD})
 @Retention(RUNTIME)
 public @interface TestUsers {
