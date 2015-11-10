@@ -8,6 +8,7 @@ import java.util.Objects;
 import org.junit.runners.model.FrameworkMethod;
 
 import fi.vincit.multiusertest.annotation.MultiUserTestConfig;
+import fi.vincit.multiusertest.annotation.RunWithUsers;
 import fi.vincit.multiusertest.annotation.TestUsers;
 
 public class TestMethodFilter {
@@ -23,11 +24,24 @@ public class TestMethodFilter {
     }
 
     public boolean shouldRun(FrameworkMethod frameworkMethod) {
-        TestConfiguration configuration =
-                TestConfiguration.fromTestUsers(
-                        Optional.ofNullable(frameworkMethod.getAnnotation(TestUsers.class)),
-                        Optional.<MultiUserTestConfig>empty()
-                );
+
+        Optional<TestUsers> testUsersAnnotation =
+                Optional.ofNullable(frameworkMethod.getAnnotation(TestUsers.class));
+        Optional<RunWithUsers> runWithUsersAnnotation =
+                Optional.ofNullable(frameworkMethod.getAnnotation(RunWithUsers.class));
+
+        TestConfiguration configuration;
+        if (testUsersAnnotation.isPresent()) {
+            configuration = TestConfiguration.fromTestUsers(
+                    testUsersAnnotation,
+                    Optional.<MultiUserTestConfig>empty()
+            );
+        } else {
+            configuration = TestConfiguration.fromRunWithUsers(
+                    runWithUsersAnnotation,
+                    Optional.<MultiUserTestConfig>empty()
+            );
+        }
 
         Collection<UserIdentifier> creators = configuration.getCreatorIdentifiers();
         Collection<UserIdentifier> users = configuration.getUserIdentifiers();
