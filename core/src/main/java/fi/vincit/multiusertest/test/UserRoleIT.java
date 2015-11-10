@@ -39,6 +39,12 @@ public interface UserRoleIT<USER> {
     void loginWithUser(USER user);
 
     /**
+     * "Log in" anonymous user. By default users {@link #loginWithUser(Object)}
+     * using null as the user. Can be overridden to change the behaviour.
+     */
+    void loginAnonymous();
+
+    /**
      * Returns the default expected exception configured to the class
      * @return Default expected exception
      */

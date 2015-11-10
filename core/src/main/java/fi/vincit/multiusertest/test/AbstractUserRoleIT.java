@@ -83,12 +83,8 @@ public abstract class AbstractUserRoleIT<USER, ROLE>
         }
     }
 
-
-    /**
-     * "Log in" anonymous user. By default users {@link #loginWithUser(Object)}
-     * using null as the user. Can be overridden to change the behaviour.
-     */
-    protected void loginAnonymous() {
+    @Override
+    public void loginAnonymous() {
         loginWithUser(null);
     }
 
