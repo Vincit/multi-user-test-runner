@@ -42,7 +42,7 @@ public class AbstractUserRoleITTest {
         }
 
         @Override
-        protected void loginAnonymous() {
+        public void loginAnonymous() {
             super.loginAnonymous();
         }
 
