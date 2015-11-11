@@ -29,7 +29,7 @@ public class RunnerDelegateTest {
 
         assertThat(
                 delegate.getName(new TestClass(Object.class)),
-                is("java.lang.Object: creator = role:ROLE_ADMIN; user = role:ROLE_USER")
+                is("java.lang.Object: producer = role:ROLE_ADMIN; consumer = role:ROLE_USER")
         );
     }
 
@@ -42,7 +42,7 @@ public class RunnerDelegateTest {
 
         assertThat(
                 delegate.testName(mockFrameworkMethod()),
-                is("testMethod: creator = role:ROLE_ADMIN; user = role:ROLE_USER")
+                is("testMethod: producer = role:ROLE_ADMIN; consumer = role:ROLE_USER")
         );
     }
 

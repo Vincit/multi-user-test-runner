@@ -18,7 +18,7 @@ public class IdentifiersTest {
                     RunWithUsers.WITH_PRODUCER_ROLE,
                     RunWithUsers.PRODUCER,
                     RunWithUsers.ANONYMOUS).toString(),
-                is("role:ROLE_USER, user:username, new user, creator, anonymous")
+                is("role:ROLE_USER, user:username, user with producer role, producer, anonymous")
         );
     }
 }

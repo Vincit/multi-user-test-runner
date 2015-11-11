@@ -16,8 +16,8 @@ public class UserResolver<USER, ROLE> {
 
     public UserResolver(UserFactory<USER, ROLE> userFactory, RoleConverter<ROLE> roleConverter, UserIdentifier producer, UserIdentifier consumer) {
         this.userFactory = userFactory;
-        this.producerRoleContainer = RoleContainer.forCreator(producer, roleConverter);
-        this.consumerRoleContainer = RoleContainer.forUser(consumer, producerRoleContainer, roleConverter);
+        this.producerRoleContainer = RoleContainer.forProducer(producer, roleConverter);
+        this.consumerRoleContainer = RoleContainer.forConsumer(consumer, producerRoleContainer, roleConverter);
     }
 
     private void initializeUser() {

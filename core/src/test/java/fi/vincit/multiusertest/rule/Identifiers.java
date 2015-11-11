@@ -33,8 +33,8 @@ class Identifiers {
 
     private String identifierToString(String identifier) {
         switch (identifier) {
-            case RunWithUsers.PRODUCER: return "creator";
-            case RunWithUsers.WITH_PRODUCER_ROLE: return "new user";
+            case RunWithUsers.PRODUCER: return "producer";
+            case RunWithUsers.WITH_PRODUCER_ROLE: return "user with producer role";
             case RunWithUsers.ANONYMOUS: return "anonymous";
             default: return identifier;
         }

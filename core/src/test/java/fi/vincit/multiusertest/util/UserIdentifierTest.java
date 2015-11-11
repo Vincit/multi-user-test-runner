@@ -117,12 +117,12 @@ public class UserIdentifierTest {
 
     @Test
     public void testToString_NewUser() {
-        assertThat(UserIdentifier.getWithProducerRole().toString(), is("new_user"));
+        assertThat(UserIdentifier.getWithProducerRole().toString(), is("with_producer_role"));
     }
 
     @Test
     public void testToString_Creator() {
-        assertThat(UserIdentifier.getProducer().toString(), is("creator"));
+        assertThat(UserIdentifier.getProducer().toString(), is("producer"));
     }
 
     @Test

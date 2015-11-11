@@ -28,13 +28,13 @@ public class MultiUserTestRunnerTest {
     @Ignore
     public static class TestRunner extends ParentRunner<FrameworkMethod> {
 
-        private UserIdentifier creator;
-        private UserIdentifier user;
+        private UserIdentifier producer;
+        private UserIdentifier consumer;
 
-        public TestRunner(Class<?> clazz, UserIdentifier creator, UserIdentifier user) throws InitializationError {
+        public TestRunner(Class<?> clazz, UserIdentifier producer, UserIdentifier consumer) throws InitializationError {
             super(clazz);
-            this.creator = creator;
-            this.user = user;
+            this.producer = producer;
+            this.consumer = consumer;
         }
 
         @Override
@@ -51,20 +51,20 @@ public class MultiUserTestRunnerTest {
         protected void runChild(FrameworkMethod frameworkMethod, RunNotifier runNotifier) {
         }
 
-        public UserIdentifier getCreator() {
-            return creator;
+        public UserIdentifier getProducer() {
+            return producer;
         }
 
-        public UserIdentifier getUser() {
-            return user;
+        public UserIdentifier getConsumer() {
+            return consumer;
         }
     }
 
     @Ignore
     public static class TestRunnerNoProperConstructor extends TestRunner {
 
-        public TestRunnerNoProperConstructor(UserIdentifier creator) throws InitializationError {
-            super(TestRunnerNoProperConstructor.class, creator, creator);
+        public TestRunnerNoProperConstructor(UserIdentifier producer) throws InitializationError {
+            super(TestRunnerNoProperConstructor.class, producer, producer);
         }
     }
 
@@ -101,13 +101,13 @@ public class MultiUserTestRunnerTest {
     @RunWithUsers(producers = "role:ROLE_USERS", consumers = {"user:Foo", "role:Bar"})
     @MultiUserTestConfig(runner = TestRunner.class)
     @Ignore
-    public static class OneCreator_MultipleUsers {
+    public static class OneProducer_MultipleUsers {
     }
 
     @RunWithUsers(producers = "user:username", consumers = RunWithUsers.WITH_PRODUCER_ROLE)
     @MultiUserTestConfig(runner = TestRunner.class)
     @Ignore
-    public static class ExistingCreatorNewUser {
+    public static class ExistingProducerNewUserWithProducerRole {
     }
 
     @Test(expected = IllegalStateException.class)
@@ -121,8 +121,8 @@ public class MultiUserTestRunnerTest {
 
         assertThat(runner.getChildren().size(), is(1));
         TestRunner childRunner1 = (TestRunner) runner.getChildren().get(0);
-        assertThat(childRunner1.getCreator(), is(UserIdentifier.parse("role:ROLE_USERS")));
-        assertThat(childRunner1.getUser(), is(UserIdentifier.getWithProducerRole()));
+        assertThat(childRunner1.getProducer(), is(UserIdentifier.parse("role:ROLE_USERS")));
+        assertThat(childRunner1.getConsumer(), is(UserIdentifier.getWithProducerRole()));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -142,18 +142,18 @@ public class MultiUserTestRunnerTest {
 
     @Test
     public void testClassWith_OneCreator_MultipleUsers() throws Throwable {
-        MultiUserTestRunner runner = createMultiUserTestRunner(OneCreator_MultipleUsers.class);
+        MultiUserTestRunner runner = createMultiUserTestRunner(OneProducer_MultipleUsers.class);
 
 
         assertThat(runner.getChildren().size(), is(2));
 
         TestRunner childRunner1 = (TestRunner) runner.getChildren().get(0);
-        assertThat(childRunner1.getCreator(), is(UserIdentifier.parse("role:ROLE_USERS")));
-        assertThat(childRunner1.getUser(), is(UserIdentifier.parse("user:Foo")));
+        assertThat(childRunner1.getProducer(), is(UserIdentifier.parse("role:ROLE_USERS")));
+        assertThat(childRunner1.getConsumer(), is(UserIdentifier.parse("user:Foo")));
 
         TestRunner childRunner2 = (TestRunner) runner.getChildren().get(1);
-        assertThat(childRunner2.getCreator(), is(UserIdentifier.parse("role:ROLE_USERS")));
-        assertThat(childRunner2.getUser(), is(UserIdentifier.parse("role:Bar")));
+        assertThat(childRunner2.getProducer(), is(UserIdentifier.parse("role:ROLE_USERS")));
+        assertThat(childRunner2.getConsumer(), is(UserIdentifier.parse("role:Bar")));
 
     }
 
@@ -169,7 +169,7 @@ public class MultiUserTestRunnerTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testCreatorHasExistingUserAndUsersHaveNewUser() throws Throwable {
-        createMultiUserTestRunner(ExistingCreatorNewUser.class);
+        createMultiUserTestRunner(ExistingProducerNewUserWithProducerRole.class);
     }
 
     private MultiUserTestRunner createMultiUserTestRunner(Class testClass) throws Throwable {

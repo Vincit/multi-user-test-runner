@@ -24,7 +24,7 @@ public class RoleContainer<ROLE> {
         return new RoleContainer<>(null, RoleMode.ANONYMOUS, UserIdentifier.getAnonymous());
     }
 
-    public static <ROLE> RoleContainer<ROLE> forCreator(UserIdentifier identifier, RoleConverter<ROLE> roleConverter) {
+    public static <ROLE> RoleContainer<ROLE> forProducer(UserIdentifier identifier, RoleConverter<ROLE> roleConverter) {
         if (identifier.getType() == UserIdentifier.Type.USER) {
             return RoleContainer.forExistingUser(identifier);
         } else if (identifier.getType() == UserIdentifier.Type.ANONYMOUS) {
@@ -39,7 +39,7 @@ public class RoleContainer<ROLE> {
         }
     }
 
-    public static <ROLE> RoleContainer<ROLE> forUser(UserIdentifier identifier, RoleContainer<ROLE> producerRoleContainer, RoleConverter<ROLE> roleConverter) {
+    public static <ROLE> RoleContainer<ROLE> forConsumer(UserIdentifier identifier, RoleContainer<ROLE> producerRoleContainer, RoleConverter<ROLE> roleConverter) {
         if (identifier.getType() == UserIdentifier.Type.PRODUCER) {
             return RoleContainer.forCreatorUser();
         } else if (identifier.getType() == UserIdentifier.Type.WITH_PRODUCER_ROLE) {

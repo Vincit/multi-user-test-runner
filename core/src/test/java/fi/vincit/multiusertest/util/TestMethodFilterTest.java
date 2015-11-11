@@ -10,7 +10,7 @@ import java.util.Arrays;
 import org.junit.Test;
 import org.junit.runners.model.FrameworkMethod;
 
-import fi.vincit.multiusertest.annotation.TestUsers;
+import fi.vincit.multiusertest.annotation.RunWithUsers;
 
 public class TestMethodFilterTest {
 
@@ -186,12 +186,12 @@ public class TestMethodFilterTest {
                 null);
     }
 
-    private void mockTestUsers(FrameworkMethod method, String[] creators, String[] users) {
-        TestUsers testUsers = mock(TestUsers.class);
+    private void mockTestUsers(FrameworkMethod method, String[] producers, String[] consumers) {
+        RunWithUsers testUsers = mock(RunWithUsers.class);
 
-        when(testUsers.creators()).thenReturn(creators);
-        when(testUsers.users()).thenReturn(users);
+        when(testUsers.producers()).thenReturn(producers);
+        when(testUsers.consumers()).thenReturn(consumers);
 
-        when(method.getAnnotation(TestUsers.class)).thenReturn(testUsers);
+        when(method.getAnnotation(RunWithUsers.class)).thenReturn(testUsers);
     }
 }

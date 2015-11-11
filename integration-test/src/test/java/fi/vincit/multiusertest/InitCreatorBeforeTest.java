@@ -15,19 +15,19 @@ import fi.vincit.multiusertest.util.User;
 @RunWith(MultiUserTestRunner.class)
 public class InitCreatorBeforeTest extends ConfiguredTest {
 
-    private static boolean creatorCreated = false;
+    private static boolean producerCreated = false;
 
     @Before
     public void init() {
         createUser("test-user", "Test", "User", User.Role.ROLE_USER, LoginRole.PRODUCER);
-        creatorCreated = true;
+        producerCreated = true;
     }
 
     @Override
     public void logInAs(LoginRole role) {
         if (role == LoginRole.PRODUCER) {
-            if (!creatorCreated) {
-                throw new AssertionError("No creator created before logInAs call");
+            if (!producerCreated) {
+                throw new AssertionError("No prducer created before logInAs call");
             }
         } else {
             super.logInAs(role);
@@ -35,9 +35,9 @@ public class InitCreatorBeforeTest extends ConfiguredTest {
     }
 
     @Test
-    public void creatorLoggedIn() {
+    public void producerLoggedIn() {
         if (!getProducer().getUsername().equals("test-user")) {
-            throw new AssertionError("Wrong creator user, should be test-user");
+            throw new AssertionError("Wrong producer user, should be test-user");
         }
     }
 

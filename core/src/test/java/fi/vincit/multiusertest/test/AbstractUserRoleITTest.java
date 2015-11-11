@@ -209,7 +209,7 @@ public class AbstractUserRoleITTest {
 
         spyClass.setUsers(UserIdentifier.parse("role:ROLE1"), UserIdentifier.getProducer());
         spyClass.initializeUsers();
-        // Login so that LoginRole.CONSUMER uses the current creator
+        // Login so that LoginRole.CONSUMER uses the current producer
         spyClass.logInAs(LoginRole.CONSUMER);
 
 
@@ -234,7 +234,7 @@ public class AbstractUserRoleITTest {
         spyClass.setUsers(UserIdentifier.parse("user:username"), UserIdentifier.getProducer());
         spyClass.initializeUsers();
 
-        // Login so that LoginRole.CONSUMER uses the current creator
+        // Login so that LoginRole.CONSUMER uses the current producer
         spyClass.logInAs(LoginRole.CONSUMER);
 
 
@@ -251,7 +251,7 @@ public class AbstractUserRoleITTest {
         spyClass.setUsers(UserIdentifier.parse("user:username"), UserIdentifier.parse("user:username2"));
         spyClass.initializeUsers();
 
-        // Login so that LoginRole.CONSUMER uses the current creator
+        // Login so that LoginRole.CONSUMER uses the current producer
         spyClass.logInAs(LoginRole.CONSUMER);
 
 

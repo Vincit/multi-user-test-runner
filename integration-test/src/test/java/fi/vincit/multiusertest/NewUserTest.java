@@ -23,18 +23,18 @@ import fi.vincit.multiusertest.util.UserIdentifier;
 public class NewUserTest extends ConfiguredTest {
 
     @Test
-    public void creatorLoggedIn() {
+    public void producerLoggedIn() {
         assertThat(SecurityUtil.getLoggedInUser().getUsername(), is(getProducer().getUsername()));
     }
 
     @Test
-    public void userLoggedIn() {
+    public void consumerLoggedIn() {
         logInAs(LoginRole.CONSUMER);
         assertThat(SecurityUtil.getLoggedInUser().getUsername(), is(getConsumer().getUsername()));
     }
 
     @Test
-    public void creatorLoggedInAfterUser() {
+    public void producerLoggedInAfterUser() {
         logInAs(LoginRole.CONSUMER);
         logInAs(LoginRole.PRODUCER);
         assertThat(SecurityUtil.getLoggedInUser().getUsername(), is(getProducer().getUsername()));

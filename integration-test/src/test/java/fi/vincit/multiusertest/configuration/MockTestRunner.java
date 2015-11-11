@@ -7,7 +7,7 @@ import fi.vincit.multiusertest.util.UserIdentifier;
 
 public class MockTestRunner extends BlockMultiUserTestClassRunner {
 
-    public MockTestRunner(Class<?> clazz, UserIdentifier creatorIdentifier, UserIdentifier userIdentifier) throws InitializationError {
-        super(clazz, creatorIdentifier, userIdentifier);
+    public MockTestRunner(Class<?> clazz, UserIdentifier producerIdentifier, UserIdentifier consumerIdentifier) throws InitializationError {
+        super(clazz, producerIdentifier, consumerIdentifier);
     }
 }
