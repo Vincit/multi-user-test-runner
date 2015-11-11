@@ -89,7 +89,7 @@ public class MultiUserTestRunnerTest {
     @RunWithUsers(producers = RunWithUsers.PRODUCER)
     @MultiUserTestConfig(runner = TestRunner.class)
     @Ignore
-    public static class ProdcuerProducer {
+    public static class ProducerProducer {
     }
 
     @RunWithUsers(producers = RunWithUsers.WITH_PRODUCER_ROLE)
@@ -126,8 +126,8 @@ public class MultiUserTestRunnerTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testClassWith_InvalidProdcuerProducer() throws Throwable {
-        createMultiUserTestRunner(ProdcuerProducer.class);
+    public void testClassWith_InvalidProducerProducer() throws Throwable {
+        createMultiUserTestRunner(ProducerProducer.class);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -136,7 +136,7 @@ public class MultiUserTestRunnerTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testClassWith_NoProdcuer() throws Throwable {
+    public void testClassWith_NoProducer() throws Throwable {
         createMultiUserTestRunner(NoProducers.class);
     }
 

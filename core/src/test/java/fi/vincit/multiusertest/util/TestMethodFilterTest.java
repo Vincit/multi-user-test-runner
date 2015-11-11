@@ -15,7 +15,7 @@ import fi.vincit.multiusertest.annotation.RunWithUsers;
 public class TestMethodFilterTest {
 
     @Test
-    public void testRunMetdhodWhenProdcuerAndConsumerSet() {
+    public void testRunMetdhodWhenProducerAndConsumerSet() {
         TestMethodFilter r = new TestMethodFilter(
                 UserIdentifier.parse("role:ROLE_ADMIN"),
                 UserIdentifier.parse("role:ROLE_ADMIN"));
