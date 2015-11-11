@@ -69,7 +69,7 @@ Configure the base test class:
 Write the tests:
 
 1. Create a test class which is extended from your configured class.
-1. Add `@TestUsers` annotation for your test class and define roles/users to use in the tests
+1. Add `@RunWithUsers` annotation for your test class and define roles/users to use in the tests
 1. Write the test methods
 1. Add an assertion. For example, `authentication().expect(toFail(ifAnyOf("user:user")));` before the method under test 
    to define which roles/users are expected to fail
@@ -112,7 +112,7 @@ a constructor with following signature:
 
 When creating a custom test class runner it is important to note that `AbstractUserRoleIT.logInAs(LoginRole)` 
 method  has to be called **after** `@Before` methods and **before** calling the actual test method. This will
-enable creating users in `@Before` methods so that they can be used as creators.
+enable creating users in `@Before` methods so that they can be used as producers.
 
 The `RunnerDelegate` class contains helper methods for creating custom test class runners. Most of time
 the runner implementation can just call the `RunnerDelegate` class' methods without any additional logic.
@@ -133,46 +133,47 @@ method. The exception is reset to default exception before each test method.
 
 ## Creating Custom Users
 
-In order to use custom users with `@TestUsers` annotation it is possible to create users
+In order to use custom users with `@RunWithUsers` annotation it is possible to create users
 in JUnit's `@Before` methods. Another way to achieve this is to use a library like DBUnit to 
 create the users to database before the test method.
 
 
 # Defining Users
 
-## Creator and User
+## Producer and consumer
 
-There are two types of users: *creator* and *user*. *Creator* user is meant for creating resources (project,
-task, users in the system etc.) that the *user* then uses. Operations done with the *creator* user 
-should always succeed. The assertions should be done with the *user*. If there is need to test if creating
-a resource succeeds with a specific user or role it should be done with the *user* (not *creator* user).
+There are two types of users: *producer* and *consumer*. *Producer* user is meant for creating resources (project,
+task, users in the system etc.) that the *consumer* then uses. Operations done with the *producer* user
+should always succeed. The assertions should be done with the *consumer*. If there is need to test if creating
+a resource succeeds with a specific user or role it should be done with the *consumer* (not *producer* user).
 Otherwise the tests end up testing too many things at once. This library already adds a little bit of
 complexity to the test methods so the tests should be kept as simple as possible.
 
 ## Definitions
 
-`@TestUsers` annotation defines which users are used to run the tests. Users can be defined by role (`role`),
-by existing user (`user`), use the creator (`TestUsers.CREATOR`) user, use a user with the same role as the creator 
-(`TestUsers.NEW_USER`) or not log in at all (`TestUsers.ANONYMOUS`). All these definition types can be mixed. The possible definitions are shown in the table below.
+`@RunWithUsers` annotation defines which users are used to run the tests. Users can be defined by role (`role`),
+by existing user (`user`), use the producer (`RunWithUsers.PRODUCER`) user, use a consumer with the same role as the producer
+(`RunWithUsers.WITH_PRODUCER_ROLE`) or not log in at all (`RunWithUsers.ANONYMOUS`). All these definition types can be mixed.
+The possible definitions are shown in the table below.
 
-  Type       | Format | Example | Description
--------------|--------|---------|------------
-  user       | `user:<user name>` | `@TestUsers(creators="user:admin-user", users="user:test-user")` | Use existing user
-  role       | `role:<role name>` | `@TestUsers(creators="role:ROLE_ADMIN", users="role:ROLE_USER")` | Create new user with given role
- creator     | `TestUsers.CREATOR` | `@TestUsers(creators="role:ROLE_ADMIN", users={TestUsers.CREATOR, "user:test-user"})` | Use the creator as the user
-new user     | `TestUsers.NEW_USER` | `@TestUsers(creators="role:ROLE_ADMIN", users={TestUsers.NEW_USER, "user:test-user"})` | Create new user, uses same role as the creator has
-anonymous | `TestUsers.ANONYMOUS` | `@TestUsers(creators="role:ROLE_ADMIN", users={TestUsers.ANONYMOUS, "user:test-user"})` | Don't log in/clear log in details. `loginWithUser(User)` is called with null user
+  Type                             | Format | Example | Description
+-----------------------------------|--------|---------|------------
+ user                              | `user:<user name>` | `@RunWithUsers(producers="user:admin-user", consumers="user:test-user")` | Use existing user
+ role                              | `role:<role name>` | `@RunWithUsers(producers="role:ROLE_ADMIN", consumers="role:ROLE_USER")` | Create new user with given role
+ producer                          | `RunWithUsers.PRODUCER` | `@RunWithUsers(producers="role:ROLE_ADMIN", consumers={RunWithUsers.producer, "user:test-user"})` | Use the producer as the user
+ new consumer with producer role   | `RunWithUsers.WITH_PRODUCER_ROLE` | `@RunWithUsers(producers="role:ROLE_ADMIN", consumers={RunWithUsers.WITH_PRODUCER_ROLE, "user:test-user"})` | Create new consumer, uses same role as the producer has
+ anonymous                         | `RunWithUsers.ANONYMOUS` | `@RunWithUsers(producers="role:ROLE_ADMIN", consumers={RunWithUsers.ANONYMOUS, "user:test-user"})` | Don't log in/clear log in details. `loginWithUser(User)` is called with null user
 
-Each role definition and `NEW_USER` definition will create new users for each test method separately. They are created by calling 
-`AbstractUserRoleIT#createUser(String, String, String, ROLE, LoginRole)` method. `TestUsers.CREATOR` and 
+Each role definition and `WITH_PRODUCER_ROLE` definition will create new users for each test method separately. They are created by calling
+`AbstractUserRoleIT#createUser(String, String, String, ROLE, LoginRole)` method. `RunWithUsers.PRODUCER` and
 existing user definitions will not create new users.
 
 ## Changing the User During Test
 
-By default the creator user is logged in by using the implemented `loginWithUser(USER user)` method. To change
-the test to use the user (i.e. current user definition) the `logInAs(LoginRole role)` method can be called at 
+By default the producer user is logged in by using the implemented `loginWithUser(USER user)` method. To change
+the test to use the consumer (i.e. current user definition) the `logInAs(LoginRole role)` method can be called at
 any point of the test method. This method takes `LoginRole.CREATOR` or `LoginRole.USER` as parameter. Normally 
-after creating data with the creator user the user is changed before calling the method under test:
+after creating data with the producer user the user is changed before calling the method under test:
 
 ```java
 @Test
@@ -188,15 +189,15 @@ public void fetchProduct() {
 
 ## The Special Roles
 
-`TestUsers.CREATOR` can be used to use the current creator user as the user. A new user is not created
-but the same user is fetched with `AbstractUserRoleIT#getUserByUsername(String)` method. This can't
-be used as a creator user definition.
+`RunWithUsers.PRODUCER` can be used to use the current producer user as the user. A new consumer is not created
+but the same producer user is fetched with `AbstractUserRoleIT#getUserByUsername(String)` method. This can't
+be used as a producer user definition.
 
-`TestUsers.NEW_USER` can be used to create a new user with the same role as the current creator user has. 
-This definition can't be used as a creator definitions or if the creator roles have one or more creators defined with 
+`RunWithUsers.WITH_PRODUCER_ROLE` can be used to create a new consumer user with the same role as the current producer user has.
+This definition can't be used as a producer definitions or if the producer roles have one or more producers defined with
 existing user definition.
 
-`TestUsers.ANONYMOUS` means that user should not be logged in and previous log in should be cleared
+`RunWithUsers.ANONYMOUS` means that user should not be logged in and previous log in should be cleared
 if necessary. `AbstractUserRoleIT#loginWithUser(USER)` will be called with null value by default. This 
 behaviour can be changed by overriding `AbstractUserRoleIT#loginAnonymous()` method.
 
@@ -212,23 +213,23 @@ method.
 
 ## Ignoring a Test Method for Specific User Definitions
 
-It is possible to run certain test methods with only specific user definitions by adding `@TestUsers` 
+It is possible to run certain test methods with only specific user definitions by adding `@RunWithUsers`
 annotation to the test method.
 
 ```java
-@TestUsers(creators = {"role:ROLE_ADMIN", "role:ROLE_USER"},
-        users = {TestUsers.CREATOR, "role:ROLE_ADMIN", "role:ROLE_USER", "user:existing-user-name"})
+@RunWithUsers(producers = {"role:ROLE_ADMIN", "role:ROLE_USER"},
+        consumers = {RunWithUsers.PRODUCER, "role:ROLE_ADMIN", "role:ROLE_USER", "user:existing-user-name"})
 public class ServiceIT extends AbstractConfiguredUserIT {
-    @TestUsers(creators = {"role:ROLE_ADMIN"}, users = {"role:ROLE_USER", "user:existing-user-name"})
+    @RunWithUsers(producers = {"role:ROLE_ADMIN"}, users = {"role:ROLE_USER", "user:existing-user-name"})
     @Test
-    public void onlyForAdminCreatorAndUserUser() {
-        // Will be run only if creator is ROLE_ADMIN and user is either ROLE_USER or existing-user-name
+    public void onlyForAdminProducerAndConsumerUser() {
+        // Will be run only if producer is ROLE_ADMIN and consumer is either ROLE_USER or existing-user-name
     }
 
-    @TestUsers(creators = {"role:ROLE_ADMIN"})
+    @RunWithUsers(producers = {"role:ROLE_ADMIN"})
     @Test
     public void onlyForAdminAndAnyUser() {
-        // Will be run only if creator is ROLE_ADMIN. User can be any of the ones defined for class.
+        // Will be run only if producer is ROLE_ADMIN. User can be any of the ones defined for class.
     }
 
 }
@@ -239,16 +240,16 @@ public class ServiceIT extends AbstractConfiguredUserIT {
 
 ## Definitions in Assertions
 
-The user definitions `role`, `user`, `TestUsers.CREATOR` and `TestUsers.ANONYMOUS` must be same in the assertion and in the
-`@TestUsers` annotation. For example if the `@TestUsers` has `user:admin` and that user has `ROLE_ADMIN` role
-it can be only asserted with `user:admin` and not `role:ROLE_ADMIN`. Also creator users can only be 
-asserted with `TestUsers.CREATOR` definition and not with user or role. Users specified with special
-definitions `TestUsers.CREATOR` and `TestUsers.ANONYMOUS` can only be asserted with the exact same
+The user definitions `role`, `user`, `RunWithUsers.PRODUCER` and `RunWithUsers.ANONYMOUS` must be same in the assertion and in the
+`@RunWithUsers` annotation. For example if the `@RunWithUsers` has `user:admin` and that user has `ROLE_ADMIN` role
+it can be only asserted with `user:admin` and not `role:ROLE_ADMIN`. Also producer users can only be
+asserted with `RunWithUsers.PRODUCER` definition and not with user or role. Users specified with special
+definitions `RunWithUsers.PRODUCER` and `RunWithUsers.ANONYMOUS` can only be asserted with the exact same
 special definitions.
 
-`TestUsers.NEW_USER` is an exception to above. It can't be used in the assertions. Instead the corresponding
-creator user definition has to be used. For example if creator is `role:ROLE_ADMIN` and user is `TestUsers.NEW_USER`
-the correct way to reference the user in an assertion is `role:ROLE_ADMIN`.
+`RunWithUsers.WITH_PRODUCER_ROLE` is an exception to above. It can't be used in the assertions. Instead the corresponding
+producer user definition has to be used. For example if producer is `role:ROLE_ADMIN` and consumer is `RunWithUsers.WITH_PRODUCER_ROLE`
+the correct way to reference the consumer in an assertion is `role:ROLE_ADMIN`.
 
 ## Simple Authorization Assertion
 
@@ -380,14 +381,14 @@ Writing tests in the test class:
 ```java
 
 // Test implementation
-@TestUsers(creators = {"role:ROLE_ADMIN", "role:ROLE_USER"},
-        users = {TestUsers.CREATOR, "role:ROLE_ADMIN", "role:ROLE_USER", "user:existing-user-name"})
+@RunWithUsers(producers = {"role:ROLE_ADMIN", "role:ROLE_USER"},
+        consumers = {RunWithUsers.PRODUCER, "role:ROLE_ADMIN", "role:ROLE_USER", "user:existing-user-name"})
 public class ServiceIT extends AbstractConfiguredUserIT {
 
     @Test
     public void createAndUpdateTodo() {
-        // Create data with "creator" user
-        // Logged in as "creator" user by default
+        // Create data with "producer" user
+        // Logged in as "producer" user by default
         Todo todo = todoService.create(new TodoDto("Write documentation"));
         
         logInAs(LoginRole.USER);
@@ -406,12 +407,12 @@ public class ServiceIT extends AbstractConfiguredUserIT {
 This example test class will run tests:
 
 * ServiceIT
-    * createAndUpdateTodo creator = role:ROLE_ADMIN; user = creator;
-    * createAndUpdateTodo creator = role:ROLE_ADMIN; user = role:ROLE_ADMIN;
-    * createAndUpdateTodo creator = role:ROLE_ADMIN; user = role:ROLE_USER;
-    * createAndUpdateTodo creator = role:ROLE_ADMIN; user = user:existing-user-name;
-    * createAndUpdateTodo creator = role:ROLE_USER; user = creator;
-    * createAndUpdateTodo creator = role:ROLE_USER; user = role:ROLE_ADMIN;
-    * createAndUpdateTodo creator = role:ROLE_USER; user = role:ROLE_USER;
-    * createAndUpdateTodo creator = role:ROLE_USER; user = user:existing-user-name;
+    * createAndUpdateTodo producer = role:ROLE_ADMIN; user = producer;
+    * createAndUpdateTodo producer = role:ROLE_ADMIN; user = role:ROLE_ADMIN;
+    * createAndUpdateTodo producer = role:ROLE_ADMIN; user = role:ROLE_USER;
+    * createAndUpdateTodo producer = role:ROLE_ADMIN; user = user:existing-user-name;
+    * createAndUpdateTodo producer = role:ROLE_USER; user = producer;
+    * createAndUpdateTodo producer = role:ROLE_USER; user = role:ROLE_ADMIN;
+    * createAndUpdateTodo producer = role:ROLE_USER; user = role:ROLE_USER;
+    * createAndUpdateTodo producer = role:ROLE_USER; user = user:existing-user-name;
 
