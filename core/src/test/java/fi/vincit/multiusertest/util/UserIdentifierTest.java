@@ -28,7 +28,7 @@ public class UserIdentifierTest {
     }
 
     @Test
-    public void testEquals_Creator() {
+    public void testEquals_Producer() {
         UserIdentifier userIdentifier1 = new UserIdentifier(UserIdentifier.Type.PRODUCER, null);
         UserIdentifier userIdentifier2 = new UserIdentifier(UserIdentifier.Type.PRODUCER, null);
 
@@ -36,7 +36,7 @@ public class UserIdentifierTest {
     }
 
     @Test
-    public void testEquals_NewUser() {
+    public void testEquals_WithProducerRole() {
         UserIdentifier userIdentifier1 = new UserIdentifier(UserIdentifier.Type.WITH_PRODUCER_ROLE, null);
         UserIdentifier userIdentifier2 = new UserIdentifier(UserIdentifier.Type.WITH_PRODUCER_ROLE, null);
 
@@ -116,17 +116,17 @@ public class UserIdentifierTest {
     }
 
     @Test
-    public void testToString_NewUser() {
+    public void testToString_WithProducerRole() {
         assertThat(UserIdentifier.getWithProducerRole().toString(), is("with_producer_role"));
     }
 
     @Test
-    public void testToString_Creator() {
+    public void testToString_Producer() {
         assertThat(UserIdentifier.getProducer().toString(), is("producer"));
     }
 
     @Test
-    public void testParseNewUser() {
+    public void testParseWithProducerRole() {
         UserIdentifier identifier = UserIdentifier.parse(RunWithUsers.WITH_PRODUCER_ROLE);
 
         assertThat(identifier.getType(), is(UserIdentifier.Type.WITH_PRODUCER_ROLE));
@@ -134,7 +134,7 @@ public class UserIdentifierTest {
     }
 
     @Test
-    public void testParseCreator() {
+    public void testParseProducer() {
         UserIdentifier identifier = UserIdentifier.parse(RunWithUsers.PRODUCER);
 
         assertThat(identifier.getType(), is(UserIdentifier.Type.PRODUCER));

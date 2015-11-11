@@ -34,38 +34,38 @@ public class BasicTest extends ConfiguredTest {
     }
 
     @Test
-    public void producerLoggedInAfterUser() {
+    public void producerLoggedInAfterConsumer() {
         logInAs(LoginRole.CONSUMER);
         logInAs(LoginRole.PRODUCER);
         assertThat(SecurityUtil.getLoggedInUser().getUsername(), is(getProducer().getUsername()));
     }
 
     @Test
-    public void expectFailureCreator() {
+    public void expectFailureProducer() {
         authorization().expect(toFail(ifAnyOf(RunWithUsers.PRODUCER)));
         throwIfUserIs(getProducer());
     }
 
     @Test
-    public void expectFailureNewUser() {
+    public void expectFailureWithProducerRole() {
         authorization().expect(toFail(ifAnyOf(RunWithUsers.WITH_PRODUCER_ROLE)));
         throwIfUserIs(getConsumer());
     }
 
     @Test
-    public void expectFailureNotCreator() {
+    public void expectFailureNotProducer() {
         authorization().expect(notToFail(ifAnyOf(RunWithUsers.PRODUCER)));
         throwIfUserIs(getConsumer());
     }
 
     @Test
-    public void expectFailureNotNewUser() {
+    public void expectFailureNotWithProducerRole() {
         authorization().expect(notToFail(ifAnyOf(RunWithUsers.WITH_PRODUCER_ROLE)));
         throwIfUserIs(getProducer());
     }
 
     @Test
-    public void expectFailureUser() {
+    public void expectFailureConsumer() {
         logInAs(LoginRole.CONSUMER);
         authorization().expect(toFail(ifAnyOf("role:ROLE_USER")));
         throwIfUserRole("role:ROLE_USER");

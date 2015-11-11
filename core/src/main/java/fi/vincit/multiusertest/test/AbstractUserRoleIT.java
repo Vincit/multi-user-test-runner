@@ -56,12 +56,12 @@ public abstract class AbstractUserRoleIT<USER, ROLE>
 
     @Override
     public USER getConsumer() {
-        return userResolver.resolveUser();
+        return userResolver.resolveConsumer();
     }
 
     @Override
     public USER getProducer() {
-        return userResolver.resolverCreator();
+        return userResolver.resolverProducer();
     }
 
     @Override
@@ -94,11 +94,11 @@ public abstract class AbstractUserRoleIT<USER, ROLE>
         return "testuser-" + random.nextInt(Integer.MAX_VALUE);
     }
 
-    protected RoleContainer<ROLE> getUserModel() {
+    protected RoleContainer<ROLE> getConsumerModel() {
         return userResolver.getConsumer();
     }
 
-    protected RoleContainer<ROLE> getCreatorModel() {
+    protected RoleContainer<ROLE> getProducerModel() {
         return userResolver.getProducer();
     }
 

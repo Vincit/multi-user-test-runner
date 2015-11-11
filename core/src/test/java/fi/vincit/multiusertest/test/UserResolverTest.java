@@ -36,15 +36,15 @@ public class UserResolverTest {
 
         resolver.resolve();
 
-        assertThat(resolver.resolverCreator(), is("producer"));
-        assertThat(resolver.resolveUser(), is("consumer"));
+        assertThat(resolver.resolverProducer(), is("producer"));
+        assertThat(resolver.resolveConsumer(), is("consumer"));
 
         verify(factory, never()).getUserByUsername(anyString());
 
     }
 
     @Test
-    public void resolveUsers() {
+    public void resolveProducersAndConsumers() {
 
         RoleConverter<String> roleConverter = mock(RoleConverter.class);
 
@@ -59,8 +59,8 @@ public class UserResolverTest {
 
         resolver.resolve();
 
-        assertThat(resolver.resolverCreator(), is("user_producer"));
-        assertThat(resolver.resolveUser(), is("user_consumer"));
+        assertThat(resolver.resolverProducer(), is("user_producer"));
+        assertThat(resolver.resolveConsumer(), is("user_consumer"));
 
         verify(factory).getUserByUsername("user1");
         verify(factory).getUserByUsername("user2");
@@ -85,15 +85,15 @@ public class UserResolverTest {
 
         resolver.resolve();
 
-        assertThat(resolver.resolverCreator(), nullValue());
-        assertThat(resolver.resolveUser(), nullValue());
+        assertThat(resolver.resolverProducer(), nullValue());
+        assertThat(resolver.resolveConsumer(), nullValue());
 
         verify(factory, never()).getUserByUsername(anyString());
         verify(factory, never()).createUser(anyString(), anyString(), anyString(), anyString(), any(LoginRole.class));
     }
 
     @Test(expected = IllegalStateException.class)
-    public void errorWhenCreatorExistingAndUserCreatorRole() {
+    public void errorWhenProducerExistingAndConsumerCreatorRole() {
 
         RoleConverter<String> roleConverter = mock(RoleConverter.class);
 
@@ -110,7 +110,7 @@ public class UserResolverTest {
     }
 
     @Test
-    public void resolveCreatorAsUser() {
+    public void resolveProducerAsConsumer() {
 
         RoleConverter<String> roleConverter = mock(RoleConverter.class);
         when(roleConverter.stringToRole(anyString())).thenReturn("role");
@@ -126,8 +126,8 @@ public class UserResolverTest {
 
         resolver.resolve();
 
-        assertThat(resolver.resolverCreator(), is("producer_user"));
-        assertThat(resolver.resolveUser(), is("producer_user"));
+        assertThat(resolver.resolverProducer(), is("producer_user"));
+        assertThat(resolver.resolveConsumer(), is("producer_user"));
 
         verify(factory, times(2)).getUserByUsername("user1");
 

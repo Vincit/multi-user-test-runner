@@ -13,13 +13,13 @@ import fi.vincit.multiusertest.util.User;
 @RunWithUsers(producers = {"user:test-user"},
         consumers = {RunWithUsers.PRODUCER, "role:ROLE_ADMIN", "role:ROLE_USER"})
 @RunWith(MultiUserTestRunner.class)
-public class InitCreatorBeforeTest extends ConfiguredTest {
+public class InitProducerBeforeTest extends ConfiguredTest {
 
     private static boolean producerCreated = false;
 
     @Before
     public void init() {
-        createUser("test-user", "Test", "User", User.Role.ROLE_USER, LoginRole.PRODUCER);
+        createUser("test-user", "Test", "Consumer", User.Role.ROLE_USER, LoginRole.PRODUCER);
         producerCreated = true;
     }
 
@@ -27,7 +27,7 @@ public class InitCreatorBeforeTest extends ConfiguredTest {
     public void logInAs(LoginRole role) {
         if (role == LoginRole.PRODUCER) {
             if (!producerCreated) {
-                throw new AssertionError("No prducer created before logInAs call");
+                throw new AssertionError("No produced created before logInAs call");
             }
         } else {
             super.logInAs(role);

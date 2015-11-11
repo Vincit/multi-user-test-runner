@@ -15,7 +15,7 @@ import fi.vincit.multiusertest.annotation.RunWithUsers;
 public class TestMethodFilterTest {
 
     @Test
-    public void testRunMetdhodWhenCreatorAndUserSet() {
+    public void testRunMetdhodWhenProdcuerAndConsumerSet() {
         TestMethodFilter r = new TestMethodFilter(
                 UserIdentifier.parse("role:ROLE_ADMIN"),
                 UserIdentifier.parse("role:ROLE_ADMIN"));
@@ -26,7 +26,7 @@ public class TestMethodFilterTest {
     }
 
     @Test
-    public void testDontRunMethodWhenUserDoesntMatch() {
+    public void testDontRunMethodWhenConsumerDoesntMatch() {
         TestMethodFilter r = new TestMethodFilter(
                 UserIdentifier.parse("role:ROLE_ADMIN"),
                 UserIdentifier.parse("role:ROLE_USER"));
@@ -37,7 +37,7 @@ public class TestMethodFilterTest {
     }
 
     @Test
-    public void testDontRunMethodWhenCreatorDoesntMatch() {
+    public void testDontRunMethodWhenProducerDoesntMatch() {
         TestMethodFilter r = new TestMethodFilter(
                 UserIdentifier.parse("role:ROLE_USER"),
                 UserIdentifier.parse("role:ROLE_ADMIN"));
@@ -48,7 +48,7 @@ public class TestMethodFilterTest {
     }
 
     @Test
-    public void testRunMethodWhenMultipleUserRoles() {
+    public void testRunMethodWhenMultipleConsumerRoles() {
         TestMethodFilter r = new TestMethodFilter(
                 UserIdentifier.parse("role:ROLE_ADMIN"),
                 UserIdentifier.parse("role:ROLE_USER"));
@@ -63,7 +63,7 @@ public class TestMethodFilterTest {
     }
 
     @Test
-    public void testRunMethodWhenMultipleCreatorRoles() {
+    public void testRunMethodWhenMultipleProducerRoles() {
         TestMethodFilter r = new TestMethodFilter(
                 UserIdentifier.parse("role:ROLE_USER"),
                 UserIdentifier.parse("role:ROLE_ADMIN"));
@@ -77,7 +77,7 @@ public class TestMethodFilterTest {
     }
 
     @Test
-    public void testRunMethodWhenNoUserDefined() {
+    public void testRunMethodWhenNoConsumerDefined() {
         TestMethodFilter r = new TestMethodFilter(
                 UserIdentifier.parse("role:ROLE_USER"),
                 UserIdentifier.parse("role:ROLE_ADMIN"));
@@ -91,7 +91,7 @@ public class TestMethodFilterTest {
     }
 
     @Test
-    public void testRunMethodWhenNoCreatorDefined() {
+    public void testRunMethodWhenNoProducerDefined() {
         TestMethodFilter r = new TestMethodFilter(
                 UserIdentifier.parse("role:ROLE_USER"),
                 UserIdentifier.parse("role:ROLE_ADMIN"));
@@ -166,21 +166,21 @@ public class TestMethodFilterTest {
     }
 
     @Test(expected = NullPointerException.class)
-    public void testRunMethodWhenUserNotSet() {
+    public void testRunMethodWhenConsumerNotSet() {
         new TestMethodFilter(
                 UserIdentifier.parse("role:ROLE_ADMIN"),
                 null);
     }
 
     @Test(expected = NullPointerException.class)
-    public void testRunMethodWhenCreatorNotSet() {
+    public void testRunMethodWhenProducerNotSet() {
         new TestMethodFilter(
                 null,
                 UserIdentifier.parse("role:ROLE_ADMIN"));
     }
 
     @Test(expected = NullPointerException.class)
-    public void testRunMethodWhenCreatorNorUserNotSet() {
+    public void testRunMethodWhenProducerNorConsumerNotSet() {
         new TestMethodFilter(
                 null,
                 null);

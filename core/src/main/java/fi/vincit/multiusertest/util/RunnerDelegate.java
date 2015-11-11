@@ -59,7 +59,7 @@ public class RunnerDelegate {
     }
 
     private String getIdentifierDescription() {
-        return String.format("creator = %s; user = %s", producerIdentifier, userIdentifier);
+        return String.format("producer = %s; consumer = %s", producerIdentifier, userIdentifier);
     }
 
     public UserRoleIT createTest(Object testInstance) {

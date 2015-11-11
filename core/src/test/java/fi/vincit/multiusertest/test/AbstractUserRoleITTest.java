@@ -67,14 +67,14 @@ public class AbstractUserRoleITTest {
     }
 
     @Test
-    public void testNewUser() {
+    public void testUserWithProducerRole() {
         TestClass spyClass = mockTestClass();
 
         spyClass.setUsers(UserIdentifier.parse("role:ROLE1"), UserIdentifier.getWithProducerRole());
         spyClass.initializeUsers();
 
-        verify(spyClass).createUser(anyString(), eq("Test"), eq("Creator"), eq(Role.ROLE1), eq(LoginRole.PRODUCER));
-        verify(spyClass).createUser(anyString(), eq("Test"), eq("User"), eq(Role.ROLE1), eq(LoginRole.CONSUMER));
+        verify(spyClass).createUser(anyString(), eq("Test"), eq("Producer"), eq(Role.ROLE1), eq(LoginRole.PRODUCER));
+        verify(spyClass).createUser(anyString(), eq("Test"), eq("Consumer"), eq(Role.ROLE1), eq(LoginRole.CONSUMER));
 
         spyClass.logInAs(LoginRole.CONSUMER);
 
@@ -84,7 +84,7 @@ public class AbstractUserRoleITTest {
     }
 
     @Test
-    public void testLoginWithNewUser() {
+    public void testLoginWithUserWithProducerRole() {
         TestClass spyClass = mockTestClass();
 
         spyClass.setUsers(UserIdentifier.parse("role:ROLE1"), UserIdentifier.getWithProducerRole());
@@ -96,19 +96,19 @@ public class AbstractUserRoleITTest {
     }
 
     @Test
-    public void testCreatorRole() {
+    public void testProducerRole() {
         TestClass spyClass = mockTestClass();
 
         spyClass.setUsers(UserIdentifier.parse("role:ROLE1"), UserIdentifier.getProducer());
         spyClass.initializeUsers();
 
-        verify(spyClass).createUser(anyString(), eq("Test"), eq("Creator"), eq(Role.ROLE1), eq(LoginRole.PRODUCER));
+        verify(spyClass).createUser(anyString(), eq("Test"), eq("Producer"), eq(Role.ROLE1), eq(LoginRole.PRODUCER));
         assertThat(spyClass.getConsumer(), notNullValue());
         assertThat(spyClass.getConsumer(), is(spyClass.getProducer()));
     }
 
     @Test
-    public void testLoginWithCreatorRole() {
+    public void testLoginWithProducerRole() {
         TestClass spyClass = mockTestClass();
 
         spyClass.setUsers(UserIdentifier.parse("role:ROLE1"), UserIdentifier.getProducer());
@@ -126,8 +126,8 @@ public class AbstractUserRoleITTest {
         spyClass.setUsers(UserIdentifier.parse("role:ROLE1"), UserIdentifier.parse("role:ROLE2"));
         spyClass.initializeUsers();
 
-        verify(spyClass).createUser(anyString(), eq("Test"), eq("Creator"), eq(Role.ROLE1), eq(LoginRole.PRODUCER));
-        verify(spyClass).createUser(anyString(), eq("Test"), eq("User"), eq(Role.ROLE2), eq(LoginRole.CONSUMER));
+        verify(spyClass).createUser(anyString(), eq("Test"), eq("Producer"), eq(Role.ROLE1), eq(LoginRole.PRODUCER));
+        verify(spyClass).createUser(anyString(), eq("Test"), eq("Consumer"), eq(Role.ROLE2), eq(LoginRole.CONSUMER));
 
         assertThat(spyClass.getConsumer(), notNullValue());
         assertThat(spyClass.getConsumer(), is(not((spyClass.getProducer()))));
@@ -148,14 +148,14 @@ public class AbstractUserRoleITTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testInvalidCreatorRole_Creator() {
+    public void testInvalidProducerRole_Producer() {
         TestClass spyClass = mockTestClass();
 
         spyClass.setUsers(UserIdentifier.getProducer(), UserIdentifier.parse("user:user2"));
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testInvalidCreatorRole_NewUser() {
+    public void testInvalidPriducerRole_WithProducerRole() {
         TestClass spyClass = mockTestClass();
 
         spyClass.setUsers(UserIdentifier.getWithProducerRole(), UserIdentifier.parse("user:user2"));
@@ -200,7 +200,7 @@ public class AbstractUserRoleITTest {
     }
 
     @Test
-    public void testLoginAs_CreatorUser() {
+    public void testLoginAs_ProducerUser() {
         TestClass spyClass = mockTestClass();
         spyClass.authorizationRule = mock(AuthorizationRule.class);
 
@@ -220,14 +220,14 @@ public class AbstractUserRoleITTest {
     }
 
     @Test(expected = IllegalStateException.class)
-    public void testNewUserNotAllowedWithExistingCreator() {
+    public void testNewUserNotAllowedWithExistingProducer() {
         TestClass spyClass = mockTestClass();
         spyClass.setUsers(UserIdentifier.parse("user:username"), UserIdentifier.getWithProducerRole());
         spyClass.initializeUsers();
     }
 
     @Test
-    public void testUserAsCreatorWhenCreatorExistingUser() {
+    public void testUserAsProducerWhenProducerExistingUser() {
         TestClass spyClass = mockTestClass();
         when(spyClass.getUserByUsername("username")).thenReturn("test-user");
 
@@ -243,7 +243,7 @@ public class AbstractUserRoleITTest {
     }
 
     @Test
-    public void testUserWhenCreatorExistingUser() {
+    public void testUserWhenProducerExistingUser() {
         TestClass spyClass = mockTestClass();
         when(spyClass.getUserByUsername("username")).thenReturn("test-user");
         when(spyClass.getUserByUsername("username2")).thenReturn("test-user2");
@@ -276,7 +276,7 @@ public class AbstractUserRoleITTest {
     }
 
     @Test
-    public void testCreatorWhenAnonymous() {
+    public void testProducerWhenAnonymous() {
         TestClass spyClass = mockTestClass();
         when(spyClass.getUserByUsername("username")).thenReturn("test-user");
 

@@ -16,13 +16,13 @@ import fi.vincit.multiusertest.util.User;
         consumers = {"role:ROLE_ADMIN", "role:ROLE_USER"})
 @ContextConfiguration(classes = {TestConfiguration.class})
 @RunWith(MultiUserTestRunner.class)
-public class InitCreatorBeforeTest extends ConfiguredTest {
+public class InitProducerBeforeTest extends ConfiguredTest {
 
     private static boolean producerCreated = false;
 
     @Before
     public void init() {
-        createUser("test-user", "Test", "User", User.Role.ROLE_USER, LoginRole.PRODUCER);
+        createUser("test-user", "Test", "Consumer", User.Role.ROLE_USER, LoginRole.PRODUCER);
         producerCreated = true;
     }
 

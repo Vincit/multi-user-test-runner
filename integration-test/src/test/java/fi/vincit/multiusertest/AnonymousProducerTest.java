@@ -20,7 +20,7 @@ import fi.vincit.multiusertest.util.UserIdentifier;
 @RunWithUsers(producers = {RunWithUsers.ANONYMOUS},
         consumers = {"role:ROLE_ADMIN", "role:ROLE_USER"})
 @RunWith(MultiUserTestRunner.class)
-public class AnonymousCreatorTest extends ConfiguredTest {
+public class AnonymousProducerTest extends ConfiguredTest {
 
     @Test
     public void producerLoggedIn() {
@@ -42,7 +42,7 @@ public class AnonymousCreatorTest extends ConfiguredTest {
     }
 
     @Test
-    public void expectFailureAnonymousCreator() {
+    public void expectFailureAnonymousProducer() {
         logInAs(LoginRole.PRODUCER);
         authorization().expect(toFail(ifAnyOf(RunWithUsers.PRODUCER)));
         throwIfUserRole(RunWithUsers.ANONYMOUS);

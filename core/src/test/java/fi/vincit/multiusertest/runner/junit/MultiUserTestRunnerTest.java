@@ -77,25 +77,25 @@ public class MultiUserTestRunnerTest {
     @RunWithUsers(producers = "role:ROLE_USERS")
     @MultiUserTestConfig(runner = TestRunner.class)
     @Ignore
-    public static class OneCreator {
+    public static class OneProducer {
     }
 
     @RunWithUsers(producers = {})
     @MultiUserTestConfig(runner = TestRunner.class)
     @Ignore
-    public static class NoCreators {
+    public static class NoProducers {
     }
 
     @RunWithUsers(producers = RunWithUsers.PRODUCER)
     @MultiUserTestConfig(runner = TestRunner.class)
     @Ignore
-    public static class CreatorCreator {
+    public static class ProdcuerProducer {
     }
 
     @RunWithUsers(producers = RunWithUsers.WITH_PRODUCER_ROLE)
     @MultiUserTestConfig(runner = TestRunner.class)
     @Ignore
-    public static class NewUserCreator {
+    public static class UserWithProducerRole {
     }
 
     @RunWithUsers(producers = "role:ROLE_USERS", consumers = {"user:Foo", "role:Bar"})
@@ -111,13 +111,13 @@ public class MultiUserTestRunnerTest {
     }
 
     @Test(expected = IllegalStateException.class)
-    public void testClassWithoutTestUsersAnnotation() throws Throwable {
+    public void testClassWithoutRunWithUsersAnnotation() throws Throwable {
         createMultiUserTestRunner(NoAnnotation.class);
     }
 
     @Test
-    public void testClassWith_OneCreator_DefaultUsers() throws Throwable {
-        MultiUserTestRunner runner = createMultiUserTestRunner(OneCreator.class);
+    public void testClassWith_OneProducer_DefaultUsers() throws Throwable {
+        MultiUserTestRunner runner = createMultiUserTestRunner(OneProducer.class);
 
         assertThat(runner.getChildren().size(), is(1));
         TestRunner childRunner1 = (TestRunner) runner.getChildren().get(0);
@@ -126,22 +126,22 @@ public class MultiUserTestRunnerTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testClassWith_InvalidCreatorCreator() throws Throwable {
-        createMultiUserTestRunner(CreatorCreator.class);
+    public void testClassWith_InvalidProdcuerProducer() throws Throwable {
+        createMultiUserTestRunner(ProdcuerProducer.class);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testClassWith_InvalidNewUserCreator() throws Throwable {
-        createMultiUserTestRunner(NewUserCreator.class);
+    public void testClassWith_InvalidUserWithProducerRole() throws Throwable {
+        createMultiUserTestRunner(UserWithProducerRole.class);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testClassWith_NoCreators() throws Throwable {
-        createMultiUserTestRunner(NoCreators.class);
+    public void testClassWith_NoProdcuer() throws Throwable {
+        createMultiUserTestRunner(NoProducers.class);
     }
 
     @Test
-    public void testClassWith_OneCreator_MultipleUsers() throws Throwable {
+    public void testClassWith_OneProducer_MultipleUsers() throws Throwable {
         MultiUserTestRunner runner = createMultiUserTestRunner(OneProducer_MultipleUsers.class);
 
 
@@ -168,7 +168,7 @@ public class MultiUserTestRunnerTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testCreatorHasExistingUserAndUsersHaveNewUser() throws Throwable {
+    public void testproducerHasExistingUserAndUsersHaveUserWithProducerRole() throws Throwable {
         createMultiUserTestRunner(ExistingProducerNewUserWithProducerRole.class);
     }
 

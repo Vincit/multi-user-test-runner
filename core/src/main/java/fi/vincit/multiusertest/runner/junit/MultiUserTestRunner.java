@@ -38,7 +38,7 @@ import fi.vincit.multiusertest.util.UserIdentifier;
  * </p>
  * <p>
  * There is also a special role {@link fi.vincit.multiusertest.annotation.RunWithUsers#ANONYMOUS} both for
- * the producer and the consumer. This means that the current user or creator isn't logged in.
+ * the producer and the consumer. This means that the current consumer or producer isn't logged in.
  * </p>
  * <p>
  * If no users are defined {@link fi.vincit.multiusertest.annotation.RunWithUsers#WITH_PRODUCER_ROLE} will be used as the default

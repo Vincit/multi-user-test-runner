@@ -16,13 +16,13 @@ public class IdentifierResolver<USER, ROLE> {
 
     public UserIdentifier getIdentifierFor(LoginRole loginRole) {
         if (loginRole == LoginRole.PRODUCER) {
-            return getCreatorIdentifier();
+            return getProducerIdentifier();
         } else {
-            return getUserIdentifier();
+            return getConsumerIdentifier();
         }
     }
 
-    private UserIdentifier getUserIdentifier() {
+    private UserIdentifier getConsumerIdentifier() {
         RoleContainer.RoleMode roleMode = consumer.getMode();
 
         if (roleMode == RoleContainer.RoleMode.EXISTING_USER) {
@@ -41,7 +41,7 @@ public class IdentifierResolver<USER, ROLE> {
         }
     }
 
-    private UserIdentifier getCreatorIdentifier() {
+    private UserIdentifier getProducerIdentifier() {
         return UserIdentifier.getProducer();
     }
 }

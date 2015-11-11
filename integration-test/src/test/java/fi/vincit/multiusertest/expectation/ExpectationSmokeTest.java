@@ -30,7 +30,7 @@ public class ExpectationSmokeTest extends ConfiguredTest {
     }
 
     @Test
-    public void expectToFail_AsCreator_WhenAccessDeniedThrown() throws Throwable {
+    public void expectToFail_AsProducer_WhenAccessDeniedThrown() throws Throwable {
         authorization().expect(Expectations.call(
                 new FunctionCall() {
                     @Override
@@ -42,7 +42,7 @@ public class ExpectationSmokeTest extends ConfiguredTest {
     }
 
     @Test(expected = AssertionError.class)
-    public void expectNotToFail_AsCreator_WhenAccessDeniedThrown() throws Throwable {
+    public void expectNotToFail_AsProducer_WhenAccessDeniedThrown() throws Throwable {
         authorization().expect(Expectations.call(
                 new FunctionCall() {
                     @Override

@@ -26,8 +26,8 @@ public class TestRunnerFactory {
         if (consumerIdentifiers.isEmpty()) {
             consumerIdentifiers.add(UserIdentifier.getWithProducerRole());
         }
-        validateCreators(producerIdentifiers);
-        validateUsers(producerIdentifiers, consumerIdentifiers);
+        validateProducers(producerIdentifiers);
+        validateConsumers(producerIdentifiers, consumerIdentifiers);
 
         for (UserIdentifier producerIdentifier : producerIdentifiers) {
             for (UserIdentifier consumerIdentifier : consumerIdentifiers) {
@@ -43,7 +43,7 @@ public class TestRunnerFactory {
         return runners;
     }
 
-    void validateUsers(Collection<UserIdentifier> producerIdentifiers, Collection<UserIdentifier> consumerIdentifiers) {
+    void validateConsumers(Collection<UserIdentifier> producerIdentifiers, Collection<UserIdentifier> consumerIdentifiers) {
         boolean containsExistingUserDefinition = false;
         for (UserIdentifier identifier : producerIdentifiers) {
             if (identifier.getType() == UserIdentifier.Type.USER) {
@@ -57,7 +57,7 @@ public class TestRunnerFactory {
         }
     }
 
-    void validateCreators(Collection<UserIdentifier> producerIdentifiers) {
+    void validateProducers(Collection<UserIdentifier> producerIdentifiers) {
         if (producerIdentifiers.isEmpty()) {
             throw new IllegalArgumentException("Producer must be specified");
         }

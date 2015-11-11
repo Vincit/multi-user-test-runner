@@ -20,9 +20,9 @@ public class UserResolver<USER, ROLE> {
         this.consumerRoleContainer = RoleContainer.forConsumer(consumer, producerRoleContainer, roleConverter);
     }
 
-    private void initializeUser() {
+    private void initializeConsumer() {
         if (consumerRoleContainer.getMode() == RoleContainer.RoleMode.SET_USER_ROLE) {
-            consumer = userFactory.createUser(userFactory.getRandomUsername(), "Test", "User", consumerRoleContainer.getRole(), LoginRole.CONSUMER);
+            consumer = userFactory.createUser(userFactory.getRandomUsername(), "Test", "Consumer", consumerRoleContainer.getRole(), LoginRole.CONSUMER);
         } else if (consumerRoleContainer.getMode() == RoleContainer.RoleMode.PRODUCER_USER) {
             if (producerRoleContainer.getMode() == RoleContainer.RoleMode.EXISTING_USER) {
                 // Do nothing, resolved in getter
@@ -33,7 +33,7 @@ public class UserResolver<USER, ROLE> {
             if (producerRoleContainer.getMode() == RoleContainer.RoleMode.EXISTING_USER) {
                 // NOOP
             } else {
-                consumer = userFactory.createUser(userFactory.getRandomUsername(), "Test", "User", producerRoleContainer.getRole(), LoginRole.CONSUMER);
+                consumer = userFactory.createUser(userFactory.getRandomUsername(), "Test", "Consumer", producerRoleContainer.getRole(), LoginRole.CONSUMER);
             }
         } else if (consumerRoleContainer.getMode() == RoleContainer.RoleMode.EXISTING_USER) {
             // Do nothing, resolved in getter
@@ -44,9 +44,9 @@ public class UserResolver<USER, ROLE> {
         }
     }
 
-    private void initializeCreator() {
+    private void initializeProducer() {
         if (producerRoleContainer.getMode() == RoleContainer.RoleMode.SET_USER_ROLE) {
-            producer = userFactory.createUser(userFactory.getRandomUsername(), "Test", "Creator", producerRoleContainer.getRole(), LoginRole.PRODUCER);
+            producer = userFactory.createUser(userFactory.getRandomUsername(), "Test", "Producer", producerRoleContainer.getRole(), LoginRole.PRODUCER);
         } else if (producerRoleContainer.getMode() == RoleContainer.RoleMode.EXISTING_USER) {
             // Do nothing, resolved in getter
         } else if (producerRoleContainer.getMode() == RoleContainer.RoleMode.ANONYMOUS) {
@@ -64,19 +64,19 @@ public class UserResolver<USER, ROLE> {
         return consumerRoleContainer;
     }
 
-    public USER resolveUser() {
+    public USER resolveConsumer() {
         if (consumerRoleContainer.getMode() == RoleContainer.RoleMode.EXISTING_USER) {
             return userFactory.getUserByUsername(consumerRoleContainer.getIdentifier());
         } else if (consumerRoleContainer.getMode() == RoleContainer.RoleMode.ANONYMOUS) {
             return null;
         } else if (consumerRoleContainer.getMode() == RoleContainer.RoleMode.PRODUCER_USER) {
-            return resolverCreator();
+            return resolverProducer();
         } else {
             return consumer;
         }
     }
 
-    public USER resolverCreator() {
+    public USER resolverProducer() {
         if (producerRoleContainer.getMode() == RoleContainer.RoleMode.EXISTING_USER) {
             return userFactory.getUserByUsername(producerRoleContainer.getIdentifier());
         } else if (producerRoleContainer.getMode() == RoleContainer.RoleMode.ANONYMOUS) {
@@ -87,7 +87,7 @@ public class UserResolver<USER, ROLE> {
     }
 
     public void resolve() {
-        initializeCreator();
-        initializeUser();
+        initializeProducer();
+        initializeConsumer();
     }
 }

@@ -37,7 +37,7 @@ public class IdentifierResolverTest {
     }
 
     @Test
-    public void creator_role() {
+    public void producerRole() {
         RoleContainer producer = RoleContainer.forProducer(UserIdentifier.parse("role:role1"), resolver);
         RoleContainer consumer = RoleContainer.forConsumer(UserIdentifier.getProducer(), producer, resolver);
 
@@ -48,7 +48,7 @@ public class IdentifierResolverTest {
     }
 
     @Test
-    public void creator_user() {
+    public void consumerRole() {
         RoleContainer producer = RoleContainer.forProducer(UserIdentifier.parse("user:user1"), resolver);
         RoleContainer consumer = RoleContainer.forConsumer(UserIdentifier.getProducer(), producer, resolver);
 
@@ -81,7 +81,7 @@ public class IdentifierResolverTest {
     }
 
     @Test
-    public void newUserWithCreatorRole() {
+    public void newUserWithProducerRole() {
         RoleContainer producer = RoleContainer.forProducer(UserIdentifier.parse("role:role1"), resolver);
         RoleContainer consumer = RoleContainer.forConsumer(UserIdentifier.getWithProducerRole(), producer, resolver);
 
@@ -92,7 +92,7 @@ public class IdentifierResolverTest {
     }
 
     @Test(expected = IllegalStateException.class)
-    public void newUserWithCreatorRole_failsBecauseCreatorHasNoRole() {
+    public void newUserWithProducerRole_failsBecauseProducerHasNoRole() {
         RoleContainer producer = RoleContainer.forProducer(UserIdentifier.parse("user:user1"), resolver);
         RoleContainer consumer = RoleContainer.forConsumer(UserIdentifier.getWithProducerRole(), producer, resolver);
 

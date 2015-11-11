@@ -67,12 +67,12 @@ public class RunnerDelegateTest {
             return null;
         }
 
-        public RoleContainer<String> getUserModel() {
-            return super.getUserModel();
+        public RoleContainer<String> getConsumerModel() {
+            return super.getConsumerModel();
         }
 
-        public RoleContainer<String> getCreatorModel() {
-            return super.getCreatorModel();
+        public RoleContainer<String> getProducerModel() {
+            return super.getProducerModel();
         }
     }
 
@@ -85,11 +85,11 @@ public class RunnerDelegateTest {
         TestConfig instance = (TestConfig) delegate.createTest(new TestConfig());
 
         assertThat(instance, notNullValue());
-        assertThat(instance.getCreatorModel(), notNullValue());
-        assertThat(instance.getCreatorModel().getIdentifier(), is("ROLE_ADMIN"));
+        assertThat(instance.getProducerModel(), notNullValue());
+        assertThat(instance.getProducerModel().getIdentifier(), is("ROLE_ADMIN"));
 
-        assertThat(instance.getUserModel(), notNullValue());
-        assertThat(instance.getUserModel().getIdentifier(), is("ROLE_USER"));
+        assertThat(instance.getConsumerModel(), notNullValue());
+        assertThat(instance.getConsumerModel().getIdentifier(), is("ROLE_USER"));
     }
 
     @Test(expected = IllegalStateException.class)
