@@ -24,27 +24,27 @@ public class TestUsersDefaultException extends ConfiguredTest {
 
     @Test
     public void passes() {
-        logInAs(LoginRole.USER);
+        logInAs(LoginRole.CONSUMER);
         authorization().expect(notToFail(ifAnyOf("role:ROLE_ADMIN")));
     }
 
     @Test
     public void fails() {
-        logInAs(LoginRole.USER);
+        logInAs(LoginRole.CONSUMER);
         authorization().expect(toFail(ifAnyOf("role:ROLE_ADMIN")));
         throw new IndexOutOfBoundsException();
     }
 
     @Test(expected = IOException.class)
     public void fails_WithUnexpectedException() throws IOException {
-        logInAs(LoginRole.USER);
+        logInAs(LoginRole.CONSUMER);
         throw new IOException();
     }
 
     @Test
     public void fails_WithOverriddenException() throws IOException {
         authorization().setExpectedException(IllegalMonitorStateException.class);
-        logInAs(LoginRole.USER);
+        logInAs(LoginRole.CONSUMER);
         authorization().expect(toFail(ifAnyOf("role:ROLE_ADMIN")));
         throw new IllegalMonitorStateException();
     }

@@ -32,8 +32,8 @@ public class IdentifierResolverTest {
 
         IdentifierResolver resolver = new IdentifierResolver(mockUserResolver(creator, user));
 
-        assertThat(resolver.getIdentifierFor(LoginRole.CREATOR), is(UserIdentifier.getCreator()));
-        assertThat(resolver.getIdentifierFor(LoginRole.USER), is(UserIdentifier.parse("role:role2")));
+        assertThat(resolver.getIdentifierFor(LoginRole.PRODUCER), is(UserIdentifier.getCreator()));
+        assertThat(resolver.getIdentifierFor(LoginRole.CONSUMER), is(UserIdentifier.parse("role:role2")));
     }
 
     @Test
@@ -43,8 +43,8 @@ public class IdentifierResolverTest {
 
         IdentifierResolver resolver = new IdentifierResolver(mockUserResolver(creator, user));
 
-        assertThat(resolver.getIdentifierFor(LoginRole.CREATOR), is(UserIdentifier.getCreator()));
-        assertThat(resolver.getIdentifierFor(LoginRole.USER), is(UserIdentifier.getCreator()));
+        assertThat(resolver.getIdentifierFor(LoginRole.PRODUCER), is(UserIdentifier.getCreator()));
+        assertThat(resolver.getIdentifierFor(LoginRole.CONSUMER), is(UserIdentifier.getCreator()));
     }
 
     @Test
@@ -54,8 +54,8 @@ public class IdentifierResolverTest {
 
         IdentifierResolver resolver = new IdentifierResolver(mockUserResolver(creator, user));
 
-        assertThat(resolver.getIdentifierFor(LoginRole.CREATOR), is(UserIdentifier.getCreator()));
-        assertThat(resolver.getIdentifierFor(LoginRole.USER), is(UserIdentifier.getCreator()));
+        assertThat(resolver.getIdentifierFor(LoginRole.PRODUCER), is(UserIdentifier.getCreator()));
+        assertThat(resolver.getIdentifierFor(LoginRole.CONSUMER), is(UserIdentifier.getCreator()));
     }
 
     @Test
@@ -65,8 +65,8 @@ public class IdentifierResolverTest {
 
         IdentifierResolver resolver = new IdentifierResolver(mockUserResolver(creator, user));
 
-        assertThat(resolver.getIdentifierFor(LoginRole.CREATOR), is(UserIdentifier.getCreator()));
-        assertThat(resolver.getIdentifierFor(LoginRole.USER), is(UserIdentifier.parse("user:user2")));
+        assertThat(resolver.getIdentifierFor(LoginRole.PRODUCER), is(UserIdentifier.getCreator()));
+        assertThat(resolver.getIdentifierFor(LoginRole.CONSUMER), is(UserIdentifier.parse("user:user2")));
     }
 
     @Test
@@ -76,8 +76,8 @@ public class IdentifierResolverTest {
 
         IdentifierResolver resolver = new IdentifierResolver(mockUserResolver(creator, user));
 
-        assertThat(resolver.getIdentifierFor(LoginRole.CREATOR), is(UserIdentifier.getCreator()));
-        assertThat(resolver.getIdentifierFor(LoginRole.USER), is(UserIdentifier.getAnonymous()));
+        assertThat(resolver.getIdentifierFor(LoginRole.PRODUCER), is(UserIdentifier.getCreator()));
+        assertThat(resolver.getIdentifierFor(LoginRole.CONSUMER), is(UserIdentifier.getAnonymous()));
     }
 
     @Test
@@ -87,8 +87,8 @@ public class IdentifierResolverTest {
 
         IdentifierResolver resolver = new IdentifierResolver(mockUserResolver(creator, user));
 
-        assertThat(resolver.getIdentifierFor(LoginRole.CREATOR), is(UserIdentifier.getCreator()));
-        assertThat(resolver.getIdentifierFor(LoginRole.USER), is(UserIdentifier.parse("role:role1")));
+        assertThat(resolver.getIdentifierFor(LoginRole.PRODUCER), is(UserIdentifier.getCreator()));
+        assertThat(resolver.getIdentifierFor(LoginRole.CONSUMER), is(UserIdentifier.parse("role:role1")));
     }
 
     @Test(expected = IllegalStateException.class)
@@ -98,8 +98,8 @@ public class IdentifierResolverTest {
 
         IdentifierResolver resolver = new IdentifierResolver(mockUserResolver(creator, user));
 
-        assertThat(resolver.getIdentifierFor(LoginRole.CREATOR), is(UserIdentifier.getCreator()));
-        resolver.getIdentifierFor(LoginRole.USER);
+        assertThat(resolver.getIdentifierFor(LoginRole.PRODUCER), is(UserIdentifier.getCreator()));
+        resolver.getIdentifierFor(LoginRole.CONSUMER);
     }
 
 

@@ -22,7 +22,7 @@ public class UserResolver<USER, ROLE> {
 
     private void initializeUser() {
         if (userRoleContainer.getMode() == RoleContainer.RoleMode.SET_USER_ROLE) {
-            user = userFactory.createUser(userFactory.getRandomUsername(), "Test", "User", userRoleContainer.getRole(), LoginRole.USER);
+            user = userFactory.createUser(userFactory.getRandomUsername(), "Test", "User", userRoleContainer.getRole(), LoginRole.CONSUMER);
         } else if (userRoleContainer.getMode() == RoleContainer.RoleMode.CREATOR_USER) {
             if (creatorRoleContainer.getMode() == RoleContainer.RoleMode.EXISTING_USER) {
                 // Do nothing, resolved in getter
@@ -33,7 +33,7 @@ public class UserResolver<USER, ROLE> {
             if (creatorRoleContainer.getMode() == RoleContainer.RoleMode.EXISTING_USER) {
                 // NOOP
             } else {
-                user = userFactory.createUser(userFactory.getRandomUsername(), "Test", "User", creatorRoleContainer.getRole(), LoginRole.USER);
+                user = userFactory.createUser(userFactory.getRandomUsername(), "Test", "User", creatorRoleContainer.getRole(), LoginRole.CONSUMER);
             }
         } else if (userRoleContainer.getMode() == RoleContainer.RoleMode.EXISTING_USER) {
             // Do nothing, resolved in getter
@@ -46,7 +46,7 @@ public class UserResolver<USER, ROLE> {
 
     private void initializeCreator() {
         if (creatorRoleContainer.getMode() == RoleContainer.RoleMode.SET_USER_ROLE) {
-            creator = userFactory.createUser(userFactory.getRandomUsername(), "Test", "Creator", creatorRoleContainer.getRole(), LoginRole.CREATOR);
+            creator = userFactory.createUser(userFactory.getRandomUsername(), "Test", "Creator", creatorRoleContainer.getRole(), LoginRole.PRODUCER);
         } else if (creatorRoleContainer.getMode() == RoleContainer.RoleMode.EXISTING_USER) {
             // Do nothing, resolved in getter
         } else if (creatorRoleContainer.getMode() == RoleContainer.RoleMode.ANONYMOUS) {

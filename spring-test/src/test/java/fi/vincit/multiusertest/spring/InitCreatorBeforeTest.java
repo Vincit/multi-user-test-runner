@@ -22,13 +22,13 @@ public class InitCreatorBeforeTest extends ConfiguredTest {
 
     @Before
     public void init() {
-        createUser("test-user", "Test", "User", User.Role.ROLE_USER, LoginRole.CREATOR);
+        createUser("test-user", "Test", "User", User.Role.ROLE_USER, LoginRole.PRODUCER);
         creatorCreated = true;
     }
 
     @Override
     public void logInAs(LoginRole role) {
-        if (role == LoginRole.CREATOR) {
+        if (role == LoginRole.PRODUCER) {
             if (!creatorCreated) {
                 throw new AssertionError("No creator created before logInAs call");
             }

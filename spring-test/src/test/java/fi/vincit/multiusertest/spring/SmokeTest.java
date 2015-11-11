@@ -23,13 +23,13 @@ public class SmokeTest extends ConfiguredTest {
 
     @Test
     public void testNotFail() {
-        logInAs(LoginRole.USER);
+        logInAs(LoginRole.CONSUMER);
         authorization().expect(notToFail(ifAnyOf("role:ROLE_USER")));
     }
 
     @Test
     public void testFail() {
-        logInAs(LoginRole.USER);
+        logInAs(LoginRole.CONSUMER);
         authorization().expect(toFail(ifAnyOf("role:ROLE_USER")));
         throw new AccessDeniedException("Denied");
     }
@@ -37,7 +37,7 @@ public class SmokeTest extends ConfiguredTest {
     @Test
     public void testFail_CustomException() throws IOException {
         authorization().setExpectedException(IOException.class);
-        logInAs(LoginRole.USER);
+        logInAs(LoginRole.CONSUMER);
         authorization().expect(toFail(ifAnyOf("role:ROLE_USER")));
         throw new IOException("IO Fail");
     }

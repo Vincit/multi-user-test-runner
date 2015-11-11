@@ -33,13 +33,13 @@ public class SmokeTest extends ConfiguredTest {
 
     @Test
     public void passes() {
-        logInAs(LoginRole.USER);
+        logInAs(LoginRole.CONSUMER);
         authorization().expect(notToFail(ifAnyOf("role:ROLE_ADMIN")));
     }
 
     @Test
     public void passes_users_roles_syntax() {
-        logInAs(LoginRole.USER);
+        logInAs(LoginRole.CONSUMER);
         authorization().expect(notToFail(ifAnyOf(roles("ROLE_ADMIN"), users("foo"))));
     }
 
@@ -47,7 +47,7 @@ public class SmokeTest extends ConfiguredTest {
     public void fails() {
         expectFailAuthRule.setExpectedException(IllegalStateException.class);
         expectedException.expect(AssertionError.class);
-        logInAs(LoginRole.USER);
+        logInAs(LoginRole.CONSUMER);
         expectFailAuthRule.expect(toFail(ifAnyOf("role:ROLE_ADMIN")));
     }
 }

@@ -63,7 +63,7 @@ public class TestRunnerFactory {
         }
 
         if (creatorIdentifiers.contains(UserIdentifier.getCreator())) {
-            throw new IllegalArgumentException("Creator can't use CREATOR role");
+            throw new IllegalArgumentException("Creator can't use PRODUCER role");
         }
 
         if (creatorIdentifiers.contains(UserIdentifier.getNewUser())) {

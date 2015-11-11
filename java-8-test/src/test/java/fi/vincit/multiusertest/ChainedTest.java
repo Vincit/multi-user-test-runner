@@ -43,7 +43,7 @@ public class ChainedTest extends ConfiguredTest {
                 throw new IllegalArgumentException("Missing ROLE definition");
         }
 
-        logInAs(LoginRole.USER);
+        logInAs(LoginRole.CONSUMER);
         authorization().expect(expectValueOf
                         .toAssert((value) -> assertThat(value, is(1)), ifAnyOf("role:ROLE_ADMIN"))
                         .toAssert((value) -> assertThat(value, is(2)), ifAnyOf("role:ROLE_USER"))
@@ -72,7 +72,7 @@ public class ChainedTest extends ConfiguredTest {
                 throw new IllegalArgumentException("Missing ROLE definition");
         }
 
-        logInAs(LoginRole.USER);
+        logInAs(LoginRole.CONSUMER);
         authorization().expect(expectValueOf
                         .toAssert((value) -> assertThat(value, is(91)), ifAnyOf("role:ROLE_ADMIN"))
                         .toAssert((value) -> assertThat(value, is(92)), ifAnyOf("role:ROLE_USER"))
@@ -84,7 +84,7 @@ public class ChainedTest extends ConfiguredTest {
     public void expectAssert_toFailWithException_toPass() throws Throwable {
         ExpectCall expectValueOf = call(testService::throwAccessDenied);
 
-        logInAs(LoginRole.USER);
+        logInAs(LoginRole.CONSUMER);
         authorization().expect(expectValueOf
                         .toFailWithException(
                                 IllegalStateException.class,
@@ -100,7 +100,7 @@ public class ChainedTest extends ConfiguredTest {
     public void expectAssert_toFailWithException_toFail() throws Throwable {
         ExpectCall expectValueOf = call(() -> testService.throwAccessDenied());
 
-        logInAs(LoginRole.USER);
+        logInAs(LoginRole.CONSUMER);
         authorization().expect(expectValueOf
                         .toFailWithException(
                                 IllegalStateException.class,
@@ -132,7 +132,7 @@ public class ChainedTest extends ConfiguredTest {
                 throw new IllegalArgumentException("Missing ROLE definition");
         }
 
-        logInAs(LoginRole.USER);
+        logInAs(LoginRole.CONSUMER);
         authorization().expect(expectValueOf
                         .toEqual(1, ifAnyOf("role:ROLE_ADMIN"))
                         .toEqual(2, ifAnyOf("role:ROLE_USER"))
@@ -161,7 +161,7 @@ public class ChainedTest extends ConfiguredTest {
                 throw new IllegalArgumentException("Missing ROLE definition");
         }
 
-        logInAs(LoginRole.USER);
+        logInAs(LoginRole.CONSUMER);
         authorization().expect(expectValueOf
                         .toEqual(91, ifAnyOf("role:ROLE_ADMIN"))
                         .toEqual(92, ifAnyOf("role:ROLE_USER"))
@@ -190,7 +190,7 @@ public class ChainedTest extends ConfiguredTest {
                 throw new IllegalArgumentException("Missing ROLE definition");
         }
 
-        logInAs(LoginRole.USER);
+        logInAs(LoginRole.CONSUMER);
         authorization().expect(expectValueOf
                         .toEqual(1, ifAnyOf("role:ROLE_ADMIN", "role:ROLE_USER", "role:ROLE_VISITOR"))
                         .toEqual(3, ifAnyOf("role:ROLE_SUPER_ADMIN"))
@@ -217,7 +217,7 @@ public class ChainedTest extends ConfiguredTest {
                 throw new IllegalArgumentException("Missing ROLE definition");
         }
 
-        logInAs(LoginRole.USER);
+        logInAs(LoginRole.CONSUMER);
         authorization().expect(expectValueOf
                         .toEqual(1, ifAnyOf("role:ROLE_ADMIN", "role:ROLE_USER"))
                         .toAssert(value -> assertThat(value, is(3)), ifAnyOf("role:ROLE_SUPER_ADMIN", "role:ROLE_VISITOR"))

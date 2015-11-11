@@ -172,7 +172,7 @@ existing user definitions will not create new users.
 
 By default the producer user is logged in by using the implemented `loginWithUser(USER user)` method. To change
 the test to use the consumer (i.e. current user definition) the `logInAs(LoginRole role)` method can be called at
-any point of the test method. This method takes `LoginRole.CREATOR` or `LoginRole.USER` as parameter. Normally 
+any point of the test method. This method takes `LoginRole.PRODUCER` or `LoginRole.CONSUMER` as parameter. Normally
 after creating data with the producer user the user is changed before calling the method under test:
 
 ```java
@@ -180,7 +180,7 @@ after creating data with the producer user the user is changed before calling th
 public void fetchProduct() {
     String productId = productService.createProduct("Ice cream");
 
-    logInAs(LoginRole.USER);
+    logInAs(LoginRole.CONSUMER);
 
     authorization().expect(toFail(ifAnyOf("role:ROLE_ANONYMOUS")));
     productService.fetchProduct(productId);
@@ -391,7 +391,7 @@ public class ServiceIT extends AbstractConfiguredUserIT {
         // Logged in as "producer" user by default
         Todo todo = todoService.create(new TodoDto("Write documentation"));
         
-        logInAs(LoginRole.USER);
+        logInAs(LoginRole.CONSUMER);
         
         // Create/update/read data with "user" user
         TodoDto updateDto = new TodoDto(todo);

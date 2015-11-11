@@ -15,7 +15,7 @@ public class IdentifierResolver<USER, ROLE> {
     }
 
     public UserIdentifier getIdentifierFor(LoginRole loginRole) {
-        if (loginRole == LoginRole.CREATOR) {
+        if (loginRole == LoginRole.PRODUCER) {
             return getCreatorIdentifier();
         } else {
             return getUserIdentifier();

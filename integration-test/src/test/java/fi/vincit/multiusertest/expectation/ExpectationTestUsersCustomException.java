@@ -61,7 +61,7 @@ public class ExpectationTestUsersCustomException extends ConfiguredTest {
 
     @Test
     public void expectToFail_WhenAccessDeniedThrown() throws Throwable {
-        logInAs(LoginRole.USER);
+        logInAs(LoginRole.CONSUMER);
         authorization().expect(Expectations.call(
                 new FunctionCall() {
                     @Override
@@ -74,7 +74,7 @@ public class ExpectationTestUsersCustomException extends ConfiguredTest {
 
     @Test(expected = AssertionError.class)
     public void expectNotToFail_WhenAccessDeniedThrown() throws Throwable {
-        logInAs(LoginRole.USER);
+        logInAs(LoginRole.CONSUMER);
         authorization().expect(Expectations.call(
                 new FunctionCall() {
                     @Override
@@ -87,7 +87,7 @@ public class ExpectationTestUsersCustomException extends ConfiguredTest {
 
     @Test(expected = AssertionError.class)
     public void assertionFails() throws Throwable {
-        logInAs(LoginRole.USER);
+        logInAs(LoginRole.CONSUMER);
         authorization().expect(valueOf(
                 new ReturnValueCall<Integer>() {
                     @Override
@@ -105,7 +105,7 @@ public class ExpectationTestUsersCustomException extends ConfiguredTest {
 
     @Test
     public void assertionPasses() throws Throwable {
-        logInAs(LoginRole.USER);
+        logInAs(LoginRole.CONSUMER);
         authorization().expect(valueOf(
                 new ReturnValueCall<Integer>() {
                     @Override

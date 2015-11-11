@@ -29,7 +29,7 @@ public class AliasTestRole extends ConfiguredTestWithRoleAlias {
 
     @Test
     public void userLoggedIn() {
-        logInAs(LoginRole.USER);
+        logInAs(LoginRole.CONSUMER);
         assertThat(SecurityUtil.getLoggedInUser().getUsername(), is(getUser().getUsername()));
     }
 
@@ -59,7 +59,7 @@ public class AliasTestRole extends ConfiguredTestWithRoleAlias {
 
     @Test
     public void expectFailureUser() {
-        logInAs(LoginRole.USER);
+        logInAs(LoginRole.CONSUMER);
         authorization().expect(toFail(ifAnyOf("role:NORMAL")));
         throwIfUserRole("role:NORMAL");
     }

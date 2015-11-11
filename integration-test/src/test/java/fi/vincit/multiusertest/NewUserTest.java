@@ -29,14 +29,14 @@ public class NewUserTest extends ConfiguredTest {
 
     @Test
     public void userLoggedIn() {
-        logInAs(LoginRole.USER);
+        logInAs(LoginRole.CONSUMER);
         assertThat(SecurityUtil.getLoggedInUser().getUsername(), is(getUser().getUsername()));
     }
 
     @Test
     public void creatorLoggedInAfterUser() {
-        logInAs(LoginRole.USER);
-        logInAs(LoginRole.CREATOR);
+        logInAs(LoginRole.CONSUMER);
+        logInAs(LoginRole.PRODUCER);
         assertThat(SecurityUtil.getLoggedInUser().getUsername(), is(getCreator().getUsername()));
     }
 
@@ -66,7 +66,7 @@ public class NewUserTest extends ConfiguredTest {
 
     @Test
     public void expectFailureUser() {
-        logInAs(LoginRole.USER);
+        logInAs(LoginRole.CONSUMER);
         authorization().expect(toFail(ifAnyOf("role:ROLE_USER")));
         throwIfUserRole("role:ROLE_USER");
     }

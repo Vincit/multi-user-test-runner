@@ -73,10 +73,10 @@ public class AbstractUserRoleITTest {
         spyClass.setUsers(UserIdentifier.parse("role:ROLE1"), UserIdentifier.getNewUser());
         spyClass.initializeUsers();
 
-        verify(spyClass).createUser(anyString(), eq("Test"), eq("Creator"), eq(Role.ROLE1), eq(LoginRole.CREATOR));
-        verify(spyClass).createUser(anyString(), eq("Test"), eq("User"), eq(Role.ROLE1), eq(LoginRole.USER));
+        verify(spyClass).createUser(anyString(), eq("Test"), eq("Creator"), eq(Role.ROLE1), eq(LoginRole.PRODUCER));
+        verify(spyClass).createUser(anyString(), eq("Test"), eq("User"), eq(Role.ROLE1), eq(LoginRole.CONSUMER));
 
-        spyClass.logInAs(LoginRole.USER);
+        spyClass.logInAs(LoginRole.CONSUMER);
 
         assertThat(spyClass.getUser(), notNullValue());
         assertThat(spyClass.getUser(), is(not((spyClass.getCreator()))));
@@ -90,7 +90,7 @@ public class AbstractUserRoleITTest {
         spyClass.setUsers(UserIdentifier.parse("role:ROLE1"), UserIdentifier.getNewUser());
         spyClass.initializeUsers();
 
-        spyClass.logInAs(LoginRole.USER);
+        spyClass.logInAs(LoginRole.CONSUMER);
 
         verify(spyClass.authorizationRule).setRole(new UserIdentifier(UserIdentifier.Type.ROLE, "ROLE1"));
     }
@@ -102,7 +102,7 @@ public class AbstractUserRoleITTest {
         spyClass.setUsers(UserIdentifier.parse("role:ROLE1"), UserIdentifier.getCreator());
         spyClass.initializeUsers();
 
-        verify(spyClass).createUser(anyString(), eq("Test"), eq("Creator"), eq(Role.ROLE1), eq(LoginRole.CREATOR));
+        verify(spyClass).createUser(anyString(), eq("Test"), eq("Creator"), eq(Role.ROLE1), eq(LoginRole.PRODUCER));
         assertThat(spyClass.getUser(), notNullValue());
         assertThat(spyClass.getUser(), is(spyClass.getCreator()));
     }
@@ -114,7 +114,7 @@ public class AbstractUserRoleITTest {
         spyClass.setUsers(UserIdentifier.parse("role:ROLE1"), UserIdentifier.getCreator());
         spyClass.initializeUsers();
 
-        spyClass.logInAs(LoginRole.USER);
+        spyClass.logInAs(LoginRole.CONSUMER);
 
         verify(spyClass.authorizationRule).setRole(UserIdentifier.getCreator());
     }
@@ -126,8 +126,8 @@ public class AbstractUserRoleITTest {
         spyClass.setUsers(UserIdentifier.parse("role:ROLE1"), UserIdentifier.parse("role:ROLE2"));
         spyClass.initializeUsers();
 
-        verify(spyClass).createUser(anyString(), eq("Test"), eq("Creator"), eq(Role.ROLE1), eq(LoginRole.CREATOR));
-        verify(spyClass).createUser(anyString(), eq("Test"), eq("User"), eq(Role.ROLE2), eq(LoginRole.USER));
+        verify(spyClass).createUser(anyString(), eq("Test"), eq("Creator"), eq(Role.ROLE1), eq(LoginRole.PRODUCER));
+        verify(spyClass).createUser(anyString(), eq("Test"), eq("User"), eq(Role.ROLE2), eq(LoginRole.CONSUMER));
 
         assertThat(spyClass.getUser(), notNullValue());
         assertThat(spyClass.getUser(), is(not((spyClass.getCreator()))));
@@ -171,7 +171,7 @@ public class AbstractUserRoleITTest {
 
         spyClass.setUsers(UserIdentifier.parse("role:ROLE1"), UserIdentifier.parse("role:ROLE2"));
         spyClass.initializeUsers();
-        spyClass.logInAs(LoginRole.USER);
+        spyClass.logInAs(LoginRole.CONSUMER);
 
         InOrder order = inOrder(spyClass);
         order.verify(spyClass).loginWithUser("user2");
@@ -189,7 +189,7 @@ public class AbstractUserRoleITTest {
 
         spyClass.setUsers(UserIdentifier.parse("role:ROLE1"), UserIdentifier.parse("user:user2"));
         spyClass.initializeUsers();
-        spyClass.logInAs(LoginRole.USER);
+        spyClass.logInAs(LoginRole.CONSUMER);
 
 
         InOrder order = inOrder(spyClass);
@@ -209,8 +209,8 @@ public class AbstractUserRoleITTest {
 
         spyClass.setUsers(UserIdentifier.parse("role:ROLE1"), UserIdentifier.getCreator());
         spyClass.initializeUsers();
-        // Login so that LoginRole.USER uses the current creator
-        spyClass.logInAs(LoginRole.USER);
+        // Login so that LoginRole.CONSUMER uses the current creator
+        spyClass.logInAs(LoginRole.CONSUMER);
 
 
         InOrder order = inOrder(spyClass);
@@ -234,8 +234,8 @@ public class AbstractUserRoleITTest {
         spyClass.setUsers(UserIdentifier.parse("user:username"), UserIdentifier.getCreator());
         spyClass.initializeUsers();
 
-        // Login so that LoginRole.USER uses the current creator
-        spyClass.logInAs(LoginRole.USER);
+        // Login so that LoginRole.CONSUMER uses the current creator
+        spyClass.logInAs(LoginRole.CONSUMER);
 
 
         InOrder order = inOrder(spyClass);
@@ -251,8 +251,8 @@ public class AbstractUserRoleITTest {
         spyClass.setUsers(UserIdentifier.parse("user:username"), UserIdentifier.parse("user:username2"));
         spyClass.initializeUsers();
 
-        // Login so that LoginRole.USER uses the current creator
-        spyClass.logInAs(LoginRole.USER);
+        // Login so that LoginRole.CONSUMER uses the current creator
+        spyClass.logInAs(LoginRole.CONSUMER);
 
 
         InOrder order = inOrder(spyClass);
@@ -267,7 +267,7 @@ public class AbstractUserRoleITTest {
         spyClass.setUsers(UserIdentifier.parse("user:username"), UserIdentifier.getAnonymous());
         spyClass.initializeUsers();
 
-        spyClass.logInAs(LoginRole.USER);
+        spyClass.logInAs(LoginRole.CONSUMER);
 
 
         InOrder order = inOrder(spyClass);
@@ -283,7 +283,7 @@ public class AbstractUserRoleITTest {
         spyClass.setUsers(UserIdentifier.getAnonymous(), UserIdentifier.parse("user:username"));
         spyClass.initializeUsers();
 
-        spyClass.logInAs(LoginRole.CREATOR);
+        spyClass.logInAs(LoginRole.PRODUCER);
 
 
         InOrder order = inOrder(spyClass);

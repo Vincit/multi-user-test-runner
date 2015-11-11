@@ -29,20 +29,20 @@ public class AnonymousUserTest extends ConfiguredTest {
 
     @Test
     public void userLoggedIn() {
-        logInAs(LoginRole.USER);
+        logInAs(LoginRole.CONSUMER);
         assertThat(SecurityUtil.getLoggedInUser(), nullValue());
     }
 
     @Test
     public void creatorLoggedInAfterUser() {
-        logInAs(LoginRole.USER);
-        logInAs(LoginRole.CREATOR);
+        logInAs(LoginRole.CONSUMER);
+        logInAs(LoginRole.PRODUCER);
         assertThat(SecurityUtil.getLoggedInUser().getUsername(), is(getCreator().getUsername()));
     }
 
     @Test
     public void expectFailureAnonymousUser() {
-        logInAs(LoginRole.USER);
+        logInAs(LoginRole.CONSUMER);
         authorization().expect(toFail(ifAnyOf(RunWithUsers.ANONYMOUS)));
         throwIfUserRole(RunWithUsers.ANONYMOUS);
     }

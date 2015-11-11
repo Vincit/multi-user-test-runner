@@ -77,7 +77,7 @@ public abstract class AbstractUserRoleIT<USER, ROLE>
     }
 
     private USER resolveUserToLoginWith(LoginRole loginRole) {
-        if (loginRole == LoginRole.CREATOR) {
+        if (loginRole == LoginRole.PRODUCER) {
             return getCreator();
         } else {
             return getUser();

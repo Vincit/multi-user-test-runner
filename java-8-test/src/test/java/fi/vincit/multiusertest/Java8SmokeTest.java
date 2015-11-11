@@ -27,7 +27,7 @@ public class Java8SmokeTest extends ConfiguredTest {
 
     @Test
     public void expectNotToFail() throws Throwable {
-        logInAs(LoginRole.USER);
+        logInAs(LoginRole.CONSUMER);
         authorization().expect(
                 call(testService::noThrow)
                         .notToFail(ifAnyOf("role:ROLE_USER"))
@@ -43,7 +43,7 @@ public class Java8SmokeTest extends ConfiguredTest {
 
     @Test(expected = AssertionError.class)
     public void expectAssert_toFail() throws Throwable {
-        logInAs(LoginRole.USER);
+        logInAs(LoginRole.CONSUMER);
         authorization().expect(valueOf(() -> testService.returnsValue(3))
                         .toAssert((value) -> assertThat(value, is(3)), ifAnyOf("role:ROLE_ADMIN"))
                         .toAssert((value) -> assertThat(value, is(1)), ifAnyOf("role:ROLE_USER"))
@@ -52,7 +52,7 @@ public class Java8SmokeTest extends ConfiguredTest {
 
     @Test(expected = AssertionError.class)
     public void expectEqual_toFail() throws Throwable {
-        logInAs(LoginRole.USER);
+        logInAs(LoginRole.CONSUMER);
         authorization().expect(valueOf(() -> testService.returnsValue(3))
                         .toEqual(1, ifAnyOf("role:ROLE_USER"))
         );
@@ -60,7 +60,7 @@ public class Java8SmokeTest extends ConfiguredTest {
 
     @Test
     public void expectEqual_toPass() throws Throwable {
-        logInAs(LoginRole.USER);
+        logInAs(LoginRole.CONSUMER);
         authorization().expect(valueOf(() -> testService.returnsValue(3))
                         .toEqual(3, ifAnyOf("role:ROLE_USER"))
         );

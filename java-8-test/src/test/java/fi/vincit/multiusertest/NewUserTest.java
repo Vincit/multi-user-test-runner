@@ -21,7 +21,7 @@ public class NewUserTest extends ConfiguredTest {
 
     @Test(expected = AssertionError.class)
     public void expectFailureNewUser() throws Throwable {
-        logInAs(LoginRole.USER);
+        logInAs(LoginRole.CONSUMER);
         authorization().expect(call(this::throwException)
                         .toFail(ifAnyOf(RunWithUsers.WITH_PRODUCER_ROLE))
         );
@@ -29,7 +29,7 @@ public class NewUserTest extends ConfiguredTest {
 
     @Test
     public void expectFailureUser() throws Throwable {
-        logInAs(LoginRole.USER);
+        logInAs(LoginRole.CONSUMER);
         authorization().expect(call(() -> throwIfUserRole("role:ROLE_USER"))
                         .toFail(ifAnyOf("role:ROLE_USER"))
         );

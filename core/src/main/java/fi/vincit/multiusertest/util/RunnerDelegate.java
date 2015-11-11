@@ -79,7 +79,7 @@ public class RunnerDelegate {
             @Override
             public void evaluate() throws Throwable {
                 if (target instanceof UserRoleIT) {
-                    ((UserRoleIT)target).logInAs(LoginRole.CREATOR);
+                    ((UserRoleIT)target).logInAs(LoginRole.PRODUCER);
                 }
                 statement.evaluate();
             }

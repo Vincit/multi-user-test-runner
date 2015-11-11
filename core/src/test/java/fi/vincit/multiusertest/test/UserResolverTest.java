@@ -135,9 +135,9 @@ public class UserResolverTest {
 
     private UserFactory<String, String> mockFactory(String creator, String user) {
         UserFactory<String, String> factory = mock(UserFactory.class);
-        when(factory.createUser(anyString(), anyString(), anyString(), anyString(), eq(LoginRole.CREATOR)))
+        when(factory.createUser(anyString(), anyString(), anyString(), anyString(), eq(LoginRole.PRODUCER)))
             .thenReturn(creator);
-        when(factory.createUser(anyString(), anyString(), anyString(), anyString(), eq(LoginRole.USER)))
+        when(factory.createUser(anyString(), anyString(), anyString(), anyString(), eq(LoginRole.CONSUMER)))
                 .thenReturn(user);
         return factory;
     }
