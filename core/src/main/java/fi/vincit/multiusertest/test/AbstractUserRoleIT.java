@@ -50,17 +50,17 @@ public abstract class AbstractUserRoleIT<USER, ROLE>
     }
 
     @Override
-    public void setUsers(UserIdentifier creatorIdentifier, UserIdentifier userIdentifier) {
-        userResolver = new UserResolver<>(this, this, creatorIdentifier, userIdentifier);
+    public void setUsers(UserIdentifier producerIdentifier, UserIdentifier consumerIdentifier) {
+        userResolver = new UserResolver<>(this, this, producerIdentifier, consumerIdentifier);
     }
 
     @Override
-    public USER getUser() {
+    public USER getConsumer() {
         return userResolver.resolveUser();
     }
 
     @Override
-    public USER getCreator() {
+    public USER getProducer() {
         return userResolver.resolverCreator();
     }
 
@@ -78,9 +78,9 @@ public abstract class AbstractUserRoleIT<USER, ROLE>
 
     private USER resolveUserToLoginWith(LoginRole loginRole) {
         if (loginRole == LoginRole.PRODUCER) {
-            return getCreator();
+            return getProducer();
         } else {
-            return getUser();
+            return getConsumer();
         }
     }
 
@@ -95,11 +95,11 @@ public abstract class AbstractUserRoleIT<USER, ROLE>
     }
 
     protected RoleContainer<ROLE> getUserModel() {
-        return userResolver.getUser();
+        return userResolver.getConsumer();
     }
 
     protected RoleContainer<ROLE> getCreatorModel() {
-        return userResolver.getCreator();
+        return userResolver.getProducer();
     }
 
     /**

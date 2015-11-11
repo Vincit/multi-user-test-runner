@@ -26,7 +26,7 @@ public class ChainedTest extends ConfiguredTest {
     @Test
     public void expectAssert_toPass() throws Throwable {
         ExpectValueOf<Integer> expectValueOf;
-        switch (getUser().getRole()) {
+        switch (getConsumer().getRole()) {
             case ROLE_ADMIN:
                 expectValueOf = valueOf(() -> testService.returnsValue(1));
                 break;
@@ -55,7 +55,7 @@ public class ChainedTest extends ConfiguredTest {
     @Test(expected = AssertionError.class)
     public void expectAssert_toFail() throws Throwable {
         ExpectValueOf<Integer> expectValueOf;
-        switch (getUser().getRole()) {
+        switch (getConsumer().getRole()) {
             case ROLE_ADMIN:
                 expectValueOf = valueOf(() -> testService.returnsValue(1));
                 break;
@@ -115,7 +115,7 @@ public class ChainedTest extends ConfiguredTest {
     @Test
     public void expectToEqual_toPass() throws Throwable {
         ExpectValueOf<Integer> expectValueOf;
-        switch (getUser().getRole()) {
+        switch (getConsumer().getRole()) {
             case ROLE_ADMIN:
                 expectValueOf = valueOf(() -> testService.returnsValue(1));
                 break;
@@ -144,7 +144,7 @@ public class ChainedTest extends ConfiguredTest {
     @Test(expected = AssertionError.class)
     public void expectToEqual_toFail() throws Throwable {
         ExpectValueOf<Integer> expectValueOf;
-        switch (getUser().getRole()) {
+        switch (getConsumer().getRole()) {
             case ROLE_ADMIN:
                 expectValueOf = valueOf(() -> testService.returnsValue(1));
                 break;
@@ -173,7 +173,7 @@ public class ChainedTest extends ConfiguredTest {
     @Test
     public void expectToEqual_toPass_multipleAnyOf() throws Throwable {
         ExpectValueOf<Integer> expectValueOf;
-        switch (getUser().getRole()) {
+        switch (getConsumer().getRole()) {
             case ROLE_ADMIN:
                 expectValueOf = valueOf(() -> testService.returnsValue(1));
                 break;
@@ -200,7 +200,7 @@ public class ChainedTest extends ConfiguredTest {
     @Test
     public void expectToEqualAndAssert_toPass() throws Throwable {
         ExpectValueOf<Integer> expectValueOf;
-        switch (getUser().getRole()) {
+        switch (getConsumer().getRole()) {
             case ROLE_ADMIN:
                 expectValueOf = valueOf(() -> testService.returnsValue(1));
                 break;

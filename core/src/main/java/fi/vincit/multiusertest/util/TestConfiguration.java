@@ -11,21 +11,21 @@ import fi.vincit.multiusertest.runner.junit.framework.BlockMultiUserTestClassRun
 
 public class TestConfiguration {
 
-    private final Collection<UserIdentifier> creatorIdentifiers;
-    private final Collection<UserIdentifier> userIdentifiers;
+    private final Collection<UserIdentifier> producerIdentifiers;
+    private final Collection<UserIdentifier> consumerIdentifiers;
     private final Optional<Class<?>> runner;
     private final Optional<Class<? extends Throwable>> defaultException;
 
     public static TestConfiguration fromRunWithUsers(Optional<RunWithUsers> testUsers, Optional<MultiUserTestConfig> multiUserTestConfig) {
 
-        Collection<UserIdentifier> creatorIdentifiers = Collections.emptySet();
-        Collection<UserIdentifier> userIdentifiers = Collections.emptySet();
+        Collection<UserIdentifier> producerIdentifiers = Collections.emptySet();
+        Collection<UserIdentifier> consumerIdentifier = Collections.emptySet();
         Class<?> runner = BlockMultiUserTestClassRunner.class;
         Class<? extends Throwable> defaultException = Defaults.getDefaultException();
 
         if (testUsers.isPresent()) {
-            creatorIdentifiers = getDefinitions(testUsers.get().producers());
-            userIdentifiers = getDefinitions(testUsers.get().consumers());
+            producerIdentifiers = getDefinitions(testUsers.get().producers());
+            consumerIdentifier = getDefinitions(testUsers.get().consumers());
         }
         if (multiUserTestConfig.isPresent()) {
             runner = multiUserTestConfig.get().runner();
@@ -33,8 +33,8 @@ public class TestConfiguration {
         }
 
         return new TestConfiguration(
-                creatorIdentifiers,
-                userIdentifiers,
+                producerIdentifiers,
+                consumerIdentifier,
                 runner,
                 defaultException
         );
@@ -42,14 +42,14 @@ public class TestConfiguration {
 
     public static TestConfiguration fromTestUsers(Optional<TestUsers> testUsers, Optional<MultiUserTestConfig> multiUserTestConfig) {
 
-        Collection<UserIdentifier> creatorIdentifiers = Collections.emptySet();
-        Collection<UserIdentifier> userIdentifiers = Collections.emptySet();
+        Collection<UserIdentifier> producerIdentifiers = Collections.emptySet();
+        Collection<UserIdentifier> consumerIdentifiers = Collections.emptySet();
         Class<?> runner = BlockMultiUserTestClassRunner.class;
         Class<? extends Throwable> defaultException = Defaults.getDefaultException();
 
         if (testUsers.isPresent()) {
-            creatorIdentifiers = getDefinitions(testUsers.get().creators());
-            userIdentifiers = getDefinitions(testUsers.get().users());
+            producerIdentifiers = getDefinitions(testUsers.get().creators());
+            consumerIdentifiers = getDefinitions(testUsers.get().users());
         }
         if (multiUserTestConfig.isPresent()) {
             runner = multiUserTestConfig.get().runner();
@@ -57,8 +57,8 @@ public class TestConfiguration {
         }
 
         return new TestConfiguration(
-                creatorIdentifiers,
-                userIdentifiers,
+                producerIdentifiers,
+                consumerIdentifiers,
                 runner,
                 defaultException
         );
@@ -77,25 +77,25 @@ public class TestConfiguration {
     }
 
     TestConfiguration() {
-        this.creatorIdentifiers = Collections.emptySet();
-        this.userIdentifiers = Collections.emptySet();
+        this.producerIdentifiers = Collections.emptySet();
+        this.consumerIdentifiers = Collections.emptySet();
         this.runner = Optional.empty();
         this.defaultException = Optional.empty();
     }
 
-    TestConfiguration(Collection<UserIdentifier> creatorIdentifiers, Collection<UserIdentifier> userIdentifiers, Class<?> runner, Class<? extends Throwable> defaultException) {
-        this.creatorIdentifiers = creatorIdentifiers;
-        this.userIdentifiers = userIdentifiers;
+    TestConfiguration(Collection<UserIdentifier> producerIdentifiers, Collection<UserIdentifier> consumerIdentifiers, Class<?> runner, Class<? extends Throwable> defaultException) {
+        this.producerIdentifiers = producerIdentifiers;
+        this.consumerIdentifiers = consumerIdentifiers;
         this.runner = Optional.<Class<?>>ofNullable(runner);
         this.defaultException = Optional.<Class<? extends Throwable>>ofNullable(defaultException);
     }
 
-    public Collection<UserIdentifier> getCreatorIdentifiers() {
-        return creatorIdentifiers;
+    public Collection<UserIdentifier> getProducerIdentifiers() {
+        return producerIdentifiers;
     }
 
-    public Collection<UserIdentifier> getUserIdentifiers() {
-        return userIdentifiers;
+    public Collection<UserIdentifier> getConsumerIdentifiers() {
+        return consumerIdentifiers;
     }
 
     public Optional<Class<?>> getRunner() {

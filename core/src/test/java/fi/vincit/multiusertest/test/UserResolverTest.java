@@ -103,7 +103,7 @@ public class UserResolverTest {
                 factory,
                 roleConverter,
                 UserIdentifier.parse("user:user1"),
-                UserIdentifier.getNewUser()
+                UserIdentifier.getWithProducerRole()
         );
 
         resolver.resolve();
@@ -121,7 +121,7 @@ public class UserResolverTest {
                 factory,
                 roleConverter,
                 UserIdentifier.parse("user:user1"),
-                UserIdentifier.getCreator()
+                UserIdentifier.getProducer()
         );
 
         resolver.resolve();

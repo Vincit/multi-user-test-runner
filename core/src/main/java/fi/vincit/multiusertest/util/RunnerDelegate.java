@@ -13,26 +13,26 @@ import fi.vincit.multiusertest.test.UserRoleIT;
 
 public class RunnerDelegate {
 
-    private final UserIdentifier creatorIdentifier;
+    private final UserIdentifier producerIdentifier;
     private final UserIdentifier userIdentifier;
     private final TestMethodFilter shouldRunChecker;
 
-    public RunnerDelegate(UserIdentifier creatorIdentifier, UserIdentifier userIdentifier) {
-        Objects.requireNonNull(creatorIdentifier);
-        Objects.requireNonNull(userIdentifier);
+    public RunnerDelegate(UserIdentifier producerIdentifier, UserIdentifier consumerIdentifier) {
+        Objects.requireNonNull(producerIdentifier);
+        Objects.requireNonNull(consumerIdentifier);
 
-        this.creatorIdentifier = creatorIdentifier;
-        this.userIdentifier = userIdentifier;
-        this.shouldRunChecker = new TestMethodFilter(creatorIdentifier, userIdentifier);
+        this.producerIdentifier = producerIdentifier;
+        this.userIdentifier = consumerIdentifier;
+        this.shouldRunChecker = new TestMethodFilter(producerIdentifier, consumerIdentifier);
     }
 
     // Only for testing
-    RunnerDelegate(UserIdentifier creatorIdentifier, UserIdentifier userIdentifier, TestMethodFilter shouldRunChecker) {
-        Objects.requireNonNull(creatorIdentifier);
+    RunnerDelegate(UserIdentifier producerIdentifier, UserIdentifier userIdentifier, TestMethodFilter shouldRunChecker) {
+        Objects.requireNonNull(producerIdentifier);
         Objects.requireNonNull(userIdentifier);
         Objects.requireNonNull(shouldRunChecker);
 
-        this.creatorIdentifier = creatorIdentifier;
+        this.producerIdentifier = producerIdentifier;
         this.userIdentifier = userIdentifier;
         this.shouldRunChecker = shouldRunChecker;
     }
@@ -59,13 +59,13 @@ public class RunnerDelegate {
     }
 
     private String getIdentifierDescription() {
-        return String.format("creator = %s; user = %s", creatorIdentifier, userIdentifier);
+        return String.format("creator = %s; user = %s", producerIdentifier, userIdentifier);
     }
 
     public UserRoleIT createTest(Object testInstance) {
         if (testInstance instanceof UserRoleIT) {
             UserRoleIT roleItInstance = (UserRoleIT) testInstance;
-            roleItInstance.setUsers(creatorIdentifier, userIdentifier);
+            roleItInstance.setUsers(producerIdentifier, userIdentifier);
             return roleItInstance;
         } else {
             throw new IllegalStateException("Test class must be of type " + UserRoleIT.class.getSimpleName());

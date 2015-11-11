@@ -8,26 +8,26 @@ public interface UserRoleIT<USER> {
     /**
      * Sets user identifiers. Validates that they are valid. If they are invalid
      * throws an exception.
-     * @param creatorIdentifier Creator identifier
-     * @param userIdentifier User identifier
+     * @param producerIdentifier Producer identifier
+     * @param consumerIdentifier Consumer identifier
      * @throws IllegalArgumentException If one or more identifiers are invalid.
      */
-    void setUsers(UserIdentifier creatorIdentifier, UserIdentifier userIdentifier);
+    void setUsers(UserIdentifier producerIdentifier, UserIdentifier consumerIdentifier);
 
     /**
-     * Returns the current user
-     * @return Current user or null if anonymous
+     * Returns the current consumer user
+     * @return Current consumer user or null if anonymous
      */
-    USER getUser();
+    USER getConsumer();
 
     /**
-     * Returns the current creator user
-     * @return Current creator user or null if anonymous
+     * Returns the current producer user
+     * @return Current producer user or null if anonymous
      */
-    USER getCreator();
+    USER getProducer();
 
     /**
-     * Login as the given user login role using the configured creator or user.
+     * Login as the given user login role using the configured producer or consmer.
      * @param role Which user should be logged in
      */
     void logInAs(LoginRole role);

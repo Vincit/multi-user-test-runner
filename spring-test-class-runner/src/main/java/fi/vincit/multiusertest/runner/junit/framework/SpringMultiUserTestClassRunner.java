@@ -19,9 +19,9 @@ public class SpringMultiUserTestClassRunner extends SpringJUnit4ClassRunner {
 
     private final RunnerDelegate runnerDelegate;
 
-    public SpringMultiUserTestClassRunner(Class<?> clazz, UserIdentifier creatorIdentifier, UserIdentifier userIdentifier) throws InitializationError {
+    public SpringMultiUserTestClassRunner(Class<?> clazz, UserIdentifier producerIdentifier, UserIdentifier consumerIdentifier) throws InitializationError {
         super(clazz);
-        this.runnerDelegate = new RunnerDelegate(creatorIdentifier, userIdentifier);
+        this.runnerDelegate = new RunnerDelegate(producerIdentifier, consumerIdentifier);
     }
 
     @Override

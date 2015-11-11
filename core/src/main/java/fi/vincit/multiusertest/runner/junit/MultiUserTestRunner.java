@@ -15,8 +15,8 @@ import fi.vincit.multiusertest.util.UserIdentifier;
 
 /**
  * <p>
- * Test runner for executing tests with multiple creator-user combinations. Creator
- * is the user creating a resource e.g. project or a customer. User is the user who
+ * Test runner for executing tests with multiple producer-consumer combinations. Producer
+ * is the user creating a resource e.g. project or a customer. Consumer is the user who
  * later uses/edits/deletes the previously created resource. Used with JUnit's
  * {@link org.junit.runner.RunWith} annotation.
  * </p>
@@ -31,20 +31,20 @@ import fi.vincit.multiusertest.util.UserIdentifier;
  * the DB. The syntax is <i>[role|user]:[role name|username]</i> e.g. <i>"role:ROLE_ADMIN"</i> or <i>"user:username"</i>.
  * </p>
  * <p>
- * There are also two special definitions that can be used for test users (not creators): {@link fi.vincit.multiusertest.annotation.TestUsers#CREATOR} and
- * {@link fi.vincit.multiusertest.annotation.TestUsers#NEW_USER}. {@link fi.vincit.multiusertest.annotation.TestUsers#CREATOR} uses
- * the the same user as the resource was generated. {@link fi.vincit.multiusertest.annotation.TestUsers#NEW_USER}
- * creates a new user with the same role as the creator had.
+ * There are also two special definitions that can be used for test consumers (not producers): {@link fi.vincit.multiusertest.annotation.RunWithUsers#PRODUCER} and
+ * {@link fi.vincit.multiusertest.annotation.RunWithUsers#WITH_PRODUCER_ROLE}. {@link fi.vincit.multiusertest.annotation.RunWithUsers#PRODUCER} uses
+ * the the same user as the resource was generated. {@link fi.vincit.multiusertest.annotation.RunWithUsers#WITH_PRODUCER_ROLE}
+ * creates a new user with the same role as the producer had.
  * </p>
  * <p>
- * There is also a special role {@link fi.vincit.multiusertest.annotation.TestUsers#ANONYMOUS} both for
- * the creator and the user. This means that the current user or creator isn't logged in.
+ * There is also a special role {@link fi.vincit.multiusertest.annotation.RunWithUsers#ANONYMOUS} both for
+ * the producer and the consumer. This means that the current user or creator isn't logged in.
  * </p>
  * <p>
- * If no users are defined {@link fi.vincit.multiusertest.annotation.TestUsers#NEW_USER} will be used as the default
- * user definition. Creators can't use {@link fi.vincit.multiusertest.annotation.TestUsers#NEW_USER} or
- * {@link fi.vincit.multiusertest.annotation.TestUsers#CREATOR} roles since those roles are tied to the current
- * creator role.
+ * If no users are defined {@link fi.vincit.multiusertest.annotation.RunWithUsers#WITH_PRODUCER_ROLE} will be used as the default
+ * consumer definition. Producers can't use {@link fi.vincit.multiusertest.annotation.RunWithUsers#WITH_PRODUCER_ROLE} or
+ * {@link fi.vincit.multiusertest.annotation.RunWithUsers#PRODUCER} roles since those roles are tied to the current
+ * producer role.
  * </p>
  */
 public class MultiUserTestRunner extends Suite {
@@ -61,8 +61,8 @@ public class MultiUserTestRunner extends Suite {
         TestConfiguration configuration = getConfigurationOrThrow();
         TestRunnerFactory runnerFactory = createTestRunner(configuration);
         this.runners = runnerFactory.createRunnersForRoles(
-                configuration.getCreatorIdentifiers(),
-                configuration.getUserIdentifiers()
+                configuration.getProducerIdentifiers(),
+                configuration.getConsumerIdentifiers()
         );
     }
 

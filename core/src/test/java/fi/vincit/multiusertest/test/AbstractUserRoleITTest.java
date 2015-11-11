@@ -70,7 +70,7 @@ public class AbstractUserRoleITTest {
     public void testNewUser() {
         TestClass spyClass = mockTestClass();
 
-        spyClass.setUsers(UserIdentifier.parse("role:ROLE1"), UserIdentifier.getNewUser());
+        spyClass.setUsers(UserIdentifier.parse("role:ROLE1"), UserIdentifier.getWithProducerRole());
         spyClass.initializeUsers();
 
         verify(spyClass).createUser(anyString(), eq("Test"), eq("Creator"), eq(Role.ROLE1), eq(LoginRole.PRODUCER));
@@ -78,8 +78,8 @@ public class AbstractUserRoleITTest {
 
         spyClass.logInAs(LoginRole.CONSUMER);
 
-        assertThat(spyClass.getUser(), notNullValue());
-        assertThat(spyClass.getUser(), is(not((spyClass.getCreator()))));
+        assertThat(spyClass.getConsumer(), notNullValue());
+        assertThat(spyClass.getConsumer(), is(not((spyClass.getProducer()))));
         verify(spyClass.authorizationRule).setRole(new UserIdentifier(UserIdentifier.Type.ROLE, "ROLE1"));
     }
 
@@ -87,7 +87,7 @@ public class AbstractUserRoleITTest {
     public void testLoginWithNewUser() {
         TestClass spyClass = mockTestClass();
 
-        spyClass.setUsers(UserIdentifier.parse("role:ROLE1"), UserIdentifier.getNewUser());
+        spyClass.setUsers(UserIdentifier.parse("role:ROLE1"), UserIdentifier.getWithProducerRole());
         spyClass.initializeUsers();
 
         spyClass.logInAs(LoginRole.CONSUMER);
@@ -99,24 +99,24 @@ public class AbstractUserRoleITTest {
     public void testCreatorRole() {
         TestClass spyClass = mockTestClass();
 
-        spyClass.setUsers(UserIdentifier.parse("role:ROLE1"), UserIdentifier.getCreator());
+        spyClass.setUsers(UserIdentifier.parse("role:ROLE1"), UserIdentifier.getProducer());
         spyClass.initializeUsers();
 
         verify(spyClass).createUser(anyString(), eq("Test"), eq("Creator"), eq(Role.ROLE1), eq(LoginRole.PRODUCER));
-        assertThat(spyClass.getUser(), notNullValue());
-        assertThat(spyClass.getUser(), is(spyClass.getCreator()));
+        assertThat(spyClass.getConsumer(), notNullValue());
+        assertThat(spyClass.getConsumer(), is(spyClass.getProducer()));
     }
 
     @Test
     public void testLoginWithCreatorRole() {
         TestClass spyClass = mockTestClass();
 
-        spyClass.setUsers(UserIdentifier.parse("role:ROLE1"), UserIdentifier.getCreator());
+        spyClass.setUsers(UserIdentifier.parse("role:ROLE1"), UserIdentifier.getProducer());
         spyClass.initializeUsers();
 
         spyClass.logInAs(LoginRole.CONSUMER);
 
-        verify(spyClass.authorizationRule).setRole(UserIdentifier.getCreator());
+        verify(spyClass.authorizationRule).setRole(UserIdentifier.getProducer());
     }
 
     @Test
@@ -129,8 +129,8 @@ public class AbstractUserRoleITTest {
         verify(spyClass).createUser(anyString(), eq("Test"), eq("Creator"), eq(Role.ROLE1), eq(LoginRole.PRODUCER));
         verify(spyClass).createUser(anyString(), eq("Test"), eq("User"), eq(Role.ROLE2), eq(LoginRole.CONSUMER));
 
-        assertThat(spyClass.getUser(), notNullValue());
-        assertThat(spyClass.getUser(), is(not((spyClass.getCreator()))));
+        assertThat(spyClass.getConsumer(), notNullValue());
+        assertThat(spyClass.getConsumer(), is(not((spyClass.getProducer()))));
     }
 
     @Test
@@ -143,22 +143,22 @@ public class AbstractUserRoleITTest {
         spyClass.setUsers(UserIdentifier.parse("user:user1"), UserIdentifier.parse("user:user2"));
         spyClass.initializeUsers();
 
-        assertThat(spyClass.getCreator(), is("test-user1"));
-        assertThat(spyClass.getUser(), is("test-user2"));
+        assertThat(spyClass.getProducer(), is("test-user1"));
+        assertThat(spyClass.getConsumer(), is("test-user2"));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testInvalidCreatorRole_Creator() {
         TestClass spyClass = mockTestClass();
 
-        spyClass.setUsers(UserIdentifier.getCreator(), UserIdentifier.parse("user:user2"));
+        spyClass.setUsers(UserIdentifier.getProducer(), UserIdentifier.parse("user:user2"));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testInvalidCreatorRole_NewUser() {
         TestClass spyClass = mockTestClass();
 
-        spyClass.setUsers(UserIdentifier.getNewUser(), UserIdentifier.parse("user:user2"));
+        spyClass.setUsers(UserIdentifier.getWithProducerRole(), UserIdentifier.parse("user:user2"));
     }
 
 
@@ -207,7 +207,7 @@ public class AbstractUserRoleITTest {
         when(spyClass.getRandomUsername()).thenReturn("user1", "user2");
         when(spyClass.getUserByUsername("user2")).thenReturn("test-user2");
 
-        spyClass.setUsers(UserIdentifier.parse("role:ROLE1"), UserIdentifier.getCreator());
+        spyClass.setUsers(UserIdentifier.parse("role:ROLE1"), UserIdentifier.getProducer());
         spyClass.initializeUsers();
         // Login so that LoginRole.CONSUMER uses the current creator
         spyClass.logInAs(LoginRole.CONSUMER);
@@ -216,13 +216,13 @@ public class AbstractUserRoleITTest {
         InOrder order = inOrder(spyClass);
         order.verify(spyClass).loginWithUser("user1");
 
-        verify(spyClass.authorizationRule).setRole(UserIdentifier.getCreator());
+        verify(spyClass.authorizationRule).setRole(UserIdentifier.getProducer());
     }
 
     @Test(expected = IllegalStateException.class)
     public void testNewUserNotAllowedWithExistingCreator() {
         TestClass spyClass = mockTestClass();
-        spyClass.setUsers(UserIdentifier.parse("user:username"), UserIdentifier.getNewUser());
+        spyClass.setUsers(UserIdentifier.parse("user:username"), UserIdentifier.getWithProducerRole());
         spyClass.initializeUsers();
     }
 
@@ -231,7 +231,7 @@ public class AbstractUserRoleITTest {
         TestClass spyClass = mockTestClass();
         when(spyClass.getUserByUsername("username")).thenReturn("test-user");
 
-        spyClass.setUsers(UserIdentifier.parse("user:username"), UserIdentifier.getCreator());
+        spyClass.setUsers(UserIdentifier.parse("user:username"), UserIdentifier.getProducer());
         spyClass.initializeUsers();
 
         // Login so that LoginRole.CONSUMER uses the current creator

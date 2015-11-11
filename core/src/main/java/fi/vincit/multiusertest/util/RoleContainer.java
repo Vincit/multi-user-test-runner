@@ -5,11 +5,11 @@ import fi.vincit.multiusertest.test.RoleConverter;
 public class RoleContainer<ROLE> {
 
     static <ROLE> RoleContainer<ROLE> forCreatorUser() {
-        return new RoleContainer<>(null, RoleMode.CREATOR_USER, UserIdentifier.getCreator());
+        return new RoleContainer<>(null, RoleMode.PRODUCER_USER, UserIdentifier.getProducer());
     }
 
     static <ROLE> RoleContainer<ROLE> forNewUser(ROLE role, UserIdentifier identifier) {
-        return new RoleContainer<>(role, RoleMode.NEW_WITH_CREATOR_ROLE, identifier);
+        return new RoleContainer<>(role, RoleMode.NEW_WITH_PRODUCER_ROLE, identifier);
     }
 
     static <ROLE> RoleContainer<ROLE> forRole(ROLE role, UserIdentifier identifier) {
@@ -35,18 +35,18 @@ public class RoleContainer<ROLE> {
                     identifier
             );
         } else {
-            throw new IllegalArgumentException("Invalid identifier for creator: " + identifier.getType());
+            throw new IllegalArgumentException("Invalid identifier for producer: " + identifier.getType());
         }
     }
 
-    public static <ROLE> RoleContainer<ROLE> forUser(UserIdentifier identifier, RoleContainer<ROLE> creatorRoleContainer, RoleConverter<ROLE> roleConverter) {
-        if (identifier.getType() == UserIdentifier.Type.CREATOR) {
+    public static <ROLE> RoleContainer<ROLE> forUser(UserIdentifier identifier, RoleContainer<ROLE> producerRoleContainer, RoleConverter<ROLE> roleConverter) {
+        if (identifier.getType() == UserIdentifier.Type.PRODUCER) {
             return RoleContainer.forCreatorUser();
-        } else if (identifier.getType() == UserIdentifier.Type.NEW_USER) {
-            if (creatorRoleContainer.getMode() == RoleContainer.RoleMode.EXISTING_USER) {
-                throw new IllegalStateException("Cannot use NEW_USER mode when creator uses existing user");
+        } else if (identifier.getType() == UserIdentifier.Type.WITH_PRODUCER_ROLE) {
+            if (producerRoleContainer.getMode() == RoleContainer.RoleMode.EXISTING_USER) {
+                throw new IllegalStateException("Cannot use WITH_PRODUCER_ROLE mode when producer uses existing user");
             }
-            return RoleContainer.forNewUser(creatorRoleContainer.getRole(), identifier);
+            return RoleContainer.forNewUser(producerRoleContainer.getRole(), identifier);
         } else if (identifier.getType() == UserIdentifier.Type.ANONYMOUS) {
             return RoleContainer.forAnonymousUser();
         } else if (identifier.getType() == UserIdentifier.Type.ROLE) {
@@ -57,8 +57,8 @@ public class RoleContainer<ROLE> {
     }
 
     public enum RoleMode {
-        CREATOR_USER,
-        NEW_WITH_CREATOR_ROLE,
+        PRODUCER_USER,
+        NEW_WITH_PRODUCER_ROLE,
         SET_USER_ROLE,
         EXISTING_USER,
         ANONYMOUS

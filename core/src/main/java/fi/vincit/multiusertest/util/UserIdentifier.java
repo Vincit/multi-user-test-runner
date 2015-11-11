@@ -16,13 +16,13 @@ public class UserIdentifier {
      */
     public enum Type {
         /**
-         * Same as creator user
+         * Same as producer user
          */
-        CREATOR,
+        PRODUCER,
         /**
-         * New user with role the creator used
+         * New user with the same role as the producer used
          */
-        NEW_USER,
+        WITH_PRODUCER_ROLE,
         /**
          * User with certain role.
          */
@@ -42,16 +42,16 @@ public class UserIdentifier {
 
     public static UserIdentifier parse(String identifierString) {
         if (identifierString.equals(RunWithUsers.PRODUCER)) {
-            return getCreator();
+            return getProducer();
         } else if (identifierString.equals(RunWithUsers.WITH_PRODUCER_ROLE)) {
-            return getNewUser();
+            return getWithProducerRole();
         } else if (identifierString.equals(RunWithUsers.ANONYMOUS)) {
             return getAnonymous();
         } else if (identifierString.startsWith(MultiUserTestRunner.USER_PREFIX) || identifierString.startsWith(MultiUserTestRunner.ROLE_PREFIX)) {
             String[] data = identifierString.split(":", 2);
             return new UserIdentifier(Type.valueOf(data[0].toUpperCase()), data[1]);
         } else {
-            throw new IllegalArgumentException("invalid creator parameter: <" + identifierString +
+            throw new IllegalArgumentException("invalid producer parameter: <" + identifierString +
                     ">. Parameter has to start with \"role:\" or \"user:\" or it has to be RunWithUsers.PRODUCER or RunWithUsers.WITH_PRODUCER_ROLE.");
         }
     }
@@ -60,12 +60,12 @@ public class UserIdentifier {
         return new UserIdentifier(Type.ANONYMOUS, null);
     }
 
-    public static UserIdentifier getCreator() {
-        return new UserIdentifier(Type.CREATOR, null);
+    public static UserIdentifier getProducer() {
+        return new UserIdentifier(Type.PRODUCER, null);
     }
 
-    public static UserIdentifier getNewUser() {
-        return new UserIdentifier(Type.NEW_USER, null);
+    public static UserIdentifier getWithProducerRole() {
+        return new UserIdentifier(Type.WITH_PRODUCER_ROLE, null);
     }
 
     public UserIdentifier(Type type, String identifier) {

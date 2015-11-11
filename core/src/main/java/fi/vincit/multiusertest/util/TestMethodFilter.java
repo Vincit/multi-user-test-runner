@@ -12,15 +12,15 @@ import fi.vincit.multiusertest.annotation.RunWithUsers;
 import fi.vincit.multiusertest.annotation.TestUsers;
 
 public class TestMethodFilter {
-    private final UserIdentifier creatorIdentifier;
-    private final UserIdentifier userIdentifier;
+    private final UserIdentifier producerIdentifier;
+    private final UserIdentifier consumerIdentifier;
 
-    public TestMethodFilter(UserIdentifier creatorIdentifier, UserIdentifier userIdentifier) {
-        Objects.requireNonNull(creatorIdentifier);
-        Objects.requireNonNull(userIdentifier);
+    public TestMethodFilter(UserIdentifier producerIdentifier, UserIdentifier consumerIdentifier) {
+        Objects.requireNonNull(producerIdentifier);
+        Objects.requireNonNull(consumerIdentifier);
 
-        this.creatorIdentifier = creatorIdentifier;
-        this.userIdentifier = userIdentifier;
+        this.producerIdentifier = producerIdentifier;
+        this.consumerIdentifier = consumerIdentifier;
     }
 
     public boolean shouldRun(FrameworkMethod frameworkMethod) {
@@ -43,15 +43,15 @@ public class TestMethodFilter {
             );
         }
 
-        Collection<UserIdentifier> creators = configuration.getCreatorIdentifiers();
-        Collection<UserIdentifier> users = configuration.getUserIdentifiers();
+        Collection<UserIdentifier> producers = configuration.getProducerIdentifiers();
+        Collection<UserIdentifier> consumers = configuration.getConsumerIdentifiers();
 
         boolean shouldRun = true;
-        if (!creators.isEmpty()) {
-            shouldRun = creators.contains(creatorIdentifier);
+        if (!producers.isEmpty()) {
+            shouldRun = producers.contains(producerIdentifier);
         }
-        if (!users.isEmpty()) {
-            shouldRun = shouldRun && users.contains(userIdentifier);
+        if (!consumers.isEmpty()) {
+            shouldRun = shouldRun && consumers.contains(consumerIdentifier);
         }
 
         return shouldRun;

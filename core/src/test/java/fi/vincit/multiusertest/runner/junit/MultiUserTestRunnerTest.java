@@ -122,7 +122,7 @@ public class MultiUserTestRunnerTest {
         assertThat(runner.getChildren().size(), is(1));
         TestRunner childRunner1 = (TestRunner) runner.getChildren().get(0);
         assertThat(childRunner1.getCreator(), is(UserIdentifier.parse("role:ROLE_USERS")));
-        assertThat(childRunner1.getUser(), is(UserIdentifier.getNewUser()));
+        assertThat(childRunner1.getUser(), is(UserIdentifier.getWithProducerRole()));
     }
 
     @Test(expected = IllegalArgumentException.class)

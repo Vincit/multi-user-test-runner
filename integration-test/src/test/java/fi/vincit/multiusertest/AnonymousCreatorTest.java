@@ -30,7 +30,7 @@ public class AnonymousCreatorTest extends ConfiguredTest {
     @Test
     public void userLoggedIn() {
         logInAs(LoginRole.CONSUMER);
-        assertThat(SecurityUtil.getLoggedInUser().getUsername(), is(getUser().getUsername()));
+        assertThat(SecurityUtil.getLoggedInUser().getUsername(), is(getConsumer().getUsername()));
     }
 
     @Test

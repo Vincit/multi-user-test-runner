@@ -24,8 +24,8 @@ import fi.vincit.multiusertest.runner.junit.framework.BlockMultiUserTestClassRun
  * </p>
  * <ul>
  *     <li>{@link java.lang.Class}: Test class</li>
- *     <li>{@link fi.vincit.multiusertest.util.UserIdentifier}: used creator identifier</li>
- *     <li>{@link fi.vincit.multiusertest.util.UserIdentifier}: used user identifier</li>
+ *     <li>{@link fi.vincit.multiusertest.util.UserIdentifier}: used producer identifier</li>
+ *     <li>{@link fi.vincit.multiusertest.util.UserIdentifier}: used consumer identifier</li>
  * </ul>
  * <p>
  * For more information please see the existing implementations.

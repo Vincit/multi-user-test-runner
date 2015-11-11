@@ -17,9 +17,9 @@ public class BlockMultiUserTestClassRunner extends BlockJUnit4ClassRunner {
 
     private final RunnerDelegate runnerDelegate;
 
-    public BlockMultiUserTestClassRunner(Class<?> clazz, UserIdentifier creatorIdentifier, UserIdentifier userIdentifier) throws InitializationError {
+    public BlockMultiUserTestClassRunner(Class<?> clazz, UserIdentifier producerIdentifier, UserIdentifier consumerIdentifier) throws InitializationError {
         super(clazz);
-        this.runnerDelegate = new RunnerDelegate(creatorIdentifier, userIdentifier);
+        this.runnerDelegate = new RunnerDelegate(producerIdentifier, consumerIdentifier);
     }
 
     @Override

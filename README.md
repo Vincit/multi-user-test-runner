@@ -108,7 +108,7 @@ It is also possible to create your own custom test class runner. The custom runn
 `org.junit.runners.ParentRunner` (doesn't have to be direct superclass) class and has to have 
 a constructor with following signature:
 
-`CustomRunner(Class<?> clazz, UserIdentifier creatorIdentifier, UserIdentifier userIdentifier)`.
+`CustomRunner(Class<?> clazz, UserIdentifier producerIdentifier, UserIdentifier consumerIdentifier)`.
 
 When creating a custom test class runner it is important to note that `AbstractUserRoleIT.logInAs(LoginRole)` 
 method  has to be called **after** `@Before` methods and **before** calling the actual test method. This will

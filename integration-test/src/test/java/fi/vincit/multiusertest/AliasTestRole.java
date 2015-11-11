@@ -24,37 +24,37 @@ public class AliasTestRole extends ConfiguredTestWithRoleAlias {
 
     @Test
     public void creatorLoggedIn() {
-        assertThat(SecurityUtil.getLoggedInUser().getUsername(), is(getCreator().getUsername()));
+        assertThat(SecurityUtil.getLoggedInUser().getUsername(), is(getProducer().getUsername()));
     }
 
     @Test
     public void userLoggedIn() {
         logInAs(LoginRole.CONSUMER);
-        assertThat(SecurityUtil.getLoggedInUser().getUsername(), is(getUser().getUsername()));
+        assertThat(SecurityUtil.getLoggedInUser().getUsername(), is(getConsumer().getUsername()));
     }
 
     @Test
     public void expectFailureCreator() {
         authorization().expect(toFail(ifAnyOf(RunWithUsers.PRODUCER)));
-        throwIfUserIs(getCreator());
+        throwIfUserIs(getProducer());
     }
 
     @Test
     public void expectFailureNewUser() {
         authorization().expect(toFail(ifAnyOf(RunWithUsers.WITH_PRODUCER_ROLE)));
-        throwIfUserIs(getUser());
+        throwIfUserIs(getConsumer());
     }
 
     @Test
     public void expectFailureNotCreator() {
         authorization().expect(notToFail(ifAnyOf(RunWithUsers.PRODUCER)));
-        throwIfUserIs(getUser());
+        throwIfUserIs(getConsumer());
     }
 
     @Test
     public void expectFailureNotNewUser() {
         authorization().expect(notToFail(ifAnyOf(RunWithUsers.WITH_PRODUCER_ROLE)));
-        throwIfUserIs(getCreator());
+        throwIfUserIs(getProducer());
     }
 
     @Test

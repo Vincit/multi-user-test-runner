@@ -21,20 +21,20 @@ public class TestRunnerFactory {
         this.runnerConstructor = runnerConstructor;
     }
 
-    public List<Runner> createRunnersForRoles(Collection<UserIdentifier> creatorIdentifiers, Collection<UserIdentifier> userIdentifiers) throws Exception {
+    public List<Runner> createRunnersForRoles(Collection<UserIdentifier> producerIdentifiers, Collection<UserIdentifier> consumerIdentifiers) throws Exception {
         List<Runner> runners = new ArrayList<>();
-        if (userIdentifiers.isEmpty()) {
-            userIdentifiers.add(UserIdentifier.getNewUser());
+        if (consumerIdentifiers.isEmpty()) {
+            consumerIdentifiers.add(UserIdentifier.getWithProducerRole());
         }
-        validateCreators(creatorIdentifiers);
-        validateUsers(creatorIdentifiers, userIdentifiers);
+        validateCreators(producerIdentifiers);
+        validateUsers(producerIdentifiers, consumerIdentifiers);
 
-        for (UserIdentifier creatorIdentifier : creatorIdentifiers) {
-            for (UserIdentifier userIdentifier : userIdentifiers) {
+        for (UserIdentifier producerIdentifier : producerIdentifiers) {
+            for (UserIdentifier consumerIdentifier : consumerIdentifiers) {
                 Object parentRunner = runnerConstructor.newInstance(
                         testClass.getJavaClass(),
-                        creatorIdentifier,
-                        userIdentifier
+                        producerIdentifier,
+                        consumerIdentifier
                 );
                 runners.add((ParentRunner) parentRunner);
 
@@ -43,31 +43,31 @@ public class TestRunnerFactory {
         return runners;
     }
 
-    void validateUsers(Collection<UserIdentifier> creatorIdentifiers, Collection<UserIdentifier> userIdentifiers) {
+    void validateUsers(Collection<UserIdentifier> producerIdentifiers, Collection<UserIdentifier> consumerIdentifiers) {
         boolean containsExistingUserDefinition = false;
-        for (UserIdentifier identifier : creatorIdentifiers) {
+        for (UserIdentifier identifier : producerIdentifiers) {
             if (identifier.getType() == UserIdentifier.Type.USER) {
                 containsExistingUserDefinition = true;
             }
         }
 
         if (containsExistingUserDefinition
-                && userIdentifiers.contains(UserIdentifier.getNewUser())) {
-            throw new IllegalArgumentException("User definitions can't contain NEW_USER when creators have a 'user' definition");
+                && consumerIdentifiers.contains(UserIdentifier.getWithProducerRole())) {
+            throw new IllegalArgumentException("User definitions can't contain WITH_PRODUCER_ROLE when producers have a 'user' definition");
         }
     }
 
-    void validateCreators(Collection<UserIdentifier> creatorIdentifiers) {
-        if (creatorIdentifiers.isEmpty()) {
-            throw new IllegalArgumentException("Creator must be specified");
+    void validateCreators(Collection<UserIdentifier> producerIdentifiers) {
+        if (producerIdentifiers.isEmpty()) {
+            throw new IllegalArgumentException("Producer must be specified");
         }
 
-        if (creatorIdentifiers.contains(UserIdentifier.getCreator())) {
-            throw new IllegalArgumentException("Creator can't use PRODUCER role");
+        if (producerIdentifiers.contains(UserIdentifier.getProducer())) {
+            throw new IllegalArgumentException("Producer can't use PRODUCER role");
         }
 
-        if (creatorIdentifiers.contains(UserIdentifier.getNewUser())) {
-            throw new IllegalArgumentException("Creator can't use NEW_USER role");
+        if (producerIdentifiers.contains(UserIdentifier.getWithProducerRole())) {
+            throw new IllegalArgumentException("Producer can't use WITH_PRODUCER_ROLE role");
         }
     }
 

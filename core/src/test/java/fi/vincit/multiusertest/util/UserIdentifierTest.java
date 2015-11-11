@@ -29,16 +29,16 @@ public class UserIdentifierTest {
 
     @Test
     public void testEquals_Creator() {
-        UserIdentifier userIdentifier1 = new UserIdentifier(UserIdentifier.Type.CREATOR, null);
-        UserIdentifier userIdentifier2 = new UserIdentifier(UserIdentifier.Type.CREATOR, null);
+        UserIdentifier userIdentifier1 = new UserIdentifier(UserIdentifier.Type.PRODUCER, null);
+        UserIdentifier userIdentifier2 = new UserIdentifier(UserIdentifier.Type.PRODUCER, null);
 
         assertThat(userIdentifier1.equals(userIdentifier2), is(true));
     }
 
     @Test
     public void testEquals_NewUser() {
-        UserIdentifier userIdentifier1 = new UserIdentifier(UserIdentifier.Type.NEW_USER, null);
-        UserIdentifier userIdentifier2 = new UserIdentifier(UserIdentifier.Type.NEW_USER, null);
+        UserIdentifier userIdentifier1 = new UserIdentifier(UserIdentifier.Type.WITH_PRODUCER_ROLE, null);
+        UserIdentifier userIdentifier2 = new UserIdentifier(UserIdentifier.Type.WITH_PRODUCER_ROLE, null);
 
         assertThat(userIdentifier1.equals(userIdentifier2), is(true));
     }
@@ -75,24 +75,24 @@ public class UserIdentifierTest {
 
     @Test
     public void testEquals_NullIdentifierFails() {
-        UserIdentifier userIdentifier1 = new UserIdentifier(UserIdentifier.Type.CREATOR, null);
-        UserIdentifier userIdentifier2 = new UserIdentifier(UserIdentifier.Type.CREATOR, "Foo");
+        UserIdentifier userIdentifier1 = new UserIdentifier(UserIdentifier.Type.PRODUCER, null);
+        UserIdentifier userIdentifier2 = new UserIdentifier(UserIdentifier.Type.PRODUCER, "Foo");
 
         assertThat(userIdentifier1.equals(userIdentifier2), is(false));
     }
 
     @Test
     public void testHashCode_Equals() {
-        UserIdentifier userIdentifier1 = new UserIdentifier(UserIdentifier.Type.CREATOR, "Foo");
-        UserIdentifier userIdentifier2 = new UserIdentifier(UserIdentifier.Type.CREATOR, "Foo");
+        UserIdentifier userIdentifier1 = new UserIdentifier(UserIdentifier.Type.PRODUCER, "Foo");
+        UserIdentifier userIdentifier2 = new UserIdentifier(UserIdentifier.Type.PRODUCER, "Foo");
 
         assertThat(userIdentifier1.hashCode(), is(userIdentifier2.hashCode()));
     }
 
     @Test
     public void testHashCode_notEqual_Identifier() {
-        UserIdentifier userIdentifier1 = new UserIdentifier(UserIdentifier.Type.CREATOR, "Foo1");
-        UserIdentifier userIdentifier2 = new UserIdentifier(UserIdentifier.Type.CREATOR, "Foo2");
+        UserIdentifier userIdentifier1 = new UserIdentifier(UserIdentifier.Type.PRODUCER, "Foo1");
+        UserIdentifier userIdentifier2 = new UserIdentifier(UserIdentifier.Type.PRODUCER, "Foo2");
 
         assertThat(userIdentifier1.hashCode(), is(not(userIdentifier2.hashCode())));
     }
@@ -100,7 +100,7 @@ public class UserIdentifierTest {
     @Test
     public void testHashCode_notEqual_Type() {
         UserIdentifier userIdentifier1 = new UserIdentifier(UserIdentifier.Type.USER, "Foo");
-        UserIdentifier userIdentifier2 = new UserIdentifier(UserIdentifier.Type.CREATOR, "Foo");
+        UserIdentifier userIdentifier2 = new UserIdentifier(UserIdentifier.Type.PRODUCER, "Foo");
 
         assertThat(userIdentifier1.hashCode(), is(not(userIdentifier2.hashCode())));
     }
@@ -117,19 +117,19 @@ public class UserIdentifierTest {
 
     @Test
     public void testToString_NewUser() {
-        assertThat(UserIdentifier.getNewUser().toString(), is("new_user"));
+        assertThat(UserIdentifier.getWithProducerRole().toString(), is("new_user"));
     }
 
     @Test
     public void testToString_Creator() {
-        assertThat(UserIdentifier.getCreator().toString(), is("creator"));
+        assertThat(UserIdentifier.getProducer().toString(), is("creator"));
     }
 
     @Test
     public void testParseNewUser() {
         UserIdentifier identifier = UserIdentifier.parse(RunWithUsers.WITH_PRODUCER_ROLE);
 
-        assertThat(identifier.getType(), is(UserIdentifier.Type.NEW_USER));
+        assertThat(identifier.getType(), is(UserIdentifier.Type.WITH_PRODUCER_ROLE));
         assertThat(identifier.getIdentifier(), nullValue());
     }
 
@@ -137,7 +137,7 @@ public class UserIdentifierTest {
     public void testParseCreator() {
         UserIdentifier identifier = UserIdentifier.parse(RunWithUsers.PRODUCER);
 
-        assertThat(identifier.getType(), is(UserIdentifier.Type.CREATOR));
+        assertThat(identifier.getType(), is(UserIdentifier.Type.PRODUCER));
         assertThat(identifier.getIdentifier(), nullValue());
     }
 

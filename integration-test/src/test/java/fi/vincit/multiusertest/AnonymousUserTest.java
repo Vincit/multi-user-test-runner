@@ -24,7 +24,7 @@ public class AnonymousUserTest extends ConfiguredTest {
 
     @Test
     public void creatorLoggedIn() {
-        assertThat(SecurityUtil.getLoggedInUser().getUsername(), is(getCreator().getUsername()));
+        assertThat(SecurityUtil.getLoggedInUser().getUsername(), is(getProducer().getUsername()));
     }
 
     @Test
@@ -37,7 +37,7 @@ public class AnonymousUserTest extends ConfiguredTest {
     public void creatorLoggedInAfterUser() {
         logInAs(LoginRole.CONSUMER);
         logInAs(LoginRole.PRODUCER);
-        assertThat(SecurityUtil.getLoggedInUser().getUsername(), is(getCreator().getUsername()));
+        assertThat(SecurityUtil.getLoggedInUser().getUsername(), is(getProducer().getUsername()));
     }
 
     @Test

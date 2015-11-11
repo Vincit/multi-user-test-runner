@@ -28,7 +28,7 @@ public class ExpectAuthenticationDeniedForUserTest_setModes {
 
         AuthorizationRule rule = new AuthorizationRule();
         rule.setExpectedException(IllegalArgumentException.class);
-        rule.setRole(UserIdentifier.getNewUser());
+        rule.setRole(UserIdentifier.getWithProducerRole());
 
         mockApplyAndThrow(rule, new RuntimeException("")).evaluate();
     }
@@ -39,7 +39,7 @@ public class ExpectAuthenticationDeniedForUserTest_setModes {
 
         AuthorizationRule rule = new AuthorizationRule();
         rule.setExpectedException(IllegalArgumentException.class);
-        rule.setRole(UserIdentifier.getNewUser());
+        rule.setRole(UserIdentifier.getWithProducerRole());
 
         mockApplyAndThrow(rule, new IllegalArgumentException("")).evaluate();
     }
@@ -50,7 +50,7 @@ public class ExpectAuthenticationDeniedForUserTest_setModes {
 
         AuthorizationRule rule = new AuthorizationRule();
         rule.setExpectedException(IllegalArgumentException.class);
-        rule.setRole(UserIdentifier.getNewUser());
+        rule.setRole(UserIdentifier.getWithProducerRole());
 
         mockApplyAndThrow(rule, new NumberFormatException("")).evaluate();
     }
@@ -61,7 +61,7 @@ public class ExpectAuthenticationDeniedForUserTest_setModes {
 
         AuthorizationRule rule = new AuthorizationRule();
         rule.setExpectedException(IllegalArgumentException.class);
-        rule.setRole(UserIdentifier.getNewUser());
+        rule.setRole(UserIdentifier.getWithProducerRole());
 
         mockApplyAndThrow(rule, new AssertionError("E")).evaluate();
     }
@@ -74,7 +74,7 @@ public class ExpectAuthenticationDeniedForUserTest_setModes {
         AuthorizationRule rule = new AuthorizationRule();
         rule.expect(toFail(ifAnyOf(RunWithUsers.WITH_PRODUCER_ROLE)));
         rule.setExpectedException(AssertionError.class);
-        rule.setRole(UserIdentifier.getNewUser());
+        rule.setRole(UserIdentifier.getWithProducerRole());
 
         mockAndApply(rule).evaluate();
     }

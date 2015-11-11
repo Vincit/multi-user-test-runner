@@ -32,30 +32,30 @@ public class IdentifierResolverTest {
 
         IdentifierResolver resolver = new IdentifierResolver(mockUserResolver(creator, user));
 
-        assertThat(resolver.getIdentifierFor(LoginRole.PRODUCER), is(UserIdentifier.getCreator()));
+        assertThat(resolver.getIdentifierFor(LoginRole.PRODUCER), is(UserIdentifier.getProducer()));
         assertThat(resolver.getIdentifierFor(LoginRole.CONSUMER), is(UserIdentifier.parse("role:role2")));
     }
 
     @Test
     public void creator_role() {
         RoleContainer creator = RoleContainer.forCreator(UserIdentifier.parse("role:role1"), resolver);
-        RoleContainer user = RoleContainer.forUser(UserIdentifier.getCreator(), creator, resolver);
+        RoleContainer user = RoleContainer.forUser(UserIdentifier.getProducer(), creator, resolver);
 
         IdentifierResolver resolver = new IdentifierResolver(mockUserResolver(creator, user));
 
-        assertThat(resolver.getIdentifierFor(LoginRole.PRODUCER), is(UserIdentifier.getCreator()));
-        assertThat(resolver.getIdentifierFor(LoginRole.CONSUMER), is(UserIdentifier.getCreator()));
+        assertThat(resolver.getIdentifierFor(LoginRole.PRODUCER), is(UserIdentifier.getProducer()));
+        assertThat(resolver.getIdentifierFor(LoginRole.CONSUMER), is(UserIdentifier.getProducer()));
     }
 
     @Test
     public void creator_user() {
         RoleContainer creator = RoleContainer.forCreator(UserIdentifier.parse("user:user1"), resolver);
-        RoleContainer user = RoleContainer.forUser(UserIdentifier.getCreator(), creator, resolver);
+        RoleContainer user = RoleContainer.forUser(UserIdentifier.getProducer(), creator, resolver);
 
         IdentifierResolver resolver = new IdentifierResolver(mockUserResolver(creator, user));
 
-        assertThat(resolver.getIdentifierFor(LoginRole.PRODUCER), is(UserIdentifier.getCreator()));
-        assertThat(resolver.getIdentifierFor(LoginRole.CONSUMER), is(UserIdentifier.getCreator()));
+        assertThat(resolver.getIdentifierFor(LoginRole.PRODUCER), is(UserIdentifier.getProducer()));
+        assertThat(resolver.getIdentifierFor(LoginRole.CONSUMER), is(UserIdentifier.getProducer()));
     }
 
     @Test
@@ -65,7 +65,7 @@ public class IdentifierResolverTest {
 
         IdentifierResolver resolver = new IdentifierResolver(mockUserResolver(creator, user));
 
-        assertThat(resolver.getIdentifierFor(LoginRole.PRODUCER), is(UserIdentifier.getCreator()));
+        assertThat(resolver.getIdentifierFor(LoginRole.PRODUCER), is(UserIdentifier.getProducer()));
         assertThat(resolver.getIdentifierFor(LoginRole.CONSUMER), is(UserIdentifier.parse("user:user2")));
     }
 
@@ -76,29 +76,29 @@ public class IdentifierResolverTest {
 
         IdentifierResolver resolver = new IdentifierResolver(mockUserResolver(creator, user));
 
-        assertThat(resolver.getIdentifierFor(LoginRole.PRODUCER), is(UserIdentifier.getCreator()));
+        assertThat(resolver.getIdentifierFor(LoginRole.PRODUCER), is(UserIdentifier.getProducer()));
         assertThat(resolver.getIdentifierFor(LoginRole.CONSUMER), is(UserIdentifier.getAnonymous()));
     }
 
     @Test
     public void newUserWithCreatorRole() {
         RoleContainer creator = RoleContainer.forCreator(UserIdentifier.parse("role:role1"), resolver);
-        RoleContainer user = RoleContainer.forUser(UserIdentifier.getNewUser(), creator, resolver);
+        RoleContainer user = RoleContainer.forUser(UserIdentifier.getWithProducerRole(), creator, resolver);
 
         IdentifierResolver resolver = new IdentifierResolver(mockUserResolver(creator, user));
 
-        assertThat(resolver.getIdentifierFor(LoginRole.PRODUCER), is(UserIdentifier.getCreator()));
+        assertThat(resolver.getIdentifierFor(LoginRole.PRODUCER), is(UserIdentifier.getProducer()));
         assertThat(resolver.getIdentifierFor(LoginRole.CONSUMER), is(UserIdentifier.parse("role:role1")));
     }
 
     @Test(expected = IllegalStateException.class)
     public void newUserWithCreatorRole_failsBecauseCreatorHasNoRole() {
         RoleContainer creator = RoleContainer.forCreator(UserIdentifier.parse("user:user1"), resolver);
-        RoleContainer user = RoleContainer.forUser(UserIdentifier.getNewUser(), creator, resolver);
+        RoleContainer user = RoleContainer.forUser(UserIdentifier.getWithProducerRole(), creator, resolver);
 
         IdentifierResolver resolver = new IdentifierResolver(mockUserResolver(creator, user));
 
-        assertThat(resolver.getIdentifierFor(LoginRole.PRODUCER), is(UserIdentifier.getCreator()));
+        assertThat(resolver.getIdentifierFor(LoginRole.PRODUCER), is(UserIdentifier.getProducer()));
         resolver.getIdentifierFor(LoginRole.CONSUMER);
     }
 
@@ -106,8 +106,8 @@ public class IdentifierResolverTest {
 
     private UserResolver mockUserResolver(RoleContainer creator, RoleContainer user) {
         UserResolver userResolver = mock(UserResolver.class);
-        when(userResolver.getCreator()).thenReturn(creator);
-        when(userResolver.getUser()).thenReturn(user);
+        when(userResolver.getProducer()).thenReturn(creator);
+        when(userResolver.getConsumer()).thenReturn(user);
         return userResolver;
     }
 

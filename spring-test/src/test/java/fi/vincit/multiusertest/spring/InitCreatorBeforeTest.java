@@ -37,7 +37,7 @@ public class InitCreatorBeforeTest extends ConfiguredTest {
 
     @Test
     public void creatorLoggedIn() {
-        if (!getCreator().getUsername().equals("test-user")) {
+        if (!getProducer().getUsername().equals("test-user")) {
             throw new AssertionError("Wrong creator user, should be test-user");
         }
     }
