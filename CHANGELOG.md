@@ -11,9 +11,11 @@ Multi User Test Runner
 for asserting that exception contains correct values.
 * Default `AbstractUserRoleIT#getRandomUsername()` returns username always in format `testuser-<number>`.
   Previously this was either `testuser-<number>` or `testuser<number>`.
+* Added new `@RunWithUsers` annotation which replaces now deprecated `@TestUsers` annotation
 
 ## Breaking Changes
 
+* Changed term `creator` to `producer` and `user` to `consumer`. These are still generally referred as `users`
 * Introduction of new interfaces requires some protected `AbstractUserRoleIT` methods to become public. 
    * `USER createUser(String username, String firstName, String lastName, ROLE userRole, LoginRole loginRole)`
    * `String getRandomUsername()`
