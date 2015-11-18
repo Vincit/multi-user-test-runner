@@ -21,7 +21,7 @@ import fi.vincit.multiusertest.util.UserIdentifier;
  * {@link org.junit.runner.RunWith} annotation.
  * </p>
  * <p>
- * MultiUserTestRunner requires the test class to have {@link fi.vincit.multiusertest.annotation.TestUsers} annotation which
+ * MultiUserTestRunner requires the test class to have {@link fi.vincit.multiusertest.annotation.RunWithUsers} annotation which
  * will define with what users the tests are executed. To configure the test runner use
  * {@link fi.vincit.multiusertest.annotation.MultiUserTestConfig} annotation.
  * </p>
