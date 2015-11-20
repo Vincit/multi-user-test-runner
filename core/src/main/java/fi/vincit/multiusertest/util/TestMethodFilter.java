@@ -1,15 +1,14 @@
 package fi.vincit.multiusertest.util;
 
+import fi.vincit.multiusertest.annotation.MultiUserTestConfig;
+import fi.vincit.multiusertest.annotation.RunWithUsers;
+import fi.vincit.multiusertest.annotation.TestUsers;
+import org.junit.runners.model.FrameworkMethod;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-
-import org.junit.runners.model.FrameworkMethod;
-
-import fi.vincit.multiusertest.annotation.MultiUserTestConfig;
-import fi.vincit.multiusertest.annotation.RunWithUsers;
-import fi.vincit.multiusertest.annotation.TestUsers;
 
 public class TestMethodFilter {
     private final UserIdentifier producerIdentifier;
@@ -31,14 +30,14 @@ public class TestMethodFilter {
                 Optional.ofNullable(frameworkMethod.getAnnotation(RunWithUsers.class));
 
         TestConfiguration configuration;
-        if (testUsersAnnotation.isPresent()) {
-            configuration = TestConfiguration.fromTestUsers(
-                    testUsersAnnotation,
+        if (runWithUsersAnnotation.isPresent()) {
+            configuration = TestConfiguration.fromRunWithUsers(
+                    runWithUsersAnnotation,
                     Optional.<MultiUserTestConfig>empty()
             );
         } else {
-            configuration = TestConfiguration.fromRunWithUsers(
-                    runWithUsersAnnotation,
+            configuration = TestConfiguration.fromTestUsers(
+                    testUsersAnnotation,
                     Optional.<MultiUserTestConfig>empty()
             );
         }
