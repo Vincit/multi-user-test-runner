@@ -1,13 +1,13 @@
 package fi.vincit.multiusertest.util;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashSet;
-
 import fi.vincit.multiusertest.annotation.MultiUserTestConfig;
 import fi.vincit.multiusertest.annotation.RunWithUsers;
 import fi.vincit.multiusertest.annotation.TestUsers;
 import fi.vincit.multiusertest.runner.junit.framework.BlockMultiUserTestClassRunner;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashSet;
 
 public class TestConfiguration {
 
@@ -74,13 +74,6 @@ public class TestConfiguration {
         } else {
             return Collections.emptySet();
         }
-    }
-
-    TestConfiguration() {
-        this.producerIdentifiers = Collections.emptySet();
-        this.consumerIdentifiers = Collections.emptySet();
-        this.runner = Optional.empty();
-        this.defaultException = Optional.empty();
     }
 
     TestConfiguration(Collection<UserIdentifier> producerIdentifiers, Collection<UserIdentifier> consumerIdentifiers, Class<?> runner, Class<? extends Throwable> defaultException) {
