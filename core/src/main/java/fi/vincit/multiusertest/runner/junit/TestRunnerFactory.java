@@ -1,15 +1,15 @@
 package fi.vincit.multiusertest.runner.junit;
 
-import java.lang.reflect.Constructor;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
+import fi.vincit.multiusertest.annotation.RunWithUsers;
+import fi.vincit.multiusertest.util.UserIdentifier;
 import org.junit.runner.Runner;
 import org.junit.runners.ParentRunner;
 import org.junit.runners.model.TestClass;
 
-import fi.vincit.multiusertest.util.UserIdentifier;
+import java.lang.reflect.Constructor;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class TestRunnerFactory {
 
@@ -31,11 +31,21 @@ public class TestRunnerFactory {
 
         for (UserIdentifier producerIdentifier : producerIdentifiers) {
             for (UserIdentifier consumerIdentifier : consumerIdentifiers) {
-                Object parentRunner = runnerConstructor.newInstance(
-                        testClass.getJavaClass(),
-                        producerIdentifier,
-                        consumerIdentifier
-                );
+                Object parentRunner;
+                if (consumerIdentifier.getIdentifier() != null && consumerIdentifier.getIdentifier().equals(RunWithUsers.WITH_PRODUCER_ROLE)) {
+                    parentRunner = runnerConstructor.newInstance(
+                            testClass.getJavaClass(),
+                            producerIdentifier,
+                            producerIdentifier
+                    );
+                } else {
+                    parentRunner = runnerConstructor.newInstance(
+                            testClass.getJavaClass(),
+                            producerIdentifier,
+                            consumerIdentifier
+                    );
+                }
+
                 runners.add((ParentRunner) parentRunner);
 
             }
