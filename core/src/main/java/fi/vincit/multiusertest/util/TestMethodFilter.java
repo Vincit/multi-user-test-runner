@@ -5,10 +5,7 @@ import fi.vincit.multiusertest.annotation.RunWithUsers;
 import fi.vincit.multiusertest.annotation.TestUsers;
 import org.junit.runners.model.FrameworkMethod;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class TestMethodFilter {
     private final UserIdentifier producerIdentifier;
@@ -42,15 +39,18 @@ public class TestMethodFilter {
             );
         }
 
-        Collection<UserIdentifier> producers = configuration.getProducerIdentifiers();
-        Collection<UserIdentifier> consumers = configuration.getConsumerIdentifiers();
+        Collection<UserIdentifier> filterProducers = configuration.getProducerIdentifiers();
+        Collection<UserIdentifier> filterConsumers = configuration.getConsumerIdentifiers();
 
         boolean shouldRun = true;
-        if (!producers.isEmpty()) {
-            shouldRun = producers.contains(producerIdentifier);
+        if (!filterProducers.isEmpty()) {
+            shouldRun = filterProducers.contains(producerIdentifier);
         }
-        if (!consumers.isEmpty()) {
-            shouldRun = shouldRun && consumers.contains(consumerIdentifier);
+        if (!filterConsumers.isEmpty()) {
+            boolean consumerWithProducerRole = filterConsumers.contains(UserIdentifier.getWithProducerRole())
+                    || consumerIdentifier.equals(UserIdentifier.getWithProducerRole());
+            shouldRun = shouldRun && (filterConsumers.contains(consumerIdentifier)
+                    || (consumerWithProducerRole && !Collections.disjoint(filterProducers, filterConsumers)));
         }
 
         return shouldRun;

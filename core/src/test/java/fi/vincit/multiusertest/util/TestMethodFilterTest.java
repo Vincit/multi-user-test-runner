@@ -1,16 +1,15 @@
 package fi.vincit.multiusertest.util;
 
+import fi.vincit.multiusertest.annotation.RunWithUsers;
+import org.junit.Test;
+import org.junit.runners.model.FrameworkMethod;
+
+import java.util.Arrays;
+
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-
-import java.util.Arrays;
-
-import org.junit.Test;
-import org.junit.runners.model.FrameworkMethod;
-
-import fi.vincit.multiusertest.annotation.RunWithUsers;
 
 public class TestMethodFilterTest {
 
@@ -184,6 +183,28 @@ public class TestMethodFilterTest {
         new TestMethodFilter(
                 null,
                 null);
+    }
+
+    @Test
+    public void testRunMethodWhenUserWithProducerRole() {
+        TestMethodFilter r = new TestMethodFilter(
+                UserIdentifier.parse("role:ROLE_ADMIN"),
+                UserIdentifier.parse("role:ROLE_ADMIN"));
+
+        FrameworkMethod method = mock(FrameworkMethod.class);
+        mockTestUsers(method, new String[]{"role:ROLE_ADMIN"}, new String[]{RunWithUsers.WITH_PRODUCER_ROLE});
+        assertThat(r.shouldRun(method), is(true));
+    }
+
+    @Test
+    public void testRunMethodWhenUserWithProducerRole_WrongConsumerRole() {
+        TestMethodFilter r = new TestMethodFilter(
+                UserIdentifier.parse("role:ROLE_ADMIN"),
+                UserIdentifier.parse("role:ROLE_USER"));
+
+        FrameworkMethod method = mock(FrameworkMethod.class);
+        mockTestUsers(method, new String[]{"role:ROLE_ADMIN"}, new String[]{RunWithUsers.WITH_PRODUCER_ROLE});
+        assertThat(r.shouldRun(method), is(false));
     }
 
     private void mockTestUsers(FrameworkMethod method, String[] producers, String[] consumers) {
