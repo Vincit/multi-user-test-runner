@@ -17,26 +17,23 @@ import static org.junit.Assert.assertThat;
 @RunWith(MultiUserTestRunner.class)
 public class ProducerOnlyTest extends ConfiguredTest {
 
-    private final static int CLASS_CALLS_TOTAL_EXPECTED = 2;
-    private static MethodCalls methodCalls = new MethodCalls(CLASS_CALLS_TOTAL_EXPECTED);
+    private static MethodCalls methodCalls = new MethodCalls()
+            .expectMethodCalls("runWithEverything", 2)
+            .expectMethodCalls("runProducerAdmin", 1)
+            .expectMethodCalls("runConsumerAndProducerAdmin", 1)
+            .expectMethodCalls("runConsumerAndProducerUser", 1)
+            .expectMethodCalls("runConsumerUserAndProducerAdmin", 0)
+            .expectMethodCalls("neverRun", 0);
 
     @BeforeClass
     public static void initMethodCalls() {
-        if (methodCalls.shouldInit()) {
-            methodCalls.expectMethodCalls("runWithEverything", 2);
-            methodCalls.expectMethodCalls("runProducerAdmin", 1);
-            methodCalls.expectMethodCalls("runConsumerAndProducerAdmin", 1);
-            methodCalls.expectMethodCalls("runConsumerAndProducerUser", 1);
-            methodCalls.expectMethodCalls("runConsumerUserAndProducerAdmin", 0);
-            methodCalls.expectMethodCalls("neverRun", 0);
-        }
-        methodCalls.addClassCall();
+        methodCalls.before();
     }
 
     @AfterClass
     public static void validateMethodCalls() {
+        methodCalls.after();
         methodCalls.validateMethodCalls();
-        methodCalls.validateClassCalls();
     }
 
     @Test

@@ -18,25 +18,22 @@ import static org.junit.Assert.assertThat;
 @RunWith(MultiUserTestRunner.class)
 public class IgnoreMethodTest extends ConfiguredTest {
 
-    private final static int CLASS_CALLS_TOTAL_EXPECTED = 2 * 2;
-    private static MethodCalls methodCalls = new MethodCalls(CLASS_CALLS_TOTAL_EXPECTED);
+    private static MethodCalls methodCalls = new MethodCalls()
+            .expectMethodCalls("runProducerAdmin", 2)
+            .expectMethodCalls("runConsumerIsUser", 2)
+            .expectMethodCalls("runConsumerAdminAndProducerAdmin", 1)
+            .expectMethodCalls("runConsumerUserAndProducerAdmin", 1)
+            .expectMethodCalls("neverRun", 0);
 
     @BeforeClass
     public static void initMethodCalls() {
-        if (methodCalls.shouldInit()) {
-            methodCalls.expectMethodCalls("runProducerAdmin", 2);
-            methodCalls.expectMethodCalls("runConsumerIsUser", 2);
-            methodCalls.expectMethodCalls("runConsumerAdminAndProducerAdmin", 1);
-            methodCalls.expectMethodCalls("runConsumerUserAndProducerAdmin", 1);
-            methodCalls.expectMethodCalls("neverRun", 0);
-        }
-        methodCalls.addClassCall();
+        methodCalls.before();
     }
 
     @AfterClass
     public static void validateMethodCalls() {
+        methodCalls.after();
         methodCalls.validateMethodCalls();
-        methodCalls.validateClassCalls();
     }
 
     @Test
