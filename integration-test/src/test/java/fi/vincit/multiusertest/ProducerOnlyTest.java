@@ -20,8 +20,8 @@ public class ProducerOnlyTest extends ConfiguredTest {
     private static MethodCalls methodCalls = new MethodCalls()
             .expectMethodCalls("runWithEverything", 2)
             .expectMethodCalls("runProducerAdmin", 1)
-            .expectMethodCalls("runConsumerAndProducerAdmin", 1)
-            .expectMethodCalls("runConsumerAndProducerUser", 1)
+            .expectMethodCalls("runConsumerAndProducerAdmin", 0)
+            .expectMethodCalls("runConsumerAndProducerUser", 0)
             .expectMethodCalls("runConsumerUserAndProducerAdmin", 0)
             .expectMethodCalls("neverRun", 0);
 
@@ -53,16 +53,12 @@ public class ProducerOnlyTest extends ConfiguredTest {
     @RunWithUsers(producers = {"role:ROLE_ADMIN"}, consumers = {"role:ROLE_ADMIN"})
     public void runConsumerAndProducerAdmin() {
         methodCalls.call("runConsumerAndProducerAdmin");
-        assertThat(getProducerModel().getRole(), is(User.Role.ROLE_ADMIN));
-        assertThat(getConsumer().getRole(), is(User.Role.ROLE_ADMIN));
     }
 
     @Test
     @RunWithUsers(producers = {"role:ROLE_USER"}, consumers = {"role:ROLE_USER"})
     public void runConsumerAndProducerUser() {
         methodCalls.call("runConsumerAndProducerUser");
-        assertThat(getProducerModel().getRole(), is(User.Role.ROLE_USER));
-        assertThat(getConsumer().getRole(), is(User.Role.ROLE_USER));
     }
 
     @Test

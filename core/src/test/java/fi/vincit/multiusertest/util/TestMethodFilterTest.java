@@ -15,116 +15,116 @@ public class TestMethodFilterTest {
 
     @Test
     public void testRunMetdhodWhenProducerAndConsumerSet() {
-        TestMethodFilter r = new TestMethodFilter(
+        TestMethodFilter currentTestUsers = new TestMethodFilter(
                 UserIdentifier.parse("role:ROLE_ADMIN"),
                 UserIdentifier.parse("role:ROLE_ADMIN"));
 
         FrameworkMethod method = mock(FrameworkMethod.class);
-        mockTestUsers(method, new String[]{"role:ROLE_ADMIN"}, new String[]{"role:ROLE_ADMIN"});
-        assertThat(r.shouldRun(method), is(true));
+        mockRunWithUsers(method, new String[]{"role:ROLE_ADMIN"}, new String[]{"role:ROLE_ADMIN"});
+        assertThat(currentTestUsers.shouldRun(method), is(true));
     }
 
     @Test
     public void testDontRunMethodWhenConsumerDoesntMatch() {
-        TestMethodFilter r = new TestMethodFilter(
+        TestMethodFilter currentTestUsers = new TestMethodFilter(
                 UserIdentifier.parse("role:ROLE_ADMIN"),
                 UserIdentifier.parse("role:ROLE_USER"));
 
         FrameworkMethod method = mock(FrameworkMethod.class);
-        mockTestUsers(method, new String[] {"role:ROLE_ADMIN"}, new String[] {"role:ROLE_ADMIN"});
-        assertThat(r.shouldRun(method), is(false));
+        mockRunWithUsers(method, new String[]{"role:ROLE_ADMIN"}, new String[]{"role:ROLE_ADMIN"});
+        assertThat(currentTestUsers.shouldRun(method), is(false));
     }
 
     @Test
     public void testDontRunMethodWhenProducerDoesntMatch() {
-        TestMethodFilter r = new TestMethodFilter(
+        TestMethodFilter currentTestUsers = new TestMethodFilter(
                 UserIdentifier.parse("role:ROLE_USER"),
                 UserIdentifier.parse("role:ROLE_ADMIN"));
 
         FrameworkMethod method = mock(FrameworkMethod.class);
-        mockTestUsers(method, new String[] {"role:ROLE_ADMIN"}, new String[] {"role:ROLE_ADMIN"});
-        assertThat(r.shouldRun(method), is(false));
+        mockRunWithUsers(method, new String[]{"role:ROLE_ADMIN"}, new String[]{"role:ROLE_ADMIN"});
+        assertThat(currentTestUsers.shouldRun(method), is(false));
     }
 
     @Test
     public void testRunMethodWhenMultipleConsumerRoles() {
-        TestMethodFilter r = new TestMethodFilter(
+        TestMethodFilter currentTestUsers = new TestMethodFilter(
                 UserIdentifier.parse("role:ROLE_ADMIN"),
                 UserIdentifier.parse("role:ROLE_USER"));
 
         FrameworkMethod method = mock(FrameworkMethod.class);
 
-        mockTestUsers(method,
+        mockRunWithUsers(method,
                 new String[]{"role:ROLE_ADMIN"},
                 new String[]{"role:ROLE_ADMIN", "role:ROLE_USER"}
         );
-        assertThat(r.shouldRun(method), is(true));
+        assertThat(currentTestUsers.shouldRun(method), is(true));
     }
 
     @Test
     public void testRunMethodWhenMultipleProducerRoles() {
-        TestMethodFilter r = new TestMethodFilter(
+        TestMethodFilter currentTestUsers = new TestMethodFilter(
                 UserIdentifier.parse("role:ROLE_USER"),
                 UserIdentifier.parse("role:ROLE_ADMIN"));
 
         FrameworkMethod method = mock(FrameworkMethod.class);
-        mockTestUsers(method,
+        mockRunWithUsers(method,
                 new String[]{"role:ROLE_ADMIN", "role:ROLE_USER"},
                 new String[]{"role:ROLE_ADMIN"}
         );
-        assertThat(r.shouldRun(method), is(true));
+        assertThat(currentTestUsers.shouldRun(method), is(true));
     }
 
     @Test
     public void testRunMethodWhenNoConsumerDefined() {
-        TestMethodFilter r = new TestMethodFilter(
+        TestMethodFilter currentTestUsers = new TestMethodFilter(
                 UserIdentifier.parse("role:ROLE_USER"),
                 UserIdentifier.parse("role:ROLE_ADMIN"));
 
         FrameworkMethod method = mock(FrameworkMethod.class);
-        mockTestUsers(method,
+        mockRunWithUsers(method,
                 new String[]{"role:ROLE_USER"},
                 new String[]{}
         );
-        assertThat(r.shouldRun(method), is(true));
+        assertThat(currentTestUsers.shouldRun(method), is(true));
     }
 
     @Test
     public void testRunMethodWhenNoProducerDefined() {
-        TestMethodFilter r = new TestMethodFilter(
+        TestMethodFilter currentTestUsers = new TestMethodFilter(
                 UserIdentifier.parse("role:ROLE_USER"),
                 UserIdentifier.parse("role:ROLE_ADMIN"));
 
         FrameworkMethod method = mock(FrameworkMethod.class);
-        mockTestUsers(method,
+        mockRunWithUsers(method,
                 new String[]{},
                 new String[]{"role:ROLE_ADMIN"}
         );
-        assertThat(r.shouldRun(method), is(true));
+        assertThat(currentTestUsers.shouldRun(method), is(true));
     }
 
     @Test
     public void testRunMethodWhenNoRolesDefined() {
-        TestMethodFilter r = new TestMethodFilter(
+        TestMethodFilter currentTestUsers = new TestMethodFilter(
                 UserIdentifier.parse("role:ROLE_USER"),
                 UserIdentifier.parse("role:ROLE_ADMIN"));
 
         FrameworkMethod method = mock(FrameworkMethod.class);
-        mockTestUsers(method,
+        mockRunWithUsers(method,
                 new String[]{},
                 new String[]{}
         );
-        assertThat(r.shouldRun(method), is(true));
+        assertThat(currentTestUsers.shouldRun(method), is(true));
     }
 
     @Test
     public void testRunMethodWhenNoAnnotationDefined() {
-        TestMethodFilter r = new TestMethodFilter(
+        TestMethodFilter currentTestUsers = new TestMethodFilter(
                 UserIdentifier.parse("role:ROLE_USER"),
                 UserIdentifier.parse("role:ROLE_ADMIN"));
 
         FrameworkMethod method = mock(FrameworkMethod.class);
-        assertThat(r.shouldRun(method), is(true));
+        assertThat(currentTestUsers.shouldRun(method), is(true));
     }
 
     @Test
@@ -134,19 +134,19 @@ public class TestMethodFilterTest {
                 UserIdentifier.parse("role:ROLE_ADMIN"));
 
         FrameworkMethod method1 = mock(FrameworkMethod.class);
-        mockTestUsers(method1,
+        mockRunWithUsers(method1,
                 new String[]{"role:ROLE_USER"},
                 new String[]{"role:ROLE_ADMIN"}
         );
 
         FrameworkMethod method2 = mock(FrameworkMethod.class);
-        mockTestUsers(method2,
+        mockRunWithUsers(method2,
                 new String[]{"role:ROLE_ADMIN"},
                 new String[]{"role:ROLE_ADMIN"}
         );
 
         FrameworkMethod method3 = mock(FrameworkMethod.class);
-        mockTestUsers(method3,
+        mockRunWithUsers(method3,
                 new String[]{"role:ROLE_USER", "role:ROLE_ADMIN"},
                 new String[]{"role:ROLE_ADMIN"}
         );
@@ -187,27 +187,27 @@ public class TestMethodFilterTest {
 
     @Test
     public void testRunMethodWhenUserWithProducerRole() {
-        TestMethodFilter r = new TestMethodFilter(
+        TestMethodFilter currentTestUsers = new TestMethodFilter(
                 UserIdentifier.parse("role:ROLE_ADMIN"),
                 UserIdentifier.parse("role:ROLE_ADMIN"));
 
         FrameworkMethod method = mock(FrameworkMethod.class);
-        mockTestUsers(method, new String[]{"role:ROLE_ADMIN"}, new String[]{RunWithUsers.WITH_PRODUCER_ROLE});
-        assertThat(r.shouldRun(method), is(true));
+        mockRunWithUsers(method, new String[]{"role:ROLE_ADMIN"}, new String[]{RunWithUsers.WITH_PRODUCER_ROLE});
+        assertThat(currentTestUsers.shouldRun(method), is(true));
     }
 
     @Test
     public void testRunMethodWhenUserWithProducerRole_WrongConsumerRole() {
-        TestMethodFilter r = new TestMethodFilter(
+        TestMethodFilter currentTestUsers = new TestMethodFilter(
                 UserIdentifier.parse("role:ROLE_ADMIN"),
                 UserIdentifier.parse("role:ROLE_USER"));
 
         FrameworkMethod method = mock(FrameworkMethod.class);
-        mockTestUsers(method, new String[]{"role:ROLE_ADMIN"}, new String[]{RunWithUsers.WITH_PRODUCER_ROLE});
-        assertThat(r.shouldRun(method), is(false));
+        mockRunWithUsers(method, new String[]{"role:ROLE_ADMIN"}, new String[]{RunWithUsers.WITH_PRODUCER_ROLE});
+        assertThat(currentTestUsers.shouldRun(method), is(false));
     }
 
-    private void mockTestUsers(FrameworkMethod method, String[] producers, String[] consumers) {
+    private void mockRunWithUsers(FrameworkMethod method, String[] producers, String[] consumers) {
         RunWithUsers testUsers = mock(RunWithUsers.class);
 
         when(testUsers.producers()).thenReturn(producers);

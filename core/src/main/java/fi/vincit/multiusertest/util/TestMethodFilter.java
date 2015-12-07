@@ -49,8 +49,11 @@ public class TestMethodFilter {
         if (!filterConsumers.isEmpty()) {
             boolean consumerWithProducerRole = filterConsumers.contains(UserIdentifier.getWithProducerRole())
                     || consumerIdentifier.equals(UserIdentifier.getWithProducerRole());
+            boolean filtersHasContainsUsers = !Collections.disjoint(filterProducers, filterConsumers);
+            boolean filterProducerContainsCurrentConsumer = filterProducers.contains(consumerIdentifier);
+
             shouldRun = shouldRun && (filterConsumers.contains(consumerIdentifier)
-                    || (consumerWithProducerRole && !Collections.disjoint(filterProducers, filterConsumers)));
+                    || (consumerWithProducerRole && (filterProducerContainsCurrentConsumer)));
         }
 
         return shouldRun;
