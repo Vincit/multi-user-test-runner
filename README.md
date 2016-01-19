@@ -31,7 +31,7 @@ The library may work with other versions but has not been tested with versions o
 <dependency>
     <groupId>fi.vincit</groupId>
     <artifactId>multi-user-test-runner</artifactId>
-        <version>0.4.0</version>
+        <version>0.4.0-RC1</version>
     <scope>test</scope>
 </dependency>
 
@@ -39,7 +39,7 @@ The library may work with other versions but has not been tested with versions o
 <dependency>
     <groupId>fi.vincit</groupId>
     <artifactId>multi-user-test-runner-spring</artifactId>
-        <version>0.4.0</version>
+        <version>0.4.0-RC1</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -48,9 +48,9 @@ The library may work with other versions but has not been tested with versions o
 
 ```groovy
 dependencies {
-    test 'fi.vincit:multi-user-test-runner:0.4.0'
+    test 'fi.vincit:multi-user-test-runner:0.4.0-RC1'
     // Spring support (optional)
-    test 'fi.vincit:multi-user-test-runner-spring:0.4.0'
+    test 'fi.vincit:multi-user-test-runner-spring:0.4.0-RC1'
 }
 ```
 
@@ -318,7 +318,7 @@ authorization().expect(valueOf(() -> service.getAllUsers(value))
 
 # Example
 
-For all examples, please visit [multi-user-test-runner-examples](https://github.com/Vincit/multi-user-test-runner-examples/blob/master/README.md)
+For all examples, please visit [multi-user-test-runner-examples](https://github.com/Vincit/multi-user-test-runner-examples/blob/0.4.0-RC1/README.md)
 
 Configuring base class for tests:
 
