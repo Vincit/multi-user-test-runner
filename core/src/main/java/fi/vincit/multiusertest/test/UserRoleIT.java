@@ -49,4 +49,6 @@ public interface UserRoleIT<USER> {
      * @return Default expected exception
      */
     Class<? extends Throwable> getDefaultException();
+
+    Class<? extends Throwable> getDefaultException(Class<?> cls);
 }

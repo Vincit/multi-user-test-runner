@@ -1,14 +1,14 @@
 package fi.vincit.multiusertest.runner.junit.framework;
 
-import java.util.List;
-
+import fi.vincit.multiusertest.util.RunnerDelegate;
+import fi.vincit.multiusertest.util.UserIdentifier;
+import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.Statement;
 
-import fi.vincit.multiusertest.util.RunnerDelegate;
-import fi.vincit.multiusertest.util.UserIdentifier;
+import java.util.List;
 
 /**
  * Runner based on BlockJUnit4ClassRunner. Works with plain Java code.
@@ -37,6 +37,8 @@ public class BlockMultiUserTestClassRunner extends BlockJUnit4ClassRunner {
         return runnerDelegate.testName(method);
     }
 
+
+
     @Override
     protected String getName() {
         return runnerDelegate.getName(getTestClass());
@@ -56,5 +58,8 @@ public class BlockMultiUserTestClassRunner extends BlockJUnit4ClassRunner {
         );
     }
 
-
+    @Override
+    protected Statement classBlock(RunNotifier notifier) {
+        return childrenInvoker(notifier);
+    }
 }

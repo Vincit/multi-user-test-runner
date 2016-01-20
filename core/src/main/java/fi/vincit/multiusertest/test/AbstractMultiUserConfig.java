@@ -4,44 +4,17 @@ import fi.vincit.multiusertest.annotation.MultiUserTestConfig;
 import fi.vincit.multiusertest.annotation.RunWithUsers;
 import fi.vincit.multiusertest.annotation.TestUsers;
 import fi.vincit.multiusertest.rule.AuthorizationRule;
-import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
 import fi.vincit.multiusertest.util.*;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.runner.RunWith;
 
 import java.util.Random;
 
-/**
- * <p>
- * Abstract test class implementation that can be used for running MultiUserTestRunner tests
- * with a system specific configurations.
- * </p>
- *
- * @param <USER> User model type. Type of users the {@link #createUser(String, String, String, Object, LoginRole)} creates.
- * @param <ROLE> Role enum or object. Type of user roles the {@link #stringToRole(String)}.
- */
-@RunWith(MultiUserTestRunner.class)
-public abstract class AbstractUserRoleIT<USER, ROLE>
-        implements UserRoleIT<USER>, UserFactory<USER, ROLE>, RoleConverter<ROLE> {
+public abstract class AbstractMultiUserConfig<USER, ROLE> implements MultiUserConfig<USER, ROLE> {
 
     private UserResolver<USER, ROLE> userResolver;
 
     private Random random = new Random(System.currentTimeMillis());
 
-    @Rule
-    public AuthorizationRule authorizationRule = new AuthorizationRule();
-
-    @Before
-    public void initializeUsers() {
-        userResolver.resolve();
-
-        authorizationRule.setExpectedException(getDefaultException());
-    }
-
-    public AuthorizationRule authorization() {
-        return authorizationRule;
-    }
+    protected abstract AuthorizationRule getAuthorizationRule();
 
     @Override
     public void setUsers(UserIdentifier producerIdentifier, UserIdentifier consumerIdentifier) {
@@ -67,7 +40,7 @@ public abstract class AbstractUserRoleIT<USER, ROLE>
             loginAnonymous();
         }
 
-        authorizationRule.setRole(new IdentifierResolver<>(userResolver).getIdentifierFor(role));
+        getAuthorizationRule().setRole(new IdentifierResolver<>(userResolver).getIdentifierFor(role));
     }
 
     private USER resolveUserToLoginWith(LoginRole loginRole) {
@@ -86,14 +59,6 @@ public abstract class AbstractUserRoleIT<USER, ROLE>
     @Override
     public String getRandomUsername() {
         return "testuser-" + random.nextInt(Integer.MAX_VALUE);
-    }
-
-    protected RoleContainer<ROLE> getConsumerModel() {
-        return userResolver.getConsumer();
-    }
-
-    protected RoleContainer<ROLE> getProducerModel() {
-        return userResolver.getProducer();
     }
 
     /**
@@ -124,4 +89,5 @@ public abstract class AbstractUserRoleIT<USER, ROLE>
         return configuration.getDefaultException()
                 .orElse(Defaults.getDefaultException());
     }
+
 }
