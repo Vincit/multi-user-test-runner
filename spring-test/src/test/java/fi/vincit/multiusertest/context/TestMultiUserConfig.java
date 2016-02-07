@@ -29,9 +29,9 @@ public class TestMultiUserConfig extends AbstractMultiUserConfig<User, User.Role
     }
 
     @Override
-    public void setAuthorizationRule(AuthorizationRule authorizationRule) {
+    public void setAuthorizationRule(AuthorizationRule authorizationRule, Object testClassInstance) {
         this.authorizationRule = authorizationRule;
-        this.authorizationRule.setExpectedException(getDefaultException());
+        this.authorizationRule.setExpectedException(getDefaultException(testClassInstance.getClass()));
     }
 
     @Override

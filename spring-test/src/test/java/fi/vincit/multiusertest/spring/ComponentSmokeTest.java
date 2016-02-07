@@ -7,17 +7,19 @@ import fi.vincit.multiusertest.context.TestConfiguration;
 import fi.vincit.multiusertest.context.TestContext;
 import fi.vincit.multiusertest.rule.AuthorizationRule;
 import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
-import fi.vincit.multiusertest.runner.junit.framework.SpringMultiUserTestClassRunner;
 import fi.vincit.multiusertest.test.MultiUserConfig;
 import fi.vincit.multiusertest.util.LoginRole;
 import fi.vincit.multiusertest.util.User;
 import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.rules.SpringClassRule;
+import org.springframework.test.context.junit4.rules.SpringMethodRule;
 
 import java.io.IOException;
 
@@ -29,7 +31,6 @@ import static fi.vincit.multiusertest.util.UserIdentifiers.ifAnyOf;
         producers = {"role:ROLE_ADMIN"}, consumers = "role:ROLE_USER"
 )
 @MultiUserTestConfig(
-        runner = SpringMultiUserTestClassRunner.class,
         defaultException = AccessDeniedException.class
 )
 @RunWith(MultiUserTestRunner.class)
@@ -43,9 +44,15 @@ public class ComponentSmokeTest {
     @Rule
     public AuthorizationRule authorizationRule = new AuthorizationRule();
 
+    @ClassRule
+    public static final SpringClassRule SPRING_CLASS_RULE = new SpringClassRule();
+
+    @Rule
+    public final SpringMethodRule springMethodRule = new SpringMethodRule();
+
     @Before
     public void init() {
-        this.multiUserConfig.setAuthorizationRule(authorizationRule);
+        this.multiUserConfig.setAuthorizationRule(authorizationRule, this);
     }
 
     @Test

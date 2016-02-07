@@ -108,21 +108,17 @@ public class RunnerDelegate {
     public Statement withBefores(TestClass testClass, final Object target, final Statement statement) {
         List<FrameworkMethod> befores = testClass.getAnnotatedMethods(
                 Before.class);
-        if (target instanceof MultiUserConfig) {
-            return statement;
-        } else {
-            final Statement runLoginBeforeTestMethod = new Statement() {
-                @Override
-                public void evaluate() throws Throwable {
-                    if (target instanceof UserRoleIT) {
-                        ((UserRoleIT)target).logInAs(LoginRole.PRODUCER);
-                    }
-                    statement.evaluate();
+        final Statement runLoginBeforeTestMethod = new Statement() {
+            @Override
+            public void evaluate() throws Throwable {
+                if (target instanceof UserRoleIT) {
+                    ((UserRoleIT)target).logInAs(LoginRole.PRODUCER);
                 }
-            };
-            return befores.isEmpty() ? runLoginBeforeTestMethod : new RunBefores(runLoginBeforeTestMethod,
-                    befores, target);
-        }
+                statement.evaluate();
+            }
+        };
+        return befores.isEmpty() ? runLoginBeforeTestMethod : new RunBefores(runLoginBeforeTestMethod,
+                befores, target);
 
 
     }

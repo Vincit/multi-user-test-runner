@@ -1,22 +1,16 @@
 package fi.vincit.multiusertest.test;
 
-import java.util.Random;
-
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.runner.RunWith;
-
 import fi.vincit.multiusertest.annotation.MultiUserTestConfig;
 import fi.vincit.multiusertest.annotation.RunWithUsers;
 import fi.vincit.multiusertest.annotation.TestUsers;
 import fi.vincit.multiusertest.rule.AuthorizationRule;
 import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
-import fi.vincit.multiusertest.util.Defaults;
-import fi.vincit.multiusertest.util.LoginRole;
-import fi.vincit.multiusertest.util.Optional;
-import fi.vincit.multiusertest.util.RoleContainer;
-import fi.vincit.multiusertest.util.TestConfiguration;
-import fi.vincit.multiusertest.util.UserIdentifier;
+import fi.vincit.multiusertest.util.*;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.runner.RunWith;
+
+import java.util.Random;
 
 /**
  * <p>
@@ -108,18 +102,23 @@ public abstract class AbstractUserRoleIT<USER, ROLE>
      */
     @Override
     public Class<? extends Throwable> getDefaultException() {
+        return getDefaultException(getClass());
+    }
+
+    @Override
+    public Class<? extends Throwable> getDefaultException(Class<?> cls) {
         TestConfiguration configuration;
-        if (getClass().getAnnotation(TestUsers.class) != null) {
+        if (cls.getAnnotation(TestUsers.class) != null) {
             configuration =
                     TestConfiguration.fromTestUsers(
-                            Optional.ofNullable(getClass().getAnnotation(TestUsers.class)),
-                            Optional.ofNullable(getClass().getAnnotation(MultiUserTestConfig.class))
+                            Optional.ofNullable(cls.getAnnotation(TestUsers.class)),
+                            Optional.ofNullable(cls.getAnnotation(MultiUserTestConfig.class))
                     );
         } else {
             configuration =
                     TestConfiguration.fromRunWithUsers(
-                            Optional.ofNullable(getClass().getAnnotation(RunWithUsers.class)),
-                            Optional.ofNullable(getClass().getAnnotation(MultiUserTestConfig.class))
+                            Optional.ofNullable(cls.getAnnotation(RunWithUsers.class)),
+                            Optional.ofNullable(cls.getAnnotation(MultiUserTestConfig.class))
                     );
         }
         return configuration.getDefaultException()

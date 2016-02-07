@@ -67,18 +67,23 @@ public abstract class AbstractMultiUserConfig<USER, ROLE> implements MultiUserCo
      */
     @Override
     public Class<? extends Throwable> getDefaultException() {
+        return getDefaultException(getClass());
+    }
+
+    @Override
+    public Class<? extends Throwable> getDefaultException(Class<?> cls) {
         TestConfiguration configuration;
-        if (getClass().getAnnotation(TestUsers.class) != null) {
+        if (cls.getAnnotation(TestUsers.class) != null) {
             configuration =
                     TestConfiguration.fromTestUsers(
-                            Optional.ofNullable(getClass().getAnnotation(TestUsers.class)),
-                            Optional.ofNullable(getClass().getAnnotation(MultiUserTestConfig.class))
+                            Optional.ofNullable(cls.getAnnotation(TestUsers.class)),
+                            Optional.ofNullable(cls.getAnnotation(MultiUserTestConfig.class))
                     );
         } else {
             configuration =
                     TestConfiguration.fromRunWithUsers(
-                            Optional.ofNullable(getClass().getAnnotation(RunWithUsers.class)),
-                            Optional.ofNullable(getClass().getAnnotation(MultiUserTestConfig.class))
+                            Optional.ofNullable(cls.getAnnotation(RunWithUsers.class)),
+                            Optional.ofNullable(cls.getAnnotation(MultiUserTestConfig.class))
                     );
         }
         return configuration.getDefaultException()

@@ -21,7 +21,7 @@ public class TestMultiUserConfig extends AbstractMultiUserConfig<User, User.Role
     private AuthorizationRule authorizationRule;
 
     @Override
-    public void setAuthorizationRule(AuthorizationRule authorizationRule) {
+    public void setAuthorizationRule(AuthorizationRule authorizationRule, Object testClassInstance) {
         this.authorizationRule = authorizationRule;
     }
 
