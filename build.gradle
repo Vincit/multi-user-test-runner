@@ -173,7 +173,7 @@ project(':spring-test-class-runner') {
         println("Using Spring Security version $System.env.SPRING_SECURITY_VERSION")
 
         compile project(':core')
-        compile group: 'org.springframework', name: 'spring-test', version: System.env.SPRING_VERSION ?: '3.2.11.RELEASE'
+        compile group: 'org.springframework', name: 'spring-test', version: System.env.SPRING_VERSION ?: '4.2.0.RELEASE'
         compile group: 'org.springframework.security', name: 'spring-security-core', version: System.env.SPRING_SECURITY_VERSION ?: '3.2.5.RELEASE'
     }
 }
