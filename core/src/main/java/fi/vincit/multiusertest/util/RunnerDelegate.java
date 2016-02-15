@@ -75,22 +75,33 @@ public class RunnerDelegate {
             UserRoleIT roleItInstance = (UserRoleIT) testInstance;
             roleItInstance.setUsers(producerIdentifier, userIdentifier);
             return roleItInstance;
-        } else {
+        } else if (hasComponentConfig(testInstance)){
             return testInstance;
+        } else {
+            throw new IllegalStateException("Invalid test configuration. " +
+                    "Test has to extend UserRoleIT or have configuration annotated with @MultiUserConfigClass.");
         }
 
+    }
+
+    private boolean hasComponentConfig(Object testInstance) {
+        try {
+            return findFieldWithConfig(testInstance).isPresent();
+        } catch (IllegalAccessException e) {
+            throw new IllegalStateException(e);
+        }
     }
 
     private MultiUserConfig getConfigComponent(Object testInstance) {
         Optional<MultiUserConfig> config = Optional.empty();
         try {
-            for (Field field : testInstance.getClass().getDeclaredFields()) {
-                if (field.isAnnotationPresent(MultiUserConfigClass.class)) {
-                    field.setAccessible(true);
-                    config = Optional.ofNullable((MultiUserConfig) field.get(testInstance));
-                    field.setAccessible(false);
-                    break;
-                }
+            Optional<Field> field = findFieldWithConfig(testInstance);
+
+            if (field.isPresent()) {
+                Field fieldInstance = field.get();
+                fieldInstance.setAccessible(true);
+                config = Optional.ofNullable((MultiUserConfig) fieldInstance.get(testInstance));
+                fieldInstance.setAccessible(false);
             }
 
             if (config.isPresent()) {
@@ -101,6 +112,15 @@ public class RunnerDelegate {
         } catch (IllegalAccessException e) {
             throw new IllegalStateException(e);
         }
+    }
+
+    private Optional<Field> findFieldWithConfig(Object testInstance) throws IllegalAccessException {
+        for (Field field : testInstance.getClass().getDeclaredFields()) {
+            if (field.isAnnotationPresent(MultiUserConfigClass.class)) {
+                return Optional.of(field);
+            }
+        }
+        return Optional.empty();
     }
 
     public Statement withBefores(final TestClass testClass, final Object target, final Statement statement) {
