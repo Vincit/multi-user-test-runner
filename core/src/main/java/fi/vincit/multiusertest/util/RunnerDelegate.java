@@ -81,19 +81,25 @@ public class RunnerDelegate {
 
     }
 
-    private MultiUserTestConfigProvider getConfigComponent(Object testInstance) {
-        Optional<MultiUserTestConfigProvider> config = Optional.empty();
-        for (Field field : testInstance.getClass().getDeclaredFields()) {
-            if (field.isAnnotationPresent(MultiUserConfigClass.class)) {
-                config = Optional.<MultiUserTestConfigProvider>of(new MultiUserTestConfigProxy(field, testInstance));
-                break;
+    private MultiUserConfig getConfigComponent(Object testInstance) {
+        Optional<MultiUserConfig> config = Optional.empty();
+        try {
+            for (Field field : testInstance.getClass().getDeclaredFields()) {
+                if (field.isAnnotationPresent(MultiUserConfigClass.class)) {
+                    field.setAccessible(true);
+                    config = Optional.ofNullable((MultiUserConfig) field.get(testInstance));
+                    field.setAccessible(false);
+                    break;
+                }
             }
-        }
 
-        if (config.isPresent()) {
-            return config.get();
-        } else {
-            throw new IllegalStateException("MultiUserConfigClass not found on " + testInstance.getClass().getSimpleName());
+            if (config.isPresent()) {
+                return config.get();
+            } else {
+                throw new IllegalStateException("MultiUserConfigClass not found on " + testInstance.getClass().getSimpleName());
+            }
+        } catch (IllegalAccessException e) {
+            throw new IllegalStateException(e);
         }
     }
 
@@ -103,16 +109,20 @@ public class RunnerDelegate {
         final Statement runLoginBeforeTestMethod = new Statement() {
             @Override
             public void evaluate() throws Throwable {
+                preEvaluateConfig();
+                statement.evaluate();
+            }
+
+            private void preEvaluateConfig() {
+                UserRoleIT userRoleIt = null;
                 if (target instanceof UserRoleIT) {
-                    ((UserRoleIT)target).logInAs(LoginRole.PRODUCER);
+                    userRoleIt = (UserRoleIT) target;
                 } else {
-                    MultiUserTestConfigProvider config = getConfigComponent(target);
-                    MultiUserConfig c = config.getConfig();
-                    c.setUsers(producerIdentifier, userIdentifier);
-                    c.logInAs(LoginRole.PRODUCER);
+                    userRoleIt = getConfigComponent(target);
+                    userRoleIt.setUsers(producerIdentifier, userIdentifier);
                 }
 
-                statement.evaluate();
+                userRoleIt.logInAs(LoginRole.PRODUCER);
             }
         };
         return befores.isEmpty() ? runLoginBeforeTestMethod : new RunBefores(runLoginBeforeTestMethod,
