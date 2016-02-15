@@ -70,42 +70,29 @@ public class RunnerDelegate {
             UserRoleIT roleItInstance = (UserRoleIT) testInstance;
             roleItInstance.setUsers(producerIdentifier, userIdentifier);
             return roleItInstance;
-        } else if (hasConfigComponent(testInstance)) {
-            UserRoleIT roleItInstance = getConfigComponent(testInstance).get();
-            roleItInstance.setUsers(producerIdentifier, userIdentifier);
-            return testInstance;
         } else {
-            throw new IllegalStateException("Test class must be of type " + UserRoleIT.class.getSimpleName());
+            return testInstance;
         }
 
     }
 
-    private Optional<MultiUserConfig> getConfigComponent(Object testInstance) {
-        try {
-            Optional<MultiUserConfig> config = Optional.empty();
-            for (Field field : testInstance.getClass().getDeclaredFields()) {
-                if (field.isAnnotationPresent(MultiUserConfigClass.class) && !config.isPresent()) {
-                    field.setAccessible(true);
-                    config = Optional.of((MultiUserConfig) field.get(testInstance));
-                    field.setAccessible(false);
-                }
+    private MultiUserTestConfigProvider getConfigComponent(Object testInstance) {
+        Optional<MultiUserTestConfigProvider> config = Optional.empty();
+        for (Field field : testInstance.getClass().getDeclaredFields()) {
+            if (field.isAnnotationPresent(MultiUserConfigClass.class)) {
+                config = Optional.<MultiUserTestConfigProvider>of(new MultiUserTestConfigProxy(field, testInstance));
+                break;
             }
+        }
 
-            if (config.isPresent()) {
-                return config;
-            } else {
-                throw new IllegalStateException("MultiUserConfigClass not found on " + testInstance.getClass().getSimpleName());
-            }
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
+        if (config.isPresent()) {
+            return config.get();
+        } else {
+            throw new IllegalStateException("MultiUserConfigClass not found on " + testInstance.getClass().getSimpleName());
         }
     }
 
-    private boolean hasConfigComponent(Object testInstance) {
-        return getConfigComponent(testInstance).isPresent();
-    }
-
-    public Statement withBefores(TestClass testClass, final Object target, final Statement statement) {
+    public Statement withBefores(final TestClass testClass, final Object target, final Statement statement) {
         List<FrameworkMethod> befores = testClass.getAnnotatedMethods(
                 Before.class);
         final Statement runLoginBeforeTestMethod = new Statement() {
@@ -113,7 +100,13 @@ public class RunnerDelegate {
             public void evaluate() throws Throwable {
                 if (target instanceof UserRoleIT) {
                     ((UserRoleIT)target).logInAs(LoginRole.PRODUCER);
+                } else {
+                    MultiUserTestConfigProvider config = getConfigComponent(target);
+                    MultiUserConfig c = config.getConfig();
+                    c.setUsers(producerIdentifier, userIdentifier);
+                    c.logInAs(LoginRole.PRODUCER);
                 }
+
                 statement.evaluate();
             }
         };

@@ -32,7 +32,8 @@ public class TestRunnerFactory {
         for (UserIdentifier producerIdentifier : producerIdentifiers) {
             for (UserIdentifier consumerIdentifier : consumerIdentifiers) {
                 Object parentRunner;
-                if (consumerIdentifier.getIdentifier() != null && consumerIdentifier.getIdentifier().equals(RunWithUsers.WITH_PRODUCER_ROLE)) {
+                if (consumerIdentifier.getIdentifier() != null
+                        && consumerIdentifier.getIdentifier().equals(RunWithUsers.WITH_PRODUCER_ROLE)) {
                     parentRunner = runnerConstructor.newInstance(
                             testClass.getJavaClass(),
                             producerIdentifier,
