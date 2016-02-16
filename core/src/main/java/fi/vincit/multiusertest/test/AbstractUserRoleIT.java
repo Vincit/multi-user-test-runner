@@ -20,7 +20,10 @@ import java.util.Random;
  *
  * @param <USER> User model type. Type of users the {@link #createUser(String, String, String, Object, LoginRole)} creates.
  * @param <ROLE> Role enum or object. Type of user roles the {@link #stringToRole(String)}.
+ *
+ * @deprecated Use component based configuration instead.
  */
+@Deprecated
 @RunWith(MultiUserTestRunner.class)
 public abstract class AbstractUserRoleIT<USER, ROLE>
         implements UserRoleIT<USER>, UserFactory<USER, ROLE>, RoleConverter<ROLE> {
