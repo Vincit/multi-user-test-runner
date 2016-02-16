@@ -133,7 +133,7 @@ public class RunnerDelegate {
                 statement.evaluate();
             }
 
-            private void preEvaluateConfig() {
+            public void preEvaluateConfig() {
                 UserRoleIT userRoleIt = null;
                 if (target instanceof UserRoleIT) {
                     userRoleIt = (UserRoleIT) target;
@@ -145,8 +145,16 @@ public class RunnerDelegate {
                 userRoleIt.logInAs(LoginRole.PRODUCER);
             }
         };
-        return befores.isEmpty() ? runLoginBeforeTestMethod : new RunBefores(runLoginBeforeTestMethod,
-                befores, target);
+
+        if (target instanceof UserRoleIT) {
+            return befores.isEmpty() ? runLoginBeforeTestMethod : new RunBefores(
+                    runLoginBeforeTestMethod, befores, target
+            );
+        } else {
+            return befores.isEmpty() ? runLoginBeforeTestMethod : new RunBefores(
+                    runLoginBeforeTestMethod, befores, target
+            );
+        }
 
 
     }
