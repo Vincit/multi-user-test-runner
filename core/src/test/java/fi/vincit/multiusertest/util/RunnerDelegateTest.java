@@ -1,22 +1,21 @@
 package fi.vincit.multiusertest.util;
 
+import fi.vincit.multiusertest.test.AbstractUserRoleIT;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.runners.model.FrameworkMethod;
+import org.junit.runners.model.TestClass;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runners.model.FrameworkMethod;
-import org.junit.runners.model.TestClass;
-
-import fi.vincit.multiusertest.test.AbstractUserRoleIT;
 
 public class RunnerDelegateTest {
 
@@ -29,12 +28,12 @@ public class RunnerDelegateTest {
 
         assertThat(
                 delegate.getName(new TestClass(Object.class)),
-                is("java.lang.Object: producer = role:ROLE_ADMIN; consumer = role:ROLE_USER")
+                is("producer={role:ROLE_ADMIN}, consumer={role:ROLE_USER}")
         );
     }
 
     @Test
-    public void getName() {
+    public void testName() {
         RunnerDelegate delegate = new RunnerDelegate(
                 UserIdentifier.parse("role:ROLE_ADMIN"),
                 UserIdentifier.parse("role:ROLE_USER")
@@ -42,7 +41,7 @@ public class RunnerDelegateTest {
 
         assertThat(
                 delegate.testName(mockFrameworkMethod()),
-                is("testMethod: producer = role:ROLE_ADMIN; consumer = role:ROLE_USER")
+                is("testMethod")
         );
     }
 

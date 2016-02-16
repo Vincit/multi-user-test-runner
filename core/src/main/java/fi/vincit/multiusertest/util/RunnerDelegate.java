@@ -53,15 +53,15 @@ public class RunnerDelegate {
     }
 
     public String testName(FrameworkMethod method) {
-        return String.format("%s: %s", method.getName(), getIdentifierDescription());
+        return String.format("%s", method.getName());
     }
 
     public String getName(TestClass testClass) {
-        return String.format("%s: %s", testClass.getName(), getIdentifierDescription());
+        return String.format("%s", getIdentifierDescription());
     }
 
     private String getIdentifierDescription() {
-        return String.format("producer = %s; consumer = %s", producerIdentifier, userIdentifier);
+        return String.format("producer={%s}, consumer={%s}", producerIdentifier, userIdentifier);
     }
 
     public Object createTest(Object testInstance) {
