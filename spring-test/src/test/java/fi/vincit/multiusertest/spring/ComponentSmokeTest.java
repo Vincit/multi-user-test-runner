@@ -3,17 +3,14 @@ package fi.vincit.multiusertest.spring;
 import fi.vincit.multiusertest.annotation.MultiUserConfigClass;
 import fi.vincit.multiusertest.annotation.MultiUserTestConfig;
 import fi.vincit.multiusertest.annotation.RunWithUsers;
+import fi.vincit.multiusertest.context.ComponentTestContext;
 import fi.vincit.multiusertest.context.TestConfiguration;
-import fi.vincit.multiusertest.context.TestContext;
 import fi.vincit.multiusertest.rule.AuthorizationRule;
 import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
 import fi.vincit.multiusertest.test.MultiUserConfig;
 import fi.vincit.multiusertest.util.LoginRole;
 import fi.vincit.multiusertest.util.User;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
@@ -34,7 +31,7 @@ import static fi.vincit.multiusertest.util.UserIdentifiers.ifAnyOf;
         defaultException = AccessDeniedException.class
 )
 @RunWith(MultiUserTestRunner.class)
-@ContextConfiguration(classes = {TestConfiguration.class, TestContext.class})
+@ContextConfiguration(classes = {TestConfiguration.class, ComponentTestContext.class})
 public class ComponentSmokeTest {
 
     @Autowired
