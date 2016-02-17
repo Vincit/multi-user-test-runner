@@ -1,13 +1,14 @@
 package fi.vincit.multiusertest.util;
 
 import fi.vincit.multiusertest.annotation.MultiUserConfigClass;
+import fi.vincit.multiusertest.rule.AuthorizationRule;
+import fi.vincit.multiusertest.test.AbstractMultiUserConfig;
 import fi.vincit.multiusertest.test.MultiUserConfig;
 import fi.vincit.multiusertest.test.UserRoleIT;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.internal.runners.statements.RunBefores;
-import org.junit.runners.model.FrameworkMethod;
-import org.junit.runners.model.Statement;
-import org.junit.runners.model.TestClass;
+import org.junit.runners.model.*;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -126,36 +127,57 @@ public class RunnerDelegate {
     public Statement withBefores(final TestClass testClass, final Object target, final Statement statement) {
         List<FrameworkMethod> befores = testClass.getAnnotatedMethods(
                 Before.class);
-        final Statement runLoginBeforeTestMethod = new Statement() {
-            @Override
-            public void evaluate() throws Throwable {
-                preEvaluateConfig();
-                statement.evaluate();
-            }
-
-            public void preEvaluateConfig() {
-                UserRoleIT userRoleIt = null;
-                if (target instanceof UserRoleIT) {
-                    userRoleIt = (UserRoleIT) target;
-                } else {
-                    userRoleIt = getConfigComponent(target);
-                    userRoleIt.setUsers(producerIdentifier, userIdentifier);
-                }
-
-                userRoleIt.logInAs(LoginRole.PRODUCER);
-            }
-        };
 
         if (target instanceof UserRoleIT) {
+            final Statement runLoginBeforeTestMethod = new Statement() {
+                @Override
+                public void evaluate() throws Throwable {
+                    UserRoleIT userRoleIt = (UserRoleIT) target;
+                    userRoleIt.logInAs(LoginRole.PRODUCER);
+
+                    statement.evaluate();
+                }
+            };
+
             return befores.isEmpty() ? runLoginBeforeTestMethod : new RunBefores(
                     runLoginBeforeTestMethod, befores, target
             );
         } else {
-            return befores.isEmpty() ? runLoginBeforeTestMethod : new RunBefores(
-                    runLoginBeforeTestMethod, befores, target
+            final Statement initializeConfig = new Statement() {
+                @Override
+                public void evaluate() throws Throwable {
+                    UserRoleIT userRoleIt = getConfigComponent(target);
+                    userRoleIt.setUsers(producerIdentifier, userIdentifier);
+
+                    if (userRoleIt instanceof AbstractMultiUserConfig) {
+                        AbstractMultiUserConfig multiUserConfig = (AbstractMultiUserConfig)userRoleIt;
+                        AuthorizationRule authorizationRule = getAuthorizationRule(testClass, target);
+
+                        multiUserConfig.setAuthorizationRule(authorizationRule, target);
+                    }
+
+                    userRoleIt.logInAs(LoginRole.PRODUCER);
+                }
+            };
+
+            return befores.isEmpty() ?
+                    new RunInitAndEvaluate(initializeConfig, statement) :
+                    new RunInitAndBefores(initializeConfig, statement, befores, target
             );
         }
 
 
+    }
+
+    private AuthorizationRule getAuthorizationRule(TestClass testClass, Object target) throws IllegalAccessException {
+        List<FrameworkField> ruleFields = testClass.getAnnotatedFields(Rule.class);
+
+        for (FrameworkField ruleField : ruleFields) {
+            if (ruleField.getType().isAssignableFrom(AuthorizationRule.class)) {
+                return (AuthorizationRule) ruleField.get(target);
+            }
+        }
+
+        throw new IllegalStateException("Test class must have AuthorizationRule set");
     }
 }

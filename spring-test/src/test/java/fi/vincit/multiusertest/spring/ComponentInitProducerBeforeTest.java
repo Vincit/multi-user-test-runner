@@ -2,16 +2,14 @@ package fi.vincit.multiusertest.spring;
 
 import fi.vincit.multiusertest.annotation.MultiUserConfigClass;
 import fi.vincit.multiusertest.annotation.RunWithUsers;
+import fi.vincit.multiusertest.context.ComponentTestContext;
 import fi.vincit.multiusertest.context.TestConfiguration;
-import fi.vincit.multiusertest.context.TestContext;
+import fi.vincit.multiusertest.rule.AuthorizationRule;
 import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
 import fi.vincit.multiusertest.test.MultiUserConfig;
 import fi.vincit.multiusertest.util.LoginRole;
 import fi.vincit.multiusertest.util.User;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -22,7 +20,7 @@ import static org.junit.Assert.assertTrue;
 
 @RunWithUsers(producers = {"user:test-user"},
         consumers = {"role:ROLE_ADMIN", "role:ROLE_USER"})
-@ContextConfiguration(classes = {TestConfiguration.class, TestContext.class})
+@ContextConfiguration(classes = {TestConfiguration.class, ComponentTestContext.class})
 @RunWith(MultiUserTestRunner.class)
 public class ComponentInitProducerBeforeTest {
 
@@ -37,6 +35,9 @@ public class ComponentInitProducerBeforeTest {
 
     @Rule
     public final SpringMethodRule springMethodRule = new SpringMethodRule();
+
+    @Rule
+    public AuthorizationRule authorizationRule = new AuthorizationRule();
 
     @Before
     public void init() {
