@@ -8,10 +8,6 @@ import fi.vincit.multiusertest.util.*;
 
 import java.util.Random;
 
-/*
- * @deprecated Use component based configuration instead.
- */
-@Deprecated
 public abstract class AbstractMultiUserConfig<USER, ROLE> implements MultiUserConfig<USER, ROLE> {
 
     private UserResolver<USER, ROLE> userResolver;
