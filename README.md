@@ -8,7 +8,8 @@ scenarios where the authorization depends on multiple users and their roles.
 
 Originally the library was created to test the security of Spring service-layer methods. Now the core 
 library also with any plain Java classes and has been successfully used with REST-assured based API testing.
-For the Spring support, use the `multi-user-test-runner-spring` module.
+For the old Spring support, use the `multi-user-test-runner-spring` module. New component based configuration doesn't
+need the Spring module.
 
 # Requirements
 
@@ -31,7 +32,7 @@ The library may work with other versions but has not been tested with versions o
 <dependency>
     <groupId>fi.vincit</groupId>
     <artifactId>multi-user-test-runner</artifactId>
-        <version>0.4.0</version>
+        <version>0.5.0</version>
     <scope>test</scope>
 </dependency>
 
@@ -39,7 +40,7 @@ The library may work with other versions but has not been tested with versions o
 <dependency>
     <groupId>fi.vincit</groupId>
     <artifactId>multi-user-test-runner-spring</artifactId>
-        <version>0.4.0</version>
+        <version>0.5.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -48,9 +49,9 @@ The library may work with other versions but has not been tested with versions o
 
 ```groovy
 dependencies {
-    test 'fi.vincit:multi-user-test-runner:0.4.0'
+    test 'fi.vincit:multi-user-test-runner:0.5.0'
     // Spring support (optional)
-    test 'fi.vincit:multi-user-test-runner-spring:0.4.0'
+    test 'fi.vincit:multi-user-test-runner-spring:0.5.0'
 }
 ```
 
@@ -58,7 +59,52 @@ dependencies {
 
 Usage is simple:
 
-## Configuring the Test Class
+## Configuring the Test Class (The New Way)
+
+Configure the test class:
+
+1. Create a configuration class that implements `MultiUserConfig<USER, ROLE>` interface (where USER and ROLE
+   are you user and role types)
+1. Configure runner by adding `@RunWith(MultiUserTestRunner.class)` for the class
+1. Configure users to run with by adding `@RunWithUsers(producers = {"role:ROLE_ADMIN"}, consumers = "role:ROLE_ADMIN")`
+   for the class
+1. Create your test class and add an `AuthroizationRule` and your config class to your test class:
+```java
+@MultiUserConfigClass
+private MultiUserConfig<User, User.Role> multiUserConfig = new MyMultiUserConfig();
+
+@Rule
+public AuthorizationRule authorizationRule = new AuthorizationRule();
+```
+
+Write the tests:
+
+1. Write the test methods
+1. Add an assertion. For example, `authenticationRule.expect(toFail(ifAnyOf("user:user")));` before the method under test
+   to define which roles/users are expected to fail
+
+### Additional Configuration For Spring
+
+To make the test work with Spring two rules have to be added: `SpringClassRule` and `SpringMethodRule`.
+By adding these rules the test class and the config annotated by `@MultiUserConfigClass` can be autowired.
+The `MultiUserConfig` will also be able to use Spring's dependency injection. The test class configuration
+will look like the following:
+```java
+@Autowired
+@MultiUserConfigClass
+private MultiUserConfig<User, User.Role> multiUserConfig;
+
+@Rule
+public AuthorizationRule authorizationRule = new AuthorizationRule();
+
+@ClassRule
+public static final SpringClassRule SPRING_CLASS_RULE = new SpringClassRule();
+
+@Rule
+public final SpringMethodRule springMethodRule = new SpringMethodRule();
+```
+
+## Configuring the Test Class (The Old Way)
 
 Configure the base test class:
 
@@ -313,7 +359,7 @@ authorization().expect(valueOf(() -> service.getAllUsers(value))
 
 # Example
 
-For all examples, please visit [multi-user-test-runner/examples](https://github.com/Vincit/multi-user-test-runner/blob/0.4.0/examples/README.md)
+For all examples, please visit [multi-user-test-runner/examples](https://github.com/Vincit/multi-user-test-runner/blob/0.5.0/examples/README.md)
 
 Configuring base class for tests:
 
