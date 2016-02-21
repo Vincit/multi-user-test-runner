@@ -14,8 +14,7 @@ public class TestMultiUserConfig extends AbstractMultiUserConfig<User, User.Role
 
     private static Map<String, User> users = new HashMap<>();
 
-    public TestMultiUserConfig(AuthorizationRule authorizationRule) {
-        this.authorizationRule = authorizationRule;
+    public TestMultiUserConfig() {
     }
 
     private AuthorizationRule authorizationRule;
