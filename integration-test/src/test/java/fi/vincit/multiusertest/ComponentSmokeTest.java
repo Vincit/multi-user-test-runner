@@ -29,7 +29,7 @@ public class ComponentSmokeTest {
     public AuthorizationRule authorizationRule = new AuthorizationRule();
 
     @MultiUserConfigClass
-    private MultiUserConfig<User, User.Role> multiUserConfig = new TestMultiUserConfig(authorizationRule);
+    private MultiUserConfig<User, User.Role> multiUserConfig = new TestMultiUserConfig();
 
     @Rule
     public RuleChain ruleChain = RuleChain
