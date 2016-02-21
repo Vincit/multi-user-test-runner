@@ -83,7 +83,7 @@ Write the tests:
 1. Add an assertion. For example, `authenticationRule.expect(toFail(ifAnyOf("user:user")));` before the method under test
    to define which roles/users are expected to fail
 
-### Additional Configuration For Spring
+### Additional Configuration for Spring
 
 To make the test work with Spring two rules have to be added: `SpringClassRule` and `SpringMethodRule`.
 By adding these rules the test class and the config annotated by `@MultiUserConfigClass` can be autowired.
