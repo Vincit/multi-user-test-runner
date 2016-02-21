@@ -8,13 +8,47 @@ import fi.vincit.multiusertest.util.*;
 
 import java.util.Random;
 
+/**
+ * Default configuration base class for multi user tests. Authorization rule is automatically set
+ * by the runner.
+ * @param <USER> User type
+ * @param <ROLE> Role type
+ */
 public abstract class AbstractMultiUserConfig<USER, ROLE> implements MultiUserConfig<USER, ROLE> {
 
     private UserResolver<USER, ROLE> userResolver;
 
     private Random random = new Random(System.currentTimeMillis());
 
-    protected abstract AuthorizationRule getAuthorizationRule();
+    private AuthorizationRule authorizationRule;
+
+    /**
+     * Default constructor
+     */
+    public AbstractMultiUserConfig() {
+    }
+
+    /**
+     * Constructor for tests
+     * @param userResolver User resolver
+     * @param random Random number generator
+     * @param authorizationRule Authorization rule
+     */
+    AbstractMultiUserConfig(UserResolver<USER, ROLE> userResolver, Random random, AuthorizationRule authorizationRule) {
+        this.userResolver = userResolver;
+        this.random = random;
+        this.authorizationRule = authorizationRule;
+    }
+
+    protected AuthorizationRule getAuthorizationRule() {
+        return authorizationRule;
+    }
+
+    @Override
+    public void setAuthorizationRule(AuthorizationRule authorizationRule, Object testClassInstance) {
+        this.authorizationRule = authorizationRule;
+        this.authorizationRule.setExpectedException(getDefaultException(testClassInstance.getClass()));
+    }
 
     @Override
     public void setUsers(UserIdentifier producerIdentifier, UserIdentifier consumerIdentifier) {

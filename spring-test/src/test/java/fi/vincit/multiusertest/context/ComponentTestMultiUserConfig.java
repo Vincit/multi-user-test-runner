@@ -1,6 +1,5 @@
 package fi.vincit.multiusertest.context;
 
-import fi.vincit.multiusertest.rule.AuthorizationRule;
 import fi.vincit.multiusertest.test.AbstractMultiUserConfig;
 import fi.vincit.multiusertest.util.LoginRole;
 import fi.vincit.multiusertest.util.SecurityUtil;
@@ -14,25 +13,8 @@ public class ComponentTestMultiUserConfig extends AbstractMultiUserConfig<User, 
     public ComponentTestMultiUserConfig() {
     }
 
-    public ComponentTestMultiUserConfig(AuthorizationRule authorizationRule) {
-        this.authorizationRule = authorizationRule;
-    }
-
-    private AuthorizationRule authorizationRule;
-
     @Autowired
     private UserService userService;
-
-    @Override
-    protected AuthorizationRule getAuthorizationRule() {
-        return authorizationRule;
-    }
-
-    @Override
-    public void setAuthorizationRule(AuthorizationRule authorizationRule, Object testClassInstance) {
-        this.authorizationRule = authorizationRule;
-        this.authorizationRule.setExpectedException(getDefaultException(testClassInstance.getClass()));
-    }
 
     @Override
     public void loginWithUser(User user) {
