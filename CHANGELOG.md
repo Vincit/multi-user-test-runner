@@ -27,6 +27,8 @@ for asserting that exception contains correct values.
    * `USER getCreator()`
    * `USER getUser()`
    * `void setUsers(UserIdentifier creatorIdentifier, UserIdentifier userIdentifier)`
+* Change test class run and test method names so that IDEs can link test method name to actual test method implementation.
+  Also removes duplication in the test class run and test names.
 
 # 0.3.0
 
