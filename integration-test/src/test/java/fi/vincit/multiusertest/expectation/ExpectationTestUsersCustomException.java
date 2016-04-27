@@ -1,13 +1,5 @@
 package fi.vincit.multiusertest.expectation;
 
-import static fi.vincit.multiusertest.rule.expection.Expectations.valueOf;
-import static fi.vincit.multiusertest.util.UserIdentifiers.ifAnyOf;
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
 import fi.vincit.multiusertest.annotation.MultiUserTestConfig;
 import fi.vincit.multiusertest.annotation.RunWithUsers;
 import fi.vincit.multiusertest.configuration.ConfiguredTest;
@@ -18,6 +10,13 @@ import fi.vincit.multiusertest.rule.expection.ReturnValueCall;
 import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
 import fi.vincit.multiusertest.runner.junit.framework.BlockMultiUserTestClassRunner;
 import fi.vincit.multiusertest.util.LoginRole;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import static fi.vincit.multiusertest.rule.expection.Expectations.valueOf;
+import static fi.vincit.multiusertest.util.UserIdentifiers.ifAnyOf;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 
 @RunWithUsers(producers = "role:ROLE_USER", consumers = "role:ROLE_USER")
 @MultiUserTestConfig(
@@ -119,6 +118,38 @@ public class ExpectationTestUsersCustomException extends ConfiguredTest {
                 assertThat(value, is(103));
             }
         }, ifAnyOf("role:ROLE_USER")));
+    }
+
+    @Test
+    public void assertionFailsButExpected() throws Throwable {
+        logInAs(LoginRole.CONSUMER);
+        authorization().setExpectedException(IndexOutOfBoundsException.class);
+        authorization().expect(valueOf(
+                new ReturnValueCall<Integer>() {
+                    @Override
+                    public Integer call() throws Throwable {
+                        throwDefaultException();
+                        return returnValueCall();
+                    }
+                }
+            ).toFailWithException(IndexOutOfBoundsException.class, ifAnyOf("role:ROLE_USER"))
+        );
+    }
+
+    @Test
+    public void assertionFailsButExpected_DefaultException() throws Throwable {
+        logInAs(LoginRole.CONSUMER);
+        authorization().setExpectedException(IndexOutOfBoundsException.class);
+        authorization().expect(valueOf(
+                new ReturnValueCall<Integer>() {
+                    @Override
+                    public Integer call() throws Throwable {
+                        throwDefaultException();
+                        return returnValueCall();
+                    }
+                }
+                ).toFail(ifAnyOf("role:ROLE_USER"))
+        );
     }
 
 }
