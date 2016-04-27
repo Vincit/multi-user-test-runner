@@ -3,7 +3,7 @@ package fi.vincit.multiusertest.rule.expection.call;
 import fi.vincit.multiusertest.rule.FailMode;
 import fi.vincit.multiusertest.util.Optional;
 
-class ExpectationInfo {
+public class ExpectationInfo {
 
     private final FailMode failMode;
     private final Optional<Class<? extends Throwable>> exceptionClass;
