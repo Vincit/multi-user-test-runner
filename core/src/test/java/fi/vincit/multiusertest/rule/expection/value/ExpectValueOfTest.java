@@ -1,17 +1,16 @@
 package fi.vincit.multiusertest.rule.expection.value;
 
-import static fi.vincit.multiusertest.util.UserIdentifiers.ifAnyOf;
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
-
-import java.io.IOException;
-
-import org.junit.Test;
-
 import fi.vincit.multiusertest.rule.expection.AssertionCall;
 import fi.vincit.multiusertest.rule.expection.Expectations;
 import fi.vincit.multiusertest.rule.expection.ReturnValueCall;
 import fi.vincit.multiusertest.util.UserIdentifier;
+import org.junit.Test;
+
+import java.io.IOException;
+
+import static fi.vincit.multiusertest.util.UserIdentifiers.ifAnyOf;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 
 public class ExpectValueOfTest {
 
@@ -159,7 +158,7 @@ public class ExpectValueOfTest {
                 .execute(UserIdentifier.parse("role:ROLE_USER"));
     }
 
-    @Test(expected = IOException.class)
+    @Test(expected = AssertionError.class)
     public void testExceptionIsThrownFromToEquals() throws Throwable{
         Expectations.valueOf(new ReturnValueCall<Integer>() {
             @Override
@@ -182,6 +181,18 @@ public class ExpectValueOfTest {
                 throw new IOException();
             }
         }, ifAnyOf("role:ROLE_USER")).execute(UserIdentifier.parse("role:ROLE_USER"));
+    }
+
+    @Test
+    public void testExceptionIsThrownFromToEqualsAndFails() throws Throwable{
+        Expectations.valueOf(new ReturnValueCall<Integer>() {
+            @Override
+            public Integer call() throws IOException {
+                throw new IOException();
+            }
+        }).toFailWithException(IOException.class, ifAnyOf("role:ROLE_USER"))
+            .toEqual(1, ifAnyOf("role:ROLE_ADMIN"))
+            .execute(UserIdentifier.parse("role:ROLE_USER"));
     }
 
 

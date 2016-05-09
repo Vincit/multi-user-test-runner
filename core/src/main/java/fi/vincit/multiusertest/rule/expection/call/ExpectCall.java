@@ -1,14 +1,15 @@
 package fi.vincit.multiusertest.rule.expection.call;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-
 import fi.vincit.multiusertest.rule.FailMode;
+import fi.vincit.multiusertest.rule.expection.AbstractExpectation;
 import fi.vincit.multiusertest.rule.expection.FunctionCall;
 import fi.vincit.multiusertest.util.Optional;
 import fi.vincit.multiusertest.util.UserIdentifier;
 import fi.vincit.multiusertest.util.UserIdentifiers;
+
+import java.util.Objects;
+
+import static fi.vincit.multiusertest.rule.FailMode.EXPECT_FAIL;
 
 /**
  * <p>
@@ -27,7 +28,7 @@ import fi.vincit.multiusertest.util.UserIdentifiers;
  * Use {@link fi.vincit.multiusertest.rule.expection.Expectations} to create instances.
  * </p>
  */
-public class ExpectCall implements ExpectCallFail, ExpectCallNotFail {
+public class ExpectCall extends AbstractExpectation<ExpectationInfo> implements ExpectCallFail, ExpectCallNotFail {
 
     public static final ExceptionAssertionCall NOOP_ASSERTION = new ExceptionAssertionCall() {
         @Override
@@ -35,13 +36,7 @@ public class ExpectCall implements ExpectCallFail, ExpectCallNotFail {
         }
     };
 
-    private Class<? extends Throwable> defaultExpectedException;
-
     private final FunctionCall functionCall;
-
-    private final Map<UserIdentifier, ExpectationInfo> expectations = new HashMap<>();
-
-    private FailMode generalFailMode = FailMode.NONE;
 
     public ExpectCall(FunctionCall functionCall) {
         this.functionCall = functionCall;
@@ -50,9 +45,9 @@ public class ExpectCall implements ExpectCallFail, ExpectCallNotFail {
     @Override
     public ExpectCallFail toFail(UserIdentifiers identifiers) {
         Objects.requireNonNull(identifiers, "Identifiers must not be null");
-        generalFailMode = FailMode.EXPECT_FAIL;
+        setGeneralFailMode(FailMode.EXPECT_FAIL);
         for (UserIdentifier identifier : identifiers.getIdentifiers()) {
-            expectations.put(identifier, new ExpectationInfo(
+            getExpectations().put(identifier, new ExpectationInfo(
                     FailMode.EXPECT_FAIL,
                     Optional.<Class<? extends Throwable>>empty(),
                     NOOP_ASSERTION
@@ -72,10 +67,10 @@ public class ExpectCall implements ExpectCallFail, ExpectCallNotFail {
         Objects.requireNonNull(exceptionAssertionCall, "ExceptionAssertionCall must not be null");
         Objects.requireNonNull(identifiers, "Identifiers must not be null");
 
-        generalFailMode = FailMode.EXPECT_FAIL;
+        setGeneralFailMode(FailMode.EXPECT_FAIL);
         for (UserIdentifier identifier : identifiers.getIdentifiers()) {
-            expectations.put(identifier, new ExpectationInfo(
-                    FailMode.EXPECT_FAIL,
+            getExpectations().put(identifier, new ExpectationInfo(
+                    EXPECT_FAIL,
                     Optional.<Class<? extends Throwable>>of(exception),
                     exceptionAssertionCall
             ));
@@ -86,9 +81,10 @@ public class ExpectCall implements ExpectCallFail, ExpectCallNotFail {
     @Override
     public ExpectCallNotFail notToFail(UserIdentifiers identifiers) {
         Objects.requireNonNull(identifiers, "Identifiers must not be null");
-        generalFailMode = FailMode.EXPECT_NOT_FAIL;
+        setGeneralFailMode(FailMode.EXPECT_NOT_FAIL);
+
         for (UserIdentifier identifier : identifiers.getIdentifiers()) {
-            expectations.put(identifier, new ExpectationInfo(FailMode.EXPECT_NOT_FAIL, Optional.<Class<? extends Throwable>>empty(), NOOP_ASSERTION));
+            getExpectations().put(identifier, new ExpectationInfo(FailMode.EXPECT_NOT_FAIL, Optional.<Class<? extends Throwable>>empty(), NOOP_ASSERTION));
         }
         return this;
     }
@@ -104,49 +100,4 @@ public class ExpectCall implements ExpectCallFail, ExpectCallNotFail {
         throwIfExceptionIsExpected(userIdentifier);
     }
 
-    @Override
-    public void setExpectedException(Class<? extends Throwable> expectedException) {
-        defaultExpectedException = expectedException;
-    }
-
-    private void throwIfExceptionIsExpected(UserIdentifier userIdentifier) {
-        Optional<ExpectationInfo> possibleCallInfo = getFailInfo(userIdentifier);
-        if (possibleCallInfo.isPresent()) {
-            ExpectationInfo expectationInfo = possibleCallInfo.get();
-            Class<? extends Throwable> exception =
-                    expectationInfo.getExceptionClass().orElse(defaultExpectedException);
-
-            if (expectationInfo.getFailMode() == FailMode.EXPECT_FAIL) {
-                throw new AssertionError("Expected to fail with exception " + exception.getName());
-            }
-        }
-    }
-
-    private void throwIfExpectationNotExpected(UserIdentifier userIdentifier, Throwable e)  throws Throwable {
-        Optional<ExpectationInfo> possibleCallInfo = getFailInfo(userIdentifier);
-        if (possibleCallInfo.isPresent()) {
-            ExpectationInfo expectationInfo = possibleCallInfo.get();;
-
-            if (expectationInfo.getFailMode() == FailMode.EXPECT_NOT_FAIL) {
-                throw new AssertionError("Not expected to fail with user role " + userIdentifier.toString(), e);
-            } else {
-                if (!expectationInfo.isExceptionExpected(e, defaultExpectedException)) {
-                    throw e;
-                }
-                expectationInfo.assertException(e);
-            }
-        } else {
-            if (generalFailMode != FailMode.EXPECT_NOT_FAIL) {
-                throw new AssertionError("Not expected to fail with user role " + userIdentifier.toString(), e);
-            }
-        }
-    }
-
-    private Optional<ExpectationInfo> getFailInfo(UserIdentifier userIdentifier) {
-        if (expectations.containsKey(userIdentifier)) {
-            return Optional.of(expectations.get(userIdentifier));
-        } else {
-            return Optional.empty();
-        }
-    }
 }

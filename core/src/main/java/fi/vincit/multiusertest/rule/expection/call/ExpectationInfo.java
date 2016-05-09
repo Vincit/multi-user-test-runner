@@ -33,7 +33,7 @@ public class ExpectationInfo {
         return exceptionClass;
     }
 
-    public void assertException(Throwable e) {
+    public void assertException(Throwable e) throws Throwable {
         exceptionAssertionCall.assertException(e);
     }
 
