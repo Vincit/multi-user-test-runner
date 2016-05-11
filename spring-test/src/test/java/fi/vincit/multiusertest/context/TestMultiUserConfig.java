@@ -1,6 +1,5 @@
 package fi.vincit.multiusertest.context;
 
-import fi.vincit.multiusertest.rule.AuthorizationRule;
 import fi.vincit.multiusertest.test.AbstractMultiUserConfig;
 import fi.vincit.multiusertest.util.LoginRole;
 import fi.vincit.multiusertest.util.SecurityUtil;
@@ -14,25 +13,8 @@ public class TestMultiUserConfig extends AbstractMultiUserConfig<User, User.Role
     public TestMultiUserConfig() {
     }
 
-    public TestMultiUserConfig(AuthorizationRule authorizationRule) {
-        this.authorizationRule = authorizationRule;
-    }
-
-    private AuthorizationRule authorizationRule;
-
     @Autowired
     private UserService userService;
-
-    @Override
-    protected AuthorizationRule getAuthorizationRule() {
-        return authorizationRule;
-    }
-
-    @Override
-    public void setAuthorizationRule(AuthorizationRule authorizationRule, Object testClassInstance) {
-        this.authorizationRule = authorizationRule;
-        this.authorizationRule.setExpectedException(getDefaultException(testClassInstance.getClass()));
-    }
 
     @Override
     public void loginWithUser(User user) {
@@ -41,6 +23,11 @@ public class TestMultiUserConfig extends AbstractMultiUserConfig<User, User.Role
         } else {
             SecurityUtil.logInUser(null);
         }
+    }
+
+    @Override
+    public void loginAnonymous() {
+        throw new IllegalStateException("Anonymous not supported in this test");
     }
 
     @Override
