@@ -2,7 +2,6 @@ package fi.vincit.multiusertest.test;
 
 import fi.vincit.multiusertest.annotation.MultiUserTestConfig;
 import fi.vincit.multiusertest.annotation.RunWithUsers;
-import fi.vincit.multiusertest.annotation.TestUsers;
 import fi.vincit.multiusertest.rule.AuthorizationRule;
 import fi.vincit.multiusertest.util.*;
 
@@ -106,20 +105,11 @@ public abstract class AbstractMultiUserConfig<USER, ROLE> implements MultiUserCo
 
     @Override
     public Class<? extends Throwable> getDefaultException(Class<?> cls) {
-        TestConfiguration configuration;
-        if (cls.getAnnotation(TestUsers.class) != null) {
-            configuration =
-                    TestConfiguration.fromTestUsers(
-                            Optional.ofNullable(cls.getAnnotation(TestUsers.class)),
-                            Optional.ofNullable(cls.getAnnotation(MultiUserTestConfig.class))
-                    );
-        } else {
-            configuration =
-                    TestConfiguration.fromRunWithUsers(
-                            Optional.ofNullable(cls.getAnnotation(RunWithUsers.class)),
-                            Optional.ofNullable(cls.getAnnotation(MultiUserTestConfig.class))
-                    );
-        }
+        TestConfiguration configuration =
+                TestConfiguration.fromRunWithUsers(
+                        Optional.ofNullable(cls.getAnnotation(RunWithUsers.class)),
+                        Optional.ofNullable(cls.getAnnotation(MultiUserTestConfig.class))
+                );
         return configuration.getDefaultException()
                 .orElse(Defaults.getDefaultException());
     }

@@ -2,7 +2,6 @@ package fi.vincit.multiusertest.util;
 
 import fi.vincit.multiusertest.annotation.MultiUserTestConfig;
 import fi.vincit.multiusertest.annotation.RunWithUsers;
-import fi.vincit.multiusertest.annotation.TestUsers;
 import fi.vincit.multiusertest.runner.junit.framework.BlockMultiUserTestClassRunner;
 
 import java.util.Collection;
@@ -45,37 +44,6 @@ public class TestConfiguration {
         return new TestConfiguration(
                 producerIdentifiers,
                 consumerIdentifier,
-                runner,
-                defaultException
-        );
-    }
-
-    /**
-     * Creates a new instance using deprecated {@link TestUsers} and {@link MultiUserTestConfig}
-     * annotations. Uses MultiUserTestConfig for defaults.
-     * @param testUsers annotation
-     * @param multiUserTestConfig Optional configurations class level configuration
-     * @return
-     */
-    public static TestConfiguration fromTestUsers(Optional<TestUsers> testUsers, Optional<MultiUserTestConfig> multiUserTestConfig) {
-
-        Collection<UserIdentifier> producerIdentifiers = Collections.emptySet();
-        Collection<UserIdentifier> consumerIdentifiers = Collections.emptySet();
-        Class<?> runner = BlockMultiUserTestClassRunner.class;
-        Class<? extends Throwable> defaultException = Defaults.getDefaultException();
-
-        if (testUsers.isPresent()) {
-            producerIdentifiers = getDefinitions(testUsers.get().creators());
-            consumerIdentifiers = getDefinitions(testUsers.get().users());
-        }
-        if (multiUserTestConfig.isPresent()) {
-            runner = multiUserTestConfig.get().runner();
-            defaultException = multiUserTestConfig.get().defaultException();
-        }
-
-        return new TestConfiguration(
-                producerIdentifiers,
-                consumerIdentifiers,
                 runner,
                 defaultException
         );
