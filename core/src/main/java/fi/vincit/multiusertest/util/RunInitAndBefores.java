@@ -5,7 +5,7 @@ import org.junit.runners.model.Statement;
 
 import java.util.List;
 
-public class RunInitAndBefores extends Statement {
+public class RunInitAndBefores<USER, ROLE> extends Statement {
 
     private final Statement init;
     private final Statement next;
@@ -28,6 +28,8 @@ public class RunInitAndBefores extends Statement {
         for (FrameworkMethod before : befores) {
             before.invokeExplosively(target);
         }
+
+        // FIXME: Run login here somehow?
 
         next.evaluate();
     }
