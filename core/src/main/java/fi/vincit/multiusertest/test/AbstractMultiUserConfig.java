@@ -124,6 +124,7 @@ public abstract class AbstractMultiUserConfig<USER, ROLE> implements MultiUserCo
                 .orElse(Defaults.getDefaultException());
     }
 
+    @Override
     public void initialize() {
         userResolver.resolve();
     }

@@ -166,8 +166,7 @@ public class RunnerDelegate {
 
             return befores.isEmpty() ?
                     new RunInitAndEvaluate(initializeConfig, statement) :
-                    new RunInitAndBefores(initializeConfig, statement, befores, target
-            );
+                    new RunInitAndBefores(initializeConfig, statement, befores, target);
         }
 
 

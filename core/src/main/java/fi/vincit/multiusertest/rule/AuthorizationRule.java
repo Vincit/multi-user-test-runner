@@ -1,16 +1,15 @@
 package fi.vincit.multiusertest.rule;
 
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
-
+import fi.vincit.multiusertest.rule.expection.Expectation;
+import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
+import fi.vincit.multiusertest.util.UserIdentifier;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 
-import fi.vincit.multiusertest.rule.expection.Expectation;
-import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
-import fi.vincit.multiusertest.util.UserIdentifier;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * <p>
@@ -136,7 +135,7 @@ public class AuthorizationRule implements TestRule {
                 }
                 if (expectedException.isInstance(e)) {
                     if (!evaluateExpectToFailCondition()) {
-                        throw new AssertionError("Not expected to fail with user role " + userIdentifier.toString(), e);
+                        throw new AssertionError(String.format("Not expected to fail with user role %s", userIdentifier), e);
                     } else {
                         return;
                     }
