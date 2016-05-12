@@ -2,7 +2,6 @@ package fi.vincit.multiusertest.util;
 
 import fi.vincit.multiusertest.annotation.MultiUserTestConfig;
 import fi.vincit.multiusertest.annotation.RunWithUsers;
-import fi.vincit.multiusertest.annotation.TestUsers;
 import org.junit.runners.model.FrameworkMethod;
 
 import java.util.*;
@@ -21,8 +20,6 @@ public class TestMethodFilter {
 
     public boolean shouldRun(FrameworkMethod frameworkMethod) {
 
-        Optional<TestUsers> testUsersAnnotation =
-                Optional.ofNullable(frameworkMethod.getAnnotation(TestUsers.class));
         Optional<RunWithUsers> runWithUsersAnnotation =
                 Optional.ofNullable(frameworkMethod.getAnnotation(RunWithUsers.class));
 
@@ -33,10 +30,8 @@ public class TestMethodFilter {
                     Optional.<MultiUserTestConfig>empty()
             );
         } else {
-            configuration = TestConfiguration.fromTestUsers(
-                    testUsersAnnotation,
-                    Optional.<MultiUserTestConfig>empty()
-            );
+            // FIXME: Is this correct?
+            return true;
         }
 
         Collection<UserIdentifier> filterProducers = configuration.getProducerIdentifiers();

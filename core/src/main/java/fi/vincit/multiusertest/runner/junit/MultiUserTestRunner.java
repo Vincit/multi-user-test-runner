@@ -1,17 +1,15 @@
 package fi.vincit.multiusertest.runner.junit;
 
-import java.util.Collections;
-import java.util.List;
-
-import org.junit.runner.Runner;
-import org.junit.runners.Suite;
-
 import fi.vincit.multiusertest.annotation.MultiUserTestConfig;
 import fi.vincit.multiusertest.annotation.RunWithUsers;
-import fi.vincit.multiusertest.annotation.TestUsers;
 import fi.vincit.multiusertest.util.Optional;
 import fi.vincit.multiusertest.util.TestConfiguration;
 import fi.vincit.multiusertest.util.UserIdentifier;
+import org.junit.runner.Runner;
+import org.junit.runners.Suite;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * <p>
@@ -84,28 +82,18 @@ public class MultiUserTestRunner extends Suite {
 
 
     private TestConfiguration getConfigurationOrThrow() throws Exception {
-        Optional<TestUsers> testRolesAnnotation =
-                Optional.ofNullable(getTestClass().getJavaClass().getAnnotation(TestUsers.class));
         Optional<RunWithUsers> runWithUsersAnnotation =
                 Optional.ofNullable(getTestClass().getJavaClass().getAnnotation(RunWithUsers.class));
         Optional<MultiUserTestConfig> config =
                 Optional.ofNullable(getTestClass().getJavaClass().getAnnotation(MultiUserTestConfig.class));
 
-        if (testRolesAnnotation.isPresent() && runWithUsersAnnotation.isPresent()) {
-            throw new IllegalStateException(
-                    "RunWithUsers and TestUsers annotations are present. Please consider using RunWithUsers annotation."
-            );
-        }
-
         if (runWithUsersAnnotation.isPresent()) {
             return TestConfiguration.fromRunWithUsers(runWithUsersAnnotation, config);
-        } else if (testRolesAnnotation.isPresent()) {
-            return TestConfiguration.fromTestUsers(testRolesAnnotation, config);
         } else {
             throw new IllegalStateException(
                     "No users defined for test class "
                             + getTestClass().getName()
-                            + " Use " + TestUsers.class.getName() + " class"
+                            + " Use " + RunWithUsers.class.getName() + " class"
             );
         }
     }
