@@ -9,10 +9,15 @@ import org.junit.After;
 import java.util.HashMap;
 import java.util.Map;
 
-
-public class ConfiguredTestWithRoleAlias extends AbstractMultiUserConfig<User, User.Role> {
+public class InitProducerBeforeTestConfiguredTest extends AbstractMultiUserConfig<User, User.Role> {
 
     private static Map<String, User> users = new HashMap<>();
+
+    private static boolean producerCreated = false;
+
+    public static void setProducerCreated(boolean producerCreated) {
+        InitProducerBeforeTestConfiguredTest.producerCreated = producerCreated;
+    }
 
     @Override
     public void loginWithUser(User user) {
@@ -32,12 +37,19 @@ public class ConfiguredTestWithRoleAlias extends AbstractMultiUserConfig<User, U
     }
 
     @Override
-    public User.Role stringToRole(String role) {
-        switch(role) {
-            case "NORMAL": return User.Role.ROLE_USER;
-            case "ANONYMOUS": return User.Role.ROLE_VISITOR;
-            default: return User.Role.valueOf("ROLE_" + role);
+    public void logInAs(LoginRole role) {
+        if (role == LoginRole.PRODUCER) {
+            if (!producerCreated) {
+                throw new AssertionError("No produced created before logInAs call");
+            }
+        } else {
+            super.logInAs(role);
         }
+    }
+
+    @Override
+    public User.Role stringToRole(String role) {
+        return User.Role.valueOf(role);
     }
 
     @Override

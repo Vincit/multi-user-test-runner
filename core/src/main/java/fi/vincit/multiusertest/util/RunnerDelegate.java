@@ -7,7 +7,6 @@ import fi.vincit.multiusertest.test.MultiUserConfig;
 import fi.vincit.multiusertest.test.UserRoleIT;
 import org.junit.Before;
 import org.junit.Rule;
-import org.junit.internal.runners.statements.RunBefores;
 import org.junit.runners.model.FrameworkField;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.Statement;
@@ -128,47 +127,43 @@ public class RunnerDelegate {
     }
 
     public Statement withBefores(final TestClass testClass, final Object target, final Statement statement) {
-        List<FrameworkMethod> befores = testClass.getAnnotatedMethods(
-                Before.class);
+        final Statement initializeConfig = new Statement() {
+            @Override
+            public void evaluate() throws Throwable {
+                UserRoleIT userRoleIt = getConfigComponent(target);
+                userRoleIt.setUsers(producerIdentifier, userIdentifier);
 
-        if (target instanceof UserRoleIT) {
-            final Statement runLoginBeforeTestMethod = new Statement() {
-                @Override
-                public void evaluate() throws Throwable {
-                    UserRoleIT userRoleIt = (UserRoleIT) target;
-                    userRoleIt.logInAs(LoginRole.PRODUCER);
+                if (userRoleIt instanceof AbstractMultiUserConfig) {
+                    AbstractMultiUserConfig multiUserConfig = (AbstractMultiUserConfig)userRoleIt;
+                    AuthorizationRule authorizationRule = getAuthorizationRule(testClass, target);
 
-                    statement.evaluate();
+                    multiUserConfig.setAuthorizationRule(authorizationRule, target);
+                    multiUserConfig.initialize();
+                } else {
+                    throw new IllegalStateException("Invalid userRoleIt implementation: " + userRoleIt.getClass().toString());
                 }
-            };
+            }
+        };
 
-            return befores.isEmpty() ? runLoginBeforeTestMethod : new RunBefores(
-                    runLoginBeforeTestMethod, befores, target
-            );
-        } else {
-            final Statement initializeConfig = new Statement() {
-                @Override
-                public void evaluate() throws Throwable {
-                    UserRoleIT userRoleIt = getConfigComponent(target);
-                    userRoleIt.setUsers(producerIdentifier, userIdentifier);
+        final List<FrameworkMethod> befores =
+                testClass.getAnnotatedMethods(Before.class);
 
-                    if (userRoleIt instanceof AbstractMultiUserConfig) {
-                        AbstractMultiUserConfig multiUserConfig = (AbstractMultiUserConfig)userRoleIt;
-                        AuthorizationRule authorizationRule = getAuthorizationRule(testClass, target);
-
-                        multiUserConfig.setAuthorizationRule(authorizationRule, target);
-                        multiUserConfig.initialize();
-                    } else {
-                        userRoleIt.logInAs(LoginRole.PRODUCER);
+        final Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    for (FrameworkMethod before : befores) {
+                        before.invokeExplosively(target);
                     }
+                    UserRoleIT userRoleIt = getConfigComponent(target);
+                    userRoleIt.logInAs(LoginRole.PRODUCER);
+                } catch (Throwable t) {
+                    throw new RuntimeException(t);
                 }
-            };
+            }
+        };
 
-            return befores.isEmpty() ?
-                    new RunInitAndEvaluate(initializeConfig, statement) :
-                    new RunInitAndBefores(initializeConfig, statement, befores, target);
-        }
-
+        return new RunInitAndBefores(initializeConfig, statement, runnable);
 
     }
 

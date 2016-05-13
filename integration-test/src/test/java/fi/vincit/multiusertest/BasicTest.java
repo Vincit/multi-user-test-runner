@@ -1,83 +1,93 @@
 package fi.vincit.multiusertest;
 
+import fi.vincit.multiusertest.annotation.MultiUserConfigClass;
+import fi.vincit.multiusertest.annotation.MultiUserTestConfig;
+import fi.vincit.multiusertest.annotation.RunWithUsers;
+import fi.vincit.multiusertest.configuration.ConfiguredTest;
+import fi.vincit.multiusertest.rule.AuthorizationRule;
+import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
+import fi.vincit.multiusertest.util.LoginRole;
+import fi.vincit.multiusertest.util.SecurityUtil;
+import fi.vincit.multiusertest.util.User;
+import fi.vincit.multiusertest.util.UserIdentifier;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import static fi.vincit.multiusertest.rule.Authentication.notToFail;
 import static fi.vincit.multiusertest.rule.Authentication.toFail;
 import static fi.vincit.multiusertest.util.UserIdentifiers.ifAnyOf;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import fi.vincit.multiusertest.annotation.RunWithUsers;
-import fi.vincit.multiusertest.configuration.ConfiguredTest;
-import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
-import fi.vincit.multiusertest.util.LoginRole;
-import fi.vincit.multiusertest.util.SecurityUtil;
-import fi.vincit.multiusertest.util.User;
-import fi.vincit.multiusertest.util.UserIdentifier;
-
 @RunWithUsers(producers = {"role:ROLE_ADMIN", "role:ROLE_USER"},
         consumers = {"role:ROLE_ADMIN", "role:ROLE_USER"})
 @RunWith(MultiUserTestRunner.class)
-public class BasicTest extends ConfiguredTest {
+@MultiUserTestConfig
+public class BasicTest {
+
+    @MultiUserConfigClass
+    private ConfiguredTest configuredTest = new ConfiguredTest();
+
+    @Rule
+    public AuthorizationRule authorization = new AuthorizationRule();
 
     @Test
     public void producerLoggedIn() {
-        assertThat(SecurityUtil.getLoggedInUser().getUsername(), is(getProducer().getUsername()));
+        assertThat(SecurityUtil.getLoggedInUser().getUsername(), is(configuredTest.getProducer().getUsername()));
     }
 
     @Test
     public void consumerLoggedIn() {
-        logInAs(LoginRole.CONSUMER);
-        assertThat(SecurityUtil.getLoggedInUser().getUsername(), is(getConsumer().getUsername()));
+        configuredTest.logInAs(LoginRole.CONSUMER);
+        assertThat(SecurityUtil.getLoggedInUser().getUsername(), is(configuredTest.getConsumer().getUsername()));
     }
 
     @Test
     public void producerLoggedInAfterConsumer() {
-        logInAs(LoginRole.CONSUMER);
-        logInAs(LoginRole.PRODUCER);
-        assertThat(SecurityUtil.getLoggedInUser().getUsername(), is(getProducer().getUsername()));
+        configuredTest.logInAs(LoginRole.CONSUMER);
+        configuredTest.logInAs(LoginRole.PRODUCER);
+        assertThat(SecurityUtil.getLoggedInUser().getUsername(), is(configuredTest.getProducer().getUsername()));
     }
 
     @Test
     public void expectFailureProducer() {
-        authorization().expect(toFail(ifAnyOf(RunWithUsers.PRODUCER)));
-        throwIfUserIs(getProducer());
+        authorization.expect(toFail(ifAnyOf(RunWithUsers.PRODUCER)));
+        throwIfUserIs(configuredTest.getProducer());
     }
 
     @Test
     public void expectFailureWithProducerRole() {
-        authorization().expect(toFail(ifAnyOf(RunWithUsers.WITH_PRODUCER_ROLE)));
-        throwIfUserIs(getConsumer());
+        authorization.expect(toFail(ifAnyOf(RunWithUsers.WITH_PRODUCER_ROLE)));
+        throwIfUserIs(configuredTest.getConsumer());
     }
 
     @Test
     public void expectFailureNotProducer() {
-        authorization().expect(notToFail(ifAnyOf(RunWithUsers.PRODUCER)));
-        throwIfUserIs(getConsumer());
+        authorization.expect(notToFail(ifAnyOf(RunWithUsers.PRODUCER)));
+        throwIfUserIs(configuredTest.getConsumer());
     }
 
     @Test
     public void expectFailureNotWithProducerRole() {
-        authorization().expect(notToFail(ifAnyOf(RunWithUsers.WITH_PRODUCER_ROLE)));
-        throwIfUserIs(getProducer());
+        authorization.expect(notToFail(ifAnyOf(RunWithUsers.WITH_PRODUCER_ROLE)));
+        throwIfUserIs(configuredTest.getProducer());
     }
 
     @Test
     public void expectFailureConsumer() {
-        logInAs(LoginRole.CONSUMER);
-        authorization().expect(toFail(ifAnyOf("role:ROLE_USER")));
+        configuredTest.logInAs(LoginRole.CONSUMER);
+        authorization.expect(toFail(ifAnyOf("role:ROLE_USER")));
         throwIfUserRole("role:ROLE_USER");
     }
 
     @Test
     public void dontExpectFailure() {
-        authorization().dontExpectToFail();
+        authorization.dontExpectToFail();
     }
 
     private void throwIfUserRole(String identifier) {
-        User.Role identifierRole = stringToRole(UserIdentifier.parse(identifier).getIdentifier());
+        User.Role identifierRole = configuredTest.stringToRole(UserIdentifier.parse(identifier).getIdentifier());
         if (SecurityUtil.getLoggedInUser().getRole() == identifierRole) {
             throw new IllegalStateException("Thrown when role was " + identifier);
         }

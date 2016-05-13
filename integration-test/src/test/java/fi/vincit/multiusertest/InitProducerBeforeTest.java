@@ -1,49 +1,49 @@
 package fi.vincit.multiusertest;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
+import fi.vincit.multiusertest.annotation.MultiUserConfigClass;
+import fi.vincit.multiusertest.annotation.MultiUserTestConfig;
 import fi.vincit.multiusertest.annotation.RunWithUsers;
-import fi.vincit.multiusertest.configuration.ConfiguredTest;
+import fi.vincit.multiusertest.configuration.InitProducerBeforeTestConfiguredTest;
+import fi.vincit.multiusertest.rule.AuthorizationRule;
 import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
 import fi.vincit.multiusertest.util.LoginRole;
 import fi.vincit.multiusertest.util.User;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 @RunWithUsers(producers = {"user:test-user"},
         consumers = {RunWithUsers.PRODUCER, "role:ROLE_ADMIN", "role:ROLE_USER"})
 @RunWith(MultiUserTestRunner.class)
-public class InitProducerBeforeTest extends ConfiguredTest {
+@MultiUserTestConfig
+public class InitProducerBeforeTest {
 
-    private static boolean producerCreated = false;
+    @MultiUserConfigClass
+    private InitProducerBeforeTestConfiguredTest configuredTest =
+            new InitProducerBeforeTestConfiguredTest();
+
+    @Rule
+    public AuthorizationRule authorizationRule = new AuthorizationRule();
+
+
 
     @Before
     public void init() {
-        createUser("test-user", "Test", "Consumer", User.Role.ROLE_USER, LoginRole.PRODUCER);
-        producerCreated = true;
-    }
-
-    @Override
-    public void logInAs(LoginRole role) {
-        if (role == LoginRole.PRODUCER) {
-            if (!producerCreated) {
-                throw new AssertionError("No produced created before logInAs call");
-            }
-        } else {
-            super.logInAs(role);
-        }
+        configuredTest.createUser("test-user", "Test", "Consumer", User.Role.ROLE_USER, LoginRole.PRODUCER);
+        InitProducerBeforeTestConfiguredTest.setProducerCreated(true);
     }
 
     @Test
     public void producerLoggedIn() {
-        if (!getProducer().getUsername().equals("test-user")) {
+        if (!configuredTest.getProducer().getUsername().equals("test-user")) {
             throw new AssertionError("Wrong producer user, should be test-user");
         }
     }
 
     @Test
     public void logInAsUser() {
-        logInAs(LoginRole.CONSUMER);
+        configuredTest.logInAs(LoginRole.CONSUMER);
     }
 
 }
