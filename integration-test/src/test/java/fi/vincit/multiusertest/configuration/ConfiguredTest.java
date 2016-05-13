@@ -1,19 +1,15 @@
 package fi.vincit.multiusertest.configuration;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.junit.After;
-
-import fi.vincit.multiusertest.annotation.MultiUserTestConfig;
-import fi.vincit.multiusertest.runner.junit.framework.BlockMultiUserTestClassRunner;
-import fi.vincit.multiusertest.test.AbstractUserRoleIT;
+import fi.vincit.multiusertest.test.AbstractMultiUserConfig;
 import fi.vincit.multiusertest.util.LoginRole;
 import fi.vincit.multiusertest.util.SecurityUtil;
 import fi.vincit.multiusertest.util.User;
+import org.junit.After;
 
-@MultiUserTestConfig(runner = BlockMultiUserTestClassRunner.class)
-public abstract class ConfiguredTest extends AbstractUserRoleIT<User, User.Role> {
+import java.util.HashMap;
+import java.util.Map;
+
+public class ConfiguredTest extends AbstractMultiUserConfig<User, User.Role> {
 
     private static Map<String, User> users = new HashMap<>();
 

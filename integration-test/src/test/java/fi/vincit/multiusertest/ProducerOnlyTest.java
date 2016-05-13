@@ -1,12 +1,16 @@
 package fi.vincit.multiusertest;
 
+import fi.vincit.multiusertest.annotation.MultiUserConfigClass;
+import fi.vincit.multiusertest.annotation.MultiUserTestConfig;
 import fi.vincit.multiusertest.annotation.RunWithUsers;
 import fi.vincit.multiusertest.configuration.ConfiguredTest;
+import fi.vincit.multiusertest.rule.AuthorizationRule;
 import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
 import fi.vincit.multiusertest.util.MethodCalls;
 import fi.vincit.multiusertest.util.User;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -15,7 +19,8 @@ import static org.junit.Assert.assertThat;
 
 @RunWithUsers(producers = {"role:ROLE_ADMIN", "role:ROLE_USER"})
 @RunWith(MultiUserTestRunner.class)
-public class ProducerOnlyTest extends ConfiguredTest {
+@MultiUserTestConfig
+public class ProducerOnlyTest {
 
     private static MethodCalls methodCalls = new MethodCalls()
             .expectMethodCalls("runWithEverything", 2)
@@ -24,6 +29,12 @@ public class ProducerOnlyTest extends ConfiguredTest {
             .expectMethodCalls("runConsumerAndProducerUser", 0)
             .expectMethodCalls("runConsumerUserAndProducerAdmin", 0)
             .expectMethodCalls("neverRun", 0);
+
+    @MultiUserConfigClass
+    private ConfiguredTest configuredTest = new ConfiguredTest();
+
+    @Rule
+    public AuthorizationRule authorizationRule = new AuthorizationRule();
 
     @BeforeClass
     public static void initMethodCalls() {
@@ -46,7 +57,7 @@ public class ProducerOnlyTest extends ConfiguredTest {
     @RunWithUsers(producers = {"role:ROLE_ADMIN"})
     public void runProducerAdmin() {
         methodCalls.call("runProducerAdmin");
-        assertThat(getProducerModel().getRole(), is(User.Role.ROLE_ADMIN));
+        assertThat(configuredTest.getProducer().getRole(), is(User.Role.ROLE_ADMIN));
     }
 
     @Test
