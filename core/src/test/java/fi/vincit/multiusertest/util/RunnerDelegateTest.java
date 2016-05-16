@@ -48,6 +48,39 @@ public class RunnerDelegateTest {
     }
 
     @Ignore
+    private static class MissingTestConfig extends AbstractMultiUserConfig<String, String> {
+
+        @Override
+        public void loginWithUser(String s) {
+        }
+
+        @Override
+        public String createUser(String username, String firstName, String lastName, String userRole, LoginRole loginRole) {
+            return null;
+        }
+
+        @Override
+        public String stringToRole(String role) {
+            return null;
+        }
+
+        @Override
+        public String getUserByUsername(String username) {
+            return null;
+        }
+
+        @Override
+        public RoleContainer<String> getConsumerRoleContainer() {
+            return super.getConsumerRoleContainer();
+        }
+
+        @Override
+        public RoleContainer<String> getProducerRoleContainer() {
+            return super.getProducerRoleContainer();
+        }
+    }
+
+    @Ignore
     private static class TestConfig extends AbstractMultiUserConfig<String, String> {
 
         public TestConfig(UserRoleIT<String> config) {
@@ -87,6 +120,13 @@ public class RunnerDelegateTest {
         }
     }
 
+    @Ignore
+    private static class InheritedTestConfig extends TestConfig {
+        public InheritedTestConfig(UserRoleIT<String> config) {
+            super(config);
+        }
+    }
+
     @Test
     public void testValidateTestInstance() {
         RunnerDelegate delegate = new RunnerDelegate(
@@ -107,6 +147,27 @@ public class RunnerDelegateTest {
         );
 
         delegate.validateTestInstance(new Object());
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testValidateTestInstanceWithMissingConfigClass() {
+        RunnerDelegate delegate = new RunnerDelegate(
+                UserIdentifier.parse("role:ROLE_ADMIN"),
+                UserIdentifier.parse("role:ROLE_USER")
+        );
+        delegate.validateTestInstance(new MissingTestConfig());
+    }
+
+    @Test
+    public void testValidateInheritedTestInstance() {
+        RunnerDelegate delegate = new RunnerDelegate(
+                UserIdentifier.parse("role:ROLE_ADMIN"),
+                UserIdentifier.parse("role:ROLE_USER")
+        );
+        UserRoleIT<String> mockConfig = mock(UserRoleIT.class);
+        TestConfig instance = (InheritedTestConfig) delegate.validateTestInstance(new InheritedTestConfig(mockConfig));
+
+        assertThat(instance, notNullValue());
     }
 
     @Test
