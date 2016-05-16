@@ -73,7 +73,7 @@ public class RunnerDelegate {
             return testInstance;
         } else {
             throw new IllegalStateException("Invalid test configuration. " +
-                    "Test has to extend UserRoleIT or have configuration annotated with @MultiUserConfigClass.");
+                    "Test has to have public configuration member annotated with @MultiUserConfigClass.");
         }
 
     }
