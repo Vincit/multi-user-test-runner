@@ -1,15 +1,14 @@
 package fi.vincit.multiusertest.runner.junit.framework;
 
-import java.util.List;
-
+import fi.vincit.multiusertest.util.RunnerDelegate;
+import fi.vincit.multiusertest.util.UserIdentifier;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.Statement;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.junit4.statements.RunBeforeTestMethodCallbacks;
 
-import fi.vincit.multiusertest.util.RunnerDelegate;
-import fi.vincit.multiusertest.util.UserIdentifier;
+import java.util.List;
 
 /**
  * Spring specific runner. Uses SpringJUnit4ClassRunner to initialize
@@ -46,7 +45,7 @@ public class SpringMultiUserTestClassRunner extends SpringJUnit4ClassRunner {
 
     @Override
     protected Object createTest() throws Exception {
-        return runnerDelegate.createTest(super.createTest());
+        return runnerDelegate.validateTestInstance(super.createTest());
     }
 
     @Override

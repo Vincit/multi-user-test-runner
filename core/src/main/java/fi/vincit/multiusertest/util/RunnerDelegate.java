@@ -67,7 +67,7 @@ public class RunnerDelegate {
         return String.format("producer={%s}, consumer={%s}", producerIdentifier, userIdentifier);
     }
 
-    public Object createTest(Object testInstance) {
+    public Object validateTestInstance(Object testInstance) {
 
         if (hasComponentConfig(testInstance)){
             return testInstance;
@@ -110,6 +110,12 @@ public class RunnerDelegate {
 
     private Optional<Field> findFieldWithConfig(Object testInstance) throws IllegalAccessException {
         for (Field field : testInstance.getClass().getDeclaredFields()) {
+            if (field.isAnnotationPresent(MultiUserConfigClass.class)) {
+                return Optional.of(field);
+            }
+        }
+
+        for (Field field : testInstance.getClass().getFields()) {
             if (field.isAnnotationPresent(MultiUserConfigClass.class)) {
                 return Optional.of(field);
             }
