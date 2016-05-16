@@ -50,8 +50,12 @@ public class RunnerDelegateTest {
     @Ignore
     private static class TestConfig extends AbstractMultiUserConfig<String, String> {
 
+        public TestConfig(UserRoleIT<String> config) {
+            this.config = config;
+        }
+
         @MultiUserConfigClass
-        private UserRoleIT<String> config = this;
+        public final UserRoleIT<String> config;
 
         @Override
         public void loginWithUser(String s) {
@@ -84,24 +88,25 @@ public class RunnerDelegateTest {
     }
 
     @Test
-    public void testCreateTest() {
+    public void testValidateTestInstance() {
         RunnerDelegate delegate = new RunnerDelegate(
                 UserIdentifier.parse("role:ROLE_ADMIN"),
                 UserIdentifier.parse("role:ROLE_USER")
         );
-        TestConfig instance = (TestConfig) delegate.createTest(new TestConfig());
+        UserRoleIT<String> mockConfig = mock(UserRoleIT.class);
+        TestConfig instance = (TestConfig) delegate.validateTestInstance(new TestConfig(mockConfig));
 
         assertThat(instance, notNullValue());
     }
 
     @Test(expected = IllegalStateException.class)
-    public void testCreateTestWithInvalidClassType() {
+    public void testValidateTestInstanceWithInvalidClassType() {
         RunnerDelegate delegate = new RunnerDelegate(
                 UserIdentifier.parse("role:ROLE_ADMIN"),
                 UserIdentifier.parse("role:ROLE_USER")
         );
 
-        delegate.createTest(new Object());
+        delegate.validateTestInstance(new Object());
     }
 
     @Test

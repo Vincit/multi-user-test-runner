@@ -46,7 +46,7 @@ public class BlockMultiUserTestClassRunner extends BlockJUnit4ClassRunner {
 
     @Override
     protected Object createTest() throws Exception {
-        return runnerDelegate.createTest(super.createTest());
+        return runnerDelegate.validateTestInstance(super.createTest());
     }
 
     @Override
