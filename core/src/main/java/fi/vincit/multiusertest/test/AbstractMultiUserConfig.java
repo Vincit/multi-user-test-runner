@@ -118,4 +118,12 @@ public abstract class AbstractMultiUserConfig<USER, ROLE> implements MultiUserCo
     public void initialize() {
         userResolver.resolve();
     }
+
+    protected RoleContainer<ROLE> getConsumerRoleContainer() {
+        return userResolver.getConsumer();
+    }
+
+    protected RoleContainer<ROLE> getProducerRoleContainer() {
+        return userResolver.getProducer();
+    }
 }

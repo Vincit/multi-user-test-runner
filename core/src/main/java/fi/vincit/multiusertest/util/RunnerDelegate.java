@@ -69,11 +69,7 @@ public class RunnerDelegate {
 
     public Object createTest(Object testInstance) {
 
-        if (testInstance instanceof UserRoleIT) {
-            UserRoleIT roleItInstance = (UserRoleIT) testInstance;
-            roleItInstance.setUsers(producerIdentifier, userIdentifier);
-            return roleItInstance;
-        } else if (hasComponentConfig(testInstance)){
+        if (hasComponentConfig(testInstance)){
             return testInstance;
         } else {
             throw new IllegalStateException("Invalid test configuration. " +

@@ -1,6 +1,8 @@
 package fi.vincit.multiusertest.util;
 
+import fi.vincit.multiusertest.annotation.MultiUserConfigClass;
 import fi.vincit.multiusertest.test.AbstractMultiUserConfig;
+import fi.vincit.multiusertest.test.UserRoleIT;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runners.model.FrameworkMethod;
@@ -47,6 +49,10 @@ public class RunnerDelegateTest {
 
     @Ignore
     private static class TestConfig extends AbstractMultiUserConfig<String, String> {
+
+        @MultiUserConfigClass
+        private UserRoleIT<String> config = this;
+
         @Override
         public void loginWithUser(String s) {
         }
@@ -66,6 +72,15 @@ public class RunnerDelegateTest {
             return null;
         }
 
+        @Override
+        public RoleContainer<String> getConsumerRoleContainer() {
+            return super.getConsumerRoleContainer();
+        }
+
+        @Override
+        public RoleContainer<String> getProducerRoleContainer() {
+            return super.getProducerRoleContainer();
+        }
     }
 
     @Test
@@ -77,12 +92,6 @@ public class RunnerDelegateTest {
         TestConfig instance = (TestConfig) delegate.createTest(new TestConfig());
 
         assertThat(instance, notNullValue());
-        // FIXME:
-        //assertThat(instance.getProducerModel(), notNullValue());
-        //assertThat(instance.getProducerModel().getIdentifier(), is("ROLE_ADMIN"));
-
-        //assertThat(instance.getConsumerModel(), notNullValue());
-        //assertThat(instance.getConsumerModel().getIdentifier(), is("ROLE_USER"));
     }
 
     @Test(expected = IllegalStateException.class)
