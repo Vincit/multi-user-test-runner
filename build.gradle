@@ -1,6 +1,8 @@
 def projectId = 'multi-user-test-runner'
 def scmOrganization = 'Vincit'
-def signPackage = Boolean.parseBoolean(signPackage ?: "true")
+def signPackage = Boolean.parseBoolean(
+        project.hasProperty("signPackage") ? signPackage : "true"
+)
 
 task tagRelease << {
     version = System.env.RELEASE_VERSION ?: "test"
