@@ -1,6 +1,8 @@
 def projectId = 'multi-user-test-runner'
 def scmOrganization = 'Vincit'
-def signPackage = Boolean.parseBoolean(signPackage ?: "true")
+def signPackage = Boolean.parseBoolean(
+        project.hasProperty("signPackage") ? signPackage : "true"
+)
 
 static String readFile(String filename) {
     return new File(filename).getText("UTF-8");
