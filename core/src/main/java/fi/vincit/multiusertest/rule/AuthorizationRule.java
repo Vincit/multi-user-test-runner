@@ -99,14 +99,6 @@ public class AuthorizationRule implements TestRule {
         }
     }
 
-    Set<UserIdentifier> getExpectToFailOnRoles() {
-        return expectToFailOnRoles;
-    }
-
-    UserIdentifier getUserIdentifier() {
-        return userIdentifier;
-    }
-
     FailMode getFailMode() {
         return failMode;
     }
