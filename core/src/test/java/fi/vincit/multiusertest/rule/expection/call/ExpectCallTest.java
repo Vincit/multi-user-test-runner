@@ -1,16 +1,15 @@
 package fi.vincit.multiusertest.rule.expection.call;
 
-import static fi.vincit.multiusertest.util.UserIdentifiers.ifAnyOf;
-
-import java.io.IOException;
-
-import org.junit.Test;
-
 import fi.vincit.multiusertest.rule.expection.Expectation;
 import fi.vincit.multiusertest.rule.expection.Expectations;
 import fi.vincit.multiusertest.rule.expection.FunctionCall;
 import fi.vincit.multiusertest.util.AuthorizationFailedException;
 import fi.vincit.multiusertest.util.UserIdentifier;
+import org.junit.Test;
+
+import java.io.IOException;
+
+import static fi.vincit.multiusertest.util.UserIdentifiers.ifAnyOf;
 
 public class ExpectCallTest {
 
