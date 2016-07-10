@@ -5,6 +5,10 @@ public class TestService {
         throw new IllegalStateException("Denied");
     }
 
+    public void throwException(Throwable throwable) throws Throwable {
+        throw throwable;
+    }
+
     public void noThrow() {
     }
 
