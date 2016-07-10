@@ -105,14 +105,13 @@ injection, `@ContextConfiguration` etc. with your test classes. The test class r
 ## Default Exception
 
 By default `IllegalStateException` is expected as the exception that is thrown on failure. Other
-exceptions are ignored by the runner and will be handled normally by the test method. 
-`@MultiUserTestConfig` annotation can be used to change the default exception class for a test 
-class. The annotation is inherited so it can be added to a configured base class to reduce 
-boilerplate code.
+exceptions are ignored by the runner and will be handled normally by the test method. This behaviour can be changed:
 
-The other options to change the expected class are to do it in `@Before` method or in the
-test method itself. This can be achieved by calling `authentication().setExpectedException()`
-method. The exception is reset to default exception before each test method.
+1. Using `expecations` by asserting with `authorizationRule#expect(Expectation expectation)`method. See section `Assertions`
+for more information. This is preferred way if you are using Java 8 to write the tests.
+1. Adding `@MultiUserTestConfig` annotation to change the default exception for a test class.
+The annotation is inherited so it can be added to a configured base class to reduce boilerplate code.
+1. Do it in `@Before` method or in the test method itself by calling `authorizationRule#setExpectedException()`
 
 ## Creating Custom Users
 
