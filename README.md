@@ -292,10 +292,21 @@ itself and not in the `AbstractUserRoleIT` class' rule.
 Assert that call fails/doesn't fail:
 
 ```java
-authorization().expect(call(() -> service.doSomething(value)).toFail(ifAnyOf("role:ROLE_ADMIN")));
-authorization().expect(call(() -> service.doSomething(value)).notToFail(ifAnyOf("role:ROLE_ADMIN")));
-authorization().expect(call(() -> service.doSomething(value)).toFailWithException(IllegalStateException.class, 
-                                                                                  ifAnyOf("role:ROLE_ADMIN"))
+authorization().expect(call(() -> service.doSomething(value))
+                                        .toFail(ifAnyOf("role:ROLE_ADMIN"))
+                                    );
+```
+```java
+authorization().expect(call(() -> service.doSomething(value))
+                                        .notToFail(ifAnyOf("role:ROLE_ADMIN"))
+                                    );
+```
+```java
+authorization().expect(call(() -> service.doSomething(value))
+                                    .toFailWithException(
+                                        IllegalStateException.class,
+                                        ifAnyOf("role:ROLE_ADMIN")
+                                    )
                       );
 ```
 
@@ -303,8 +314,9 @@ Compare the method call return value:
 
 ```java
 authorization().expect(valueOf(() -> service.getAllUsers(value))
-                .toEqual(10, ifAnyOf("role:ROLE_ADMIN"))
-                .toEqual(2, ifAnyOf("role:ROLE_USER"));
+                    .toEqual(10, ifAnyOf("role:ROLE_ADMIN"))
+                    .toEqual(2, ifAnyOf("role:ROLE_USER"))
+                );
 ```
 
 Use any assertion (e.g. `assertEquals` or `assertThat`). The assertion call has to throw
@@ -312,8 +324,9 @@ Use any assertion (e.g. `assertEquals` or `assertThat`). The assertion call has 
 
 ```java
 authorization().expect(valueOf(() -> service.getAllUsers(value))
-                .toAssert((value) -> assertThat(value, is(10)), ifAnyOf("role:ROLE_ADMIN"))
-                .toAssert((value) -> assertThat(value, is(2)), ifAnyOf("role:ROLE_USER"));
+                    .toAssert((value) -> assertThat(value, is(10)), ifAnyOf("role:ROLE_ADMIN"))
+                    .toAssert((value) -> assertThat(value, is(2)), ifAnyOf("role:ROLE_USER"))
+                );
 ```
 
 # Example
