@@ -11,16 +11,31 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * Creates instances of JUnit test runners
+ */
 public class TestRunnerFactory {
 
     private final TestClass testClass;
     private final Constructor runnerConstructor;
 
+    /**
+     *
+     * @param testClass Test class
+     * @param runnerConstructor Test class constructor
+     */
     public TestRunnerFactory(TestClass testClass, Constructor runnerConstructor) {
         this.testClass = testClass;
         this.runnerConstructor = runnerConstructor;
     }
 
+    /**
+     * Creates runners for each producer consumer combination.
+     * @param producerIdentifiers Producer identifiers
+     * @param consumerIdentifiers Consumer identifiers
+     * @return All required combinations for given identifiers
+     * @throws Exception
+     */
     public List<Runner> createRunnersForRoles(Collection<UserIdentifier> producerIdentifiers, Collection<UserIdentifier> consumerIdentifiers) throws Exception {
         List<Runner> runners = new ArrayList<>();
         if (consumerIdentifiers.isEmpty()) {

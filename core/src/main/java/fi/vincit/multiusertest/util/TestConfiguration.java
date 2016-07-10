@@ -9,6 +9,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 
+/**
+ * Abstraction of configuration test class
+ */
 public class TestConfiguration {
 
     private final Collection<UserIdentifier> producerIdentifiers;
@@ -16,6 +19,13 @@ public class TestConfiguration {
     private final Optional<Class<?>> runner;
     private final Optional<Class<? extends Throwable>> defaultException;
 
+    /**
+     * Creates a new instance using {@link RunWithUsers} and {@link MultiUserTestConfig}
+     * annotations. Uses MultiUserTestConfig for defaults.
+     * @param testUsers annotation
+     * @param multiUserTestConfig Optional configurations class level configuration
+     * @return
+     */
     public static TestConfiguration fromRunWithUsers(Optional<RunWithUsers> testUsers, Optional<MultiUserTestConfig> multiUserTestConfig) {
 
         Collection<UserIdentifier> producerIdentifiers = Collections.emptySet();
@@ -40,6 +50,13 @@ public class TestConfiguration {
         );
     }
 
+    /**
+     * Creates a new instance using deprecated {@link TestUsers} and {@link MultiUserTestConfig}
+     * annotations. Uses MultiUserTestConfig for defaults.
+     * @param testUsers annotation
+     * @param multiUserTestConfig Optional configurations class level configuration
+     * @return
+     */
     public static TestConfiguration fromTestUsers(Optional<TestUsers> testUsers, Optional<MultiUserTestConfig> multiUserTestConfig) {
 
         Collection<UserIdentifier> producerIdentifiers = Collections.emptySet();

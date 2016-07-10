@@ -40,6 +40,12 @@ public class UserIdentifier {
     private final Type type;
     private final String identifier;
 
+    /**
+     * Parses a user identifier string and creates a {@link UserIdentifier} instance.
+     * user identifier string is in format <i><type>:<identifier></identifier></i> e.g. <i>user:admin</i> or <i>role:ROLE_ADMIN</i>
+     * @param identifierString User identifier string to parse
+     * @return UserIdentifier object
+     */
     public static UserIdentifier parse(String identifierString) {
         if (identifierString.equals(RunWithUsers.PRODUCER)) {
             return getProducer();
@@ -68,6 +74,12 @@ public class UserIdentifier {
         return new UserIdentifier(Type.WITH_PRODUCER_ROLE, null);
     }
 
+    /**
+     * Creates a new {@link UserIdentifier} with the given type and identifier.
+     * Usually objects are instantiated using {@link this#parse(String)} for creating objects.
+     * @param type Role type
+     * @param identifier Identifier (user name or role name)
+     */
     public UserIdentifier(Type type, String identifier) {
         this.type = type;
         this.identifier = identifier;

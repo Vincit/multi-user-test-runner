@@ -1,5 +1,9 @@
 package fi.vincit.multiusertest.test;
 
+/**
+ * Interface for role converters
+ * @param <ROLE> Role type in the system under test
+ */
 public interface RoleConverter<ROLE>  {
 
     /**

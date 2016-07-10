@@ -4,10 +4,19 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 
+/**
+ * Utility class for defining multiple roles with less typing.
+ * Use {@link UserIdentifiers#roles(String...)} to initialize.
+ * Contains a collection of roles names.
+ */
 public class Roles implements UserIdentifierCollection {
 
     private Collection<String> roleIdentifiers;
 
+    /**
+     * Initializes the Roles with the given role names
+     * @param roles
+     */
     public Roles(String... roles) {
         roleIdentifiers = new ArrayList<>(roles.length);
         for (int i = 0; i < roles.length; ++i) {

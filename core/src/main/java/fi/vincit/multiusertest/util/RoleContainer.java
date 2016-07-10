@@ -2,6 +2,10 @@ package fi.vincit.multiusertest.util;
 
 import fi.vincit.multiusertest.test.RoleConverter;
 
+/**
+ * Utility class for linking system roles and user identifiers.
+ * @param <ROLE> Type of the user role in the system under test
+ */
 public class RoleContainer<ROLE> {
 
     static <ROLE> RoleContainer<ROLE> forProducerUser() {

@@ -1,16 +1,20 @@
 package fi.vincit.multiusertest.util;
 
-import java.util.List;
-import java.util.Objects;
-
+import fi.vincit.multiusertest.test.UserRoleIT;
 import org.junit.Before;
 import org.junit.internal.runners.statements.RunBefores;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.Statement;
 import org.junit.runners.model.TestClass;
 
-import fi.vincit.multiusertest.test.UserRoleIT;
+import java.util.List;
+import java.util.Objects;
 
+/**
+ * Helper class for delegating calls from JUnit runner.
+ * Does some required method filtering and helps executing
+ * Before methods in correct order.
+ */
 public class RunnerDelegate {
 
     private final UserIdentifier producerIdentifier;

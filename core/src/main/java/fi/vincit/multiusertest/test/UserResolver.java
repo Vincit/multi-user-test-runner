@@ -4,6 +4,12 @@ import fi.vincit.multiusertest.util.LoginRole;
 import fi.vincit.multiusertest.util.RoleContainer;
 import fi.vincit.multiusertest.util.UserIdentifier;
 
+/**
+ * Utility class for resolving user from user identifiers.
+ * Creates new users to the system if necessary.
+ * @param <USER> User type in the system under test
+ * @param <ROLE> Role type in the system under test
+ */
 public class UserResolver<USER, ROLE> {
 
     private final RoleContainer<ROLE> producerRoleContainer;
@@ -14,6 +20,14 @@ public class UserResolver<USER, ROLE> {
 
     private final UserFactory<USER, ROLE> userFactory;
 
+    /**
+     * Initializes the resolver. Calling {@link this#resolve()} will actually
+     * resolve the users and creates them if necessary.
+     * @param userFactory User factory used to create new users
+     * @param roleConverter Role converter class
+     * @param producer Producer identifier
+     * @param consumer Consumer identifier
+     */
     public UserResolver(UserFactory<USER, ROLE> userFactory, RoleConverter<ROLE> roleConverter, UserIdentifier producer, UserIdentifier consumer) {
         this.userFactory = userFactory;
         this.producerRoleContainer = RoleContainer.forProducer(producer, roleConverter);
@@ -64,6 +78,10 @@ public class UserResolver<USER, ROLE> {
         return consumerRoleContainer;
     }
 
+    /**
+     * Returns consumer user to use. {@link this#resolve()} must be called before.
+     * @return Consumer user instance
+     */
     public USER resolveConsumer() {
         if (consumerRoleContainer.getMode() == RoleContainer.RoleMode.EXISTING_USER) {
             return userFactory.getUserByUsername(consumerRoleContainer.getIdentifier());
@@ -76,6 +94,10 @@ public class UserResolver<USER, ROLE> {
         }
     }
 
+    /**
+     * Returns producer user to use. {@link this#resolve()} must be called before.
+     * @return Producer user instance
+     */
     public USER resolverProducer() {
         if (producerRoleContainer.getMode() == RoleContainer.RoleMode.EXISTING_USER) {
             return userFactory.getUserByUsername(producerRoleContainer.getIdentifier());
@@ -86,6 +108,10 @@ public class UserResolver<USER, ROLE> {
         }
     }
 
+    /**
+     * Resolves the producer and consumer users. If user needs to be created
+     * creates one.
+     */
     public void resolve() {
         initializeProducer();
         initializeConsumer();

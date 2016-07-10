@@ -4,6 +4,13 @@ import fi.vincit.multiusertest.util.LoginRole;
 import fi.vincit.multiusertest.util.RoleContainer;
 import fi.vincit.multiusertest.util.UserIdentifier;
 
+/**
+ * Resolves user identifier instances for given login roles
+ * according to the given user resolver rules.
+ *
+ * @param <USER> User type in the system under test
+ * @param <ROLE> Role type in the system under test
+ */
 public class IdentifierResolver<USER, ROLE> {
 
     private RoleContainer<ROLE> consumer;
@@ -14,6 +21,14 @@ public class IdentifierResolver<USER, ROLE> {
         this.producer = userResolver.getProducer();
     }
 
+    /**
+     * Returns the user identifier that should be used with the
+     * given login role. E.g. when resolving identifier for consumer
+     * it may return producer identifier if the current consumer
+     * identifier requires it.
+     * @param loginRole Login role
+     * @return User identifier
+     */
     public UserIdentifier getIdentifierFor(LoginRole loginRole) {
         if (loginRole == LoginRole.PRODUCER) {
             return getProducerIdentifier();
