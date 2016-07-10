@@ -1,7 +1,7 @@
 package fi.vincit.multiusertest;
 
 public class TestService {
-    public void throwAccessDenied() {
+    public void throwIllegalStateException() {
         throw new IllegalStateException("Denied");
     }
 

@@ -1,20 +1,19 @@
 package fi.vincit.multiusertest;
 
-import static fi.vincit.multiusertest.rule.expection.Expectations.call;
-import static fi.vincit.multiusertest.rule.expection.Expectations.valueOf;
-import static fi.vincit.multiusertest.util.UserIdentifiers.ifAnyOf;
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
 import fi.vincit.multiusertest.annotation.RunWithUsers;
 import fi.vincit.multiusertest.configuration.ConfiguredTest;
 import fi.vincit.multiusertest.rule.expection.call.ExpectCall;
 import fi.vincit.multiusertest.rule.expection.value.ExpectValueOf;
 import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
 import fi.vincit.multiusertest.util.LoginRole;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import static fi.vincit.multiusertest.rule.expection.Expectations.call;
+import static fi.vincit.multiusertest.rule.expection.Expectations.valueOf;
+import static fi.vincit.multiusertest.util.UserIdentifiers.ifAnyOf;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 
 @RunWithUsers(producers = {"role:ROLE_SUPER_ADMIN", "role:ROLE_ADMIN", "role:ROLE_USER", },
         consumers = {"role:ROLE_ADMIN", "role:ROLE_USER", "role:ROLE_VISITOR"})
@@ -82,7 +81,7 @@ public class ChainedTest extends ConfiguredTest {
     }
 
     public void expectAssert_toFailWithException_toPass() throws Throwable {
-        ExpectCall expectValueOf = call(testService::throwAccessDenied);
+        ExpectCall expectValueOf = call(testService::throwIllegalStateException);
 
         logInAs(LoginRole.CONSUMER);
         authorization().expect(expectValueOf
@@ -98,7 +97,7 @@ public class ChainedTest extends ConfiguredTest {
 
     @Test(expected = AssertionError.class)
     public void expectAssert_toFailWithException_toFail() throws Throwable {
-        ExpectCall expectValueOf = call(() -> testService.throwAccessDenied());
+        ExpectCall expectValueOf = call(() -> testService.throwIllegalStateException());
 
         logInAs(LoginRole.CONSUMER);
         authorization().expect(expectValueOf

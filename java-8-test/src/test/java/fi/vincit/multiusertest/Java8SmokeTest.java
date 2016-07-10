@@ -1,18 +1,17 @@
 package fi.vincit.multiusertest;
 
+import fi.vincit.multiusertest.annotation.RunWithUsers;
+import fi.vincit.multiusertest.configuration.ConfiguredTest;
+import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
+import fi.vincit.multiusertest.util.LoginRole;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import static fi.vincit.multiusertest.rule.expection.Expectations.call;
 import static fi.vincit.multiusertest.rule.expection.Expectations.valueOf;
 import static fi.vincit.multiusertest.util.UserIdentifiers.ifAnyOf;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import fi.vincit.multiusertest.annotation.RunWithUsers;
-import fi.vincit.multiusertest.configuration.ConfiguredTest;
-import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
-import fi.vincit.multiusertest.util.LoginRole;
 
 @RunWithUsers(producers = {"role:ROLE_ADMIN"}, consumers = "role:ROLE_USER")
 @RunWith(MultiUserTestRunner.class)
@@ -22,7 +21,7 @@ public class Java8SmokeTest extends ConfiguredTest {
 
     @Test(expected = AssertionError.class)
     public void expectCallToFail() throws Throwable {
-        authorization().expect(call(testService::throwAccessDenied).toFail(ifAnyOf("role:ROLE_ADMIN")));
+        authorization().expect(call(testService::throwIllegalStateException).toFail(ifAnyOf("role:ROLE_ADMIN")));
     }
 
     @Test
