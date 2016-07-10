@@ -8,17 +8,17 @@ scenarios where the authorization depends on multiple users and their roles.
 
 Originally the library was created to test the security of Spring service-layer methods. Now the core 
 library also with any plain Java classes and has been successfully used with REST-assured based API testing.
-For the old Spring support, use the `multi-user-test-runner-spring` module. New component based configuration doesn't
-need the Spring module.
+From 0.5.0 onwards `multi-user-test-runner-spring` dependency is deprecated. Spring support is achieved by using
+rules.
 
 # Requirements
 
  * Java 7 or newer
- * JUnit 4.12 or newer
+ * JUnit 4.12 or newer, but not JUnit 5
  
 # Optional Requirements
 
-## For SpringMultiUserTestClassRunner (multi-user-test-runner-spring module)
+## multi-user-test-runner-spring module
  * Spring Framework 3.2.x, 4.0.x, 4.1.x, 4.2.x (tested)
  * Spring Security 3.2.x, 4.0.x (tested)
  
@@ -64,10 +64,10 @@ Usage is simple:
 Configure the test class:
 
 1. Create a configuration class that implements `MultiUserConfig<USER, ROLE>` interface (where USER and ROLE
-   are you user and role types)
-1. Configure runner by adding `@RunWith(MultiUserTestRunner.class)` for the class
+   are your user and role types)
+1. Configure the test runner by adding `@RunWith(MultiUserTestRunner.class)` for the test class
 1. Configure users to run with by adding `@RunWithUsers(producers = {"role:ROLE_ADMIN"}, consumers = "role:ROLE_ADMIN")`
-   for the class
+   for the test class
 1. Create your test class and add an `AuthroizationRule` and your config class to your test class:
 ```java
 @MultiUserConfigClass
@@ -85,8 +85,8 @@ Write the tests:
 
 ### Additional Configuration for Spring
 
-To make the test work with Spring two rules have to be added: `SpringClassRule` and `SpringMethodRule`.
-By adding these rules the test class and the config annotated by `@MultiUserConfigClass` can be autowired.
+To make the test work with Spring two more rules are needed: `SpringClassRule` and `SpringMethodRule`.
+By adding these rules the bean under test and the config annotated by `@MultiUserConfigClass` can be autowired.
 The `MultiUserConfig` will also be able to use Spring's dependency injection. The test class configuration
 will look like the following:
 ```java
@@ -104,7 +104,7 @@ public static final SpringClassRule SPRING_CLASS_RULE = new SpringClassRule();
 public final SpringMethodRule springMethodRule = new SpringMethodRule();
 ```
 
-## Configuring the Test Class (The Old Way)
+### Configuring the Test Class (The Old Way)
 
 Configure the base test class:
 
@@ -154,10 +154,11 @@ By default `IllegalStateException` is expected as the exception that is thrown o
 exceptions are ignored by the runner and will be handled normally by the test method. This behaviour can be changed:
 
 1. Using `expecations` by asserting with `authorizationRule#expect(Expectation expectation)`method. See section `Assertions`
-for more information. This is preferred way if you are using Java 8 to write the tests.
+for more information.
 1. Adding `@MultiUserTestConfig` annotation to change the default exception for a test class.
 The annotation is inherited so it can be added to a configured base class to reduce boilerplate code.
 1. Do it in `@Before` method or in the test method itself by calling `authorizationRule#setExpectedException()`
+method. The exception is reset to default exception before each test method.
 
 ## Creating Custom Users
 
@@ -320,21 +321,13 @@ itself and not in the `AbstractUserRoleIT` class' rule.
 Assert that call fails/doesn't fail:
 
 ```java
-authorization().expect(call(() -> service.doSomething(value))
-                                        .toFail(ifAnyOf("role:ROLE_ADMIN"))
-                                    );
-```
-```java
-authorization().expect(call(() -> service.doSomething(value))
-                                        .notToFail(ifAnyOf("role:ROLE_ADMIN"))
-                                    );
-```
-```java
-authorization().expect(call(() -> service.doSomething(value))
-                                    .toFailWithException(
-                                        IllegalStateException.class,
-                                        ifAnyOf("role:ROLE_ADMIN")
-                                    )
+// Example how to expect method call to fail
+authorization().expect(call(() -> service.doSomething(value)).toFail(ifAnyOf("role:ROLE_ADMIN")));
+// Example how to expect method call not to fail
+authorization().expect(call(() -> service.doSomething(value)).notToFail(ifAnyOf("role:ROLE_ADMIN")));
+// Example how to expect method call to fail with a specific exception
+authorization().expect(call(() -> service.doSomething(value)).toFailWithException(AccessDenied.class,
+                                                                                  ifAnyOf("role:ROLE_ADMIN"))
                       );
 ```
 
@@ -344,6 +337,7 @@ Compare the method call return value:
 authorization().expect(valueOf(() -> service.getAllUsers(value))
                     .toEqual(10, ifAnyOf("role:ROLE_ADMIN"))
                     .toEqual(2, ifAnyOf("role:ROLE_USER"))
+                    .toFailWithException(AccessDenied.class, isAnyOf(RunWithUsers.ANONYMOUS))
                 );
 ```
 
