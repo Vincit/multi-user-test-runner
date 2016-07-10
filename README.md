@@ -102,23 +102,6 @@ The Spring runner loads the Spring context before the tests. This mean you can u
 injection, `@ContextConfiguration` etc. with your test classes. The test class runner can be configured using 
 `@MultiUserTestConfig` annotation's `runner` parameter.
 
-### Custom Test Class Runners
-
-It is also possible to create your own custom test class runner. The custom runner has to extend JUnit's 
-`org.junit.runners.ParentRunner` (doesn't have to be direct superclass) class and has to have 
-a constructor with following signature:
-
-`CustomRunner(Class<?> clazz, UserIdentifier producerIdentifier, UserIdentifier consumerIdentifier)`.
-
-When creating a custom test class runner it is important to note that `AbstractUserRoleIT.logInAs(LoginRole)` 
-method  has to be called **after** `@Before` methods and **before** calling the actual test method. This will
-enable creating users in `@Before` methods so that they can be used as producers.
-
-The `RunnerDelegate` class contains helper methods for creating custom test class runners. Most of time
-the runner implementation can just call the `RunnerDelegate` class' methods without any additional logic.
-But for example implementing the `withBefores` method may require some additional logic in order to make the
-test class' `@Before` methods to work correctly (See implementation of `BlockMultiUserTestClassRunner#withBefore` method).
-
 ## Default Exception
 
 By default `IllegalStateException` is expected as the exception that is thrown on failure. Other
@@ -428,4 +411,24 @@ This example test class will run tests:
     * createAndUpdateTodo producer = role:ROLE_USER; user = role:ROLE_ADMIN;
     * createAndUpdateTodo producer = role:ROLE_USER; user = role:ROLE_USER;
     * createAndUpdateTodo producer = role:ROLE_USER; user = user:existing-user-name;
+
+
+# Customizing
+
+## Custom Test Class Runners
+
+It is also possible to create your own custom test class runner. The custom runner has to extend JUnit's
+`org.junit.runners.ParentRunner` (doesn't have to be direct superclass) class and has to have
+a constructor with following signature:
+
+`CustomRunner(Class<?> clazz, UserIdentifier producerIdentifier, UserIdentifier consumerIdentifier)`.
+
+When creating a custom test class runner it is important to note that `AbstractUserRoleIT.logInAs(LoginRole)`
+method  has to be called **after** `@Before` methods and **before** calling the actual test method. This will
+enable creating users in `@Before` methods so that they can be used as producers.
+
+The `RunnerDelegate` class contains helper methods for creating custom test class runners. Most of time
+the runner implementation can just call the `RunnerDelegate` class' methods without any additional logic.
+But for example implementing the `withBefores` method may require some additional logic in order to make the
+test class' `@Before` methods to work correctly (See implementation of `BlockMultiUserTestClassRunner#withBefore` method).
 
