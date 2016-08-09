@@ -2,6 +2,7 @@
 
 README_FILE="README.md"
 RETURN_VALUE=0
+RELEASE_VERSION=${cat version}
 
 echo "Checking Maven example version. Expecting version $RELEASE_VERSION"
 MAVEN_VERSION_COUNT=$(grep "<version>$RELEASE_VERSION</version>" $README_FILE | wc -l)

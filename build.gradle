@@ -1,12 +1,12 @@
 def projectId = 'multi-user-test-runner'
 def scmOrganization = 'Vincit'
 
-task tagRelease << {
-    version = System.env.RELEASE_VERSION ?: "test"
+def mutrVersion = new File('version').getText('UTF-8')
+def snapshotPrefix = '-SNAPSHOT'
 
-    if (version == null) {
-        throw new java.lang.IllegalArgumentException("RELEASE_VERSION must be defined")
-    }
+task tagRelease << {
+    version = mutrVersion ?: "test"
+
     if (System.env.SCM_USERNAME == null) {
         throw new java.lang.IllegalArgumentException("SCM_USERNAME must be defined")
     }
@@ -31,7 +31,7 @@ subprojects {
 
     group = 'fi.vincit'
     sourceCompatibility = 1.7
-    version = System.env.RELEASE_VERSION ?: '0.4.0-SNAPSHOT'
+    version = System.env.SNAPSHOT ? mutrVersion + snapshotPrefix : mutrVersion
 
     repositories {
         mavenCentral()

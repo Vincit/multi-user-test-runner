@@ -2,7 +2,7 @@
 
 echo "Releasing documentation"
 
-VERSION=$RELEASE_VERSION
+RELEASE_VERSION=${cat version}
 DOCS_FULL_URL="https://${DOCS_USERNAME}:${DOCS_PASSWORD}@${DOCS_GIT_REPO}"
 DOCS_BRANCH=gh-pages
 DOCS_DIR=docs
