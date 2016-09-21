@@ -18,4 +18,5 @@ include 'core',
         'integration-test',
         'java-8-test',
         'spring-test',
-        'spring-test-class-runner'
+        'spring-test-class-runner',
+        'examples'
