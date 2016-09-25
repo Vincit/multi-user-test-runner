@@ -1,13 +1,12 @@
 package fi.vincit.multiusertest.util;
 
+import fi.vincit.multiusertest.annotation.RunWithUsers;
+import org.junit.Test;
+
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNot.not;
 import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertThat;
-
-import org.junit.Test;
-
-import fi.vincit.multiusertest.annotation.RunWithUsers;
 
 public class UserIdentifierTest {
 

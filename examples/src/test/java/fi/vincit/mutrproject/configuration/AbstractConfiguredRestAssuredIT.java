@@ -52,6 +52,10 @@ public abstract class AbstractConfiguredRestAssuredIT extends AbstractUserRoleIT
 
     @Before
     public void setUp() {
+        setPort(port);
+    }
+
+    private static void setPort(int port) {
         RestAssured.port = port;
     }
 
@@ -88,8 +92,6 @@ public abstract class AbstractConfiguredRestAssuredIT extends AbstractUserRoleIT
         RequestSpecification spec = given();
         if (!isAnonymous) {
             spec = spec.auth().preemptive().basic(username, password);
-        } else {
-            spec = spec;
         }
         return spec.header("Content-Type", "application/json");
     }
