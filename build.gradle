@@ -1,7 +1,19 @@
 def projectId = 'multi-user-test-runner'
 def scmOrganization = 'Vincit'
 
-def mutrVersion = '0.4.0'
+static String readFile(String filename) {
+    return new File(filename).getText("UTF-8");
+}
+
+static String getVersion() {
+    try {
+        return readFile("version");
+    } catch(IOException e) {
+        return readFile("../version");
+    }
+}
+
+def mutrVersion = getVersion()
 def snapshotPrefix = '-SNAPSHOT'
 
 task tagRelease << {

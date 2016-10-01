@@ -18,7 +18,7 @@ git clone $DOCS_FULL_URL -b $DOCS_BRANCH --single-branch $DOCS_DIR
 cd $DOCS_DIR
 
 # Copy JavaDocs
-JAVA_VERSION_DOC_DIR="$VERSION/javadocs"
+JAVA_VERSION_DOC_DIR="$RELEASE_VERSION/javadocs"
 JAVA_LATEST_DOC_DIR="latest/javadocs"
 
 echo " * Copying JavaDocs to $JAVA_VERSION_DOC_DIR"
