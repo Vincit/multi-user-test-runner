@@ -1,0 +1,9 @@
+fi.vincit.multiusertest.annotation
+fi.vincit.multiusertest.rule
+fi.vincit.multiusertest.rule.expection
+fi.vincit.multiusertest.rule.expection.call
+fi.vincit.multiusertest.rule.expection.value
+fi.vincit.multiusertest.runner.junit
+fi.vincit.multiusertest.runner.junit.framework
+fi.vincit.multiusertest.test
+fi.vincit.multiusertest.util
