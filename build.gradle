@@ -1,7 +1,7 @@
 def projectId = 'multi-user-test-runner'
 def scmOrganization = 'Vincit'
 
-def mutrVersion = '0.4.0-RC3'
+def mutrVersion = '0.4.0'
 def snapshotPrefix = '-SNAPSHOT'
 
 task tagRelease << {
