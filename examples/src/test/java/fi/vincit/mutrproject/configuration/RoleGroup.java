@@ -1,5 +1,7 @@
 package fi.vincit.mutrproject.configuration;
 
+import fi.vincit.mutrproject.testconfig.AbstractConfiguredMultiRoleIT;
+
 /**
  * A custom RoleGroup which is used to implement
  * multi role support. See {@link AbstractConfiguredMultiRoleIT}

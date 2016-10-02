@@ -1,19 +1,18 @@
-package fi.vincit.mutrproject.feature.todo;
+package fi.vincit.mutrproject.testconfig;
+
 
 import fi.vincit.multiusertest.annotation.MultiUserConfigClass;
 import fi.vincit.multiusertest.annotation.MultiUserTestConfig;
-import fi.vincit.multiusertest.annotation.RunWithUsers;
 import fi.vincit.multiusertest.rule.AuthorizationRule;
 import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
-import fi.vincit.multiusertest.util.LoginRole;
 import fi.vincit.mutrproject.Application;
 import fi.vincit.mutrproject.config.SecurityConfig;
-import fi.vincit.mutrproject.configuration.TestMultiUserAliasConfig;
+import fi.vincit.mutrproject.configuration.TestMultiUserConfig;
+import fi.vincit.mutrproject.feature.user.UserService;
 import fi.vincit.mutrproject.util.DatabaseUtil;
 import org.junit.After;
 import org.junit.ClassRule;
 import org.junit.Rule;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
@@ -25,13 +24,10 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 
-import static fi.vincit.multiusertest.rule.Authentication.notToFail;
-import static fi.vincit.multiusertest.rule.Authentication.toFail;
-import static fi.vincit.multiusertest.util.UserIdentifiers.ifAnyOf;
-
 /**
- * Example test using role aliasing. See {@link TestMultiUserAliasConfig} for an example
- * how to implement role aliasing.
+ * Basic general configuration class for example tests. Uses a basic
+ * {@link TestMultiUserConfig} to configure how test class role string are
+ * mapped to system roles.
  */
 @TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
         DirtiesContextTestExecutionListener.class,
@@ -40,14 +36,10 @@ import static fi.vincit.multiusertest.util.UserIdentifiers.ifAnyOf;
         defaultException = AccessDeniedException.class)
 @ContextConfiguration(classes = {Application.class, SecurityConfig.class})
 @RunWith(MultiUserTestRunner.class)
-@RunWithUsers(
-        producers = {"role:SYSTEM_ADMIN", "role:ADMIN", "role:REGULAR"},
-        consumers = {"role:SYSTEM_ADMIN", "role:ADMIN", "role:REGULAR", RunWithUsers.PRODUCER}
-)
-public class TodoServiceRoleAliasIT {
+public abstract class AbstractConfiguredMultiRoleIT {
 
     @Autowired
-    private TodoService todoService;
+    private UserService userService;
 
     @Autowired
     private DatabaseUtil databaseUtil;
@@ -61,40 +53,23 @@ public class TodoServiceRoleAliasIT {
 
     @Autowired
     @MultiUserConfigClass
-    public TestMultiUserAliasConfig config;
+    public TestMultiUserConfig config;
 
     @Rule
     public AuthorizationRule authorizationRule = new AuthorizationRule();
 
     @After
     public void clear() {
+        userService.logout();
         databaseUtil.clearDb();
     }
 
-
-    @Test
-    public void getPrivateTodoList() throws Throwable {
-        long id = todoService.createTodoList("Test list", false);
-        config.logInAs(LoginRole.CONSUMER);
-        authorizationRule.expect(toFail(ifAnyOf("role:REGULAR")));
-        todoService.getTodoList(id);
+    public TestMultiUserConfig config() {
+        return config;
     }
 
-    @Test
-    public void getPublicTodoList() throws Throwable {
-        long id = todoService.createTodoList("Test list", true);
-        config.logInAs(LoginRole.CONSUMER);
-        todoService.getTodoList(id);
+    public AuthorizationRule authorization() {
+        return authorizationRule;
     }
-
-    @Test
-    public void addTodoItem() throws Throwable {
-        long listId = todoService.createTodoList("Test list", false);
-        config.logInAs(LoginRole.CONSUMER);
-        authorizationRule.expect(notToFail(ifAnyOf("role:ADMIN", "role:SYSTEM_ADMIN", RunWithUsers.PRODUCER)));
-        todoService.addItemToList(listId, "Write tests");
-    }
-
-
 
 }

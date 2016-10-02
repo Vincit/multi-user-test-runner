@@ -1,13 +1,32 @@
 package fi.vincit.mutrproject.feature.todo;
 
+import fi.vincit.multiusertest.annotation.MultiUserConfigClass;
+import fi.vincit.multiusertest.annotation.MultiUserTestConfig;
 import fi.vincit.multiusertest.annotation.RunWithUsers;
+import fi.vincit.multiusertest.rule.AuthorizationRule;
+import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
+import fi.vincit.multiusertest.test.MultiUserConfig;
 import fi.vincit.multiusertest.util.LoginRole;
-import fi.vincit.mutrproject.configuration.AbstractConfiguredIT;
+import fi.vincit.mutrproject.Application;
+import fi.vincit.mutrproject.config.SecurityConfig;
+import fi.vincit.mutrproject.configuration.TestConfig;
 import fi.vincit.mutrproject.feature.todo.dto.TodoListDto;
-import org.junit.Before;
-import org.junit.Test;
+import fi.vincit.mutrproject.feature.user.model.Role;
+import fi.vincit.mutrproject.feature.user.model.User;
+import fi.vincit.mutrproject.util.DatabaseUtil;
+import org.junit.*;
+import org.junit.rules.ExpectedException;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.rules.SpringClassRule;
+import org.springframework.test.context.junit4.rules.SpringMethodRule;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 
 import java.util.Arrays;
 
@@ -26,10 +45,40 @@ import static org.junit.Assert.assertThat;
         consumers = {"role:ROLE_SYSTEM_ADMIN", "role:ROLE_ADMIN", "role:ROLE_USER",
                 RunWithUsers.PRODUCER, RunWithUsers.ANONYMOUS}
 )
-public class TodoServiceJava8IT extends AbstractConfiguredIT {
+@RunWith(MultiUserTestRunner.class)
+@TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
+        DirtiesContextTestExecutionListener.class,
+        TransactionalTestExecutionListener.class})
+@ContextConfiguration(classes = {Application.class, SecurityConfig.class, TestConfig.class})
+@MultiUserTestConfig(defaultException = AccessDeniedException.class)
+public class TodoServiceJava8IT {
+
+    @Rule
+    public ExpectedException expectedException = ExpectedException.none();
+    @Rule
+    public AuthorizationRule authorizationRule = new AuthorizationRule();
+
+    @Autowired
+    @MultiUserConfigClass
+    protected MultiUserConfig<User, Role> multiUserConfig;
+
+    @ClassRule
+    public static final SpringClassRule SPRING_CLASS_RULE = new SpringClassRule();
+
+    @Rule
+    public final SpringMethodRule springMethodRule = new SpringMethodRule();
+
 
     @Autowired
     private TodoService todoService;
+
+    @After
+    public void clear() {
+        databaseUtil.clearDb();
+    }
+
+    @Autowired
+    private DatabaseUtil databaseUtil;
 
     @Before
     public void init() {
@@ -39,8 +88,8 @@ public class TodoServiceJava8IT extends AbstractConfiguredIT {
     @Test
     public void getPrivateTodoList() throws Throwable {
         long id = todoService.createTodoList("Test list", false);
-        logInAs(LoginRole.CONSUMER);
-        authorization().expect(
+        multiUserConfig.logInAs(LoginRole.CONSUMER);
+        authorizationRule.expect(
                 call(() -> todoService.getTodoList(id))
                         .toFail(ifAnyOf("role:ROLE_USER", RunWithUsers.ANONYMOUS))
         );
@@ -49,16 +98,16 @@ public class TodoServiceJava8IT extends AbstractConfiguredIT {
     @Test
     public void getPublicTodoList() throws Throwable {
         long id = todoService.createTodoList("Test list", true);
-        logInAs(LoginRole.CONSUMER);
+        multiUserConfig.logInAs(LoginRole.CONSUMER);
         todoService.getTodoList(id);
     }
 
     @Test
     public void addTodoItem() throws Throwable {
         long listId = todoService.createTodoList("Test list", false);
-        logInAs(LoginRole.CONSUMER);
+        multiUserConfig.logInAs(LoginRole.CONSUMER);
 
-        authorization().expect(
+        authorizationRule.expect(
                 call(() -> todoService.addItemToList(listId, "Write tests"))
                         .toFail(ifAnyOf("role:ROLE_USER"))
                         .toFailWithException(AuthenticationCredentialsNotFoundException.class,
@@ -72,9 +121,9 @@ public class TodoServiceJava8IT extends AbstractConfiguredIT {
         todoService.createTodoList("Test list 2", true);
         todoService.createTodoList("Test list 3", false);
 
-        logInAs(LoginRole.CONSUMER);
+        multiUserConfig.logInAs(LoginRole.CONSUMER);
 
-        authorization().expect(valueOf(() -> todoService.getTodoLists().size())
+        authorizationRule.expect(valueOf(() -> todoService.getTodoLists().size())
                         .toEqual(1, ifAnyOf("role:ROLE_USER", RunWithUsers.ANONYMOUS))
                         .toEqual(3, ifAnyOf(RunWithUsers.PRODUCER, "role:ROLE_ADMIN", "role:ROLE_SYSTEM_ADMIN"))
         );
@@ -86,9 +135,9 @@ public class TodoServiceJava8IT extends AbstractConfiguredIT {
         todoService.createTodoList("Test list 2", true);
         todoService.createTodoList("Test list 3", false);
 
-        logInAs(LoginRole.CONSUMER);
+        multiUserConfig.logInAs(LoginRole.CONSUMER);
 
-        authorization().expect(valueOf(() ->
+        authorizationRule.expect(valueOf(() ->
                         todoService.getTodoLists().stream().map(TodoListDto::getName).collect(toList()))
                         .toAssert(value -> assertThat(value, is(Arrays.asList("Test list 2"))),
                                 ifAnyOf("role:ROLE_USER")
