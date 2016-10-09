@@ -32,4 +32,6 @@ public interface ExpectCallFail extends Expectation {
      * @since 0.4
      */
     ExpectCallFail toFailWithException(Class<? extends Throwable> exception, UserIdentifiers identifiers, ExceptionAssertionCall exceptionAssertionCall);
+
+    void execute();
 }

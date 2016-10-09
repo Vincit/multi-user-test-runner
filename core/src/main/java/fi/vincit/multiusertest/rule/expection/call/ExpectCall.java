@@ -100,4 +100,8 @@ public class ExpectCall extends AbstractExpectation<ExpectationInfo> implements 
         throwIfExceptionIsExpected(userIdentifier);
     }
 
+    @Override
+    public void execute() {
+        execute(userIdentifier);
+    }
 }

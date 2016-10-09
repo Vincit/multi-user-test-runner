@@ -90,7 +90,8 @@ public class TodoServiceJava8IT {
         long id = todoService.createTodoList("Test list", false);
         multiUserConfig.logInAs(LoginRole.CONSUMER);
         authorizationRule.expect(call(() -> todoService.getTodoList(id)))
-                        .toFail(ifAnyOf("role:ROLE_USER", RunWithUsers.ANONYMOUS));
+                        .toFail(ifAnyOf("role:ROLE_USER", RunWithUsers.ANONYMOUS))
+                        .execute();
     }
 
     @Test
