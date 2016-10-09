@@ -1,6 +1,10 @@
 package fi.vincit.multiusertest.rule;
 
 import fi.vincit.multiusertest.rule.expection.Expectation;
+import fi.vincit.multiusertest.rule.expection.FunctionCall;
+import fi.vincit.multiusertest.rule.expection.ReturnValueCall;
+import fi.vincit.multiusertest.rule.expection.call.ExpectCall;
+import fi.vincit.multiusertest.rule.expection.value.ExpectValueOf;
 import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
 import fi.vincit.multiusertest.util.UserIdentifier;
 import org.junit.rules.TestRule;
@@ -10,6 +14,9 @@ import org.junit.runners.model.Statement;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+
+import static fi.vincit.multiusertest.rule.expection.Expectations.call;
+import static fi.vincit.multiusertest.rule.expection.Expectations.valueOf;
 
 /**
  * <p>
@@ -52,6 +59,58 @@ public class AuthorizationRule implements TestRule {
         Objects.requireNonNull(expectedException, "Expected exception must be configured");
         expectation.setExpectedException(expectedException);
         expectation.execute(userIdentifier);
+    }
+
+    /**
+     * Like {@link this#expect(Expectation)} but enables adding assertions after the expect
+     * method call instead of writing the assertions inside the <pre>expect</pre> method call.
+     * @param expectation {@link fi.vincit.multiusertest.rule.expection.value.ExpectValueOf} rule
+     * @return {@link ExpectValueOf} for chaining the assertions.
+     * @throws Throwable If error occurs
+     * @since 0.5
+     */
+    public <T> ExpectValueOf<T> expect(ExpectValueOf<T> expectation) throws Throwable {
+        expect((Expectation) expectation);
+        return expectation;
+    }
+
+    /**
+     * Like {@link this#expect(Expectation)} but enables adding assertions after the expect
+     * method call instead of writing the assertions inside the <pre>expect</pre> method call.
+     * @param expectation {@link fi.vincit.multiusertest.rule.expection.call.ExpectCall} rule
+     * @return {@link ExpectCall} for chaining the assertions.
+     * @throws Throwable If error occurs
+     * @since 0.5
+     */
+    public  ExpectCall expect(ExpectCall expectation) throws Throwable {
+        expect((Expectation) expectation);
+        return expectation;
+    }
+
+    /**
+     * Shorthand call for {@link this#expect(ExpectCall)}.
+     * @param functionCall Method call without parameters or return value.
+     *                     In Java8 this can be a lambda function or a method
+     *                     reference.
+     * @return {@link ExpectCall} for chaining assertions
+     * @throws Throwable If error occurs
+     * @since 0.5
+     */
+    public ExpectCall expect(final FunctionCall functionCall) throws Throwable {
+        return expect(call(functionCall));
+    }
+
+    /**
+     * Shorthand call for {@link this#expect(ExpectValueOf)}.
+     * @param returnValueCall Method call that returns a value. In Java8 this can
+     *                        be a lambda function or a method reference.
+     * @param <RETURN_TYPE> Return type of the given function
+     * @return {@link ExpectValueOf} for chaining assertions
+     * @throws Throwable If error occurs
+     * * @since 0.5
+     */
+    public <RETURN_TYPE> ExpectValueOf<RETURN_TYPE> expect(final ReturnValueCall<RETURN_TYPE> returnValueCall) throws Throwable {
+        return expect(valueOf(returnValueCall));
     }
 
     private void addIdentifiers(Authentication identifiers) {

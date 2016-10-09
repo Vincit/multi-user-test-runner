@@ -105,7 +105,7 @@ public class RestAssuredIT {
 
         Response response = config.whenAuthenticated().get("/api/todo/lists");
 
-        authorizationRule.expect(valueOf(response::then)
+        authorizationRule.expect(response::then)
                 .toAssert(t -> t.statusCode(HttpStatus.SC_OK)
                                 .body("", hasSize(2))
                                 .body("[0].name", equalTo("Test List 1"))
@@ -114,7 +114,7 @@ public class RestAssuredIT {
                 .toAssert(t -> t.statusCode(HttpStatus.SC_OK)
                                 .body("", hasSize(1))
                                 .body("[0].name", equalTo("Test List 2")),
-                        ifAnyOf("role:ROLE_USER", "user:user1", RunWithUsers.ANONYMOUS)));
+                        ifAnyOf("role:ROLE_USER", "user:user1", RunWithUsers.ANONYMOUS));
     }
 
     @Test
@@ -127,14 +127,14 @@ public class RestAssuredIT {
 
         Response response = config.whenAuthenticated().get("/api/todo/list/" + id);
 
-        authorizationRule.expect(valueOf(response::then)
+        authorizationRule.expect(response::then)
                 .toAssert(t -> t.statusCode(HttpStatus.SC_OK)
                                 .assertThat().body("name", equalTo("Test List")),
                         ifAnyOf("role:ROLE_ADMIN", RunWithUsers.PRODUCER))
                 .toAssert(t -> t.statusCode(HttpStatus.SC_FORBIDDEN),
                         ifAnyOf("role:ROLE_USER", "user:user1"))
                 .toAssert(t -> t.statusCode(HttpStatus.SC_UNAUTHORIZED),
-                        ifAnyOf(RunWithUsers.ANONYMOUS)));
+                        ifAnyOf(RunWithUsers.ANONYMOUS));
     }
 
     @Test
@@ -148,13 +148,13 @@ public class RestAssuredIT {
         Response response = config.whenAuthenticated()
                 .body(new TodoItemCommand(listId, "Test List")).post("/api/todo/list/item");
 
-        authorizationRule.expect(valueOf(response::then)
+        authorizationRule.expect(response::then)
                 .toAssert(t -> t.statusCode(HttpStatus.SC_OK),
                         ifAnyOf("role:ROLE_ADMIN", RunWithUsers.PRODUCER))
                 .toAssert(t -> t.statusCode(HttpStatus.SC_FORBIDDEN),
                         ifAnyOf("role:ROLE_USER", "user:user1"))
                 .toAssert(t -> t.statusCode(HttpStatus.SC_UNAUTHORIZED),
-                        ifAnyOf(RunWithUsers.ANONYMOUS)));
+                        ifAnyOf(RunWithUsers.ANONYMOUS));
     }
 
     @Test
@@ -168,13 +168,13 @@ public class RestAssuredIT {
         Response response = config.whenAuthenticated()
                 .body(new TodoItemCommand(listId, "Test List")).post("/api/todo/list/item");
 
-        authorizationRule.expect(valueOf(response::then)
+        authorizationRule.expect(response::then)
                 .toAssert(t -> t.statusCode(HttpStatus.SC_OK),
                         ifAnyOf("role:ROLE_ADMIN", RunWithUsers.PRODUCER))
                 .toAssert(t -> t.statusCode(HttpStatus.SC_FORBIDDEN),
                         ifAnyOf("role:ROLE_USER", "user:user1"))
                 .toAssert(t -> t.statusCode(HttpStatus.SC_UNAUTHORIZED),
-                        ifAnyOf(RunWithUsers.ANONYMOUS)));
+                        ifAnyOf(RunWithUsers.ANONYMOUS));
     }
 
     @Test
@@ -191,13 +191,13 @@ public class RestAssuredIT {
 
         Response response = config.whenAuthenticated().post(String.format("/api/todo/list/%s/%s/done", listId, itemId));
 
-        authorizationRule.expect(valueOf(response::then)
+        authorizationRule.expect(response::then)
                 .toAssert(t -> t.statusCode(HttpStatus.SC_OK),
                         ifAnyOf("role:ROLE_ADMIN", RunWithUsers.PRODUCER))
                 .toAssert(t -> t.statusCode(HttpStatus.SC_FORBIDDEN),
                         ifAnyOf("role:ROLE_USER", "user:user1"))
                 .toAssert(t -> t.statusCode(HttpStatus.SC_UNAUTHORIZED),
-                        ifAnyOf(RunWithUsers.ANONYMOUS)));
+                        ifAnyOf(RunWithUsers.ANONYMOUS));
     }
 
     @Test
@@ -214,13 +214,13 @@ public class RestAssuredIT {
 
         Response response = config.whenAuthenticated().post(String.format("/api/todo/list/%s/%s/done", listId, itemId));
 
-        authorizationRule.expect(valueOf(response::then)
+        authorizationRule.expect(response::then)
                 .toAssert(t -> t.statusCode(HttpStatus.SC_OK),
                         ifAnyOf("role:ROLE_ADMIN", RunWithUsers.PRODUCER))
                 .toAssert(t -> t.statusCode(HttpStatus.SC_FORBIDDEN),
                         ifAnyOf("role:ROLE_USER", "user:user1"))
                 .toAssert(t -> t.statusCode(HttpStatus.SC_UNAUTHORIZED),
-                        ifAnyOf(RunWithUsers.ANONYMOUS)));
+                        ifAnyOf(RunWithUsers.ANONYMOUS));
 
     }
 

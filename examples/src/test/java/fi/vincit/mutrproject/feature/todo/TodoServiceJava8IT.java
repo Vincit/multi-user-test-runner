@@ -89,10 +89,8 @@ public class TodoServiceJava8IT {
     public void getPrivateTodoList() throws Throwable {
         long id = todoService.createTodoList("Test list", false);
         multiUserConfig.logInAs(LoginRole.CONSUMER);
-        authorizationRule.expect(
-                call(() -> todoService.getTodoList(id))
-                        .toFail(ifAnyOf("role:ROLE_USER", RunWithUsers.ANONYMOUS))
-        );
+        authorizationRule.expect(call(() -> todoService.getTodoList(id)))
+                        .toFail(ifAnyOf("role:ROLE_USER", RunWithUsers.ANONYMOUS));
     }
 
     @Test
