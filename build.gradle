@@ -45,7 +45,7 @@ subprojects {
     apply plugin: 'signing'
 
     group = 'fi.vincit'
-    sourceCompatibility = 1.7
+    sourceCompatibility = 1.8
     version = System.env.SNAPSHOT ? mutrVersion + snapshotPrefix : mutrVersion
 
     repositories {
