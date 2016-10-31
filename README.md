@@ -11,10 +11,17 @@ library also with any plain Java classes and has been successfully used with RES
 From 0.5.0 onwards `multi-user-test-runner-spring` dependency is deprecated. Spring support is achieved by using
 rules.
 
-# Requirements
+# Requirements version 0.5 and newer
+
+ * Java 8 or newer
+ * JUnit 4.12 or newer, but not JUnit 5
+
+# Requirements version 0.4 and earlier
 
  * Java 7 or newer
  * JUnit 4.12 or newer, but not JUnit 5
+
+ 
  
 # Optional Requirements
 
