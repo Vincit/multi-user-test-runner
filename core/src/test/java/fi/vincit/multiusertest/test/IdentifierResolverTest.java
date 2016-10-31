@@ -12,7 +12,7 @@ import static org.mockito.Mockito.when;
 
 public class IdentifierResolverTest {
 
-    public static enum Role {
+    public enum Role {
         ROLE1,
         ROLE2
     }

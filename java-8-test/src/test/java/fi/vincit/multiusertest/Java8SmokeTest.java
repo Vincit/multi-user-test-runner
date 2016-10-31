@@ -1,9 +1,5 @@
 package fi.vincit.multiusertest;
 
-import fi.vincit.multiusertest.annotation.RunWithUsers;
-import fi.vincit.multiusertest.configuration.ConfiguredTest;
-import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
-import fi.vincit.multiusertest.util.LoginRole;
 import fi.vincit.multiusertest.annotation.MultiUserConfigClass;
 import fi.vincit.multiusertest.annotation.MultiUserTestConfig;
 import fi.vincit.multiusertest.annotation.RunWithUsers;

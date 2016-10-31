@@ -69,7 +69,7 @@ public class ExpectationInfoTest {
     }
 
     private Optional<Class<? extends Throwable>> getOptionalException() {
-        return Optional.<Class<? extends Throwable>>of(Throwable.class);
+        return Optional.of(Throwable.class);
     }
 
     private Optional<Class<? extends Throwable>> getEmptyException() {

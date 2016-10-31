@@ -1,13 +1,16 @@
 package fi.vincit.multiusertest.util;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.toList;
 
 public class UserIdentifiers {
 
     private static final UserIdentifiers EMPTY = new UserIdentifiers();
 
-    private final List<UserIdentifier> identifiers = new ArrayList<>();
+    private final List<UserIdentifier> identifiers;
 
     public static UserIdentifiers empty() {
         return EMPTY;
@@ -18,11 +21,12 @@ public class UserIdentifiers {
     }
 
     public static UserIdentifiers ifAnyOf(UserIdentifierCollection... identifiers) {
-        List<String> allIdentifiers = new ArrayList<>();
-        for (UserIdentifierCollection identifierCollection : identifiers) {
-            allIdentifiers.addAll(identifierCollection.getUserIdentifiers());
-        }
-        return new UserIdentifiers(allIdentifiers.toArray(new String[allIdentifiers.size()]));
+        List<String> allIdentifiers = Stream.of(identifiers)
+                .map(UserIdentifierCollection::getUserIdentifiers)
+                .flatMap(Collection::stream)
+                .collect(toList());
+
+        return new UserIdentifiers(allIdentifiers);
     }
 
     public static UserIdentifierCollection users(String... usernames) {
@@ -34,9 +38,15 @@ public class UserIdentifiers {
     }
 
     public UserIdentifiers(String... identifiers) {
-        for (String identifier : identifiers) {
-            this.identifiers.add(UserIdentifier.parse(identifier));
-        }
+        this.identifiers = Stream.of(identifiers)
+                .map(UserIdentifier::parse)
+                .collect(toList());
+    }
+
+    public UserIdentifiers(List<String> identifiers) {
+        this.identifiers = identifiers.stream()
+                .map(UserIdentifier::parse)
+                .collect(toList());
     }
 
     public List<UserIdentifier> getIdentifiers() {

@@ -65,8 +65,8 @@ public class TestConfiguration {
     TestConfiguration(Collection<UserIdentifier> producerIdentifiers, Collection<UserIdentifier> consumerIdentifiers, Class<?> runner, Class<? extends Throwable> defaultException) {
         this.producerIdentifiers = producerIdentifiers;
         this.consumerIdentifiers = consumerIdentifiers;
-        this.runner = Optional.<Class<?>>ofNullable(runner);
-        this.defaultException = Optional.<Class<? extends Throwable>>ofNullable(defaultException);
+        this.runner = Optional.ofNullable(runner);
+        this.defaultException = Optional.ofNullable(defaultException);
     }
 
     public Collection<UserIdentifier> getProducerIdentifiers() {

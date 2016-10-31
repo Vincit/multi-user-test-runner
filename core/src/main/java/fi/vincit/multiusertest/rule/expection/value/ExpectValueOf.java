@@ -42,8 +42,8 @@ public class ExpectValueOf<VALUE_TYPE> extends AbstractExpectation<ValueOfInfo<V
             getExpectations().put(identifier, new ValueOfInfo<>(
                             FailMode.EXPECT_NOT_FAIL,
                             Optional.ofNullable(value),
-                            Optional.<AssertionCall<VALUE_TYPE>>empty(),
-                            Optional.<Class<? extends Throwable>>empty(),
+                            Optional.empty(),
+                            Optional.empty(),
                             NOOP_ASSERTION)
             );
         }
@@ -65,9 +65,9 @@ public class ExpectValueOf<VALUE_TYPE> extends AbstractExpectation<ValueOfInfo<V
         for (UserIdentifier identifier : identifiers.getIdentifiers()) {
             getExpectations().put(identifier, new ValueOfInfo<>(
                             FailMode.EXPECT_NOT_FAIL,
-                            Optional.<VALUE_TYPE>empty(),
+                            Optional.empty(),
                             Optional.of(assertionCallback),
-                            Optional.<Class<? extends Throwable>>empty(),
+                            Optional.empty(),
                             NOOP_ASSERTION)
             );
         }
@@ -112,9 +112,9 @@ public class ExpectValueOf<VALUE_TYPE> extends AbstractExpectation<ValueOfInfo<V
         for (UserIdentifier identifier : identifiers.getIdentifiers()) {
             getExpectations().put(identifier, new ValueOfInfo<>(
                     FailMode.EXPECT_FAIL,
-                    Optional.<VALUE_TYPE>empty(),
-                    Optional.<AssertionCall<VALUE_TYPE>>empty(),
-                    Optional.<Class<? extends Throwable>>empty(),
+                    Optional.empty(),
+                    Optional.empty(),
+                    Optional.empty(),
                     NOOP_ASSERTION)
             );
         }
@@ -134,9 +134,9 @@ public class ExpectValueOf<VALUE_TYPE> extends AbstractExpectation<ValueOfInfo<V
         for (UserIdentifier identifier : identifiers.getIdentifiers()) {
             getExpectations().put(identifier, new ValueOfInfo<>(
                     FailMode.EXPECT_FAIL,
-                    Optional.<VALUE_TYPE>empty(),
-                    Optional.<AssertionCall<VALUE_TYPE>>empty(),
-                    Optional.<Class<? extends Throwable>>of(exception),
+                    Optional.empty(),
+                    Optional.empty(),
+                    Optional.of(exception),
                     exceptionAssertionCall)
             );
         }

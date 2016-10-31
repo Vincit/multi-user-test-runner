@@ -161,7 +161,7 @@ public class TestMethodFilterTest {
                 UserIdentifier.parse("role:ROLE_USER"),
                 UserIdentifier.parse("role:ROLE_ADMIN"));
 
-        assertThat(filter.filter(Arrays.<FrameworkMethod>asList()).size(), is(0));
+        assertThat(filter.filter(Arrays.asList()).size(), is(0));
     }
 
     @Test(expected = NullPointerException.class)

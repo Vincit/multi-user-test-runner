@@ -1,6 +1,5 @@
 package fi.vincit.multiusertest.util;
 
-import fi.vincit.multiusertest.annotation.MultiUserTestConfig;
 import fi.vincit.multiusertest.annotation.RunWithUsers;
 import org.junit.runners.model.FrameworkMethod;
 
@@ -41,7 +40,7 @@ public class TestMethodFilter {
         if (runWithUsersAnnotation.isPresent()) {
             configuration = TestConfiguration.fromRunWithUsers(
                     runWithUsersAnnotation,
-                    Optional.<MultiUserTestConfig>empty()
+                    Optional.empty()
             );
         } else {
             // FIXME: Is this correct?

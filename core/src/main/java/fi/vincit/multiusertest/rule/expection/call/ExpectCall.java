@@ -46,7 +46,7 @@ public class ExpectCall extends AbstractExpectation<ExpectationInfo> implements 
         for (UserIdentifier identifier : identifiers.getIdentifiers()) {
             getExpectations().put(identifier, new ExpectationInfo(
                     FailMode.EXPECT_FAIL,
-                    Optional.<Class<? extends Throwable>>empty(),
+                    Optional.empty(),
                     NOOP_ASSERTION
             ));
         }
@@ -68,7 +68,7 @@ public class ExpectCall extends AbstractExpectation<ExpectationInfo> implements 
         for (UserIdentifier identifier : identifiers.getIdentifiers()) {
             getExpectations().put(identifier, new ExpectationInfo(
                     EXPECT_FAIL,
-                    Optional.<Class<? extends Throwable>>of(exception),
+                    Optional.of(exception),
                     exceptionAssertionCall
             ));
         }
@@ -81,7 +81,7 @@ public class ExpectCall extends AbstractExpectation<ExpectationInfo> implements 
         setGeneralFailMode(FailMode.EXPECT_NOT_FAIL);
 
         for (UserIdentifier identifier : identifiers.getIdentifiers()) {
-            getExpectations().put(identifier, new ExpectationInfo(FailMode.EXPECT_NOT_FAIL, Optional.<Class<? extends Throwable>>empty(), NOOP_ASSERTION));
+            getExpectations().put(identifier, new ExpectationInfo(FailMode.EXPECT_NOT_FAIL, Optional.empty(), NOOP_ASSERTION));
         }
         return this;
     }

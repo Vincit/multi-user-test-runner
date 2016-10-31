@@ -48,7 +48,7 @@ import java.util.Optional;
 public class MultiUserTestRunner extends Suite {
 
     private static final List<Runner> NO_RUNNERS = Collections
-            .<Runner>emptyList();
+            .emptyList();
     public static final String ROLE_PREFIX = "role:";
     public static final String USER_PREFIX = "user:";
 
