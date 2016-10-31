@@ -2,7 +2,6 @@ package fi.vincit.multiusertest.runner.junit;
 
 import fi.vincit.multiusertest.annotation.MultiUserTestConfig;
 import fi.vincit.multiusertest.annotation.RunWithUsers;
-import fi.vincit.multiusertest.util.Optional;
 import fi.vincit.multiusertest.util.TestConfiguration;
 import fi.vincit.multiusertest.util.UserIdentifier;
 import org.junit.runner.Runner;
@@ -10,6 +9,7 @@ import org.junit.runners.Suite;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * <p>

@@ -5,6 +5,7 @@ import fi.vincit.multiusertest.annotation.RunWithUsers;
 import fi.vincit.multiusertest.rule.AuthorizationRule;
 import fi.vincit.multiusertest.util.*;
 
+import java.util.Optional;
 import java.util.Random;
 
 /**

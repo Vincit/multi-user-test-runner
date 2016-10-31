@@ -5,11 +5,11 @@ import fi.vincit.multiusertest.rule.expection.AbstractExpectation;
 import fi.vincit.multiusertest.rule.expection.AssertionCall;
 import fi.vincit.multiusertest.rule.expection.ReturnValueCall;
 import fi.vincit.multiusertest.rule.expection.call.ExceptionAssertionCall;
-import fi.vincit.multiusertest.util.Optional;
 import fi.vincit.multiusertest.util.UserIdentifier;
 import fi.vincit.multiusertest.util.UserIdentifiers;
 
 import java.util.Objects;
+import java.util.Optional;
 
 import static fi.vincit.multiusertest.rule.expection.call.ExpectCall.NOOP_ASSERTION;
 import static org.hamcrest.core.Is.is;

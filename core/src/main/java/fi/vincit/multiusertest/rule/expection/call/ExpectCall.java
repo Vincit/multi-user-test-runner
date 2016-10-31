@@ -3,11 +3,11 @@ package fi.vincit.multiusertest.rule.expection.call;
 import fi.vincit.multiusertest.rule.FailMode;
 import fi.vincit.multiusertest.rule.expection.AbstractExpectation;
 import fi.vincit.multiusertest.rule.expection.FunctionCall;
-import fi.vincit.multiusertest.util.Optional;
 import fi.vincit.multiusertest.util.UserIdentifier;
 import fi.vincit.multiusertest.util.UserIdentifiers;
 
 import java.util.Objects;
+import java.util.Optional;
 
 import static fi.vincit.multiusertest.rule.FailMode.EXPECT_FAIL;
 

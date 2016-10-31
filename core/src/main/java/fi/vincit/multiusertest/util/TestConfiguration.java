@@ -7,6 +7,7 @@ import fi.vincit.multiusertest.runner.junit.framework.BlockMultiUserTestClassRun
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
+import java.util.Optional;
 
 /**
  * Abstraction of configuration test class

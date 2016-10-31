@@ -2,11 +2,11 @@ package fi.vincit.multiusertest.rule.expection;
 
 import fi.vincit.multiusertest.rule.FailMode;
 import fi.vincit.multiusertest.rule.expection.call.ExpectationInfo;
-import fi.vincit.multiusertest.util.Optional;
 import fi.vincit.multiusertest.util.UserIdentifier;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public abstract class AbstractExpectation<T extends ExpectationInfo> implements Expectation {
 

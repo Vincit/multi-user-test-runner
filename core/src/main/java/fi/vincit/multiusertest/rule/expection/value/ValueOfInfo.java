@@ -4,7 +4,7 @@ import fi.vincit.multiusertest.rule.FailMode;
 import fi.vincit.multiusertest.rule.expection.AssertionCall;
 import fi.vincit.multiusertest.rule.expection.call.ExceptionAssertionCall;
 import fi.vincit.multiusertest.rule.expection.call.ExpectationInfo;
-import fi.vincit.multiusertest.util.Optional;
+import java.util.Optional;
 
 class ValueOfInfo<VALUE_TYPE> extends ExpectationInfo {
     private final Optional<VALUE_TYPE> value;

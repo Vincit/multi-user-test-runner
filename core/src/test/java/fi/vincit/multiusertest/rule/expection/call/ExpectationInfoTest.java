@@ -1,8 +1,9 @@
 package fi.vincit.multiusertest.rule.expection.call;
 
 import fi.vincit.multiusertest.rule.FailMode;
-import fi.vincit.multiusertest.util.Optional;
 import org.junit.Test;
+
+import java.util.Optional;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
