@@ -5,6 +5,7 @@ import fi.vincit.multiusertest.annotation.RunWithUsers;
 import org.junit.runners.model.FrameworkMethod;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Utility class for filtering methods that should be run with the initialized
@@ -73,12 +74,8 @@ public class TestMethodFilter {
      * @return List of methods that should be run with the initialized identifiers.
      */
     public List<FrameworkMethod> filter(List<FrameworkMethod> methods) {
-        List<FrameworkMethod> methodsToRun = new ArrayList<>();
-        for (FrameworkMethod frameworkMethod : methods) {
-            if (shouldRun(frameworkMethod)) {
-                methodsToRun.add(frameworkMethod);
-            }
-        }
-        return methodsToRun;
+        return methods.stream()
+                .filter(this::shouldRun)
+                .collect(Collectors.toList());
     }
 }

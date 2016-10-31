@@ -30,10 +30,7 @@ import static fi.vincit.multiusertest.rule.FailMode.EXPECT_FAIL;
  */
 public class ExpectCall extends AbstractExpectation<ExpectationInfo> implements ExpectCallFail, ExpectCallNotFail {
 
-    public static final ExceptionAssertionCall NOOP_ASSERTION = new ExceptionAssertionCall() {
-        @Override
-        public void assertException(Throwable thrownException) {
-        }
+    public static final ExceptionAssertionCall NOOP_ASSERTION = thrownException -> {
     };
 
     private final FunctionCall functionCall;

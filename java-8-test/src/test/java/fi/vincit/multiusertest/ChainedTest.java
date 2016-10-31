@@ -99,9 +99,8 @@ public class ChainedTest {
                         .toFailWithException(
                                 IllegalStateException.class,
                                 ifAnyOf("role:ROLE_ADMIN"),
-                                exception -> {
-                                    assertThat(exception.getMessage(), is("Denied"));
-                                }
+                                exception ->
+                                        assertThat(exception.getMessage(), is("Denied"))
                         )
         );
     }
@@ -115,9 +114,8 @@ public class ChainedTest {
                         .toFailWithException(
                                 IllegalStateException.class,
                                 ifAnyOf("role:ROLE_ADMIN"),
-                                exception -> {
-                                    assertThat(exception.getMessage(), is("Foo"));
-                                }
+                                exception ->
+                                        assertThat(exception.getMessage(), is("Foo"))
                         )
         );
     }

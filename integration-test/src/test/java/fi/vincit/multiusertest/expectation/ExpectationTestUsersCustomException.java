@@ -5,10 +5,7 @@ import fi.vincit.multiusertest.annotation.MultiUserTestConfig;
 import fi.vincit.multiusertest.annotation.RunWithUsers;
 import fi.vincit.multiusertest.configuration.ConfiguredTest;
 import fi.vincit.multiusertest.rule.AuthorizationRule;
-import fi.vincit.multiusertest.rule.expection.AssertionCall;
 import fi.vincit.multiusertest.rule.expection.Expectations;
-import fi.vincit.multiusertest.rule.expection.FunctionCall;
-import fi.vincit.multiusertest.rule.expection.ReturnValueCall;
 import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
 import fi.vincit.multiusertest.runner.junit.framework.BlockMultiUserTestClassRunner;
 import fi.vincit.multiusertest.util.LoginRole;
@@ -46,24 +43,14 @@ public class ExpectationTestUsersCustomException {
     @Test
     public void expectToFail_AsProducer_WhenAccessDeniedThrown() throws Throwable {
         authorizationRule.expect(Expectations.call(
-                new FunctionCall() {
-                    @Override
-                    public void call() throws Throwable {
-                        throwDefaultException();
-                    }
-                }
+                this::throwDefaultException
         ).toFail(ifAnyOf(RunWithUsers.PRODUCER)));
     }
 
     @Test(expected = AssertionError.class)
     public void expectNotToFail_AsProducer_WhenAccessDeniedThrown() throws Throwable {
         authorizationRule.expect(Expectations.call(
-                new FunctionCall() {
-                    @Override
-                    public void call() throws Throwable {
-                        throwDefaultException();
-                    }
-                }
+                this::throwDefaultException
         ).toFail(ifAnyOf("role:ROLE_USER")));
     }
 
@@ -71,12 +58,7 @@ public class ExpectationTestUsersCustomException {
     public void expectToFail_WhenAccessDeniedThrown() throws Throwable {
         configuredTest.logInAs(LoginRole.CONSUMER);
         authorizationRule.expect(Expectations.call(
-                new FunctionCall() {
-                    @Override
-                    public void call() throws Throwable {
-                        throwDefaultException();
-                    }
-                }
+                this::throwDefaultException
         ).toFail(ifAnyOf("role:ROLE_USER")));
     }
 
@@ -84,12 +66,7 @@ public class ExpectationTestUsersCustomException {
     public void expectNotToFail_WhenAccessDeniedThrown() throws Throwable {
         configuredTest.logInAs(LoginRole.CONSUMER);
         authorizationRule.expect(Expectations.call(
-                new FunctionCall() {
-                    @Override
-                    public void call() throws Throwable {
-                        throwDefaultException();
-                    }
-                }
+                this::throwDefaultException
         ).toFail(ifAnyOf("role:ROLE_ADMIN")));
     }
 
@@ -97,51 +74,29 @@ public class ExpectationTestUsersCustomException {
     public void assertionFails() throws Throwable {
         configuredTest.logInAs(LoginRole.CONSUMER);
         authorizationRule.expect(valueOf(
-                new ReturnValueCall<Integer>() {
-                    @Override
-                    public Integer call() {
-                        return returnValueCall();
-                    }
-                }
-        ).toAssert(new AssertionCall<Integer>() {
-            @Override
-            public void call(Integer value) {
-                assertThat(value, is(104));
-            }
-        }, ifAnyOf("role:ROLE_USER")));
+                this::returnValueCall
+        ).toAssert(value -> assertThat(value, is(104)), ifAnyOf("role:ROLE_USER")));
     }
 
     @Test
     public void assertionPasses() throws Throwable {
         configuredTest.logInAs(LoginRole.CONSUMER);
         authorizationRule.expect(valueOf(
-                new ReturnValueCall<Integer>() {
-                    @Override
-                    public Integer call() {
-                        return returnValueCall();
-                    }
-                }
-        ).toAssert(new AssertionCall<Integer>() {
-            @Override
-            public void call(Integer value) {
-                assertThat(value, is(103));
-            }
-        }, ifAnyOf("role:ROLE_USER")));
+                this::returnValueCall
+        ).toAssert(value -> assertThat(value, is(103)), ifAnyOf("role:ROLE_USER")));
     }
 
     @Test
     public void assertionFailsButExpected() throws Throwable {
         configuredTest.logInAs(LoginRole.CONSUMER);
         authorizationRule.setExpectedException(IndexOutOfBoundsException.class);
-        authorizationRule.expect(valueOf(
-                new ReturnValueCall<Integer>() {
-                    @Override
-                    public Integer call() throws Throwable {
-                        throwDefaultException();
-                        return returnValueCall();
-                    }
-                }
-            ).toFailWithException(IndexOutOfBoundsException.class, ifAnyOf("role:ROLE_USER"))
+        authorizationRule.expect(valueOf(() -> {
+                    throwDefaultException();
+                    return returnValueCall();
+                }).toFailWithException(
+                        IndexOutOfBoundsException.class,
+                        ifAnyOf("role:ROLE_USER")
+                )
         );
     }
 
@@ -149,15 +104,10 @@ public class ExpectationTestUsersCustomException {
     public void assertionFailsButExpected_DefaultException() throws Throwable {
         configuredTest.logInAs(LoginRole.CONSUMER);
         authorizationRule.setExpectedException(IndexOutOfBoundsException.class);
-        authorizationRule.expect(valueOf(
-                new ReturnValueCall<Integer>() {
-                    @Override
-                    public Integer call() throws Throwable {
-                        throwDefaultException();
-                        return returnValueCall();
-                    }
-                }
-                ).toFail(ifAnyOf("role:ROLE_USER"))
+        authorizationRule.expect(valueOf(() -> {
+                    throwDefaultException();
+                    return returnValueCall();
+                }).toFail(ifAnyOf("role:ROLE_USER"))
         );
     }
 

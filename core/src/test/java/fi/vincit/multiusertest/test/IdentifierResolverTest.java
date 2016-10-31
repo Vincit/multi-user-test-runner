@@ -1,15 +1,14 @@
 package fi.vincit.multiusertest.test;
 
+import fi.vincit.multiusertest.util.LoginRole;
+import fi.vincit.multiusertest.util.RoleContainer;
+import fi.vincit.multiusertest.util.UserIdentifier;
+import org.junit.Test;
+
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-
-import org.junit.Test;
-
-import fi.vincit.multiusertest.util.LoginRole;
-import fi.vincit.multiusertest.util.RoleContainer;
-import fi.vincit.multiusertest.util.UserIdentifier;
 
 public class IdentifierResolverTest {
 
@@ -18,12 +17,8 @@ public class IdentifierResolverTest {
         ROLE2
     }
 
-    private static RoleConverter<Role> resolver = new RoleConverter<Role>() {
-        @Override
-        public Role stringToRole(String role) {
-            return Role.valueOf(role.toUpperCase());
-        }
-    };
+    private static RoleConverter<Role> resolver = role ->
+            Role.valueOf(role.toUpperCase());
 
     @Test
     public void userRole() {

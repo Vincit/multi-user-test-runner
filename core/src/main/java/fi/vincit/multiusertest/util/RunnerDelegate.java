@@ -151,18 +151,15 @@ public class RunnerDelegate {
         final List<FrameworkMethod> befores =
                 testClass.getAnnotatedMethods(Before.class);
 
-        final Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    for (FrameworkMethod before : befores) {
-                        before.invokeExplosively(target);
-                    }
-                    UserRoleIT userRoleIt = getConfigComponent(target);
-                    userRoleIt.logInAs(LoginRole.PRODUCER);
-                } catch (Throwable t) {
-                    throw new RuntimeException(t);
+        final Runnable runnable = () -> {
+            try {
+                for (FrameworkMethod before : befores) {
+                    before.invokeExplosively(target);
                 }
+                UserRoleIT userRoleIt = getConfigComponent(target);
+                userRoleIt.logInAs(LoginRole.PRODUCER);
+            } catch (Throwable t) {
+                throw new RuntimeException(t);
             }
         };
 

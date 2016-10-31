@@ -1,20 +1,15 @@
 package fi.vincit.multiusertest.rule.expection;
 
+import org.junit.Test;
+
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.Assert.assertThat;
-
-import org.junit.Test;
 
 public class ExpectationsTest {
 
     @Test
     public void testValueOf() throws Exception {
-        assertThat(Expectations.valueOf(new ReturnValueCall<Object>() {
-            @Override
-            public Object call() {
-                return null;
-            }
-        }), notNullValue());
+        assertThat(Expectations.valueOf(() -> null), notNullValue());
     }
 
     @Test(expected = NullPointerException.class)
@@ -24,10 +19,7 @@ public class ExpectationsTest {
 
     @Test
     public void testCall() throws Exception {
-        assertThat(Expectations.call(new FunctionCall() {
-            @Override
-            public void call() throws Throwable {
-            }
+        assertThat(Expectations.call(() -> {
         }), notNullValue());
     }
 

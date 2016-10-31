@@ -56,9 +56,7 @@ public class AuthorizationRule implements TestRule {
 
     private void addIdentifiers(Authentication identifiers) {
         dontExpectToFail();
-        for (UserIdentifier userIdentifier : identifiers.getIdentifiers()) {
-            expectToFailOnRoles.add(userIdentifier);
-        }
+        expectToFailOnRoles.addAll(identifiers.getIdentifiers());
         this.failMode = identifiers.getFailMode();
     }
 
