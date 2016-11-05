@@ -1,0 +1,116 @@
+package fi.vincit.multiusertest.rule.expectation2;
+
+import fi.vincit.multiusertest.rule.AuthorizationRule;
+import fi.vincit.multiusertest.util.UserIdentifier;
+import fi.vincit.multiusertest.util.UserIdentifiers;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+public abstract class AbstractWhenThen<T extends TestExpectation> implements WhenThen<T> {
+
+    private final Set<UserIdentifier> currentIdentifiers = new HashSet<>();
+    private final Map<UserIdentifier, T> expectationsByIdentifier = new HashMap<>();
+
+    private final UserIdentifier userIdentifier;
+    private final AuthorizationRule authorizationRule;
+
+    public AbstractWhenThen(UserIdentifier userIdentifier, AuthorizationRule authorizationRule) {
+        this.userIdentifier = userIdentifier;
+        this.authorizationRule = authorizationRule;
+    }
+
+    @Override
+    public WhenThen<T> whenCalledWith(UserIdentifiers... userIdentifiers) {
+        currentIdentifiers.clear();
+
+        if (userIdentifiers.length == 0) {
+            throw new IllegalArgumentException("At least one identifier must be defined");
+        }
+
+        for (UserIdentifiers identifiers : userIdentifiers) {
+            identifiers.getIdentifiers().forEach(this::addCurrentUserIdentifiers);
+        }
+        return this;
+    }
+
+    @Override
+    public WhenThen<T> whenCalledWith(UserIdentifier... userIdentifiers) {
+        currentIdentifiers.clear();
+
+        if (userIdentifiers.length == 0) {
+            throw new IllegalArgumentException("At least one identifier must be defined");
+        }
+
+        addCurrentUserIdentifiers(userIdentifiers);
+
+        return this;
+    }
+
+    private void addCurrentUserIdentifiers(UserIdentifier... userIdentifiers) {
+        for (UserIdentifier identifier : userIdentifiers) {
+            if (currentIdentifiers.contains(identifier)) {
+                throw new IllegalStateException("User identifier " + identifier + " already set");
+            }
+            currentIdentifiers.add(identifier);
+        }
+    }
+
+    @Override
+    public WhenThen<T> then(final T testExpectation) {
+        if (currentIdentifiers.isEmpty()) {
+            throw new IllegalStateException("Call whenCalledWith before calling then method");
+        }
+
+        try {
+            currentIdentifiers.forEach(identifier -> {
+                if (expectationsByIdentifier.containsKey(identifier)) {
+                    throw new IllegalStateException(
+                            String.format("User identifier %s already has expectation",
+                                    identifier.toString()
+                            )
+                    );
+                } else {
+                    expectationsByIdentifier.put(
+                            identifier,
+                            testExpectation
+                    );
+                }
+            });
+        } finally {
+            currentIdentifiers.clear();
+        }
+
+        return this;
+    }
+
+    @Override
+    public void test() throws Throwable {
+        T testExpectation = expectationsByIdentifier.computeIfAbsent(
+                userIdentifier,
+                this::getDefaultExpectation
+        );
+
+        this.authorizationRule.markExpectationConstructed();
+        this.test(testExpectation, userIdentifier);
+    }
+
+    protected abstract void test(T testExpectation, UserIdentifier userIdentifier) throws Throwable;
+
+    protected abstract T getDefaultExpectation(UserIdentifier userIdentifier);
+
+    /*
+    For unit tests
+    */
+
+    Set<UserIdentifier> getCurrentIdentifiers() {
+        return currentIdentifiers;
+    }
+
+    Map<UserIdentifier, T> getExpectationsByIdentifier() {
+        return expectationsByIdentifier;
+    }
+
+}

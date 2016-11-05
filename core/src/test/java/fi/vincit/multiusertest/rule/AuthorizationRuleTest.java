@@ -1,5 +1,6 @@
 package fi.vincit.multiusertest.rule;
 
+import fi.vincit.multiusertest.rule.expectation2.TestExpectation;
 import fi.vincit.multiusertest.rule.expection.Expectation;
 import fi.vincit.multiusertest.util.UserIdentifier;
 import fi.vincit.multiusertest.util.UserIdentifiers;
@@ -11,6 +12,7 @@ import org.junit.runners.model.Statement;
 
 import java.io.IOException;
 
+import static fi.vincit.multiusertest.util.UserIdentifiers.anyOf;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.*;
@@ -138,5 +140,44 @@ public class AuthorizationRuleTest {
     public void dontExpectToFail_NoFail() throws Throwable {
         AuthorizationRule rule = new AuthorizationRule();
         rule.dontExpectToFail();
+    }
+
+    @Test
+    public void throwsErrorWhenExpectationApi2CallNotClosed() throws Throwable {
+        AuthorizationRule rule = new AuthorizationRule();
+        rule.setExpectedException(IllegalArgumentException.class);
+        rule.setRole(UserIdentifier.parse("user:Foo"));
+        Expectation expectation = mock(Expectation.class);
+        doThrow(AssertionError.class).when(expectation).execute(any(UserIdentifier.class));
+
+        rule.testCall(() -> {})
+                .whenCalledWith(anyOf("user:Foo"))
+                .then(mock(TestExpectation.class))
+                // Test not called
+        ;
+
+        expectedException.expect(IllegalStateException.class);
+        expectedException.expectMessage("Expectation still in progress. " +
+                        "Please call test() method. " +
+                        "Otherwise the assertions are not run properly.");
+        rule.apply(null, mock(Description.class))
+                .evaluate();
+    }
+
+    @Test
+    public void doesntThrowsErrorWhenExpectationApi2CallIsClosed() throws Throwable {
+        AuthorizationRule rule = new AuthorizationRule();
+        rule.setExpectedException(IllegalArgumentException.class);
+        rule.setRole(UserIdentifier.parse("user:Foo"));
+        Expectation expectation = mock(Expectation.class);
+        doThrow(AssertionError.class).when(expectation).execute(any(UserIdentifier.class));
+
+        rule.testCall(() -> {})
+                .whenCalledWith(anyOf("user:Foo"))
+                .then(mock(TestExpectation.class))
+                .test();
+
+        rule.apply(null, mock(Description.class))
+                .evaluate();
     }
 }

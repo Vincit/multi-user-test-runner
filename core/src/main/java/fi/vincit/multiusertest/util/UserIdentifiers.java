@@ -29,6 +29,14 @@ public class UserIdentifiers {
         return new UserIdentifiers(allIdentifiers);
     }
 
+    public static UserIdentifiers anyOf(String... identifiers) {
+        return ifAnyOf(identifiers);
+    }
+
+    public static UserIdentifiers anyOf(UserIdentifierCollection... identifiers) {
+        return ifAnyOf(identifiers);
+    }
+
     public static UserIdentifierCollection users(String... usernames) {
         return new Users(usernames);
     }

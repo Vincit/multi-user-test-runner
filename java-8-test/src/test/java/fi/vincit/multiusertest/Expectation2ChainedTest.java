@@ -6,24 +6,23 @@ import fi.vincit.multiusertest.annotation.RunWithUsers;
 import fi.vincit.multiusertest.configuration.ConfiguredTest;
 import fi.vincit.multiusertest.rule.AuthorizationRule;
 import fi.vincit.multiusertest.rule.expection.ReturnValueCall;
-import fi.vincit.multiusertest.rule.expection.call.ExpectCall;
 import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
 import fi.vincit.multiusertest.util.LoginRole;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static fi.vincit.multiusertest.rule.expection.Expectations.call;
+import static fi.vincit.multiusertest.rule.expectation2.TestExpectations.*;
 import static fi.vincit.multiusertest.rule.expection.Expectations.valueOf;
-import static fi.vincit.multiusertest.util.UserIdentifiers.ifAnyOf;
+import static fi.vincit.multiusertest.util.UserIdentifiers.*;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
 @RunWithUsers(producers = {"role:ROLE_SUPER_ADMIN", "role:ROLE_ADMIN", "role:ROLE_USER", },
-        consumers = {"role:ROLE_ADMIN", "role:ROLE_USER", "role:ROLE_VISITOR"})
+        consumers = {/*"role:ROLE_ADMIN", "role:ROLE_USER", */"role:ROLE_VISITOR"})
 @RunWith(MultiUserTestRunner.class)
 @MultiUserTestConfig
-public class ChainedTest {
+public class Expectation2ChainedTest {
 
     @MultiUserConfigClass
     private ConfiguredTest configuredTest = new ConfiguredTest();
@@ -93,32 +92,26 @@ public class ChainedTest {
 
     @Test
     public void expectAssert_toFailWithException_toPass() throws Throwable {
-        ExpectCall expectValueOf = call(testService::throwIllegalStateException);
-
         configuredTest.logInAs(LoginRole.CONSUMER);
-        authorizationRule.expect(expectValueOf
-                        .toFailWithException(
-                                IllegalStateException.class,
-                                ifAnyOf("role:ROLE_ADMIN", "role:ROLE_USER", "role:ROLE_VISITOR"),
-                                exception ->
-                                        assertThat(exception.getMessage(), is("Denied"))
-                        )
-        );
+        authorizationRule.testCall(testService::throwIllegalStateException)
+                .whenCalledWith(anyOf("role:ROLE_ADMIN", "role:ROLE_USER", "role:ROLE_VISITOR"))
+                .then(expectException(
+                        IllegalStateException.class,
+                        exception -> assertThat(exception.getMessage(), is("Denied"))
+                )).test();
     }
 
     @Test(expected = AssertionError.class)
     public void expectAssert_toFailWithException_toFail() throws Throwable {
-        ExpectCall expectValueOf = call(() -> testService.throwIllegalStateException());
-
         configuredTest.logInAs(LoginRole.CONSUMER);
-        authorizationRule.expect(expectValueOf
-                        .toFailWithException(
-                                IllegalStateException.class,
-                                ifAnyOf("role:ROLE_ADMIN"),
-                                exception ->
-                                        assertThat(exception.getMessage(), is("Foo"))
-                        )
-        );
+
+        authorizationRule
+                .testCall(() -> testService.throwIllegalStateException())
+                .whenCalledWith(anyOf(roles("ROLE_ADMIN"), users("user-1")))
+                .then(expectException(
+                        IllegalStateException.class,
+                        exception -> assertThat(exception.getMessage(), is("Foo")))
+                ).test();
     }
 
     @Test
@@ -142,12 +135,17 @@ public class ChainedTest {
         }
 
         configuredTest.logInAs(LoginRole.CONSUMER);
-        authorizationRule.expect(valueOf(call)
-                        .toEqual(1, ifAnyOf("role:ROLE_ADMIN"))
-                        .toEqual(2, ifAnyOf("role:ROLE_USER"))
-                        .toEqual(3, ifAnyOf("role:ROLE_SUPER_ADMIN"))
-                        .toEqual(4, ifAnyOf("role:ROLE_VISITOR"))
-        );
+
+        authorizationRule.testCall(call)
+                .whenCalledWith(anyOf(roles("ROLE_ADMIN")))
+                .then(expectValue(1))
+                .whenCalledWith(anyOf(roles("ROLE_USER")))
+                .then(expectValue(2))
+                .whenCalledWith(anyOf(roles("ROLE_SUPER_ADMIN")))
+                .then(expectValue(3))
+                .whenCalledWith(anyOf(roles("ROLE_VISITOR")))
+                .then(assertValue(value -> assertThat(value, is(4))))
+                .test();
     }
 
     @Test(expected = AssertionError.class)
@@ -171,12 +169,17 @@ public class ChainedTest {
         }
 
         configuredTest.logInAs(LoginRole.CONSUMER);
-        authorizationRule.expect(valueOf(call)
-                        .toEqual(91, ifAnyOf("role:ROLE_ADMIN"))
-                        .toEqual(92, ifAnyOf("role:ROLE_USER"))
-                        .toEqual(93, ifAnyOf("role:ROLE_SUPER_ADMIN"))
-                        .toEqual(94, ifAnyOf("role:ROLE_VISITOR"))
-        );
+
+        authorizationRule.testCall(call)
+                .whenCalledWith(anyOf(roles("ROLE_ADMIN")))
+                .then(expectValue(91))
+                .whenCalledWith(anyOf(roles("ROLE_USER")))
+                .then(expectValue(92))
+                .whenCalledWith(anyOf(roles("ROLE_SUPER_ADMIN")))
+                .then(expectValue(93))
+                .whenCalledWith(anyOf(roles("ROLE_VISITOR")))
+                .then(expectValue(94))
+                .test();
     }
 
     @Test
@@ -199,11 +202,12 @@ public class ChainedTest {
                 throw new IllegalArgumentException("Missing ROLE definition");
         }
 
-        configuredTest.logInAs(LoginRole.CONSUMER);
-        authorizationRule.expect(valueOf(call)
-                        .toEqual(1, ifAnyOf("role:ROLE_ADMIN", "role:ROLE_USER", "role:ROLE_VISITOR"))
-                        .toEqual(3, ifAnyOf("role:ROLE_SUPER_ADMIN"))
-        );
+        authorizationRule.testCall(call)
+                .whenCalledWith(anyOf(roles("ROLE_ADMIN", "ROLE_USER", "ROLE_VISITOR")))
+                .then(expectValue(1))
+                .whenCalledWith(anyOf(roles("ROLE_SUPER_ADMIN")))
+                .then(expectValue(3))
+                .test();
     }
 
     @Test
@@ -287,18 +291,16 @@ public class ChainedTest {
         }
 
         configuredTest.logInAs(LoginRole.CONSUMER);
-        authorizationRule.expect(valueOf(call)
-                .toEqual(1, ifAnyOf("role:ROLE_ADMIN", "role:ROLE_USER"))
-                .toEqual(3, ifAnyOf("role:ROLE_SUPER_ADMIN"))
-                .toFailWithException(
-                        IllegalArgumentException.class,
-                        ifAnyOf("role:ROLE_VISITOR"),
-                        thrownException -> assertThat(
-                                thrownException.getMessage(),
-                                is("Msg")
-                        )
-                )
-        );
+        authorizationRule.testCall(call)
+                .whenCalledWith(anyOf(roles("ROLE_ADMIN", "ROLE_USER")))
+                .then(expectValue(1))
+                .whenCalledWith(anyOf(roles("ROLE_SUPER_ADMIN")))
+                .then(expectValue(3))
+                .whenCalledWith(anyOf(roles("ROLE_VISITOR")))
+                .then(expectExceptionInsteadOfValue(IllegalArgumentException.class,
+                        exception -> assertThat(exception.getMessage(), is("Msg"))
+                ))
+                .test();
     }
 
 }

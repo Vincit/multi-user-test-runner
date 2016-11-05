@@ -1,9 +1,9 @@
 package fi.vincit.multiusertest.rule.expection;
 
-import java.util.Objects;
-
 import fi.vincit.multiusertest.rule.expection.call.ExpectCall;
 import fi.vincit.multiusertest.rule.expection.value.ExpectValueOf;
+
+import java.util.Objects;
 
 /**
  * A set of helper methods for making assertion rules.
