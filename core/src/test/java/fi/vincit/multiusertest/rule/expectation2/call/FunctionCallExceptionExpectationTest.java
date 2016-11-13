@@ -1,5 +1,6 @@
 package fi.vincit.multiusertest.rule.expectation2.call;
 
+import fi.vincit.multiusertest.rule.expectation2.AssertionCalled;
 import fi.vincit.multiusertest.util.UserIdentifier;
 import org.junit.Rule;
 import org.junit.Test;
@@ -58,35 +59,32 @@ public class FunctionCallExceptionExpectationTest {
 
     @Test
     public void throwIfExpectationNotExpected_Assert() throws Throwable {
-        Assertion assertion = new Assertion();
+        AssertionCalled called = new AssertionCalled();
 
         FunctionCallExceptionExpectation<IllegalStateException> sut =
                 new FunctionCallExceptionExpectation<>(
                         IllegalStateException.class,
-                        expectException -> assertion.exception = expectException
+                        expectException -> called.withThrowable(expectException)
                 );
 
         sut.handleThrownException(UserIdentifier.getAnonymous(), new IllegalStateException("Foo"));
-        assertThat(assertion.exception.getMessage(), is("Foo"));
+        assertThat(called.getException().getMessage(), is("Foo"));
     }
 
     @Test
     public void throwIfExpectationNotExpected_DontAssertIfWrongException() throws Throwable {
-        Assertion assertion = new Assertion();
+        AssertionCalled called = new AssertionCalled();
 
         FunctionCallExceptionExpectation<IllegalStateException> sut =
                 new FunctionCallExceptionExpectation<>(
                         IllegalStateException.class,
-                        expectException -> assertion.exception = expectException
+                        expectException -> called.withThrowable(expectException)
                 );
 
         expectException.expect(AssertionError.class);
         expectException.expectMessage("Unexpected exception thrown. Expected <IllegalStateException> but was <IllegalArgumentException>");
         sut.handleThrownException(UserIdentifier.getAnonymous(), new IllegalArgumentException("Foo"));
-        assertThat(assertion.exception, nullValue());
+        assertThat(called.getException(), nullValue());
     }
 
-    private static class Assertion {
-        Throwable exception;
-    }
 }

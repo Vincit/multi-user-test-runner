@@ -1,5 +1,7 @@
 package fi.vincit.multiusertest.rule.expectation2.value;
 
+import fi.vincit.multiusertest.rule.expectation2.AssertionCalled;
+import fi.vincit.multiusertest.rule.expectation2.CallbackCalled;
 import fi.vincit.multiusertest.util.UserIdentifier;
 import org.junit.Rule;
 import org.junit.Test;
@@ -32,17 +34,17 @@ public class ReturnValueCallExceptionExpectationTest {
 
     @Test
     public void throwIfExpectationNotExpected_CustomAssert() throws Throwable {
-        AssertCalled isCalled = new AssertCalled();
+        AssertionCalled called = new AssertionCalled();
 
         ReturnValueCallExceptionExpectation<Object, IllegalStateException> sut =
                 new ReturnValueCallExceptionExpectation<>(
                         IllegalStateException.class,
-                        expectException -> isCalled.calledWith = expectException
+                        expectException -> called.withThrowable(expectException)
                 );
 
         sut.handleThrownException(UserIdentifier.getAnonymous(), new IllegalStateException("Foo"));
 
-        assertThat(isCalled.calledWith.getMessage(), is("Foo"));
+        assertThat(called.getException().getMessage(), is("Foo"));
     }
 
     @Test
@@ -60,17 +62,9 @@ public class ReturnValueCallExceptionExpectationTest {
         ReturnValueCallExceptionExpectation<Object, IllegalStateException> sut =
                 new ReturnValueCallExceptionExpectation<>(IllegalStateException.class);
 
-        sut.callAndAssertValue(() -> called.called = true);
+        sut.callAndAssertValue(called::markCalled);
 
-        assertThat(called.called, is(true));
-    }
-
-    private static class CallbackCalled {
-        private boolean called;
-    }
-
-    private static class AssertCalled {
-        private Throwable calledWith;
+        assertThat(called.wasCalled(), is(true));
     }
 
 }

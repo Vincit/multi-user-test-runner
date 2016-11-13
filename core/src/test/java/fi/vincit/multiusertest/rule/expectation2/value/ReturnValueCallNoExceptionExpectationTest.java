@@ -1,5 +1,6 @@
 package fi.vincit.multiusertest.rule.expectation2.value;
 
+import fi.vincit.multiusertest.rule.expectation2.CallbackCalled;
 import fi.vincit.multiusertest.util.UserIdentifier;
 import org.junit.Rule;
 import org.junit.Test;
@@ -31,12 +32,12 @@ public class ReturnValueCallNoExceptionExpectationTest {
 
     @Test
     public void callAndAssertValue() throws Throwable {
-        Called called = new Called();
-        ReturnValueCallNoExceptionExpectation<Integer> sut =
+        CallbackCalled called = new CallbackCalled();
+        ReturnValueCallNoExceptionExpectation<Object> sut =
                 new ReturnValueCallNoExceptionExpectation<>();
-        sut.callAndAssertValue(() -> {called.called = true; return 1;});
+        sut.callAndAssertValue(called::markCalled);
 
-        assertThat(called.called, is(true));
+        assertThat(called.wasCalled(), is(true));
     }
 
     @Test
@@ -48,7 +49,4 @@ public class ReturnValueCallNoExceptionExpectationTest {
         sut.callAndAssertValue(() -> {throw new IllegalArgumentException();});
     }
 
-    private static class Called {
-        boolean called;
-    }
 }
