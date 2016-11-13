@@ -50,7 +50,7 @@ public class ReturnValueCallExceptionExpectationTest {
         ReturnValueCallExceptionExpectation<Object, IllegalStateException> sut =
                 new ReturnValueCallExceptionExpectation<>(IllegalStateException.class);
 
-        expectException.expect(IllegalArgumentException.class);
+        expectException.expect(AssertionError.class);
         sut.handleThrownException(UserIdentifier.getAnonymous(), new IllegalArgumentException());
     }
 

@@ -26,7 +26,11 @@ public class FunctionCallExceptionExpectation<T extends Throwable> implements Te
 
     public void handleThrownException(UserIdentifier userIdentifier, Throwable thrownException)  throws Throwable {
         if (!defaultExpectedException.isInstance(thrownException)) {
-            throw thrownException;
+            String message = String.format("Unexpected exception thrown. Expected <%s> but was <%s>",
+                    defaultExpectedException.getSimpleName(),
+                    thrownException.getClass().getSimpleName()
+            );
+            throw new AssertionError(message, thrownException);
         }
 
         if (assertion.isPresent()) {

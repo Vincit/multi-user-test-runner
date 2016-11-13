@@ -26,7 +26,11 @@ public class ReturnValueCallExceptionExpectation<VALUE_TYPE, EXCEPTION extends T
 
     public void handleThrownException(UserIdentifier userIdentifier, Throwable thrownException)  throws Throwable {
         if (!expectedException.isInstance(thrownException)) {
-            throw thrownException;
+            String message = String.format("Unexpected exception thrown. Expected <%s> but was <%s>",
+                    expectedException.getSimpleName(),
+                    thrownException.getClass().getSimpleName()
+            );
+            throw new AssertionError(message, thrownException);
         }
 
         if (exceptionAssertionCall.isPresent()) {

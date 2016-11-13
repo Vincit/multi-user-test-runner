@@ -72,5 +72,16 @@ public class ReturnValueCallExpectationTest {
         sut.callAndAssertValue(() -> 3);
     }
 
+    @Test
+    public void callAndAssertValue_assertion_other_fail() throws Throwable {
+        ReturnValueCallExpectation<Integer> sut =
+                new ReturnValueCallExpectation<>(
+                        value -> {throw new IllegalStateException("Thrown from assertion");}
+        );
+
+        expectException.expect(IllegalStateException.class);
+        expectException.expectMessage("Thrown from assertion");
+        sut.callAndAssertValue(() -> 3);
+    }
 
 }

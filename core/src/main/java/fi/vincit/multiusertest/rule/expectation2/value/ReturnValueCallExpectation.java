@@ -34,21 +34,16 @@ public class ReturnValueCallExpectation<VALUE_TYPE> implements TestValueExpectat
 
     @Override
     public void callAndAssertValue(ReturnValueCall<VALUE_TYPE> valueCall) throws Throwable {
-        Optional<Throwable> exceptionOnAssert = Optional.empty();
         VALUE_TYPE returnValue = valueCall.call();
 
         if (assertionCall.isPresent()) {
             try {
                 assertionCall.get().call(returnValue);
-            } catch (Throwable t) {
-                exceptionOnAssert = Optional.of(t);
+            } catch (Throwable throwable) {
+                throw throwable;
             }
         } else {
             assertThat(returnValue, is(value.orElse(null)));
-        }
-
-        if (exceptionOnAssert.isPresent()) {
-            throw exceptionOnAssert.get();
         }
     }
 
