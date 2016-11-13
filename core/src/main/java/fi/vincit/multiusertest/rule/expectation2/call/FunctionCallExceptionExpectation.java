@@ -24,13 +24,13 @@ public class FunctionCallExceptionExpectation<T extends Throwable> implements Te
         throw new AssertionError("Expected to fail with exception " + defaultExpectedException.getName());
     }
 
-    public void handleThrownException(UserIdentifier userIdentifier, Throwable e)  throws Throwable {
-        if (!defaultExpectedException.isInstance(e)) {
-            throw e;
+    public void handleThrownException(UserIdentifier userIdentifier, Throwable thrownException)  throws Throwable {
+        if (!defaultExpectedException.isInstance(thrownException)) {
+            throw thrownException;
         }
 
         if (assertion.isPresent()) {
-            assertion.get().call((T)e);
+            assertion.get().call((T) thrownException);
         }
     }
 

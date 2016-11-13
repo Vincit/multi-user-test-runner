@@ -24,13 +24,13 @@ public class ReturnValueCallExceptionExpectation<VALUE_TYPE, EXCEPTION extends T
         throw new AssertionError("Expected to fail with exception " + expectedException.getName());
     }
 
-    public void handleThrownException(UserIdentifier userIdentifier, Throwable e)  throws Throwable {
-        if (!expectedException.isInstance(e)) {
-            throw e;
+    public void handleThrownException(UserIdentifier userIdentifier, Throwable thrownException)  throws Throwable {
+        if (!expectedException.isInstance(thrownException)) {
+            throw thrownException;
         }
 
         if (exceptionAssertionCall.isPresent()) {
-            exceptionAssertionCall.get().call((EXCEPTION)e);
+            exceptionAssertionCall.get().call((EXCEPTION) thrownException);
         }
     }
 

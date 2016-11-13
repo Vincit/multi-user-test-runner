@@ -12,8 +12,8 @@ public class FunctionCallNoExceptionExpectation implements TestExpectation {
         // NOOP
     }
 
-    public void handleThrownException(UserIdentifier userIdentifier, Throwable e)  throws Throwable {
-        throw new AssertionError("Not expected to fail with user role " + userIdentifier.toString(), e);
+    public void handleThrownException(UserIdentifier userIdentifier, Throwable thrownException)  throws Throwable {
+        throw new AssertionError("Not expected to fail with user role " + userIdentifier.toString(), thrownException);
     }
 
 }

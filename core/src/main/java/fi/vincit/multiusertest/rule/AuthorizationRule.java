@@ -125,15 +125,27 @@ public class AuthorizationRule implements TestRule {
         }
     }
 
-    public When<TestExpectation> testCall(FunctionCall runnable) {
+    /**
+     * Starts constructing expectation for a function call with API 2 syntax.
+     * @param functionCall Call to test
+     * @return
+     * @since 0.5
+     */
+    public When<TestExpectation> testCall(FunctionCall functionCall) {
         expectation2ConstructionFinished = true;
-        return new FunctionCallWhenThen(runnable, userIdentifier, this);
+        return new FunctionCallWhenThen(functionCall, userIdentifier, this);
     }
 
-    public <VALUE_TYPE> When<TestValueExpectation<VALUE_TYPE>> testCall(ReturnValueCall<VALUE_TYPE> valueCall) {
+    /**
+     * Starts constructing expectation for a return value call with API 2 syntax.
+     * @param returnValueCall Call to test
+     * @return
+     * @since 0.5
+     */
+    public <VALUE_TYPE> When<TestValueExpectation<VALUE_TYPE>> testCall(ReturnValueCall<VALUE_TYPE> returnValueCall) {
         expectation2ConstructionFinished = true;
         return new ReturnValueWhenThen<>(
-                valueCall,
+                returnValueCall,
                 userIdentifier,
                 this
         );
