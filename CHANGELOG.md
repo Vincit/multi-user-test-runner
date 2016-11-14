@@ -12,7 +12,7 @@ break backwards compatibility.
 
 ## Breaking Changes
 
-* Required Java 8 or later
+* Requires Java 8 or later
 * Removed old inheritance based configuration
 * Removed support for old Spring 3.x, 4.0 and 4.1 versions that don't support
   new rule based test configuration.
