@@ -321,6 +321,8 @@ If they were, the `dontExpectToFail()` call will throw an `java.lang.AssertionEr
 
 ## Advanced Assertions
 
+### Java 8 Friendly Assertions (MUTR 0.2+)
+
 From version 0.2 onwards there are also advanced assertions which work best with Java 8 lambdas. With these
 assertions the `dontExpectToFail()` isn't needed since the exception handling logic is in the assertion
 itself and not in the `AbstractUserRoleIT` class' rule.
@@ -356,6 +358,27 @@ authorization().expect(valueOf(() -> service.getAllUsers(value))
                     .toAssert((value) -> assertThat(value, is(10)), ifAnyOf("role:ROLE_ADMIN"))
                     .toAssert((value) -> assertThat(value, is(2)), ifAnyOf("role:ROLE_USER"))
                 );
+```
+
+### Fluent/BDD like Assertions (MUTR 0.5+)
+
+A new expectation API was added in version 0.5. The new API uses less nested calls and
+is more natural and fluent than the previous APIs. Writing and reading the rules is easier
+when the `when-then` structure is on the same level (as opposed to nested like in 0.2).
+
+```java
+authorizationRule.testCall(() -> testService.getAllUsernames())
+        .whenCalledWith(anyOf(roles("ROLE_ADMIN", "ROLE_USER")))
+        .then(expectValue(Arrays.asList("admin", "user 1", "user 2")))
+        
+        .whenCalledWith(anyOf(roles("ROLE_SUPER_ADMIN")))
+        .then(expectValue(Arrays.asList("super_admin", "admin", "user 1", "user 2", "user 3")))
+        
+        .whenCalledWith(anyOf(roles("ROLE_VISITOR")))
+        .then(expectExceptionInsteadOfValue(AccessDeniedException.class,
+                exception -> assertThat(exception.getMessage(), is("Access is denied"))
+        ))
+        .test();
 ```
 
 # Example

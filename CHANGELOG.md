@@ -1,6 +1,12 @@
 Multi User Test Runner
 ======================
 
+# 0.5.0
+
+## Changes
+
+* New expectations API.
+
 # 0.4.0
 
 ## Changes
