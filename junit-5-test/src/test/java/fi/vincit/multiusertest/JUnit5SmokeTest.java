@@ -20,7 +20,7 @@ import static org.junit.Assert.assertThat;
 @RunWithUsers(producers = {"role:ROLE_ADMIN"}, consumers = "role:ROLE_USER")
 @RunWith(MultiUserTestRunner.class)
 @MultiUserTestConfig
-public class Java8SmokeTest {
+public class JUnit5SmokeTest {
 
     @MultiUserConfigClass
     private ConfiguredTest configuredTest = new ConfiguredTest();

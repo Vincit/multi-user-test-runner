@@ -23,7 +23,7 @@ import static org.junit.Assert.assertThat;
         consumers = {"role:ROLE_ADMIN", "role:ROLE_USER", "role:ROLE_VISITOR"})
 @RunWith(MultiUserTestRunner.class)
 @MultiUserTestConfig
-public class ChainedTest {
+public class JUnit5ChainedTest {
 
     @MultiUserConfigClass
     private ConfiguredTest configuredTest = new ConfiguredTest();

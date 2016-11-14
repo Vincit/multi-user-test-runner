@@ -19,7 +19,7 @@ import static fi.vincit.multiusertest.util.UserIdentifiers.ifAnyOf;
 @RunWithUsers(producers = {"role:ROLE_ADMIN", "role:ROLE_USER"},
         consumers = {RunWithUsers.WITH_PRODUCER_ROLE})
 @RunWith(MultiUserTestRunner.class)
-public class NewUserTest {
+public class JUnit5NewUserTest {
 
     @MultiUserConfigClass
     private ConfiguredTest configuredTest = new ConfiguredTest();
