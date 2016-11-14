@@ -5,7 +5,16 @@ Multi User Test Runner
 
 ## Changes
 
-* New expectations API.
+Version 0.5 aim is to clean APIs and code base from legacy code. This will
+break backwards compatibility.
+
+* New expectations API
+
+## Breaking Changes
+
+* Removed old inheritance based configuration
+* Removed support for old Spring 3.x, 4.0 and 4.1 versions that don't support
+  new rule based test configuration.
 
 # 0.4.0
 
