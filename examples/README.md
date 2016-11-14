@@ -15,6 +15,7 @@ Simple example project and example tests.
 ### REST Assured
 
 * [REST Assured Example](src/test/java/fi/vincit/mutrproject/feature/todo/RestAssuredIT.java)
+* [REST Assured Example with Expectation API 2](src/test/java/fi/vincit/mutrproject/feature/todo/RestAssuredExpectation2IT.java)
 * [REST Assured Configuration](src/test/java/fi/vincit/mutrproject/configuration/AbstractConfiguredRestAssuredIT.java)
 
 ## Advanced Assertions
