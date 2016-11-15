@@ -1,7 +1,7 @@
 package fi.vincit.multiusertest.rule;
 
 import fi.vincit.multiusertest.rule.expectation2.TestExpectation;
-import fi.vincit.multiusertest.rule.expectation2.When;
+import fi.vincit.multiusertest.rule.expectation2.WhenThen;
 import fi.vincit.multiusertest.rule.expectation2.call.FunctionCallWhenThen;
 import fi.vincit.multiusertest.rule.expectation2.value.ReturnValueWhenThen;
 import fi.vincit.multiusertest.rule.expectation2.value.TestValueExpectation;
@@ -131,7 +131,7 @@ public class AuthorizationRule implements TestRule {
      * @return
      * @since 0.5
      */
-    public When<TestExpectation> testCall(FunctionCall functionCall) {
+    public WhenThen<TestExpectation> testCall(FunctionCall functionCall) {
         expectation2ConstructionFinished = true;
         return new FunctionCallWhenThen(functionCall, userIdentifier, this);
     }
@@ -142,7 +142,7 @@ public class AuthorizationRule implements TestRule {
      * @return
      * @since 0.5
      */
-    public <VALUE_TYPE> When<TestValueExpectation<VALUE_TYPE>> testCall(ReturnValueCall<VALUE_TYPE> returnValueCall) {
+    public <VALUE_TYPE> WhenThen<TestValueExpectation<VALUE_TYPE>> testCall(ReturnValueCall<VALUE_TYPE> returnValueCall) {
         expectation2ConstructionFinished = true;
         return new ReturnValueWhenThen<>(
                 returnValueCall,

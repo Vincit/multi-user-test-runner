@@ -261,4 +261,38 @@ public class AbstractWhenThenTest {
         verify(sut).test(expectation, role1);
     }
 
+    @Test
+    public void testIsCalledWithDefaultSetWithOtherwise() throws Throwable {
+        UserIdentifier role1 = UserIdentifier.parse("role:ROLE_1");
+        TestExpectation userSetExpectation = mock(TestExpectation.class);
+        TestExpectation expectationInSubclass = mock(TestExpectation.class);
+
+        AbstractWhenThen<TestExpectation> sut = spy(new SUT(
+                role1
+        ));
+        sut.otherwise(userSetExpectation);
+        when(sut.getDefaultExpectation(role1)).thenReturn(expectationInSubclass);
+
+        sut.test();
+
+        verify(sut).test(userSetExpectation, role1);
+    }
+
+    @Test
+    public void testIsCalledWithDefaultSetWithByDefault() throws Throwable {
+        UserIdentifier role1 = UserIdentifier.parse("role:ROLE_1");
+        TestExpectation userSetExpectation = mock(TestExpectation.class);
+        TestExpectation expectationInSubclass = mock(TestExpectation.class);
+
+        AbstractWhenThen<TestExpectation> sut = spy(new SUT(
+                role1
+        ));
+        sut.byDefault(userSetExpectation);
+        when(sut.getDefaultExpectation(role1)).thenReturn(expectationInSubclass);
+
+        sut.test();
+
+        verify(sut).test(userSetExpectation, role1);
+    }
+
 }

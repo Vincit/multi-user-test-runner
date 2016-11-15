@@ -4,10 +4,7 @@ import fi.vincit.multiusertest.rule.AuthorizationRule;
 import fi.vincit.multiusertest.util.UserIdentifier;
 import fi.vincit.multiusertest.util.UserIdentifiers;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public abstract class AbstractWhenThen<T extends TestExpectation> implements WhenThen<T> {
 
@@ -16,6 +13,7 @@ public abstract class AbstractWhenThen<T extends TestExpectation> implements Whe
 
     private final UserIdentifier userIdentifier;
     private final AuthorizationRule authorizationRule;
+    private T defaultExpectation;
 
     public AbstractWhenThen(UserIdentifier userIdentifier, AuthorizationRule authorizationRule) {
         this.userIdentifier = userIdentifier;
@@ -87,10 +85,21 @@ public abstract class AbstractWhenThen<T extends TestExpectation> implements Whe
     }
 
     @Override
+    public WhenThen<T> otherwise(T testExpectation) {
+        this.defaultExpectation = testExpectation;
+        return this;
+    }
+
+    @Override
+    public WhenThen<T> byDefault(T testExpectation) {
+        return otherwise(testExpectation);
+    }
+
+    @Override
     public void test() throws Throwable {
         T testExpectation = expectationsByIdentifier.computeIfAbsent(
                 userIdentifier,
-                this::getDefaultExpectation
+                this::getDefinedDefaultException
         );
 
         this.authorizationRule.markExpectationConstructed();
@@ -100,6 +109,11 @@ public abstract class AbstractWhenThen<T extends TestExpectation> implements Whe
     protected abstract void test(T testExpectation, UserIdentifier userIdentifier) throws Throwable;
 
     protected abstract T getDefaultExpectation(UserIdentifier userIdentifier);
+
+    protected T getDefinedDefaultException(UserIdentifier userIdentifier) {
+        return Optional.ofNullable(defaultExpectation)
+                .orElseGet(() -> getDefaultExpectation(userIdentifier));
+    }
 
     /*
     For unit tests

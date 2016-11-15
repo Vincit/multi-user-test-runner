@@ -4,6 +4,7 @@ import fi.vincit.multiusertest.rule.expectation2.call.FunctionCallExceptionExpec
 import fi.vincit.multiusertest.rule.expectation2.call.FunctionCallNoExceptionExpectation;
 import fi.vincit.multiusertest.rule.expectation2.value.ReturnValueCallExceptionExpectation;
 import fi.vincit.multiusertest.rule.expectation2.value.ReturnValueCallExpectation;
+import fi.vincit.multiusertest.rule.expectation2.value.ReturnValueCallNoExceptionExpectation;
 import fi.vincit.multiusertest.rule.expectation2.value.TestValueExpectation;
 import fi.vincit.multiusertest.rule.expection.AssertionCall;
 
@@ -44,6 +45,15 @@ public class TestExpectations {
      */
     public static TestExpectation expectNotToFail() {
         return new FunctionCallNoExceptionExpectation();
+    }
+
+    /**
+     * Return value variant of {@link this#expectNotToFail()}
+     * @return
+     * @since 0.5
+     */
+    public static <VALUE_TYPE> TestValueExpectation<VALUE_TYPE> expectNotToFailIgnoringValue() {
+        return new ReturnValueCallNoExceptionExpectation<>();
     }
 
     /**

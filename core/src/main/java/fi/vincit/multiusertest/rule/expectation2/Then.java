@@ -12,4 +12,21 @@ public interface Then<T extends TestExpectation> {
      * @return
      */
     WhenThen<T> then(T testExpectation);
+
+    /**
+     * Define default expectation.
+     * @param testExpectation Default expectation
+     * @return
+     * @since 0.5
+     */
+    WhenThen<T> otherwise(T testExpectation);
+
+    /**
+     * Define default expectation.
+     * Alias for {@link this#otherwise(TestExpectation)}.
+     * @param testExpectation
+     * @return
+     * @since 0.5
+     */
+    WhenThen<T> byDefault(T testExpectation);
 }

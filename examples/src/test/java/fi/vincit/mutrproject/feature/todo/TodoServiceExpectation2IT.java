@@ -8,10 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 
-import static fi.vincit.multiusertest.rule.Authentication.notToFail;
 import static fi.vincit.multiusertest.rule.expectation2.TestExpectations.expectExceptionInsteadOfValue;
+import static fi.vincit.multiusertest.rule.expectation2.TestExpectations.expectNotToFailIgnoringValue;
 import static fi.vincit.multiusertest.util.UserIdentifiers.anyOf;
-import static fi.vincit.multiusertest.util.UserIdentifiers.ifAnyOf;
 
 /**
  * Basic examples on how to use MUTR with Expectation 2 API.
@@ -62,15 +61,13 @@ public class TodoServiceExpectation2IT extends AbstractConfiguredMultiRoleIT {
     public void addTodoItem() throws Throwable {
         long listId = todoService.createTodoList("Test list", false);
         config().logInAs(LoginRole.CONSUMER);
-        authorization().expect(notToFail(ifAnyOf("role:ROLE_ADMIN", "role:ROLE_SYSTEM_ADMIN", RunWithUsers.PRODUCER)));
 
         authorization()
                 .testCall(() -> todoService.addItemToList(listId, "Write tests"))
-                .whenCalledWith(anyOf("role:ROLE_USER", RunWithUsers.ANONYMOUS))
-                .then(expectExceptionInsteadOfValue(AccessDeniedException.class))
+                .whenCalledWith(anyOf("role:ROLE_ADMIN", "role:ROLE_SYSTEM_ADMIN", RunWithUsers.PRODUCER))
+                .then(expectNotToFailIgnoringValue())
+                .otherwise(expectExceptionInsteadOfValue(AccessDeniedException.class))
                 .test();
-
-        todoService.addItemToList(listId, "Write tests");
     }
 
     /**
