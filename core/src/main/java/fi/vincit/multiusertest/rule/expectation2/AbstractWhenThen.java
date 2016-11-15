@@ -58,6 +58,8 @@ public abstract class AbstractWhenThen<T extends TestExpectation> implements Whe
 
     @Override
     public WhenThen<T> then(final T testExpectation) {
+        Objects.requireNonNull(testExpectation, "testExpectation must not be null");
+
         if (currentIdentifiers.isEmpty()) {
             throw new IllegalStateException("Call whenCalledWith before calling then method");
         }
@@ -86,6 +88,7 @@ public abstract class AbstractWhenThen<T extends TestExpectation> implements Whe
 
     @Override
     public WhenThen<T> otherwise(T testExpectation) {
+        Objects.requireNonNull(testExpectation, "testExpectation must not be null");
         this.defaultExpectation = testExpectation;
         return this;
     }
