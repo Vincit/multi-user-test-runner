@@ -3,6 +3,10 @@ package fi.vincit.multiusertest.util;
 import fi.vincit.multiusertest.annotation.RunWithUsers;
 import org.junit.Test;
 
+import java.util.Collection;
+import java.util.HashSet;
+
+import static java.util.Arrays.asList;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNot.not;
 import static org.hamcrest.core.IsNull.nullValue;
@@ -160,4 +164,29 @@ public class UserIdentifierTest {
     public void testParse_IllegalType() {
         UserIdentifier.parse("foo:bar");
     }
+
+    @Test
+    public void testMapMultiRole() {
+        Collection<String> mapped = UserIdentifier.mapMultiRoleIdentifier("foo:bar", String::toUpperCase);
+        assertThat(mapped, is(new HashSet<>(asList("FOO", "BAR"))));
+    }
+
+    @Test
+    public void testMapMultiRole_empty() {
+        Collection<String> mapped = UserIdentifier.mapMultiRoleIdentifier("", String::toUpperCase);
+        assertThat(mapped.size(), is(0));
+    }
+
+    @Test
+    public void testMapMultiRole_one() {
+        Collection<String> mapped = UserIdentifier.mapMultiRoleIdentifier("foo", String::toUpperCase);
+        assertThat(mapped, is(new HashSet<>(asList("FOO"))));
+    }
+
+    @Test
+    public void testMapMultiRole_removeEmpty() {
+        Collection<String> mapped = UserIdentifier.mapMultiRoleIdentifier(":foo:", String::toUpperCase);
+        assertThat(mapped, is(new HashSet<>(asList("FOO"))));
+    }
+
 }

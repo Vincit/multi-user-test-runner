@@ -137,7 +137,7 @@ public class RunnerDelegate {
                 userRoleIt.setUsers(producerIdentifier, userIdentifier);
 
                 if (userRoleIt instanceof AbstractMultiUserConfig) {
-                    AbstractMultiUserConfig multiUserConfig = (AbstractMultiUserConfig)userRoleIt;
+                    AbstractMultiUserConfig multiUserConfig = (AbstractMultiUserConfig) userRoleIt;
                     AuthorizationRule authorizationRule = getAuthorizationRule(testClass, target);
 
                     multiUserConfig.setAuthorizationRule(authorizationRule, target);

@@ -26,7 +26,7 @@ import static org.junit.Assert.assertThat;
         consumers = {"role:ADMIN", "role:NORMAL"})
 @RunWith(MultiUserTestRunner.class)
 @MultiUserTestConfig
-public class AliasTestRole {
+public class AliasRoleTest {
 
     @MultiUserConfigClass
     private ConfiguredTestWithRoleAlias configuredTest = new ConfiguredTestWithRoleAlias();

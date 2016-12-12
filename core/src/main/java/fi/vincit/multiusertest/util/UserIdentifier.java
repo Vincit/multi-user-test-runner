@@ -3,12 +3,22 @@ package fi.vincit.multiusertest.util;
 import fi.vincit.multiusertest.annotation.RunWithUsers;
 import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
 
+import java.util.Collection;
+import java.util.function.Function;
+import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.toSet;
+
 /**
  * Generic definition of a user to use in the tests. Defines what kind of
  * user is being used in the tests. E.g. is user created with a certain role or is an existing
  * user used.
  */
 public class UserIdentifier {
+
+    public static final String ROLE_SPLITTER = ":";
+    public static final String IDENTIFIER_SPLITTER = ":";
+
 
     /**
      * Definitions for user types. Specifies what kind of
@@ -54,12 +64,29 @@ public class UserIdentifier {
         } else if (identifierString.equals(RunWithUsers.ANONYMOUS)) {
             return getAnonymous();
         } else if (identifierString.startsWith(MultiUserTestRunner.USER_PREFIX) || identifierString.startsWith(MultiUserTestRunner.ROLE_PREFIX)) {
-            String[] data = identifierString.split(":", 2);
+            String[] data = identifierString.split(IDENTIFIER_SPLITTER, 2);
             return new UserIdentifier(Type.valueOf(data[0].toUpperCase()), data[1]);
         } else {
             throw new IllegalArgumentException("invalid producer parameter: <" + identifierString +
                     ">. Parameter has to start with \"role:\" or \"user:\" or it has to be RunWithUsers.PRODUCER or RunWithUsers.WITH_PRODUCER_ROLE.");
         }
+    }
+
+    /**
+     * Utility method for splitting multi-role identifier to Strings
+     * and mapping them to wanted type.
+     * An utility method is used to preserve backwards compatibility.
+     * In future major version updates this may change.
+     * @since 0.5
+     * @param identifier Identifier without type
+     * @param mapper Mapper function for String -> role type mapping
+     * @return One or more identifiers
+     */
+    public static <T> Collection<T> mapMultiRoleIdentifier(String identifier, Function<String, T> mapper) {
+        return Stream.of(identifier.split(ROLE_SPLITTER))
+                .filter(role -> !role.isEmpty())
+                .map(mapper)
+                .collect(toSet());
     }
 
     public static UserIdentifier getAnonymous() {
@@ -97,7 +124,7 @@ public class UserIdentifier {
     public String toString() {
         final String typeString = type.toString().toLowerCase();
         if (identifier != null) {
-            return typeString + ":" + identifier;
+            return typeString + IDENTIFIER_SPLITTER + identifier;
         } else {
             return typeString;
         }
