@@ -4,6 +4,7 @@ import fi.vincit.multiusertest.annotation.RunWithUsers;
 import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -49,6 +50,7 @@ public class UserIdentifier {
 
     private final Type type;
     private final String identifier;
+    private final Collection<String> identifierParts;
 
     /**
      * Parses a user identifier string and creates a {@link UserIdentifier} instance.
@@ -83,10 +85,14 @@ public class UserIdentifier {
      * @return One or more identifiers
      */
     public static <T> Collection<T> mapMultiRoleIdentifier(String identifier, Function<String, T> mapper) {
-        return Stream.of(identifier.split(ROLE_SPLITTER))
-                .filter(role -> !role.isEmpty())
-                .map(mapper)
-                .collect(toSet());
+        if (identifier != null) {
+            return Stream.of(identifier.split(ROLE_SPLITTER))
+                    .filter(role -> !role.isEmpty())
+                    .map(mapper)
+                    .collect(toSet());
+        } else {
+            return Collections.emptySet();
+        }
     }
 
     public static UserIdentifier getAnonymous() {
@@ -110,6 +116,7 @@ public class UserIdentifier {
     public UserIdentifier(Type type, String identifier) {
         this.type = type;
         this.identifier = identifier;
+        this.identifierParts = mapMultiRoleIdentifier(identifier, Function.identity());
     }
 
     public Type getType() {
@@ -145,10 +152,10 @@ public class UserIdentifier {
             return false;
         }
 
-        if (identifier != null) {
-            return identifier.equals(that.identifier);
+        if (identifierParts != null) {
+            return identifierParts.equals(that.identifierParts);
         } else {
-            return that.identifier == null;
+            return that.identifierParts == null;
         }
 
     }
@@ -156,7 +163,7 @@ public class UserIdentifier {
     @Override
     public int hashCode() {
         int result = type.hashCode();
-        result = 31 * result + (identifier != null ? identifier.hashCode() : 0);
+        result = 31 * result + (identifierParts != null ? identifierParts.hashCode() : 0);
         return result;
     }
 }

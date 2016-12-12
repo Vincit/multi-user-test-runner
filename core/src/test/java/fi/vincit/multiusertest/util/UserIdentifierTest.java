@@ -77,6 +77,14 @@ public class UserIdentifierTest {
     }
 
     @Test
+    public void testEquals_Multirole() {
+        UserIdentifier userIdentifier1 = new UserIdentifier(UserIdentifier.Type.ROLE, "foo:bar");
+        UserIdentifier userIdentifier2 = new UserIdentifier(UserIdentifier.Type.ROLE, "bar:foo");
+
+        assertThat(userIdentifier1.equals(userIdentifier2), is(true));
+    }
+
+    @Test
     public void testEquals_NullIdentifierFails() {
         UserIdentifier userIdentifier1 = new UserIdentifier(UserIdentifier.Type.PRODUCER, null);
         UserIdentifier userIdentifier2 = new UserIdentifier(UserIdentifier.Type.PRODUCER, "Foo");
@@ -88,6 +96,14 @@ public class UserIdentifierTest {
     public void testHashCode_Equals() {
         UserIdentifier userIdentifier1 = new UserIdentifier(UserIdentifier.Type.PRODUCER, "Foo");
         UserIdentifier userIdentifier2 = new UserIdentifier(UserIdentifier.Type.PRODUCER, "Foo");
+
+        assertThat(userIdentifier1.hashCode(), is(userIdentifier2.hashCode()));
+    }
+
+    @Test
+    public void testHashCode_MultiRole_Equals() {
+        UserIdentifier userIdentifier1 = new UserIdentifier(UserIdentifier.Type.ROLE, "Foo:Bar");
+        UserIdentifier userIdentifier2 = new UserIdentifier(UserIdentifier.Type.ROLE, "Bar:Foo");
 
         assertThat(userIdentifier1.hashCode(), is(userIdentifier2.hashCode()));
     }
@@ -160,6 +176,13 @@ public class UserIdentifierTest {
         assertThat(identifier.getIdentifier(), is("Bar"));
     }
 
+    @Test
+    public void testParseMultiRole() {
+        UserIdentifier identifier = UserIdentifier.parse("role:foo:bar");
+        assertThat(identifier.getType(), is(UserIdentifier.Type.ROLE));
+        assertThat(identifier.getIdentifier(), is("foo:bar"));
+    }
+
     @Test(expected = IllegalArgumentException.class)
     public void testParse_IllegalType() {
         UserIdentifier.parse("foo:bar");
@@ -172,8 +195,20 @@ public class UserIdentifierTest {
     }
 
     @Test
+    public void testMapMultiRole_null() {
+        Collection<String> mapped = UserIdentifier.mapMultiRoleIdentifier(null, String::toUpperCase);
+        assertThat(mapped.size(), is(0));
+    }
+
+    @Test
     public void testMapMultiRole_empty() {
         Collection<String> mapped = UserIdentifier.mapMultiRoleIdentifier("", String::toUpperCase);
+        assertThat(mapped.size(), is(0));
+    }
+
+    @Test
+    public void testMapMultiRole_manyEmpty() {
+        Collection<String> mapped = UserIdentifier.mapMultiRoleIdentifier(":::", String::toUpperCase);
         assertThat(mapped.size(), is(0));
     }
 
@@ -186,6 +221,12 @@ public class UserIdentifierTest {
     @Test
     public void testMapMultiRole_removeEmpty() {
         Collection<String> mapped = UserIdentifier.mapMultiRoleIdentifier(":foo:", String::toUpperCase);
+        assertThat(mapped, is(new HashSet<>(asList("FOO"))));
+    }
+
+    @Test
+    public void testMapMultiRole_removeManyEmpty() {
+        Collection<String> mapped = UserIdentifier.mapMultiRoleIdentifier(":foo::", String::toUpperCase);
         assertThat(mapped, is(new HashSet<>(asList("FOO"))));
     }
 
