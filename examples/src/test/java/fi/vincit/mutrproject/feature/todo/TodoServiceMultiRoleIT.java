@@ -42,8 +42,8 @@ import static fi.vincit.multiusertest.util.UserIdentifiers.ifAnyOf;
 @ContextConfiguration(classes = {Application.class, SecurityConfig.class})
 @RunWith(MultiUserTestRunner.class)
 @RunWithUsers(
-        producers = {"role:ADMINISTRATOR", "role:REGULAR_USER"},
-        consumers = {"role:ADMINISTRATOR", "role:REGULAR_USER", RunWithUsers.PRODUCER}
+        producers = {"role:ADMIN:USER", "role:USER"},
+        consumers = {"role:ADMIN:USER", "role:USER", RunWithUsers.PRODUCER}
 )
 public class TodoServiceMultiRoleIT {
 
@@ -76,7 +76,7 @@ public class TodoServiceMultiRoleIT {
     public void getPrivateTodoList() throws Throwable {
         long id = todoService.createTodoList("Test list", false);
         config.logInAs(LoginRole.CONSUMER);
-        authorizationRule.expect(toFail(ifAnyOf("role:REGULAR_USER")));
+        authorizationRule.expect(toFail(ifAnyOf("role:USER")));
         todoService.getTodoList(id);
     }
 
@@ -91,7 +91,7 @@ public class TodoServiceMultiRoleIT {
     public void addTodoItem() throws Throwable {
         long listId = todoService.createTodoList("Test list", false);
         config.logInAs(LoginRole.CONSUMER);
-        authorizationRule.expect(notToFail(ifAnyOf("role:ADMINISTRATOR", RunWithUsers.PRODUCER)));
+        authorizationRule.expect(notToFail(ifAnyOf("role:ADMIN:USER", RunWithUsers.PRODUCER)));
         todoService.addItemToList(listId, "Write tests");
     }
 

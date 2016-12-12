@@ -1,6 +1,6 @@
 package fi.vincit.mutrproject.configuration;
 
-import fi.vincit.multiusertest.test.AbstractMultiUserConfig;
+import fi.vincit.multiusertest.test.AbstractMultiUserAndRoleConfig;
 import fi.vincit.multiusertest.util.LoginRole;
 import fi.vincit.mutrproject.feature.user.UserService;
 import fi.vincit.mutrproject.feature.user.model.Role;
@@ -16,7 +16,7 @@ import java.util.Collection;
  * can be any enum or object that just defines all the combinations that need to
  * be tested.
  */
-public class TestMultiRoleConfig extends AbstractMultiUserConfig<User, RoleGroup> {
+public class TestMultiRoleConfig extends AbstractMultiUserAndRoleConfig<User, Role> {
 
     @Autowired
     private UserService userService;
@@ -27,8 +27,8 @@ public class TestMultiRoleConfig extends AbstractMultiUserConfig<User, RoleGroup
     }
 
     @Override
-    public User createUser(String username, String firstName, String lastName, RoleGroup userRole, LoginRole loginRole) {
-        return userService.createUser(username, username, roleGroupToRoles(userRole));
+    public User createUser(String username, String firstName, String lastName, Collection<Role> userRoles, LoginRole loginRole) {
+        return userService.createUser(username, username, userRoles);
     }
 
     /**
@@ -45,8 +45,8 @@ public class TestMultiRoleConfig extends AbstractMultiUserConfig<User, RoleGroup
     }
 
     @Override
-    public RoleGroup stringToRole(String role) {
-        return RoleGroup.valueOf(role);
+    protected Role identifierPartToRole(String identifier) {
+        return Role.valueOf("ROLE_" + identifier);
     }
 
     @Override
