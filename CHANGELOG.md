@@ -9,6 +9,7 @@ Version 0.5 aim is to clean APIs and code base from legacy code. This will
 break backwards compatibility.
 
 * New expectations API
+* Support for multiple roles in a role identifier
 
 ## Breaking Changes
 

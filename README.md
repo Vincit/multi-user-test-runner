@@ -237,7 +237,7 @@ existing user definition.
 if necessary. `AbstractUserRoleIT#loginWithUser(USER)` will be called with null value by default. This 
 behaviour can be changed by overriding `AbstractUserRoleIT#loginAnonymous()` method.
 
-## Role Aliasing and Multi Role Support
+## Role Aliasing
 
 The role definitions don't have to use the exact same role as the role enum has. By implementing the
 `AbstractUserRoleIT#stringToRole(String)` method appropriately the role definitions can have any value
@@ -246,6 +246,12 @@ which is then mapped to the real role.
 Role aliasing feature can be used to implement a simple support for multiple roles per user. Mapping the
 role definitions to multiple roles can be done for example in `AbstractUserRoleIT#createUser(String, String, String, ROLE, LoginRole)`
 method.
+
+## Multi Role Support
+
+From version 0.5 onwards it is possible to define multiple roles for a role identifier. The syntax is `role:ADMIN:USER`.
+This requires the configuration class to be extended from `AbstractMultiUserAndRoleConfig`.
+
 
 ## Ignoring a Test Method for Specific User Definitions
 
