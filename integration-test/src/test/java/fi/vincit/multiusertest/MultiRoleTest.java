@@ -75,8 +75,8 @@ public class MultiRoleTest {
     @Test
     public void expectFailureConsumer() {
         configuredTest.logInAs(LoginRole.CONSUMER);
-        authorizationRule.expect(toFail(ifAnyOf("role:USER")));
-        throwIfUserRole("role:USER");
+        authorizationRule.expect(toFail(ifAnyOf("role:USER:VISITOR")));
+        throwIfUserRole("role:USER:VISITOR");
     }
 
     @Test
@@ -86,7 +86,7 @@ public class MultiRoleTest {
 
     private void throwIfUserRole(String identifier) {
         Collection<User.Role> identifierRole = configuredTest.stringToRole(UserIdentifier.parse(identifier).getIdentifier());
-        if (identifierRole.contains(SecurityUtil.getLoggedInUser().getRole())) {
+        if (identifierRole.equals(SecurityUtil.getLoggedInUser().getRoles())) {
             throw new IllegalStateException("Thrown when role was " + identifier);
         }
     }

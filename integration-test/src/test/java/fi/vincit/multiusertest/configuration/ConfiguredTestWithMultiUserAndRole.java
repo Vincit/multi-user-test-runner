@@ -27,7 +27,7 @@ public class ConfiguredTestWithMultiUserAndRole extends AbstractMultiUserAndRole
 
     @Override
     public User createUser(String username, String firstName, String lastName, Collection<User.Role> userRole, LoginRole loginRole) {
-        User user = new User(username, userRole.iterator().next());
+        User user = new User(username, userRole);
         users.put(username, user);
         return user;
     }

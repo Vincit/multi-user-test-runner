@@ -1,5 +1,10 @@
 package fi.vincit.multiusertest.util;
 
+import java.util.Collection;
+import java.util.HashSet;
+
+import static java.util.Collections.singletonList;
+
 public class User {
     public enum Role {
         ROLE_ADMIN,
@@ -9,9 +14,14 @@ public class User {
     }
 
     private String username;
-    private Role role;
+    private Collection<Role> role;
 
     public User(String username, Role role) {
+        this.username = username;
+        this.role = new HashSet<>(singletonList(role));
+    }
+
+    public User(String username, Collection<Role> role) {
         this.username = username;
         this.role = role;
     }
@@ -21,6 +31,10 @@ public class User {
     }
 
     public Role getRole() {
+        return role.iterator().next();
+    }
+
+    public Collection<Role> getRoles() {
         return role;
     }
 
