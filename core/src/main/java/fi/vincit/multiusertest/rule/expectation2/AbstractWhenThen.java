@@ -36,17 +36,17 @@ public abstract class AbstractWhenThen<T extends TestExpectation> implements Whe
     }
 
     @Override
-    public WhenThen<T> whenCalledWithAnyOf(UserIdentifierCollection... userIdentifiers) {
+    public Then<T> whenCalledWithAnyOf(UserIdentifierCollection... userIdentifiers) {
         return whenCalledWith(UserIdentifiers.anyOf(userIdentifiers));
     }
 
     @Override
-    public WhenThen<T> whenCalledWithAnyOf(String... userIdentifiers) {
+    public Then<T> whenCalledWithAnyOf(String... userIdentifiers) {
         return whenCalledWith(UserIdentifiers.anyOf(userIdentifiers));
     }
 
     @Override
-    public WhenThen<T> whenCalledWith(UserIdentifier... userIdentifiers) {
+    public Then<T> whenCalledWith(UserIdentifier... userIdentifiers) {
         currentIdentifiers.clear();
 
         if (userIdentifiers.length == 0) {

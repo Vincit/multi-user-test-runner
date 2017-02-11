@@ -13,7 +13,7 @@ public interface When<EXPECTATION extends TestExpectation> {
      * @param userIdentifiers User identifiers
      * @return
      */
-    WhenThen<EXPECTATION> whenCalledWith(UserIdentifiers... userIdentifiers);
+    Then<EXPECTATION> whenCalledWith(UserIdentifiers... userIdentifiers);
 
     /**
      * Shorthand method for <pre>whenCalledWith(anyOf(UserIdentifierCollection...))</pre>
@@ -21,7 +21,7 @@ public interface When<EXPECTATION extends TestExpectation> {
      * @param userIdentifiers User identifier collections
      * @return
      */
-    WhenThen<EXPECTATION> whenCalledWithAnyOf(UserIdentifierCollection... userIdentifiers);
+    Then<EXPECTATION> whenCalledWithAnyOf(UserIdentifierCollection... userIdentifiers);
 
     /**
      * Shorthand method for <pre>whenCalledWith(anyOf(String...))</pre>
@@ -29,7 +29,7 @@ public interface When<EXPECTATION extends TestExpectation> {
      * @param userIdentifiers User identifier collections
      * @return
      */
-    WhenThen<EXPECTATION> whenCalledWithAnyOf(String... userIdentifiers);
+    Then<EXPECTATION> whenCalledWithAnyOf(String... userIdentifiers);
 
 
     /**
@@ -39,5 +39,5 @@ public interface When<EXPECTATION extends TestExpectation> {
      * @param userIdentifiers
      * @return
      */
-    WhenThen<EXPECTATION> whenCalledWith(UserIdentifier... userIdentifiers);
+    Then<EXPECTATION> whenCalledWith(UserIdentifier... userIdentifiers);
 }
