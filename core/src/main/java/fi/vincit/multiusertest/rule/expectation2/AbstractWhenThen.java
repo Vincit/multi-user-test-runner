@@ -25,13 +25,22 @@ public abstract class AbstractWhenThen<T extends TestExpectation> implements Whe
     public WhenThen<T> whenCalledWith(UserIdentifiers... userIdentifiers) {
         currentIdentifiers.clear();
 
-        if (userIdentifiers.length == 0) {
-            throw new IllegalArgumentException("At least one identifier must be defined");
-        }
+        validateWhen(userIdentifiers);
 
         for (UserIdentifiers identifiers : userIdentifiers) {
             identifiers.getIdentifiers().forEach(this::addCurrentUserIdentifiers);
         }
+        return this;
+    }
+
+    @Override
+    public Then<T> whenCalledWith(UserIdentifier... userIdentifiers) {
+        currentIdentifiers.clear();
+
+        validateWhen(userIdentifiers);
+
+        addCurrentUserIdentifiers(userIdentifiers);
+
         return this;
     }
 
@@ -43,19 +52,6 @@ public abstract class AbstractWhenThen<T extends TestExpectation> implements Whe
     @Override
     public Then<T> whenCalledWithAnyOf(String... userIdentifiers) {
         return whenCalledWith(UserIdentifiers.anyOf(userIdentifiers));
-    }
-
-    @Override
-    public Then<T> whenCalledWith(UserIdentifier... userIdentifiers) {
-        currentIdentifiers.clear();
-
-        if (userIdentifiers.length == 0) {
-            throw new IllegalArgumentException("At least one identifier must be defined");
-        }
-
-        addCurrentUserIdentifiers(userIdentifiers);
-
-        return this;
     }
 
     private void addCurrentUserIdentifiers(UserIdentifier... userIdentifiers) {
@@ -127,6 +123,12 @@ public abstract class AbstractWhenThen<T extends TestExpectation> implements Whe
     protected T getDefinedDefaultException(UserIdentifier userIdentifier) {
         return Optional.ofNullable(defaultExpectation)
                 .orElseGet(() -> getDefaultExpectation(userIdentifier));
+    }
+
+    private static <T> void validateWhen(T[] userIdentifiers) {
+        if (userIdentifiers.length == 0) {
+            throw new IllegalArgumentException("At least one identifier must be defined");
+        }
     }
 
     /*
