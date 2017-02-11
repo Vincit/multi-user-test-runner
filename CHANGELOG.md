@@ -10,6 +10,7 @@ break backwards compatibility.
 
 * New expectations API
 * Support for multiple roles in a role identifier
+* Added `IgnoreForUsers`
 
 ## Breaking Changes
 

@@ -1,5 +1,6 @@
 package fi.vincit.multiusertest.util;
 
+import fi.vincit.multiusertest.annotation.IgnoreForUsers;
 import fi.vincit.multiusertest.annotation.MultiUserTestConfig;
 import fi.vincit.multiusertest.annotation.RunWithUsers;
 import fi.vincit.multiusertest.runner.junit.framework.BlockMultiUserTestClassRunner;
@@ -18,6 +19,34 @@ public class TestConfiguration {
     private final Collection<UserIdentifier> consumerIdentifiers;
     private final Optional<Class<?>> runner;
     private final Optional<Class<? extends Throwable>> defaultException;
+
+    public static TestConfiguration fromIgnoreForUsers(Optional<IgnoreForUsers> ignoredUsers, Optional<RunWithUsers> classUsers) {
+
+        Class<?> runner = BlockMultiUserTestClassRunner.class;
+        Class<? extends Throwable> defaultException = Defaults.getDefaultException();
+
+        if (classUsers.isPresent() && ignoredUsers.isPresent()) {
+            Collection<UserIdentifier> producerIdentifiers = getDefinitions(classUsers.get().producers());
+            producerIdentifiers.removeAll(getDefinitions(ignoredUsers.get().producers()));
+
+            Collection<UserIdentifier> consumerIdentifier = getDefinitions(classUsers.get().consumers());
+            consumerIdentifier.removeAll(getDefinitions(ignoredUsers.get().consumers()));
+
+            return new TestConfiguration(
+                    producerIdentifiers,
+                    consumerIdentifier,
+                    runner,
+                    defaultException
+            );
+        } else {
+            return new TestConfiguration(
+                    Collections.emptyList(),
+                    Collections.emptyList(),
+                    runner,
+                    defaultException
+            );
+        }
+    }
 
     /**
      * Creates a new instance using {@link RunWithUsers} and {@link MultiUserTestConfig}

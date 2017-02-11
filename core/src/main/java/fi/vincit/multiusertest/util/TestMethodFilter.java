@@ -1,5 +1,6 @@
 package fi.vincit.multiusertest.util;
 
+import fi.vincit.multiusertest.annotation.IgnoreForUsers;
 import fi.vincit.multiusertest.annotation.RunWithUsers;
 import org.junit.runners.model.FrameworkMethod;
 
@@ -35,12 +36,23 @@ public class TestMethodFilter {
 
         Optional<RunWithUsers> runWithUsersAnnotation =
                 Optional.ofNullable(frameworkMethod.getAnnotation(RunWithUsers.class));
+        Optional<IgnoreForUsers> ignoreForUsersAnnotation =
+                Optional.ofNullable(frameworkMethod.getAnnotation(IgnoreForUsers.class));
+
+        if (runWithUsersAnnotation.isPresent() && ignoreForUsersAnnotation.isPresent()) {
+            throw new IllegalStateException("Method can only have RunWithUsers or IgnoreForUsers annotation but not both.");
+        }
 
         TestConfiguration configuration;
         if (runWithUsersAnnotation.isPresent()) {
             configuration = TestConfiguration.fromRunWithUsers(
                     runWithUsersAnnotation,
                     Optional.empty()
+            );
+        } else if (ignoreForUsersAnnotation.isPresent()) {
+            configuration = TestConfiguration.fromIgnoreForUsers(
+                    ignoreForUsersAnnotation,
+                    Optional.ofNullable(frameworkMethod.getDeclaringClass().getAnnotation(RunWithUsers.class))
             );
         } else {
             // FIXME: Is this correct?

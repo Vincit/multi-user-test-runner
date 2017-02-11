@@ -256,7 +256,7 @@ This requires the configuration class to be extended from `AbstractMultiUserAndR
 ## Ignoring a Test Method for Specific User Definitions
 
 It is possible to run certain test methods with only specific user definitions by adding `@RunWithUsers`
-annotation to the test method.
+or `@IgnoreForUsers` annotation to the test method.
 
 ```java
 @RunWithUsers(producers = {"role:ROLE_ADMIN", "role:ROLE_USER"},
@@ -272,6 +272,12 @@ public class ServiceIT extends AbstractConfiguredUserIT {
     @Test
     public void onlyForAdminAndAnyUser() {
         // Will be run only if producer is ROLE_ADMIN. User can be any of the ones defined for class.
+    }
+    
+    @IgnoreForUsers(producers = {"role:ROLE_ADMIN"})
+    @Test
+    public void ignoredForAdminProducer() {
+        // Will no be run if producer is ROLE_ADMIN. Consumer can be any of the ones defined for class.
     }
 
 }

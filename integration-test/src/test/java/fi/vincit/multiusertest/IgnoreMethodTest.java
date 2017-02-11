@@ -1,5 +1,6 @@
 package fi.vincit.multiusertest;
 
+import fi.vincit.multiusertest.annotation.IgnoreForUsers;
 import fi.vincit.multiusertest.annotation.MultiUserConfigClass;
 import fi.vincit.multiusertest.annotation.MultiUserTestConfig;
 import fi.vincit.multiusertest.annotation.RunWithUsers;
@@ -24,10 +25,15 @@ import static org.junit.Assert.assertThat;
 public class IgnoreMethodTest {
 
     private static MethodCalls methodCalls = new MethodCalls()
+            .expectMethodCalls("neverIgnore", 4)
+            .expectMethodCalls("neverIgnore_None", 4)
             .expectMethodCalls("runProducerAdmin", 2)
             .expectMethodCalls("runConsumerIsUser", 2)
+            .expectMethodCalls("ignoreProducerAdmin", 2)
+            .expectMethodCalls("ignoreConsumerUser", 2)
             .expectMethodCalls("runConsumerAdminAndProducerAdmin", 1)
             .expectMethodCalls("runConsumerUserAndProducerAdmin", 1)
+            .expectMethodCalls("ignoreConsumerUserAndProducerAdmin", 1)
             .expectMethodCalls("neverRun", 0);
 
     @MultiUserConfigClass
@@ -83,5 +89,40 @@ public class IgnoreMethodTest {
         methodCalls.call("neverRun");
         throw new AssertionError("Should never call this method");
     }
+
+    @Test
+    @IgnoreForUsers(consumers = {"role:ROLE_USER"}, producers = {"role:ROLE_ADMIN"})
+    public void ignoreConsumerUserAndProducerAdmin() {
+        methodCalls.call("ignoreConsumerUserAndProducerAdmin");
+        assertThat(configuredTest.getProducer().getRole(), is(User.Role.ROLE_USER));
+        assertThat(configuredTest.getConsumer().getRole(), is(User.Role.ROLE_ADMIN));
+    }
+
+    @Test
+    @IgnoreForUsers(consumers = {"role:ROLE_USER"})
+    public void ignoreConsumerUser() {
+        methodCalls.call("ignoreConsumerUser");
+        assertThat(configuredTest.getConsumer().getRole(), is(User.Role.ROLE_ADMIN));
+    }
+
+    @Test
+    @IgnoreForUsers(producers = {"role:ROLE_ADMIN"})
+    public void ignoreProducerAdmin() {
+        methodCalls.call("ignoreProducerAdmin");
+        assertThat(configuredTest.getProducer().getRole(), is(User.Role.ROLE_USER));
+    }
+
+    @Test
+    @IgnoreForUsers(consumers = {"role:ROLE_VISITOR"}, producers = {"role:ROLE_VISITOR"})
+    public void neverIgnore() {
+        methodCalls.call("neverIgnore");
+    }
+
+    @Test
+    @IgnoreForUsers
+    public void neverIgnore_None() {
+        methodCalls.call("neverIgnore_None");
+    }
+
 
 }
