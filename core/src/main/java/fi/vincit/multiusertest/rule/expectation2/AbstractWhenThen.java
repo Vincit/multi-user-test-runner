@@ -2,6 +2,7 @@ package fi.vincit.multiusertest.rule.expectation2;
 
 import fi.vincit.multiusertest.rule.AuthorizationRule;
 import fi.vincit.multiusertest.util.UserIdentifier;
+import fi.vincit.multiusertest.util.UserIdentifierCollection;
 import fi.vincit.multiusertest.util.UserIdentifiers;
 
 import java.util.*;
@@ -32,6 +33,16 @@ public abstract class AbstractWhenThen<T extends TestExpectation> implements Whe
             identifiers.getIdentifiers().forEach(this::addCurrentUserIdentifiers);
         }
         return this;
+    }
+
+    @Override
+    public WhenThen<T> whenCalledWithAnyOf(UserIdentifierCollection... userIdentifiers) {
+        return whenCalledWith(UserIdentifiers.anyOf(userIdentifiers));
+    }
+
+    @Override
+    public WhenThen<T> whenCalledWithAnyOf(String... userIdentifiers) {
+        return whenCalledWith(UserIdentifiers.anyOf(userIdentifiers));
     }
 
     @Override

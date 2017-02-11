@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import static fi.vincit.multiusertest.util.UserIdentifiers.roles;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.*;
@@ -71,6 +72,48 @@ public class AbstractWhenThenTest {
         );
 
         sut.whenCalledWith(UserIdentifiers.anyOf("role:ROLE_ADMIN", "role:ROLE_USER"));
+
+        assertThat(
+                sut.getCurrentIdentifiers(),
+                is(setOf(UserIdentifier.parse("role:ROLE_ADMIN"), UserIdentifier.parse("role:ROLE_USER")))
+        );
+    }
+
+    @Test
+    public void whenCalledWith_UserIdentifierCollection() {
+        AbstractWhenThen<TestExpectation> sut = new SUT(
+                UserIdentifier.getAnonymous()
+        );
+
+        sut.whenCalledWith(UserIdentifiers.anyOf(roles("ROLE_ADMIN", "ROLE_USER")));
+
+        assertThat(
+                sut.getCurrentIdentifiers(),
+                is(setOf(UserIdentifier.parse("role:ROLE_ADMIN"), UserIdentifier.parse("role:ROLE_USER")))
+        );
+    }
+
+    @Test
+    public void whenCalledWithAnyOf_UserIdentifiers() {
+        AbstractWhenThen<TestExpectation> sut = new SUT(
+                UserIdentifier.getAnonymous()
+        );
+
+        sut.whenCalledWithAnyOf("role:ROLE_ADMIN", "role:ROLE_USER");
+
+        assertThat(
+                sut.getCurrentIdentifiers(),
+                is(setOf(UserIdentifier.parse("role:ROLE_ADMIN"), UserIdentifier.parse("role:ROLE_USER")))
+        );
+    }
+
+    @Test
+    public void whenCalledWithAnyOf_UserIdentifierCollection() {
+        AbstractWhenThen<TestExpectation> sut = new SUT(
+                UserIdentifier.getAnonymous()
+        );
+
+        sut.whenCalledWithAnyOf(roles("ROLE_ADMIN", "ROLE_USER"));
 
         assertThat(
                 sut.getCurrentIdentifiers(),
