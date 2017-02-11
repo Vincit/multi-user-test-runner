@@ -271,7 +271,7 @@ public class ServiceIT extends AbstractConfiguredUserIT {
     @RunWithUsers(producers = {"role:ROLE_ADMIN"})
     @Test
     public void onlyForAdminAndAnyUser() {
-        // Will be run only if producer is ROLE_ADMIN. User can be any of the ones defined for class.
+        // Will be run only if producer is ROLE_ADMIN. Consumer can be any of the ones defined for class.
     }
     
     @IgnoreForUsers(producers = {"role:ROLE_ADMIN"})
