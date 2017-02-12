@@ -21,8 +21,8 @@ public class TestExpectations {
      * @return
      * @since 0.5
      */
-    public static TestExpectation expectException(Class<? extends Throwable> exception) {
-        return new FunctionCallExceptionExpectation(exception);
+    public static <T extends Throwable> TestExpectation expectException(Class<T> exception) {
+        return new FunctionCallExceptionExpectation<>(exception);
     }
 
     /**
