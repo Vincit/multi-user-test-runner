@@ -203,7 +203,7 @@ project(':java-8-test') {
     sourceCompatibility = 1.8
 }
 
-project(':junit-5-test') {
+project(':junit-5-legacy-test') {
     dependencies {
         compile project(':core')
         compile project(':integration-test')
