@@ -11,6 +11,7 @@ break backwards compatibility.
 * New expectations API
 * Support for multiple roles in a role identifier
 * Added `IgnoreForUsers`
+* Added shorthand methods for `whenCalledWith` and `anyOf` combined method calls
 
 ## Breaking Changes
 

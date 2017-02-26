@@ -382,11 +382,11 @@ when the `when-then` structure is on the same level (as opposed to nested like i
 authorizationRule.testCall(() -> testService.getAllUsernames())
         .whenCalledWith(anyOf(roles("ROLE_ADMIN", "ROLE_USER")))
         .then(expectValue(Arrays.asList("admin", "user 1", "user 2")))
-        
+
         .whenCalledWith(anyOf(roles("ROLE_SUPER_ADMIN")))
         .then(expectValue(Arrays.asList("super_admin", "admin", "user 1", "user 2", "user 3")))
-        
-        .whenCalledWith(anyOf(roles("ROLE_VISITOR")))
+        // Shorthand version of whenCalledWith + anyOf
+        .whenCalledWithAnyOf(roles("ROLE_VISITOR"))
         .then(expectExceptionInsteadOfValue(AccessDeniedException.class,
                 exception -> assertThat(exception.getMessage(), is("Access is denied"))
         ))
