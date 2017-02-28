@@ -1,6 +1,6 @@
 package fi.vincit.multiusertest.configuration;
 
-import fi.vincit.multiusertest.rule.AuthorizationRule;
+import fi.vincit.multiusertest.runner.junit5.Authorization;
 import fi.vincit.multiusertest.test.AbstractMultiUserConfig;
 import fi.vincit.multiusertest.util.LoginRole;
 import fi.vincit.multiusertest.util.SecurityUtil;
@@ -17,15 +17,15 @@ public class TestMultiUserConfig extends AbstractMultiUserConfig<User, User.Role
     public TestMultiUserConfig() {
     }
 
-    private AuthorizationRule authorizationRule;
+    private Authorization authorizationRule;
 
     @Override
-    public void setAuthorizationRule(AuthorizationRule authorizationRule, Object testClassInstance) {
+    public void setAuthorizationRule(Authorization authorizationRule, Object testClassInstance) {
         this.authorizationRule = authorizationRule;
     }
 
     @Override
-    protected AuthorizationRule getAuthorizationRule() {
+    protected Authorization getAuthorizationRule() {
         return authorizationRule;
     }
 

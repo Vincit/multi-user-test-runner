@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import static fi.vincit.multiusertest.util.TestNameUtil.getIdentifiers;
+
 /**
  * Helper class for delegating calls from JUnit runner.
  * Does some required method filtering and helps executing
@@ -70,7 +72,7 @@ public class RunnerDelegate {
     }
 
     private String getIdentifierDescription() {
-        return String.format("producer={%s}, consumer={%s}", producerIdentifier, userIdentifier);
+        return getIdentifiers(producerIdentifier, userIdentifier);
     }
 
     public Object validateTestInstance(Object testInstance) {
@@ -92,7 +94,7 @@ public class RunnerDelegate {
         }
     }
 
-    private MultiUserConfig getConfigComponent(Object testInstance) {
+    private static MultiUserConfig getConfigComponent(Object testInstance) {
         Optional<MultiUserConfig> config = Optional.empty();
         try {
             Optional<Field> field = findFieldWithConfig(testInstance);
@@ -114,7 +116,7 @@ public class RunnerDelegate {
         }
     }
 
-    private Optional<Field> findFieldWithConfig(Object testInstance) throws IllegalAccessException {
+    private static Optional<Field> findFieldWithConfig(Object testInstance) throws IllegalAccessException {
         for (Field field : testInstance.getClass().getDeclaredFields()) {
             if (field.isAnnotationPresent(MultiUserConfigClass.class)) {
                 return Optional.of(field);

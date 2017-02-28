@@ -26,7 +26,7 @@ public class TestConfigurationTest {
         RunWithUsers run = mockRunWithUsers(new String[] {"role:A", "role:B", "role:C"}, new String[] {"role:D", "role:E", "role:F"});
         IgnoreForUsers ignore = mockIgnoreForUsers(new String[] {"role:B", "role:D"}, new String[] {"role:B", "role:E"});
         TestConfiguration testConfiguration =
-                TestConfiguration.fromIgnoreForUsers(Optional.of(ignore), Optional.of(run));
+                TestConfiguration.fromIgnoreForUsers(Optional.of(ignore), Optional.of(run), Object.class);
 
         assertThat(testConfiguration.getProducerIdentifiers(), is(asSet("role:A", "role:C")));
         assertThat(testConfiguration.getConsumerIdentifiers(), is(asSet("role:D", "role:F")));
@@ -37,7 +37,7 @@ public class TestConfigurationTest {
         RunWithUsers run = mockRunWithUsers(new String[] {"role:A", "role:B", "role:C"}, new String[] {"role:D", "role:E", "role:F"});
         IgnoreForUsers ignore = mockIgnoreForUsers(new String[] {"role:D"}, new String[] {"role:B"});
         TestConfiguration testConfiguration =
-                TestConfiguration.fromIgnoreForUsers(Optional.of(ignore), Optional.of(run));
+                TestConfiguration.fromIgnoreForUsers(Optional.of(ignore), Optional.of(run), Object.class);
 
         assertThat(testConfiguration.getProducerIdentifiers(), is(asSet("role:A", "role:B", "role:C")));
         assertThat(testConfiguration.getConsumerIdentifiers(), is(asSet("role:D", "role:E", "role:F")));
@@ -47,7 +47,7 @@ public class TestConfigurationTest {
     public void runWithUsers() {
         RunWithUsers run = mockRunWithUsers(new String[] {"role:A", "role:B", "role:C"}, new String[] {"role:D", "role:E", "role:F"});
         TestConfiguration testConfiguration =
-                TestConfiguration.fromRunWithUsers(Optional.of(run), Optional.empty());
+                TestConfiguration.fromRunWithUsers(Optional.of(run), Optional.empty(), Object.class);
 
         assertThat(testConfiguration.getProducerIdentifiers(), is(asSet("role:A", "role:B", "role:C")));
         assertThat(testConfiguration.getConsumerIdentifiers(), is(asSet("role:D", "role:E", "role:F")));

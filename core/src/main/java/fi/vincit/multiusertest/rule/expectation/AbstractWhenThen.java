@@ -1,6 +1,6 @@
 package fi.vincit.multiusertest.rule.expectation;
 
-import fi.vincit.multiusertest.rule.AuthorizationRule;
+import fi.vincit.multiusertest.runner.junit5.Authorization;
 import fi.vincit.multiusertest.util.UserIdentifier;
 import fi.vincit.multiusertest.util.UserIdentifierCollection;
 import fi.vincit.multiusertest.util.UserIdentifiers;
@@ -16,10 +16,10 @@ public abstract class AbstractWhenThen<T extends TestExpectation> implements Whe
     private final Map<UserIdentifier, T> expectationsByIdentifier = new HashMap<>();
 
     private final UserIdentifier userIdentifier;
-    private final AuthorizationRule authorizationRule;
+    private final Authorization authorizationRule;
     private T defaultExpectation;
 
-    public AbstractWhenThen(UserIdentifier userIdentifier, AuthorizationRule authorizationRule) {
+    public AbstractWhenThen(UserIdentifier userIdentifier, Authorization authorizationRule) {
         this.userIdentifier = userIdentifier;
         this.authorizationRule = authorizationRule;
     }

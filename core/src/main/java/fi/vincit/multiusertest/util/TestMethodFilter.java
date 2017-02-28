@@ -2,6 +2,7 @@ package fi.vincit.multiusertest.util;
 
 import fi.vincit.multiusertest.annotation.IgnoreForUsers;
 import fi.vincit.multiusertest.annotation.RunWithUsers;
+import fi.vincit.multiusertest.runner.junit.framework.BlockMultiUserTestClassRunner;
 import org.junit.runners.model.FrameworkMethod;
 
 import java.util.*;
@@ -33,12 +34,16 @@ public class TestMethodFilter {
      * @return True if given method should be run, otherwise false.
      */
     public boolean shouldRun(FrameworkMethod frameworkMethod) {
-
         Optional<RunWithUsers> runWithUsersAnnotation =
                 Optional.ofNullable(frameworkMethod.getAnnotation(RunWithUsers.class));
         Optional<IgnoreForUsers> ignoreForUsersAnnotation =
                 Optional.ofNullable(frameworkMethod.getAnnotation(IgnoreForUsers.class));
+        final Class<?> declaringClass = frameworkMethod.getDeclaringClass();
 
+        return shouldRun(runWithUsersAnnotation, ignoreForUsersAnnotation, declaringClass, BlockMultiUserTestClassRunner.class);
+    }
+
+    public boolean shouldRun(Optional<RunWithUsers> runWithUsersAnnotation, Optional<IgnoreForUsers> ignoreForUsersAnnotation, Class<?> declaringClass, Class<?> runner) {
         if (runWithUsersAnnotation.isPresent() && ignoreForUsersAnnotation.isPresent()) {
             throw new IllegalStateException("Method can only have RunWithUsers or IgnoreForUsers annotation but not both.");
         }
@@ -47,12 +52,15 @@ public class TestMethodFilter {
         if (runWithUsersAnnotation.isPresent()) {
             configuration = TestConfiguration.fromRunWithUsers(
                     runWithUsersAnnotation,
-                    Optional.empty()
+                    Optional.empty(),
+                    runner
             );
         } else if (ignoreForUsersAnnotation.isPresent()) {
+
             configuration = TestConfiguration.fromIgnoreForUsers(
                     ignoreForUsersAnnotation,
-                    Optional.ofNullable(frameworkMethod.getDeclaringClass().getAnnotation(RunWithUsers.class))
+                    Optional.ofNullable(declaringClass.getAnnotation(RunWithUsers.class)),
+                    runner
             );
         } else {
             // FIXME: Is this correct?

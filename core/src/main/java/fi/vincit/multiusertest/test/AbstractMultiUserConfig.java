@@ -2,7 +2,8 @@ package fi.vincit.multiusertest.test;
 
 import fi.vincit.multiusertest.annotation.MultiUserTestConfig;
 import fi.vincit.multiusertest.annotation.RunWithUsers;
-import fi.vincit.multiusertest.rule.AuthorizationRule;
+import fi.vincit.multiusertest.runner.junit.framework.BlockMultiUserTestClassRunner;
+import fi.vincit.multiusertest.runner.junit5.Authorization;
 import fi.vincit.multiusertest.util.*;
 
 import java.util.Optional;
@@ -20,7 +21,7 @@ public abstract class AbstractMultiUserConfig<USER, ROLE> implements MultiUserCo
 
     private Random random = new Random(System.currentTimeMillis());
 
-    private AuthorizationRule authorizationRule;
+    private Authorization authorizationRule;
 
     /**
      * Default constructor
@@ -34,18 +35,18 @@ public abstract class AbstractMultiUserConfig<USER, ROLE> implements MultiUserCo
      * @param random Random number generator
      * @param authorizationRule Authorization rule
      */
-    AbstractMultiUserConfig(UserResolver<USER, ROLE> userResolver, Random random, AuthorizationRule authorizationRule) {
+    AbstractMultiUserConfig(UserResolver<USER, ROLE> userResolver, Random random, Authorization authorizationRule) {
         this.userResolver = userResolver;
         this.random = random;
         this.authorizationRule = authorizationRule;
     }
 
-    protected AuthorizationRule getAuthorizationRule() {
+    protected Authorization getAuthorizationRule() {
         return authorizationRule;
     }
 
     @Override
-    public void setAuthorizationRule(AuthorizationRule authorizationRule, Object testClassInstance) {
+    public void setAuthorizationRule(Authorization authorizationRule, Object testClassInstance) {
         this.authorizationRule = authorizationRule;
     }
 
@@ -100,7 +101,8 @@ public abstract class AbstractMultiUserConfig<USER, ROLE> implements MultiUserCo
         TestConfiguration configuration =
                 TestConfiguration.fromRunWithUsers(
                         Optional.ofNullable(cls.getAnnotation(RunWithUsers.class)),
-                        Optional.ofNullable(cls.getAnnotation(MultiUserTestConfig.class))
+                        Optional.ofNullable(cls.getAnnotation(MultiUserTestConfig.class)),
+                        BlockMultiUserTestClassRunner.class
                 );
         return configuration.getDefaultException()
                 .orElse(Defaults.getDefaultException());

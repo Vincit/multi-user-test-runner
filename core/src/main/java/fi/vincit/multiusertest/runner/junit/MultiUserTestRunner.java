@@ -2,6 +2,7 @@ package fi.vincit.multiusertest.runner.junit;
 
 import fi.vincit.multiusertest.annotation.MultiUserTestConfig;
 import fi.vincit.multiusertest.annotation.RunWithUsers;
+import fi.vincit.multiusertest.runner.junit.framework.BlockMultiUserTestClassRunner;
 import fi.vincit.multiusertest.util.TestConfiguration;
 import fi.vincit.multiusertest.util.UserIdentifier;
 import org.junit.runner.Runner;
@@ -88,7 +89,7 @@ public class MultiUserTestRunner extends Suite {
                 Optional.ofNullable(getTestClass().getJavaClass().getAnnotation(MultiUserTestConfig.class));
 
         if (runWithUsersAnnotation.isPresent()) {
-            return TestConfiguration.fromRunWithUsers(runWithUsersAnnotation, config);
+            return TestConfiguration.fromRunWithUsers(runWithUsersAnnotation, config, BlockMultiUserTestClassRunner.class);
         } else {
             throw new IllegalStateException(
                     "No users defined for test class "

@@ -5,7 +5,6 @@ import fi.vincit.multiusertest.annotation.MultiUserTestConfig;
 import fi.vincit.multiusertest.annotation.RunWithUsers;
 import fi.vincit.multiusertest.rule.EmptyUserDefinitionClass;
 import fi.vincit.multiusertest.rule.UserDefinitionClass;
-import fi.vincit.multiusertest.runner.junit.framework.BlockMultiUserTestClassRunner;
 import fi.vincit.multiusertest.util.merge.AlphabeticalMergeStrategy;
 import fi.vincit.multiusertest.util.merge.MergeStrategy;
 
@@ -25,9 +24,7 @@ public class TestConfiguration {
 
     private static final AlphabeticalMergeStrategy DEFAULT_MERGE_STRATEGY = new AlphabeticalMergeStrategy();
 
-    public static TestConfiguration fromIgnoreForUsers(Optional<IgnoreForUsers> ignoredUsers, Optional<RunWithUsers> classUsers) {
-
-        Class<?> runner = BlockMultiUserTestClassRunner.class;
+    public static TestConfiguration fromIgnoreForUsers(Optional<IgnoreForUsers> ignoredUsers, Optional<RunWithUsers> classUsers, Class<?> runner) {
         Class<? extends Throwable> defaultException = Defaults.getDefaultException();
 
         if (classUsers.isPresent() && ignoredUsers.isPresent()) {
@@ -95,11 +92,10 @@ public class TestConfiguration {
      * @param multiUserTestConfig Optional configurations class level configuration
      * @return Test configuration
      */
-    public static TestConfiguration fromRunWithUsers(Optional<RunWithUsers> testUsers, Optional<MultiUserTestConfig> multiUserTestConfig) {
+    public static TestConfiguration fromRunWithUsers(Optional<RunWithUsers> testUsers, Optional<MultiUserTestConfig> multiUserTestConfig, Class<?> runner) {
 
         Collection<UserIdentifier> producerIdentifiers = Collections.emptySet();
         Collection<UserIdentifier> consumerIdentifier = Collections.emptySet();
-        Class<?> runner = BlockMultiUserTestClassRunner.class;
         Class<? extends Throwable> defaultException = Defaults.getDefaultException();
 
         if (testUsers.isPresent()) {

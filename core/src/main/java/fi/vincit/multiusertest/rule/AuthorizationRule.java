@@ -8,6 +8,7 @@ import fi.vincit.multiusertest.rule.expectation.value.TestValueExpectation;
 import fi.vincit.multiusertest.rule.expectation.FunctionCall;
 import fi.vincit.multiusertest.rule.expectation.ReturnValueCall;
 import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
+import fi.vincit.multiusertest.runner.junit5.Authorization;
 import fi.vincit.multiusertest.util.UserIdentifier;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
@@ -19,11 +20,12 @@ import org.junit.runners.model.Statement;
  * fails.
  * </p>
  */
-public class AuthorizationRule implements TestRule {
+public class AuthorizationRule implements TestRule, Authorization {
 
     private UserIdentifier userIdentifier;
     private boolean expectationConstructionFinished = false;
 
+    @Override
     public void setRole(UserIdentifier identifier) {
         this.userIdentifier = new UserIdentifier(identifier.getType(), identifier.getIdentifier());
     }
@@ -33,7 +35,7 @@ public class AuthorizationRule implements TestRule {
         return new AuthChecker(base);
     }
 
-
+    @Override
     public void markExpectationConstructed() {
         if (expectationConstructionFinished) {
             expectationConstructionFinished = false;
@@ -48,6 +50,7 @@ public class AuthorizationRule implements TestRule {
      * @return Expectation object
      * @since 0.5
      */
+    @Override
     public WhenThen<TestExpectation> testCall(FunctionCall functionCall) {
         expectationConstructionFinished = true;
         return new FunctionCallWhenThen(functionCall, userIdentifier, this);
@@ -70,6 +73,7 @@ public class AuthorizationRule implements TestRule {
      * @return Expectation API object
      * @since 0.5
      */
+    @Override
     public <VALUE_TYPE> WhenThen<TestValueExpectation<VALUE_TYPE>> testCall(ReturnValueCall<VALUE_TYPE> returnValueCall) {
         expectationConstructionFinished = true;
         return new ReturnValueWhenThen<>(
