@@ -41,7 +41,9 @@ public class AuthorizationRule implements TestRule {
      * @param identifiers Identifiers for which the calls after this method are expected to fail.
      * @return AuthorizationRule for chaining calls
      * @since 0.1
+     * @deprecated Use {@link this#testCall(FunctionCall)} or {@link this#testCall(ReturnValueCall)} instead
      */
+    @Deprecated
     public AuthorizationRule expect(Authentication identifiers) {
         addIdentifiers(identifiers);
         return this;
@@ -55,7 +57,9 @@ public class AuthorizationRule implements TestRule {
      * @param expectation {@link fi.vincit.multiusertest.rule.expection.Expectation} rule
      * @throws Throwable If error occurs
      * @since 0.2
+     * @deprecated Use {@link this#testCall(FunctionCall)} or {@link this#testCall(ReturnValueCall)} instead
      */
+    @Deprecated
     public void expect(Expectation expectation) throws Throwable {
         Objects.requireNonNull(expectedException, "Expected exception must be configured");
         expectation.setExpectedException(expectedException);
@@ -76,7 +80,9 @@ public class AuthorizationRule implements TestRule {
      * Set a custom exception to expect. Works only with {@link AuthorizationRule#expect(Authentication)}
      * method (version 0.1 style simple assertion).
      * @param expectedException Exception class to except
+     * @deprecated Use {@link this#testCall(FunctionCall)} or {@link this#testCall(ReturnValueCall)} instead
      */
+    @Deprecated
     public void setExpectedException(Class<? extends Throwable> expectedException) {
         Objects.requireNonNull(expectedException, "Cannot set expected exception class to null");
         this.expectedException = expectedException;
@@ -92,7 +98,9 @@ public class AuthorizationRule implements TestRule {
      * {@link AssertionError} if the calls haven't behaved as expected.
      * If unexpected exception is thrown, throws {@link RuntimeException}.
      * After this call don't expect any call to fail.
+     * @deprecated Use {@link this#testCall(FunctionCall)} or {@link this#testCall(ReturnValueCall)} instead
      */
+    @Deprecated
     public void dontExpectToFail() {
         try {
             new AuthChecker(NO_BASE).evaluate();
