@@ -10,10 +10,13 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 
 import static fi.vincit.multiusertest.rule.Authentication.notToFail;
-import static fi.vincit.multiusertest.rule.Authentication.toFail;
+import static fi.vincit.multiusertest.rule.expectation2.TestExpectations.*;
 import static fi.vincit.multiusertest.util.UserIdentifiers.ifAnyOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 /**
  * Example how to use existing users
@@ -46,23 +49,33 @@ public class TodoServiceWithUsersIT extends AbstractConfiguredMultiRoleIT {
     public void getPrivateTodoList() throws Throwable {
         long id = todoService.createTodoList("Test list", false);
         config().logInAs(LoginRole.CONSUMER);
-        authorization().expect(toFail(ifAnyOf("user:user2", "role:ROLE_ANONYMOUS")));
-        todoService.getTodoList(id);
+        authorization().testCall(() -> todoService.getTodoList(id))
+                .whenCalledWithAnyOf("user:user2")
+                .then(expectExceptionInsteadOfValue(AccessDeniedException.class))
+                .test();
     }
 
     @Test
     public void getPublicTodoList() throws Throwable {
         long id = todoService.createTodoList("Test list", true);
         config().logInAs(LoginRole.CONSUMER);
-        todoService.getTodoList(id);
+        authorization().testCall(() -> todoService.getTodoList(id))
+                .byDefault(assertValue(todoList -> {
+                    assertThat(todoList.getId(), is(id));
+                    assertThat(todoList.getName(), is("Test list"));
+                }))
+                .test();
     }
 
     @Test
     public void addTodoItem() throws Throwable {
         long listId = todoService.createTodoList("Test list", false);
         config().logInAs(LoginRole.CONSUMER);
-        authorization().expect(notToFail(ifAnyOf("role:ROLE_SYSTEM_ADMIN", RunWithUsers.PRODUCER)));
-        todoService.addItemToList(listId, "Write tests");
+        authorization().testCall(() -> todoService.addItemToList(listId, "Write tests"))
+                .whenCalledWithAnyOf("role:ROLE_SYSTEM_ADMIN", RunWithUsers.PRODUCER)
+                .then(expectNotToFailIgnoringValue())
+                .otherwise(expectExceptionInsteadOfValue(AccessDeniedException.class))
+                .test();
     }
 
     @Test

@@ -1,15 +1,20 @@
 package fi.vincit.mutrproject.feature.todo;
 
+import fi.vincit.multiusertest.annotation.IgnoreForUsers;
 import fi.vincit.multiusertest.annotation.RunWithUsers;
 import fi.vincit.multiusertest.util.LoginRole;
 import fi.vincit.mutrproject.testconfig.AbstractConfiguredMultiRoleIT;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 
-import static fi.vincit.multiusertest.rule.Authentication.notToFail;
-import static fi.vincit.multiusertest.rule.Authentication.toFail;
-import static fi.vincit.multiusertest.util.UserIdentifiers.ifAnyOf;
+import static fi.vincit.multiusertest.rule.expectation2.TestExpectations.assertValue;
+import static fi.vincit.multiusertest.rule.expectation2.TestExpectations.expectExceptionInsteadOfValue;
+import static fi.vincit.multiusertest.rule.expectation2.TestExpectations.expectNotToFailIgnoringValue;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.assertThat;
 
 /**
  * Basic examples on how to use MUTR. This test demonstrates the usage of
@@ -34,45 +39,91 @@ public class TodoServiceIT extends AbstractConfiguredMultiRoleIT {
         // Change user to consumer in order to test how getTodoList works
         config().logInAs(LoginRole.CONSUMER);
 
-        // Initialize the assertion rule
-        authorization().expect(toFail(ifAnyOf("role:ROLE_USER", RunWithUsers.ANONYMOUS)));
-
-        // Call the method to test
-        todoService.getTodoList(id);
+        authorization().testCall(() -> todoService.getTodoList(id))
+                .whenCalledWithAnyOf("role:ROLE_USER", RunWithUsers.ANONYMOUS)
+                .then(expectExceptionInsteadOfValue(AccessDeniedException.class))
+                .otherwise(assertValue(todoList -> {
+                    assertThat(todoList, notNullValue());
+                    assertThat(todoList.getId(), is(id));
+                    assertThat(todoList.getName(), is("Test list"));
+                    assertThat(todoList.isPublicList(), is(false));
+                }))
+                .test();
     }
 
     @Test
     public void getPublicTodoList() throws Throwable {
         long id = todoService.createTodoList("Test list", true);
         config().logInAs(LoginRole.CONSUMER);
-        // This is expected to succeed for all roles
-        todoService.getTodoList(id);
+        authorization().testCall(() -> todoService.getTodoList(id))
+                .otherwise(assertValue(todoList -> {
+                    assertThat(todoList, notNullValue());
+                    assertThat(todoList.getId(), is(id));
+                    assertThat(todoList.getName(), is("Test list"));
+                    assertThat(todoList.isPublicList(), is(true));
+                }))
+                .test();
     }
 
     /**
-     * This test is run for all producers but only for the given consumer roles
+     * Example on how to only check that the method do test
+     * that a method call doesn't fail. This version explicitly
+     * shows the test writer/reader that it is not expected to fail
+     * ever.
      * @throws Throwable
      */
     @Test
-    @RunWithUsers(consumers = {"role:ROLE_SYSTEM_ADMIN", "role:ROLE_ADMIN", "role:ROLE_USER", RunWithUsers.PRODUCER})
+    public void getPublicTodoListNotFailsExplicit() throws Throwable {
+        long id = todoService.createTodoList("Test list", true);
+        config().logInAs(LoginRole.CONSUMER);
+        authorization().testCall(() -> todoService.getTodoList(id))
+                .byDefault(expectNotToFailIgnoringValue())
+                .test();
+    }
+
+    /**
+     * Example on how to only check that the method do test
+     * that a method call doesn't fail. This version uses the default
+     * expectation and omits the <pre>.byDefault(expectNotToFailIgnoringValue())</pre>
+     * call.
+     * @throws Throwable
+     */
+    @Test
+    public void getPublicTodoListNotFailsSimple() throws Throwable {
+        long id = todoService.createTodoList("Test list", true);
+        config().logInAs(LoginRole.CONSUMER);
+        authorization().testCall(() -> todoService.getTodoList(id))
+                .test();
+    }
+
+    /**
+     * This test is run for all producers but ignored for the anonymous consumer
+     * @throws Throwable
+     */
+    @Test
+    @IgnoreForUsers(consumers = RunWithUsers.ANONYMOUS)
     public void addTodoItem() throws Throwable {
         long listId = todoService.createTodoList("Test list", false);
         config().logInAs(LoginRole.CONSUMER);
-        authorization().expect(notToFail(ifAnyOf("role:ROLE_ADMIN", "role:ROLE_SYSTEM_ADMIN", RunWithUsers.PRODUCER)));
-        todoService.addItemToList(listId, "Write tests");
+        authorization().testCall(() -> todoService.addItemToList(listId, "Write tests"))
+                .whenCalledWithAnyOf("role:ROLE_ADMIN", "role:ROLE_SYSTEM_ADMIN", RunWithUsers.PRODUCER)
+                .then(expectNotToFailIgnoringValue())
+                .otherwise(expectExceptionInsteadOfValue(AccessDeniedException.class))
+                .test();
     }
 
     /**
      * This test is run for all producers but only when the consumer is ANONYMOUS
-     * See {@link TodoServiceJava8IT#addTodoItem()} for more advanced version
      * @throws Throwable
      */
-    @Test(expected = AuthenticationCredentialsNotFoundException.class)
+    @Test
     @RunWithUsers(consumers = RunWithUsers.ANONYMOUS)
     public void addTodoItemAnonymous() throws Throwable {
         long listId = todoService.createTodoList("Test list", false);
         config().logInAs(LoginRole.CONSUMER);
-        todoService.addItemToList(listId, "Write tests");
+        authorization().testCall(() -> todoService.addItemToList(listId, "Write tests"))
+                .byDefault(expectExceptionInsteadOfValue(AuthenticationCredentialsNotFoundException.class))
+                .test();
     }
 
 }
