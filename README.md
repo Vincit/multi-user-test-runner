@@ -42,14 +42,6 @@ The library may work with other versions but has not been tested with versions o
         <version>0.5.0-beta2</version>
     <scope>test</scope>
 </dependency>
-
-<!-- Spring support (optional) -->
-<dependency>
-    <groupId>fi.vincit</groupId>
-    <artifactId>multi-user-test-runner-spring</artifactId>
-        <version>0.5.0-beta2</version>
-    <scope>test</scope>
-</dependency>
 ```
 
 ## Gradle
@@ -57,8 +49,6 @@ The library may work with other versions but has not been tested with versions o
 ```groovy
 dependencies {
     test 'fi.vincit:multi-user-test-runner:0.5.0-beta2'
-    // Spring support (optional)
-    test 'fi.vincit:multi-user-test-runner-spring:0.5.0-beta2'
 }
 ```
 
