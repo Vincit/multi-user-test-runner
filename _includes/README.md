@@ -39,7 +39,7 @@ The library may work with other versions but has not been tested with versions o
 <dependency>
     <groupId>fi.vincit</groupId>
     <artifactId>multi-user-test-runner</artifactId>
-        <version>0.5.0-beta1</version>
+        <version>0.5.0-beta2</version>
     <scope>test</scope>
 </dependency>
 
@@ -47,7 +47,7 @@ The library may work with other versions but has not been tested with versions o
 <dependency>
     <groupId>fi.vincit</groupId>
     <artifactId>multi-user-test-runner-spring</artifactId>
-        <version>0.5.0-beta1</version>
+        <version>0.5.0-beta2</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -56,9 +56,9 @@ The library may work with other versions but has not been tested with versions o
 
 ```groovy
 dependencies {
-    test 'fi.vincit:multi-user-test-runner:0.5.0-beta1'
+    test 'fi.vincit:multi-user-test-runner:0.5.0-beta2'
     // Spring support (optional)
-    test 'fi.vincit:multi-user-test-runner-spring:0.5.0-beta1'
+    test 'fi.vincit:multi-user-test-runner-spring:0.5.0-beta2'
 }
 ```
 
@@ -256,7 +256,7 @@ This requires the configuration class to be extended from `AbstractMultiUserAndR
 ## Ignoring a Test Method for Specific User Definitions
 
 It is possible to run certain test methods with only specific user definitions by adding `@RunWithUsers`
-annotation to the test method.
+or `@IgnoreForUsers` annotation to the test method.
 
 ```java
 @RunWithUsers(producers = {"role:ROLE_ADMIN", "role:ROLE_USER"},
@@ -271,7 +271,13 @@ public class ServiceIT extends AbstractConfiguredUserIT {
     @RunWithUsers(producers = {"role:ROLE_ADMIN"})
     @Test
     public void onlyForAdminAndAnyUser() {
-        // Will be run only if producer is ROLE_ADMIN. User can be any of the ones defined for class.
+        // Will be run only if producer is ROLE_ADMIN. Consumer can be any of the ones defined for class.
+    }
+    
+    @IgnoreForUsers(producers = {"role:ROLE_ADMIN"})
+    @Test
+    public void ignoredForAdminProducer() {
+        // Will no be run if producer is ROLE_ADMIN. Consumer can be any of the ones defined for class.
     }
 
 }
@@ -376,11 +382,11 @@ when the `when-then` structure is on the same level (as opposed to nested like i
 authorizationRule.testCall(() -> testService.getAllUsernames())
         .whenCalledWith(anyOf(roles("ROLE_ADMIN", "ROLE_USER")))
         .then(expectValue(Arrays.asList("admin", "user 1", "user 2")))
-        
+
         .whenCalledWith(anyOf(roles("ROLE_SUPER_ADMIN")))
         .then(expectValue(Arrays.asList("super_admin", "admin", "user 1", "user 2", "user 3")))
-        
-        .whenCalledWith(anyOf(roles("ROLE_VISITOR")))
+        // Shorthand version of whenCalledWith + anyOf
+        .whenCalledWithAnyOf(roles("ROLE_VISITOR"))
         .then(expectExceptionInsteadOfValue(AccessDeniedException.class,
                 exception -> assertThat(exception.getMessage(), is("Access is denied"))
         ))
