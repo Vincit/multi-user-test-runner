@@ -27,7 +27,7 @@ echo " * Copying JavaDocs to $JAVA_VERSION_DOC_DIR"
 mkdir -p $JAVA_VERSION_DOC_DIR
 cp -r $PROJECT_DIR/core/build/docs/javadoc/** $JAVA_VERSION_DOC_DIR
 
-if [ "$CURRENT_BRANCH" -eq "$STABLE_BRANCH" ]
+if [ "$CURRENT_BRANCH" == "$STABLE_BRANCH" ]
 then
     echo " * Copying JavaDocs to $JAVA_LATEST_DOC_DIR"
     mkdir -p $JAVA_LATEST_DOC_DIR
@@ -42,7 +42,7 @@ CHANGELOG_FILE="CHANGELOG.md"
 LATEST_DIR="_includes/latest"
 VERSION_DIR="_includes/$VERSION"
 
-if [ "$CURRENT_BRANCH" -eq "$STABLE_BRANCH" ]
+if [ "$CURRENT_BRANCH" == "$STABLE_BRANCH" ]
 then
     echo " * Copying $README_FILE to $LATEST_DIR"
     mkdir -p LATEST_DIR
@@ -61,7 +61,7 @@ echo " * Pusing to site"
 git add $JAVA_VERSION_DOC_DIR/**
 git add $VERSION_DIR/$README_FILE
 
-if [ "$CURRENT_BRANCH" -eq "$STABLE_BRANCH" ]
+if [ "$CURRENT_BRANCH" == "$STABLE_BRANCH" ]
 then
     git add $JAVA_LATEST_DOC_DIR/**
     git add $LATEST_DIR/$README_FILE
