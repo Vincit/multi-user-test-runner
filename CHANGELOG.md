@@ -1,6 +1,18 @@
 Multi User Test Runner
 ======================
 
+
+# 1.0.0
+
+## Changes
+
+## Breaking Changes
+
+Version 1.0 removes deprecated APIs and feature in order to make the library
+cleaner and easier to use.
+
+ * Removed deprecated APIs
+
 # 0.6.0
 
 ## Changes

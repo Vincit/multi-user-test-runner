@@ -11,15 +11,10 @@ library also with any plain Java classes and has been successfully used with RES
 From 0.5.0 onwards `multi-user-test-runner-spring` dependency is deprecated. Spring support is achieved by using
 rules.
 
-# Requirements version 0.5 and newer
+# Requirements version 1.0 and newer
 
  * Java 8 or newer
  * JUnit 4.12 or newer (supports JUnit5 with JUnit vintage 4.12)
-
-# Requirements version 0.4 and earlier
-
- * Java 7 or newer
- * JUnit 4.12 or newer, but not JUnit 5
 
  
  
@@ -39,7 +34,7 @@ The library may work with other versions but has not been tested with versions o
 <dependency>
     <groupId>fi.vincit</groupId>
     <artifactId>multi-user-test-runner</artifactId>
-        <version>0.6.0</version>
+        <version>1.0.0-beta1</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -48,7 +43,7 @@ The library may work with other versions but has not been tested with versions o
 
 ```groovy
 dependencies {
-    test 'fi.vincit:multi-user-test-runner:0.6.0'
+    test 'fi.vincit:multi-user-test-runner:1.0.0-beta1'
 }
 ```
 
