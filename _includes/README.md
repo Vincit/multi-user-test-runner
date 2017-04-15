@@ -39,15 +39,7 @@ The library may work with other versions but has not been tested with versions o
 <dependency>
     <groupId>fi.vincit</groupId>
     <artifactId>multi-user-test-runner</artifactId>
-        <version>0.5.0-beta2</version>
-    <scope>test</scope>
-</dependency>
-
-<!-- Spring support (optional) -->
-<dependency>
-    <groupId>fi.vincit</groupId>
-    <artifactId>multi-user-test-runner-spring</artifactId>
-        <version>0.5.0-beta2</version>
+        <version>0.5.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -56,9 +48,7 @@ The library may work with other versions but has not been tested with versions o
 
 ```groovy
 dependencies {
-    test 'fi.vincit:multi-user-test-runner:0.5.0-beta2'
-    // Spring support (optional)
-    test 'fi.vincit:multi-user-test-runner-spring:0.5.0-beta2'
+    test 'fi.vincit:multi-user-test-runner:0.5.0'
 }
 ```
 
@@ -274,6 +264,7 @@ public class ServiceIT extends AbstractConfiguredUserIT {
         // Will be run only if producer is ROLE_ADMIN. Consumer can be any of the ones defined for class.
     }
     
+    // From version 0.5 onwards
     @IgnoreForUsers(producers = {"role:ROLE_ADMIN"})
     @Test
     public void ignoredForAdminProducer() {
@@ -299,7 +290,31 @@ special definitions.
 producer user definition has to be used. For example if producer is `role:ROLE_ADMIN` and consumer is `RunWithUsers.WITH_PRODUCER_ROLE`
 the correct way to reference the consumer in an assertion is `role:ROLE_ADMIN`.
 
-## Simple Authorization Assertion
+## Assertions
+
+The preferred way to write assertions if the new expectation API introduced in version 0.5.
+The new API uses less nested calls and is more natural and fluent than the previous APIs. 
+Writing and reading the rules is easier when the `when-then` structure is on the same level 
+(as opposed to nested like in 0.2).
+
+```java
+authorizationRule.testCall(() -> testService.getAllUsernames())
+        .whenCalledWith(anyOf(roles("ROLE_ADMIN", "ROLE_USER")))
+        .then(expectValue(Arrays.asList("admin", "user 1", "user 2")))
+
+        .whenCalledWith(anyOf(roles("ROLE_SUPER_ADMIN")))
+        .then(expectValue(Arrays.asList("super_admin", "admin", "user 1", "user 2", "user 3")))
+        // Shorthand version of whenCalledWith + anyOf
+        .whenCalledWithAnyOf(roles("ROLE_VISITOR"))
+        .then(expectExceptionInsteadOfValue(AccessDeniedException.class,
+                exception -> assertThat(exception.getMessage(), is("Access is denied"))
+        ))
+        .test();
+```
+
+## Legacy Assertions
+
+### Simple Authorization Assertion (Deprecated)
 
 Assertions are easy to write. They are made by calling `authorization().expect()` method. 
 The simplest way to assert is to use one of the following:
@@ -320,7 +335,7 @@ This will simply fail/pass test depending if the following call throws/doesn't t
 with the current logged in user. 
 
 
-## Stop Waiting for Exceptions
+### Stop Waiting for Exceptions (Deprecated)
 
 To stop waiting for a method to fail use:
 
@@ -331,9 +346,7 @@ authorization().dontExpectToFail();
 This call will first check if the methods between the previous assertion and this call were supposed to fail. 
 If they were, the `dontExpectToFail()` call will throw an `java.lang.AssertionError` to make the test fail.
 
-## Advanced Assertions
-
-### Java 8 Friendly Assertions (MUTR 0.2+)
+### Advanced Assertions for Java 8 (Deprecated)
 
 From version 0.2 onwards there are also advanced assertions which work best with Java 8 lambdas. With these
 assertions the `dontExpectToFail()` isn't needed since the exception handling logic is in the assertion
@@ -370,27 +383,6 @@ authorization().expect(valueOf(() -> service.getAllUsers(value))
                     .toAssert((value) -> assertThat(value, is(10)), ifAnyOf("role:ROLE_ADMIN"))
                     .toAssert((value) -> assertThat(value, is(2)), ifAnyOf("role:ROLE_USER"))
                 );
-```
-
-### Fluent/BDD like Assertions (MUTR 0.5+)
-
-A new expectation API was added in version 0.5. The new API uses less nested calls and
-is more natural and fluent than the previous APIs. Writing and reading the rules is easier
-when the `when-then` structure is on the same level (as opposed to nested like in 0.2).
-
-```java
-authorizationRule.testCall(() -> testService.getAllUsernames())
-        .whenCalledWith(anyOf(roles("ROLE_ADMIN", "ROLE_USER")))
-        .then(expectValue(Arrays.asList("admin", "user 1", "user 2")))
-
-        .whenCalledWith(anyOf(roles("ROLE_SUPER_ADMIN")))
-        .then(expectValue(Arrays.asList("super_admin", "admin", "user 1", "user 2", "user 3")))
-        // Shorthand version of whenCalledWith + anyOf
-        .whenCalledWithAnyOf(roles("ROLE_VISITOR"))
-        .then(expectExceptionInsteadOfValue(AccessDeniedException.class,
-                exception -> assertThat(exception.getMessage(), is("Access is denied"))
-        ))
-        .test();
 ```
 
 # Example

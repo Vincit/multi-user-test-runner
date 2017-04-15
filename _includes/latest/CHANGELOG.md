@@ -1,6 +1,25 @@
 Multi User Test Runner
 ======================
 
+# 0.5.0
+
+## Changes
+
+Version 0.5 aim is to clean APIs and code base from legacy code. This will
+break backwards compatibility.
+
+* New expectations API
+* Support for multiple roles in a role identifier
+* Added `IgnoreForUsers`
+* Added shorthand methods for `whenCalledWith` and `anyOf` combined method calls
+
+## Breaking Changes
+
+* Requires Java 8 or later
+* Removed old inheritance based configuration
+* Removed support for old Spring 3.x, 4.0 and 4.1 versions that don't support
+  new rule based test configuration.
+
 # 0.4.0
 
 ## Changes
