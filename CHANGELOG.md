@@ -6,12 +6,15 @@ Multi User Test Runner
 
 ## Changes
 
+* Removed old assertion methods
+
 ## Breaking Changes
 
 Version 1.0 removes deprecated APIs and feature in order to make the library
 cleaner and easier to use.
 
- * Removed deprecated APIs
+* Old assertion methods are removed. Only available way is to use 
+  Expectation API v2 introduced in MUTR 0.5.
 
 # 0.6.0
 
