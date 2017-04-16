@@ -15,7 +15,7 @@ public class FunctionCallNoExceptionExpectation implements TestExpectation {
     }
 
     @Override
-    public void handleThrownException(UserIdentifier userIdentifier, Throwable thrownException)  throws Throwable {
+    public void handleThrownException(UserIdentifier userIdentifier, Throwable thrownException) {
         throw CallFailedError.expectCallNotToFail(userIdentifier, thrownException);
     }
 

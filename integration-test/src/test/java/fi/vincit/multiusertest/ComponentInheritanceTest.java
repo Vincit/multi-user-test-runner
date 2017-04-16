@@ -5,30 +5,48 @@ import fi.vincit.multiusertest.configuration.TestBaseClass;
 import fi.vincit.multiusertest.util.LoginRole;
 import org.junit.Test;
 
-import static fi.vincit.multiusertest.rule.Authentication.notToFail;
-import static fi.vincit.multiusertest.rule.Authentication.toFail;
-import static fi.vincit.multiusertest.util.UserIdentifiers.*;
+import static fi.vincit.multiusertest.rule.expectation2.TestExpectations.expectException;
+import static fi.vincit.multiusertest.rule.expectation2.TestExpectations.expectNotToFail;
+import static fi.vincit.multiusertest.util.UserIdentifiers.roles;
+import static fi.vincit.multiusertest.util.UserIdentifiers.users;
 
 @RunWithUsers(producers = {"role:ROLE_ADMIN"}, consumers = "role:ROLE_ADMIN")
 public class ComponentInheritanceTest extends TestBaseClass {
 
-    @Test
-    public void passes() {
-        multiUserConfig.logInAs(LoginRole.CONSUMER);
-        authorizationRule.expect(notToFail(ifAnyOf("role:ROLE_ADMIN")));
+    public void pass() {
+    }
+
+    public void fail() {
+        throw new IllegalStateException();
     }
 
     @Test
-    public void passes_users_roles_syntax() {
+    public void passes() throws Throwable {
         multiUserConfig.logInAs(LoginRole.CONSUMER);
-        authorizationRule.expect(notToFail(ifAnyOf(roles("ROLE_ADMIN"), users("foo"))));
+
+        authorizationRule.testCall(this::pass)
+                .whenCalledWithAnyOf("role:ROLE_ADMIN")
+                .then(expectNotToFail())
+                .test();
     }
 
     @Test
-    public void fails() {
-        expectFailAuthRule.setExpectedException(IllegalStateException.class);
-        expectedException.expect(AssertionError.class);
+    public void passes_users_roles_syntax() throws Throwable {
         multiUserConfig.logInAs(LoginRole.CONSUMER);
-        expectFailAuthRule.expect(toFail(ifAnyOf("role:ROLE_ADMIN")));
+
+        authorizationRule.testCall(this::pass)
+                .whenCalledWithAnyOf(roles("ROLE_ADMIN"), users("foo"))
+                .then(expectNotToFail())
+                .test();
+    }
+
+    @Test
+    public void fails() throws Throwable {
+        multiUserConfig.logInAs(LoginRole.CONSUMER);
+
+        authorizationRule.testCall(this::fail)
+                .whenCalledWithAnyOf("role:ROLE_ADMIN")
+                .then(expectException(IllegalStateException.class))
+                .test();
     }
 }

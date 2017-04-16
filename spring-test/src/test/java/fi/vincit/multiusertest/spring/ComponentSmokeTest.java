@@ -10,7 +10,10 @@ import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
 import fi.vincit.multiusertest.test.MultiUserConfig;
 import fi.vincit.multiusertest.util.LoginRole;
 import fi.vincit.multiusertest.util.User;
-import org.junit.*;
+import org.junit.Before;
+import org.junit.ClassRule;
+import org.junit.Rule;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
@@ -20,9 +23,8 @@ import org.springframework.test.context.junit4.rules.SpringMethodRule;
 
 import java.io.IOException;
 
-import static fi.vincit.multiusertest.rule.Authentication.notToFail;
-import static fi.vincit.multiusertest.rule.Authentication.toFail;
-import static fi.vincit.multiusertest.util.UserIdentifiers.ifAnyOf;
+import static fi.vincit.multiusertest.rule.expectation2.TestExpectations.expectException;
+import static fi.vincit.multiusertest.rule.expectation2.TestExpectations.expectNotToFail;
 
 @RunWithUsers(
         producers = {"role:ROLE_ADMIN"}, consumers = "role:ROLE_USER"
@@ -52,24 +54,44 @@ public class ComponentSmokeTest {
         this.multiUserConfig.setAuthorizationRule(authorizationRule, this);
     }
 
-    @Test
-    public void testNotFail() {
-        multiUserConfig.logInAs(LoginRole.CONSUMER);
-        authorizationRule.expect(notToFail(ifAnyOf("role:ROLE_USER")));
+    private void pass() {
+    }
+
+    private void fail() {
+        throw new IllegalStateException();
+    }
+
+    private void failIO() throws IOException {
+        throw new IOException();
     }
 
     @Test
-    public void testFail() {
+    public void testNotFail() throws Throwable {
         multiUserConfig.logInAs(LoginRole.CONSUMER);
-        authorizationRule.expect(toFail(ifAnyOf("role:ROLE_USER")));
-        throw new AccessDeniedException("Denied");
+
+        authorizationRule.testCall(this::pass)
+                .whenCalledWithAnyOf("role:ROLE_USER")
+                .then(expectNotToFail())
+                .test();
     }
 
     @Test
-    public void testFail_CustomException() throws IOException {
-        authorizationRule.setExpectedException(IOException.class);
+    public void testFail() throws Throwable {
         multiUserConfig.logInAs(LoginRole.CONSUMER);
-        authorizationRule.expect(toFail(ifAnyOf("role:ROLE_USER")));
-        throw new IOException("IO Fail");
+
+        authorizationRule.testCall(this::fail)
+                .whenCalledWithAnyOf("role:ROLE_USER")
+                .then(expectException(IllegalStateException.class))
+                .test();
+    }
+
+    @Test
+    public void testFail_CustomException() throws Throwable {
+        multiUserConfig.logInAs(LoginRole.CONSUMER);
+
+        authorizationRule.testCall(this::failIO)
+                .whenCalledWithAnyOf("role:ROLE_USER")
+                .then(expectException(IOException.class))
+                .test();
     }
 }

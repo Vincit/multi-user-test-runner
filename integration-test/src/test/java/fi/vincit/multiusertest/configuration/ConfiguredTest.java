@@ -32,7 +32,11 @@ public class ConfiguredTest extends AbstractMultiUserConfig<User, User.Role> {
 
     @Override
     public User.Role stringToRole(String role) {
-        return User.Role.valueOf(role);
+        if (role != null) {
+            return User.Role.valueOf(role);
+        } else {
+            return null;
+        }
     }
 
     @Override

@@ -12,9 +12,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 
-import static fi.vincit.multiusertest.rule.Authentication.notToFail;
 import static fi.vincit.multiusertest.rule.expectation2.TestExpectations.*;
-import static fi.vincit.multiusertest.util.UserIdentifiers.ifAnyOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -83,10 +81,16 @@ public class TodoServiceWithUsersIT extends AbstractConfiguredMultiRoleIT {
         long listId = todoService.createTodoList("Test list", false);
 
         config().logInAs(LoginRole.CONSUMER);
-        authorization().expect(notToFail(ifAnyOf("role:ROLE_SYSTEM_ADMIN", RunWithUsers.PRODUCER)));
-        long itemId = todoService.addItemToList(listId, "Write tests");
-        TodoItemDto item = todoService.getTodoItem(listId, itemId);
-        todoService.setItemStatus(listId, item.getId(), true);
+
+        authorization().testCall(() -> {
+            long itemId = todoService.addItemToList(listId, "Write tests");
+            TodoItemDto item = todoService.getTodoItem(listId, itemId);
+            todoService.setItemStatus(listId, item.getId(), true);
+        })
+                .whenCalledWithAnyOf("role:ROLE_SYSTEM_ADMIN", RunWithUsers.PRODUCER)
+                .then(expectNotToFail())
+                .otherwise(expectException(AccessDeniedException.class))
+                .test();
     }
 
 }

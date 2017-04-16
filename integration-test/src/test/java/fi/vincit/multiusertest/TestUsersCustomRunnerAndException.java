@@ -12,11 +12,10 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.io.IOException;
-
-import static fi.vincit.multiusertest.rule.Authentication.notToFail;
-import static fi.vincit.multiusertest.rule.Authentication.toFail;
-import static fi.vincit.multiusertest.util.UserIdentifiers.ifAnyOf;
+import static fi.vincit.multiusertest.rule.expectation2.TestExpectations.expectException;
+import static fi.vincit.multiusertest.rule.expectation2.TestExpectations.expectNotToFail;
+import static fi.vincit.multiusertest.util.UserIdentifiers.roles;
+import static fi.vincit.multiusertest.util.UserIdentifiers.users;
 
 @RunWithUsers(producers = {"role:ROLE_ADMIN"}, consumers = "role:ROLE_ADMIN")
 @RunWith(MultiUserTestRunner.class)
@@ -34,30 +33,40 @@ public class TestUsersCustomRunnerAndException {
     public AuthorizationRule authorizationRule = new AuthorizationRule();
     
     
-    @Test
-    public void passes() {
-        configTest.logInAs(LoginRole.CONSUMER);
-        authorizationRule.expect(notToFail(ifAnyOf("role:ROLE_ADMIN")));
+    public void pass() {
+    }
+
+    public void fail() {
+        throw new IllegalStateException();
     }
 
     @Test
-    public void fails() {
+    public void passes() throws Throwable {
         configTest.logInAs(LoginRole.CONSUMER);
-        authorizationRule.expect(toFail(ifAnyOf("role:ROLE_ADMIN")));
-        throw new IllegalArgumentException();
-    }
 
-    @Test(expected = IOException.class)
-    public void fails_WithUnexpectedException() throws IOException {
-        configTest.logInAs(LoginRole.CONSUMER);
-        throw new IOException();
+        authorizationRule.testCall(this::pass)
+                .whenCalledWithAnyOf("role:ROLE_ADMIN")
+                .then(expectNotToFail())
+                .test();
     }
 
     @Test
-    public void fails_WithOverriddenException() throws IOException {
-        authorizationRule.setExpectedException(IllegalMonitorStateException.class);
+    public void passes_users_roles_syntax() throws Throwable {
         configTest.logInAs(LoginRole.CONSUMER);
-        authorizationRule.expect(toFail(ifAnyOf("role:ROLE_ADMIN")));
-        throw new IllegalMonitorStateException();
+
+        authorizationRule.testCall(this::pass)
+                .whenCalledWithAnyOf(roles("ROLE_ADMIN"), users("foo"))
+                .then(expectNotToFail())
+                .test();
+    }
+
+    @Test
+    public void fails() throws Throwable {
+        configTest.logInAs(LoginRole.CONSUMER);
+
+        authorizationRule.testCall(this::fail)
+                .whenCalledWithAnyOf("role:ROLE_ADMIN")
+                .then(expectException(IllegalStateException.class))
+                .test();
     }
 }

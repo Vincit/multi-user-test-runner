@@ -20,6 +20,7 @@ public class FunctionCallWhenThen extends AbstractWhenThen<TestExpectation> {
         try {
             functionCall.call();
         } catch (Throwable e) {
+            System.out.println("Threw " + e.getClass().getName() + " " + e.getMessage());
             testExpectation.handleThrownException(userIdentifier, e);
             return;
         }

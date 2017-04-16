@@ -14,8 +14,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static fi.vincit.multiusertest.rule.Authentication.toFail;
-import static fi.vincit.multiusertest.util.UserIdentifiers.ifAnyOf;
+import static fi.vincit.multiusertest.rule.expectation2.TestExpectations.expectException;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertThat;
@@ -52,15 +51,11 @@ public class AnonymousProducerTest {
     }
 
     @Test
-    public void expectFailureAnonymousProducer() {
-        configuredTest.logInAs(LoginRole.PRODUCER);
-        authorizationRule.expect(toFail(ifAnyOf(RunWithUsers.PRODUCER)));
-        throwIfUserRole(RunWithUsers.ANONYMOUS);
-    }
-
-    @Test
-    public void dontExpectFailure() {
-        authorizationRule.dontExpectToFail();
+    public void expectFailureAnonymousProducer() throws Throwable {
+        authorizationRule.testCall(() -> throwIfUserRole(RunWithUsers.ANONYMOUS))
+                .whenCalledWithAnyOf(RunWithUsers.PRODUCER)
+                .then(expectException(IllegalStateException.class))
+                .test();
     }
 
     private void throwIfUserRole(String identifier) {

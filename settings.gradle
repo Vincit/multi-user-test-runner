@@ -16,7 +16,6 @@
 
 include 'core',
         'integration-test',
-        'java-8-test',
         'junit-5-legacy-test',
         'spring-test',
         'spring-test-class-runner',

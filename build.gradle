@@ -195,14 +195,6 @@ project(':spring-test-class-runner') {
     }
 }
 
-project(':java-8-test') {
-    dependencies {
-        compile project(':core')
-        compile project(':integration-test')
-    }
-    sourceCompatibility = 1.8
-}
-
 project(':junit-5-legacy-test') {
     dependencies {
         compile project(':core')

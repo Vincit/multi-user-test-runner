@@ -47,7 +47,6 @@ public abstract class AbstractMultiUserConfig<USER, ROLE> implements MultiUserCo
     @Override
     public void setAuthorizationRule(AuthorizationRule authorizationRule, Object testClassInstance) {
         this.authorizationRule = authorizationRule;
-        this.authorizationRule.setExpectedException(getDefaultException(testClassInstance.getClass()));
     }
 
     @Override

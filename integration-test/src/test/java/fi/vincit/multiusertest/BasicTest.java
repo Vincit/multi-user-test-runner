@@ -14,9 +14,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static fi.vincit.multiusertest.rule.Authentication.notToFail;
-import static fi.vincit.multiusertest.rule.Authentication.toFail;
-import static fi.vincit.multiusertest.util.UserIdentifiers.ifAnyOf;
+import static fi.vincit.multiusertest.rule.expectation2.TestExpectations.expectException;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
@@ -51,39 +49,28 @@ public class BasicTest {
     }
 
     @Test
-    public void expectFailureProducer() {
-        authorization.expect(toFail(ifAnyOf(RunWithUsers.PRODUCER)));
-        throwIfUserIs(configuredTest.getProducer());
+    public void expectFailureProducer() throws Throwable {
+        authorization.testCall(() -> throwIfUserIs(configuredTest.getProducer()))
+                .whenCalledWithAnyOf(RunWithUsers.PRODUCER)
+                .then(expectException(IllegalStateException.class))
+                .test();
     }
 
     @Test
-    public void expectFailureWithProducerRole() {
-        authorization.expect(toFail(ifAnyOf(RunWithUsers.WITH_PRODUCER_ROLE)));
-        throwIfUserIs(configuredTest.getConsumer());
+    public void expectFailureWithProducerRole() throws Throwable {
+        authorization.testCall(() -> throwIfUserIs(configuredTest.getConsumer()))
+                .whenCalledWithAnyOf(RunWithUsers.WITH_PRODUCER_ROLE)
+                .then(expectException(IllegalStateException.class))
+                .test();
     }
 
     @Test
-    public void expectFailureNotProducer() {
-        authorization.expect(notToFail(ifAnyOf(RunWithUsers.PRODUCER)));
-        throwIfUserIs(configuredTest.getConsumer());
-    }
-
-    @Test
-    public void expectFailureNotWithProducerRole() {
-        authorization.expect(notToFail(ifAnyOf(RunWithUsers.WITH_PRODUCER_ROLE)));
-        throwIfUserIs(configuredTest.getProducer());
-    }
-
-    @Test
-    public void expectFailureConsumer() {
+    public void expectFailureConsumer() throws Throwable {
         configuredTest.logInAs(LoginRole.CONSUMER);
-        authorization.expect(toFail(ifAnyOf("role:ROLE_USER")));
-        throwIfUserRole("role:ROLE_USER");
-    }
-
-    @Test
-    public void dontExpectFailure() {
-        authorization.dontExpectToFail();
+        authorization.testCall(() -> throwIfUserRole("role:ROLE_USER"))
+                .whenCalledWithAnyOf("role:ROLE_USER")
+                .then(expectException(IllegalStateException.class))
+                .test();
     }
 
     private void throwIfUserRole(String identifier) {
