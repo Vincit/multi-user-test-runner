@@ -1,6 +1,12 @@
 Multi User Test Runner
 ======================
 
+# 0.6.0
+
+## Changes
+
+Version 0.6 improves error messages.
+
 # 0.5.0
 
 ## Changes
