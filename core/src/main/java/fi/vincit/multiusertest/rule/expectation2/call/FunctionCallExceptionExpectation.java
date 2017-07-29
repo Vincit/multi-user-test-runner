@@ -1,5 +1,6 @@
 package fi.vincit.multiusertest.rule.expectation2.call;
 
+import fi.vincit.multiusertest.exception.CallFailedException;
 import fi.vincit.multiusertest.rule.expectation2.TestExpectation;
 import fi.vincit.multiusertest.rule.expection.AssertionCall;
 import fi.vincit.multiusertest.util.UserIdentifier;
@@ -21,16 +22,12 @@ public class FunctionCallExceptionExpectation<T extends Throwable> implements Te
     }
 
     public void handleExceptionNotThrown(UserIdentifier userIdentifier) {
-        throw new AssertionError("Expected to fail with exception " + defaultExpectedException.getName());
+        throw CallFailedException.expectedCallToFail(userIdentifier, defaultExpectedException);
     }
 
     public void handleThrownException(UserIdentifier userIdentifier, Throwable thrownException)  throws Throwable {
         if (!defaultExpectedException.isInstance(thrownException)) {
-            String message = String.format("Unexpected exception thrown. Expected <%s> but was <%s>",
-                    defaultExpectedException.getSimpleName(),
-                    thrownException.getClass().getSimpleName()
-            );
-            throw new AssertionError(message, thrownException);
+            throw CallFailedException.unexpectedException(userIdentifier, defaultExpectedException, thrownException);
         }
 
         if (assertion.isPresent()) {

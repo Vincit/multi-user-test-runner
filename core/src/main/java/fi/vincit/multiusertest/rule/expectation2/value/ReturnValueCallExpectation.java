@@ -1,5 +1,6 @@
 package fi.vincit.multiusertest.rule.expectation2.value;
 
+import fi.vincit.multiusertest.exception.CallFailedException;
 import fi.vincit.multiusertest.rule.expection.AssertionCall;
 import fi.vincit.multiusertest.rule.expection.ReturnValueCall;
 import fi.vincit.multiusertest.util.UserIdentifier;
@@ -24,12 +25,14 @@ public class ReturnValueCallExpectation<VALUE_TYPE> implements TestValueExpectat
         this.assertionCall = Optional.of(assertionCall);
     }
 
+    @Override
     public void handleExceptionNotThrown(UserIdentifier userIdentifier) {
         // NOOP?
     }
 
+    @Override
     public void handleThrownException(UserIdentifier userIdentifier, Throwable thrownException)  throws Throwable {
-        throw new AssertionError("Not expected to fail with user role " + userIdentifier.toString(), thrownException);
+        throw CallFailedException.expectCallNotToFail(userIdentifier, thrownException);
     }
 
     @Override

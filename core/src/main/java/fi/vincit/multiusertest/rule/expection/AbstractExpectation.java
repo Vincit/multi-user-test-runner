@@ -1,5 +1,6 @@
 package fi.vincit.multiusertest.rule.expection;
 
+import fi.vincit.multiusertest.exception.CallFailedException;
 import fi.vincit.multiusertest.rule.FailMode;
 import fi.vincit.multiusertest.rule.expection.call.ExpectationInfo;
 import fi.vincit.multiusertest.util.UserIdentifier;
@@ -31,7 +32,7 @@ public abstract class AbstractExpectation<T extends ExpectationInfo> implements 
                     .orElse(defaultExpectedException);
 
             if (valueOfInfo.getFailMode() == FailMode.EXPECT_FAIL) {
-                throw new AssertionError("Expected to fail with exception " + exception.getName());
+                throw CallFailedException.expectedCallToFail(userIdentifier, exception);
             }
         }
     }
@@ -42,7 +43,7 @@ public abstract class AbstractExpectation<T extends ExpectationInfo> implements 
             ExpectationInfo expectationInfo = possibleCallInfo.get();
 
             if (expectationInfo.getFailMode() == FailMode.EXPECT_NOT_FAIL) {
-                throw new AssertionError("Not expected to fail with user role " + userIdentifier.toString(), e);
+                throw CallFailedException.expectCallNotToFail(userIdentifier, e);
             } else {
                 if (!expectationInfo.isExceptionExpected(e, defaultExpectedException)) {
                     throw e;
@@ -51,7 +52,7 @@ public abstract class AbstractExpectation<T extends ExpectationInfo> implements 
             }
         } else {
             if (generalFailMode != FailMode.EXPECT_NOT_FAIL) {
-                throw new AssertionError("Not expected to fail with user role " + userIdentifier.toString(), e);
+                throw CallFailedException.expectCallNotToFail(userIdentifier, e);
             }
         }
     }

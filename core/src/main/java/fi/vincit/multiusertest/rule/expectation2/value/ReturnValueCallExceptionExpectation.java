@@ -1,5 +1,6 @@
 package fi.vincit.multiusertest.rule.expectation2.value;
 
+import fi.vincit.multiusertest.exception.CallFailedException;
 import fi.vincit.multiusertest.rule.expection.AssertionCall;
 import fi.vincit.multiusertest.rule.expection.ReturnValueCall;
 import fi.vincit.multiusertest.util.UserIdentifier;
@@ -21,16 +22,16 @@ public class ReturnValueCallExceptionExpectation<VALUE_TYPE, EXCEPTION extends T
     }
 
     public void handleExceptionNotThrown(UserIdentifier userIdentifier) {
-        throw new AssertionError("Expected to fail with exception " + expectedException.getName());
+        throw CallFailedException.expectedCallToFail(userIdentifier, expectedException);
     }
 
     public void handleThrownException(UserIdentifier userIdentifier, Throwable thrownException)  throws Throwable {
         if (!expectedException.isInstance(thrownException)) {
-            String message = String.format("Unexpected exception thrown. Expected <%s> but was <%s>",
-                    expectedException.getSimpleName(),
-                    thrownException.getClass().getSimpleName()
+            throw CallFailedException.unexpectedException(
+                    userIdentifier,
+                    expectedException,
+                    thrownException
             );
-            throw new AssertionError(message, thrownException);
         }
 
         if (exceptionAssertionCall.isPresent()) {

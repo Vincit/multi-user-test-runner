@@ -43,7 +43,7 @@ public class FunctionCallExceptionExpectationTest {
                 );
 
         expectException.expect(AssertionError.class);
-        expectException.expectMessage("Unexpected exception thrown. Expected <IllegalStateException> but was <IllegalArgumentException>");
+        expectException.expectMessage("Unexpected exception thrown with role <anonymous>: Expected <IllegalStateException> but was <IllegalArgumentException>");
         sut.handleThrownException(UserIdentifier.getAnonymous(), new IllegalArgumentException());
     }
 
@@ -82,7 +82,7 @@ public class FunctionCallExceptionExpectationTest {
                 );
 
         expectException.expect(AssertionError.class);
-        expectException.expectMessage("Unexpected exception thrown. Expected <IllegalStateException> but was <IllegalArgumentException>");
+        expectException.expectMessage("Unexpected exception thrown with role <anonymous>: Expected <IllegalStateException> but was <IllegalArgumentException>: Foo");
         sut.handleThrownException(UserIdentifier.getAnonymous(), new IllegalArgumentException("Foo"));
         assertThat(called.getException(), nullValue());
     }
