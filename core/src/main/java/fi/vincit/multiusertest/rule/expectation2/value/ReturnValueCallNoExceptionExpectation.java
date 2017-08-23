@@ -1,6 +1,6 @@
 package fi.vincit.multiusertest.rule.expectation2.value;
 
-import fi.vincit.multiusertest.exception.CallFailedException;
+import fi.vincit.multiusertest.exception.CallFailedError;
 import fi.vincit.multiusertest.rule.expection.ReturnValueCall;
 import fi.vincit.multiusertest.util.UserIdentifier;
 
@@ -17,7 +17,7 @@ public class ReturnValueCallNoExceptionExpectation<VALUE_TYPE> implements TestVa
 
     @Override
     public void handleThrownException(UserIdentifier userIdentifier, Throwable thrownException)  throws Throwable {
-        throw CallFailedException.expectCallNotToFail(userIdentifier, thrownException);
+        throw CallFailedError.expectCallNotToFail(userIdentifier, thrownException);
     }
 
     @Override

@@ -2,10 +2,10 @@ package fi.vincit.multiusertest.exception;
 
 import fi.vincit.multiusertest.util.UserIdentifier;
 
-public class CallFailedException extends AssertionError {
+public class CallFailedError extends AssertionError {
 
     public static AssertionError expectCallNotToFail(UserIdentifier userIdentifier, Throwable exception) {
-        return new CallFailedException(String.format(
+        return new CallFailedError(String.format(
                 "Assertion failed with role <%s>: %s",
                 userIdentifier,
                 exception
@@ -13,7 +13,7 @@ public class CallFailedException extends AssertionError {
     }
 
     public static AssertionError expectedCallToFail(UserIdentifier userIdentifier, Class<? extends Throwable> expected) {
-        return new CallFailedException(String.format(
+        return new CallFailedError(String.format(
                 "Expected assertion to fail with role <%s> with exception %s. " +
                 "No exception was thrown.",
                 userIdentifier.toString(),
@@ -22,7 +22,7 @@ public class CallFailedException extends AssertionError {
     }
 
     public static AssertionError unexpectedException(UserIdentifier userIdentifier, Class<? extends Throwable> expected, Throwable thrown) {
-        return new CallFailedException(String.format(
+        return new CallFailedError(String.format(
                 "Unexpected exception thrown with role <%s>: " +
                 "Expected <%s> but was <%s>: " +
                 "%s",
@@ -33,11 +33,11 @@ public class CallFailedException extends AssertionError {
         ), thrown);
     }
 
-    private CallFailedException(String s, Throwable throwable) {
+    private CallFailedError(String s, Throwable throwable) {
         super(s, throwable);
     }
 
-    private CallFailedException(Object o) {
+    private CallFailedError(Object o) {
         super(o);
     }
 }
