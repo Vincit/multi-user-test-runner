@@ -3,6 +3,8 @@ package fi.vincit.multiusertest.util;
 import fi.vincit.multiusertest.annotation.IgnoreForUsers;
 import fi.vincit.multiusertest.annotation.MultiUserTestConfig;
 import fi.vincit.multiusertest.annotation.RunWithUsers;
+import fi.vincit.multiusertest.rule.EmptyUserDefinitionClass;
+import fi.vincit.multiusertest.rule.UserDefinitionClass;
 import fi.vincit.multiusertest.runner.junit.framework.BlockMultiUserTestClassRunner;
 
 import java.util.Collection;
@@ -26,11 +28,28 @@ public class TestConfiguration {
         Class<? extends Throwable> defaultException = Defaults.getDefaultException();
 
         if (classUsers.isPresent() && ignoredUsers.isPresent()) {
-            Collection<UserIdentifier> producerIdentifiers = getDefinitions(classUsers.get().producers());
-            producerIdentifiers.removeAll(getDefinitions(ignoredUsers.get().producers()));
+            final RunWithUsers runWithUsers = classUsers.get();
+            final UserDefinitionClass producerDefinitionClass =
+                    resolveUserDefinitionClass(runWithUsers.producerClass());
+            final Collection<UserIdentifier> producerIdentifiers = getDefinitions(
+                    runWithUsers.producers(),
+                    producerDefinitionClass
+            );
+            producerIdentifiers.removeAll(getDefinitions(
+                    ignoredUsers.get().producers(),
+                    resolveUserDefinitionClass(ignoredUsers.get().producerClass())
+            ));
 
-            Collection<UserIdentifier> consumerIdentifier = getDefinitions(classUsers.get().consumers());
-            consumerIdentifier.removeAll(getDefinitions(ignoredUsers.get().consumers()));
+            final UserDefinitionClass consumerDefinitionClass =
+                    resolveUserDefinitionClass(runWithUsers.consumerClass());
+            final Collection<UserIdentifier> consumerIdentifier = getDefinitions(
+                    runWithUsers.consumers(),
+                    consumerDefinitionClass
+            );
+            consumerIdentifier.removeAll(getDefinitions(
+                    ignoredUsers.get().consumers(),
+                    resolveUserDefinitionClass(ignoredUsers.get().consumerClass())
+            ));
 
             return new TestConfiguration(
                     producerIdentifiers,
@@ -63,8 +82,15 @@ public class TestConfiguration {
         Class<? extends Throwable> defaultException = Defaults.getDefaultException();
 
         if (testUsers.isPresent()) {
-            producerIdentifiers = getDefinitions(testUsers.get().producers());
-            consumerIdentifier = getDefinitions(testUsers.get().consumers());
+            final RunWithUsers runWithUsers = testUsers.get();
+            producerIdentifiers = getDefinitions(
+                    runWithUsers.producers(),
+                    resolveUserDefinitionClass(runWithUsers.producerClass())
+            );
+            consumerIdentifier = getDefinitions(
+                    runWithUsers.consumers(),
+                    resolveUserDefinitionClass(runWithUsers.consumerClass())
+            );
         }
         if (multiUserTestConfig.isPresent()) {
             runner = multiUserTestConfig.get().runner();
@@ -79,15 +105,44 @@ public class TestConfiguration {
         );
     }
 
-    private static Collection<UserIdentifier> getDefinitions(String[] definitions) {
-        if (definitions != null) {
+    private static Collection<UserIdentifier> getDefinitions(String[] definitions, UserDefinitionClass userDefinitionClass) {
+        final String[] resolvedDefinitions = resolveDefinitions(definitions, userDefinitionClass);
+
+        if (resolvedDefinitions != null) {
             Collection<UserIdentifier> userIdentifiers = new LinkedHashSet<>();
-            for (String user : definitions) {
+            for (String user : resolvedDefinitions) {
                 userIdentifiers.add(UserIdentifier.parse(user));
             }
             return userIdentifiers;
         } else {
             return Collections.emptySet();
+        }
+    }
+
+    static String[] resolveDefinitions(String[] definitions, UserDefinitionClass userDefinitionClass) {
+        if (definitions == null
+                && (userDefinitionClass == null || userDefinitionClass.getUsers() == null)) {
+            return new String[0];
+        } else if (definitions != null && definitions.length > 0) {
+            return definitions;
+        } else if (userDefinitionClass != null
+                && userDefinitionClass.getUsers() != null
+                && userDefinitionClass.getUsers().length > 0) {
+            return userDefinitionClass.getUsers();
+        } else {
+            return new String[0];
+        }
+    }
+
+    static UserDefinitionClass resolveUserDefinitionClass(Class<? extends UserDefinitionClass> userClass) {
+        if (userClass != null) {
+            try {
+                return userClass.newInstance();
+            } catch (InstantiationException|IllegalAccessException e) {
+                throw new IllegalArgumentException("Invalid user definition class", e);
+            }
+        } else {
+            return EmptyUserDefinitionClass.getEmptyClass();
         }
     }
 

@@ -10,6 +10,7 @@ Simple example project and example tests.
 * [Basic Example with Roles](src/test/java/fi/vincit/mutrproject/feature/todo/TodoServiceIT.java)
 * [Basic Example with Existing Users](src/test/java/fi/vincit/mutrproject/feature/todo/TodoServiceWithUsersIT.java)
 * [Basic Example with RunWithUsers.WITH_PRODUCER_ROLE](src/test/java/fi/vincit/mutrproject/feature/todo/TodoServiceProducerRoleIT.java)
+* [Basic Example with UserDefinitionClass](src/test/java/fi/vincit/mutrproject/feature/todo/TodoServiceUserDefinitionsIT.java)
 * [Basic Configuration](src/test/java/fi/vincit/mutrproject/configuration/TestMultiUserConfig.java)
 
 ### REST Assured

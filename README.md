@@ -274,6 +274,39 @@ public class ServiceIT extends AbstractConfiguredUserIT {
 }
 ```
 
+## UserDefinitionClasses
+
+Let's say that there are multiple tests that use exact same user/role definitions. In 0.5 and older versions the only
+possibility was to copy paste the definitions to each test. In 0.6 this issue has been solved with UserDefinitionClass.
+
+For example there are multiple tests that take `{"role:ROLE_ADMIN", "role:ROLE_USER"}` as the consumer definitions. Now
+it is possible to make a class:
+
+```
+public class GeneralTestUsers implements UserDefinitionClass {
+
+    @Override
+    public String[] getUsers() {
+        return new String[] {"role:ROLE_ADMIN", "role:ROLE_USER"};
+    }
+}
+```
+
+This class can be given to the consumer in `RunWithUsers`:
+
+```
+@RunWithUsers(consumerClass = GeneralTestUsers.class)
+public class ServiceXTest {
+    // ...
+```
+
+Or to the producer:
+
+```
+@RunWithUsers(producerClass = GeneralTestUsers.class)
+public class ServiceXTest {
+    // ...
+```
 
 # Assertions
 

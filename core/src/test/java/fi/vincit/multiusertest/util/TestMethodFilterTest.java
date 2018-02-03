@@ -1,6 +1,7 @@
 package fi.vincit.multiusertest.util;
 
 import fi.vincit.multiusertest.annotation.RunWithUsers;
+import fi.vincit.multiusertest.rule.EmptyUserDefinitionClass;
 import org.junit.Test;
 import org.junit.runners.model.FrameworkMethod;
 
@@ -207,11 +208,13 @@ public class TestMethodFilterTest {
         assertThat(currentTestUsers.shouldRun(method), is(false));
     }
 
-    private void mockRunWithUsers(FrameworkMethod method, String[] producers, String[] consumers) {
+    private static void mockRunWithUsers(FrameworkMethod method, String[] producers, String[] consumers) {
         RunWithUsers testUsers = mock(RunWithUsers.class);
 
         when(testUsers.producers()).thenReturn(producers);
+        when(testUsers.producerClass()).thenAnswer(invocation -> EmptyUserDefinitionClass.class);
         when(testUsers.consumers()).thenReturn(consumers);
+        when(testUsers.consumerClass()).thenAnswer(invocation -> EmptyUserDefinitionClass.class);
 
         when(method.getAnnotation(RunWithUsers.class)).thenReturn(testUsers);
     }

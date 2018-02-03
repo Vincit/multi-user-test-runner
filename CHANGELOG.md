@@ -5,7 +5,12 @@ Multi User Test Runner
 
 ## Changes
 
-Version 0.6 improves error messages.
+Version 0.6 improves error messages and adds UserDefinitionClass
+
+* UserDefinitionClass allows definition of general user/role groups that can 
+  be shared across tests. Instead of typing the same array of users/role for
+  each test separately it is now possible to define a class that can be given
+  to the RunWithUsers annotation.
 
 # 0.5.0
 

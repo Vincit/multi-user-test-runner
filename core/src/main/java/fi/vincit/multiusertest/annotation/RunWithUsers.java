@@ -1,13 +1,15 @@
 package fi.vincit.multiusertest.annotation;
 
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import fi.vincit.multiusertest.rule.EmptyUserDefinitionClass;
+import fi.vincit.multiusertest.rule.UserDefinitionClass;
+import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 
 /**
@@ -18,11 +20,17 @@ import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
  * {@link MultiUserTestRunner}.
  * </p>
  * <p>
+ * At least one producer role/user has to be defined. This can be done via array of strings
+ * ({@link RunWithUsers#producers()}) or using a user definition class
+ * ({@link RunWithUsers#producerClass()}}).
+ * </p>
+ * <p>
  * Annotation can also be user with methods. Then the annotation will define with what users the method
  * will be executed. If {@link RunWithUsers#producers()} are set, the method will only be executed if any of the specified producers are
  * being used as the producer. Same applies for the {@link RunWithUsers#consumers()}. If both producers and consumers are defined then
  * the method will be run only if any combination of producers and users are being used.
  * </p>
+ *
  */
 @Target({TYPE, METHOD})
 @Retention(RUNTIME)
@@ -54,5 +62,17 @@ public @interface RunWithUsers {
      * @return users/roles
      */
     String[] consumers() default {};
+
+    /**
+     * Producer roles/users to be used from a user definition class
+     * @return Class defining user definitions
+     */
+    Class<? extends UserDefinitionClass> producerClass() default EmptyUserDefinitionClass.class;
+
+    /**
+     * Consumer roles/users to be used from a user definition class
+     * @return Class defining user definitions
+     */
+    Class<? extends UserDefinitionClass> consumerClass() default EmptyUserDefinitionClass.class;
 
 }

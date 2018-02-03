@@ -2,6 +2,8 @@ package fi.vincit.multiusertest.util;
 
 import fi.vincit.multiusertest.annotation.IgnoreForUsers;
 import fi.vincit.multiusertest.annotation.RunWithUsers;
+import fi.vincit.multiusertest.rule.EmptyUserDefinitionClass;
+import fi.vincit.multiusertest.rule.UserDefinitionClass;
 import org.junit.Test;
 
 import java.util.Optional;
@@ -9,6 +11,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
@@ -48,6 +51,71 @@ public class TestConfigurationTest {
         assertThat(testConfiguration.getConsumerIdentifiers(), is(asSet("role:D", "role:E", "role:F")));
     }
 
+    @Test
+    public void resolveDefinitions() {
+        final String[] roles = TestConfiguration.resolveDefinitions(
+                new String[0],
+                new TestUserDefinitionClass(new String[]{"role:A"})
+        );
+
+        assertThat(roles, is(new String[] {"role:A"}));
+    }
+
+    @Test
+    public void resolveDefinitions_empty() {
+        final String[] roles = TestConfiguration.resolveDefinitions(
+                new String[0],
+                new TestUserDefinitionClass(new String[0])
+        );
+
+        assertThat(roles, is(new String[0]));
+    }
+
+    @Test
+    public void resolveDefinitions_nulls() {
+        final String[] roles = TestConfiguration.resolveDefinitions(null, null);
+        assertThat(roles, is(new String[0]));
+    }
+
+    @Test
+    public void resolveDefinitions_nulls_definitionReturnsNull() {
+        final String[] roles = TestConfiguration.resolveDefinitions(
+                null,
+                new TestUserDefinitionClass(null)
+        );
+        assertThat(roles, is(new String[0]));
+    }
+
+    @Test
+    public void resolveDefinitions_bothDefined() {
+        final String[] roles = TestConfiguration.resolveDefinitions(
+                new String[] {"role:A"},
+                new TestUserDefinitionClass(new String[] {"role:B"})
+        );
+        assertThat(roles, is(new String[] {"role:A"}));
+    }
+
+    @Test
+    public void resolveUserDefinitionClass() {
+        final UserDefinitionClass userDefinitionClass = TestConfiguration.resolveUserDefinitionClass(
+                TestUserDefinitionClass.class
+        );
+        assertThat(userDefinitionClass, instanceOf(TestUserDefinitionClass.class));
+    }
+
+    @Test
+    public void resolveUserDefinitionClass_empty() {
+        final UserDefinitionClass userDefinitionClass = TestConfiguration.resolveUserDefinitionClass(null);
+        assertThat(userDefinitionClass, instanceOf(EmptyUserDefinitionClass.class));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void resolveUserDefinitionClass_invalid() {
+        TestConfiguration.resolveUserDefinitionClass(
+                InvalidUserDefinitionClass.class
+        );
+    }
+
     private static Set<UserIdentifier> asSet(String... identifierDefs) {
         return Stream.of(identifierDefs).map(UserIdentifier::parse).collect(Collectors.toSet());
     }
@@ -68,5 +136,34 @@ public class TestConfigurationTest {
         when(testUsers.consumers()).thenReturn(consumers);
 
         return testUsers;
+    }
+
+    public static class TestUserDefinitionClass implements UserDefinitionClass {
+        private String[] users;
+
+        public TestUserDefinitionClass() {
+        }
+
+        TestUserDefinitionClass(String[] users) {
+            this.users = users;
+        }
+
+        @Override
+        public String[] getUsers() {
+            return users;
+        }
+    }
+
+    /**
+     * Test user definition class that can't be initialized with zero argument constructor
+     */
+    public static class InvalidUserDefinitionClass implements UserDefinitionClass {
+        InvalidUserDefinitionClass(String param) {
+        }
+
+        @Override
+        public String[] getUsers() {
+            return null;
+        }
     }
 }

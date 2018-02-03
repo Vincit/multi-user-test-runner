@@ -1,5 +1,8 @@
 package fi.vincit.multiusertest.annotation;
 
+import fi.vincit.multiusertest.rule.EmptyUserDefinitionClass;
+import fi.vincit.multiusertest.rule.UserDefinitionClass;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
@@ -29,5 +32,17 @@ public @interface IgnoreForUsers {
      * @return users/roles
      */
     String[] consumers() default {};
+
+        /**
+     * Producer roles/users to be used from a user definition class
+     * @return Class defining user definitions
+     */
+    Class<? extends UserDefinitionClass> producerClass() default EmptyUserDefinitionClass.class;
+
+    /**
+     * Consumer roles/users to be used from a user definition class
+     * @return Class defining user definitions
+     */
+    Class<? extends UserDefinitionClass> consumerClass() default EmptyUserDefinitionClass.class;
 
 }
