@@ -175,7 +175,7 @@ public class AuthorizationRule implements TestRule {
                 }
             } catch (Throwable e) {
                 if (expectedException == null) {
-                    throw new RuntimeException("Expected exception not set yet", e);
+                    throw new RuntimeException("Fatal error while running tests", e);
                 }
                 if (expectedException.isInstance(e)) {
                     if (!evaluateExpectToFailCondition()) {

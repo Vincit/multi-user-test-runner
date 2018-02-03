@@ -75,7 +75,7 @@ public class AuthorizationRuleTest {
         doThrow(cause).when(statement).evaluate();
 
         expectedException.expect(RuntimeException.class);
-        expectedException.expectMessage(is("Expected exception not set yet"));
+        expectedException.expectMessage(is("Fatal error while running tests"));
         expectedException.expectCause(is(cause));
 
         rule.apply(statement, description).evaluate();
