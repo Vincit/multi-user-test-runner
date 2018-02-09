@@ -7,10 +7,7 @@ import fi.vincit.multiusertest.rule.EmptyUserDefinitionClass;
 import fi.vincit.multiusertest.rule.UserDefinitionClass;
 import fi.vincit.multiusertest.runner.junit.framework.BlockMultiUserTestClassRunner;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Abstraction of configuration test class
@@ -105,7 +102,7 @@ public class TestConfiguration {
         );
     }
 
-    private static Collection<UserIdentifier> getDefinitions(String[] definitions, UserDefinitionClass userDefinitionClass) {
+    static Collection<UserIdentifier> getDefinitions(String[] definitions, UserDefinitionClass userDefinitionClass) {
         final String[] resolvedDefinitions = resolveDefinitions(definitions, userDefinitionClass);
 
         if (resolvedDefinitions != null) {
@@ -120,18 +117,21 @@ public class TestConfiguration {
     }
 
     static String[] resolveDefinitions(String[] definitions, UserDefinitionClass userDefinitionClass) {
-        if (definitions == null
-                && (userDefinitionClass == null || userDefinitionClass.getUsers() == null)) {
-            return new String[0];
-        } else if (definitions != null && definitions.length > 0) {
-            return definitions;
-        } else if (userDefinitionClass != null
-                && userDefinitionClass.getUsers() != null
-                && userDefinitionClass.getUsers().length > 0) {
-            return userDefinitionClass.getUsers();
-        } else {
-            return new String[0];
+        final Set<String> mergedDefinitions = new HashSet<>();
+
+        if (definitions != null && definitions.length > 0) {
+            mergedDefinitions.addAll(Arrays.asList(definitions));
         }
+
+        if (userDefinitionClass != null
+                && userDefinitionClass.hasUsers()) {
+            mergedDefinitions.addAll(Arrays.asList(userDefinitionClass.getUsers()));
+        }
+
+        final String[] finalDefinitions = mergedDefinitions.toArray(new String[0]);
+        Arrays.sort(finalDefinitions);
+
+        return finalDefinitions;
     }
 
     static UserDefinitionClass resolveUserDefinitionClass(Class<? extends UserDefinitionClass> userClass) {

@@ -6,6 +6,7 @@ import fi.vincit.multiusertest.rule.EmptyUserDefinitionClass;
 import fi.vincit.multiusertest.rule.UserDefinitionClass;
 import org.junit.Test;
 
+import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -73,7 +74,10 @@ public class TestConfigurationTest {
 
     @Test
     public void resolveDefinitions_nulls() {
-        final String[] roles = TestConfiguration.resolveDefinitions(null, null);
+        final String[] roles = TestConfiguration.resolveDefinitions(
+                null,
+                null
+        );
         assertThat(roles, is(new String[0]));
     }
 
@@ -87,12 +91,30 @@ public class TestConfigurationTest {
     }
 
     @Test
+    public void resolveDefinitions_nulls_definitionReturnsEmpty() {
+        final String[] roles = TestConfiguration.resolveDefinitions(
+                null,
+                new TestUserDefinitionClass(new String[0])
+        );
+        assertThat(roles, is(new String[0]));
+    }
+
+    @Test
+    public void resolveDefinitions_empty_definitionReturnsEmpty() {
+        final String[] roles = TestConfiguration.resolveDefinitions(
+                new String[0],
+                new TestUserDefinitionClass(new String[0])
+        );
+        assertThat(roles, is(new String[0]));
+    }
+
+    @Test
     public void resolveDefinitions_bothDefined() {
         final String[] roles = TestConfiguration.resolveDefinitions(
                 new String[] {"role:A"},
                 new TestUserDefinitionClass(new String[] {"role:B"})
         );
-        assertThat(roles, is(new String[] {"role:A"}));
+        assertThat(roles, is(new String[] {"role:A", "role:B"}));
     }
 
     @Test
@@ -114,6 +136,26 @@ public class TestConfigurationTest {
         TestConfiguration.resolveUserDefinitionClass(
                 InvalidUserDefinitionClass.class
         );
+    }
+
+    @Test
+    public void getDefinitions() {
+        final Collection<UserIdentifier> definitions = TestConfiguration.getDefinitions(
+                new String[] {"role:A"},
+                new TestUserDefinitionClass(new String[] {"role:B"})
+        );
+
+        assertThat(definitions, is(asSet("role:A", "role:B")));
+    }
+
+    @Test
+    public void getDefinitions_empty() {
+        final Collection<UserIdentifier> definitions = TestConfiguration.getDefinitions(
+                null,
+                null
+        );
+
+        assertThat(definitions.size(), is(0));
     }
 
     private static Set<UserIdentifier> asSet(String... identifierDefs) {

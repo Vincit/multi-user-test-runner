@@ -1,11 +1,8 @@
 package fi.vincit.multiusertest.runner.junit;
 
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
-
-import java.util.Collections;
-import java.util.List;
-
+import fi.vincit.multiusertest.annotation.MultiUserTestConfig;
+import fi.vincit.multiusertest.annotation.RunWithUsers;
+import fi.vincit.multiusertest.util.UserIdentifier;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.Description;
@@ -14,9 +11,11 @@ import org.junit.runners.ParentRunner;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
 
-import fi.vincit.multiusertest.annotation.MultiUserTestConfig;
-import fi.vincit.multiusertest.annotation.RunWithUsers;
-import fi.vincit.multiusertest.util.UserIdentifier;
+import java.util.Collections;
+import java.util.List;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 
 public class MultiUserTestRunnerTest {
 
@@ -147,13 +146,13 @@ public class MultiUserTestRunnerTest {
 
         assertThat(runner.getChildren().size(), is(2));
 
-        TestRunner childRunner1 = (TestRunner) runner.getChildren().get(0);
-        assertThat(childRunner1.getProducer(), is(UserIdentifier.parse("role:ROLE_USERS")));
-        assertThat(childRunner1.getConsumer(), is(UserIdentifier.parse("user:Foo")));
-
-        TestRunner childRunner2 = (TestRunner) runner.getChildren().get(1);
+        TestRunner childRunner2 = (TestRunner) runner.getChildren().get(0);
         assertThat(childRunner2.getProducer(), is(UserIdentifier.parse("role:ROLE_USERS")));
         assertThat(childRunner2.getConsumer(), is(UserIdentifier.parse("role:Bar")));
+
+        TestRunner childRunner1 = (TestRunner) runner.getChildren().get(1);
+        assertThat(childRunner1.getProducer(), is(UserIdentifier.parse("role:ROLE_USERS")));
+        assertThat(childRunner1.getConsumer(), is(UserIdentifier.parse("user:Foo")));
 
     }
 

@@ -25,6 +25,10 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * ({@link RunWithUsers#producerClass()}}).
  * </p>
  * <p>
+ * If user definitions are given with both string array and {@link UserDefinitionClass} are given the
+ * user definitions are merged. This enables to reuse {@link UserDefinitionClass} more.
+ * </p>
+ * <p>
  * Annotation can also be user with methods. Then the annotation will define with what users the method
  * will be executed. If {@link RunWithUsers#producers()} are set, the method will only be executed if any of the specified producers are
  * being used as the producer. Same applies for the {@link RunWithUsers#consumers()}. If both producers and consumers are defined then
