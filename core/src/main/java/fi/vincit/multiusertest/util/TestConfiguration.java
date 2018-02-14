@@ -105,15 +105,11 @@ public class TestConfiguration {
     static Collection<UserIdentifier> getDefinitions(String[] definitions, UserDefinitionClass userDefinitionClass) {
         final String[] resolvedDefinitions = resolveDefinitions(definitions, userDefinitionClass);
 
-        if (resolvedDefinitions != null) {
-            Collection<UserIdentifier> userIdentifiers = new LinkedHashSet<>();
-            for (String user : resolvedDefinitions) {
-                userIdentifiers.add(UserIdentifier.parse(user));
-            }
-            return userIdentifiers;
-        } else {
-            return Collections.emptySet();
+        final Collection<UserIdentifier> userIdentifiers = new LinkedHashSet<>();
+        for (String user : resolvedDefinitions) {
+            userIdentifiers.add(UserIdentifier.parse(user));
         }
+        return userIdentifiers;
     }
 
     static String[] resolveDefinitions(String[] definitions, UserDefinitionClass userDefinitionClass) {
