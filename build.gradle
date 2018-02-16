@@ -101,9 +101,6 @@ subprojects {
                 addFilter('core') {artifact, file ->
                     artifact.name == 'multi-user-test-runner'
                 }
-                addFilter('spring-test-class-runner') {artifact, file ->
-                    artifact.name == 'multi-user-test-runner-spring'
-                }
 
                 def pomMetadata = {
                     name 'Multi User Test Runner'
