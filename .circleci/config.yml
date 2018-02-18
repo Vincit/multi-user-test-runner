@@ -7,9 +7,6 @@ jobs:
   build:
     docker:
       - image: circleci/openjdk:8-jdk
-    environment:
-      JVM_OPTS: -Xmx3200m
-      TERM: dumb
     steps:
       - checkout
       - restore_cache:
@@ -22,7 +19,38 @@ jobs:
             - ~/.gradle
           key: v1-dependencies-{{ checksum "build.gradle" }}
       - run: gradle test
+  findBugs:
+    docker:
+      - image: circleci/openjdk:8-jdk
+    steps:
       - run: gradle findbugsMain
+  javadoc:
+    docker:
+      - image: circleci/openjdk:8-jdk
+    steps:
       - run: gradle :core:javadoc
-      - store_artifacts:
-          path: /tmp/core_dumps
+    persist_to_workspace:
+      root: javadoc
+      paths:
+       - core/build/docs/javadoc
+   publishSnapshots:
+    docker:
+      - image: circleci/openjdk:8-jdk
+    steps:
+      - run: gradle uploadArchives
+
+workflows:
+  version: 2
+  release-workflow:
+    jobs:
+      - build
+      - findBugs:
+          requires:
+            - build
+      - javadoc:
+          requires:
+            - build
+      - publishSnapshots:
+          requires:
+            - findBugs
+            - javadoc

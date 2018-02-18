@@ -134,10 +134,6 @@ code.
                     }
                 }
                 pom('core').project pomMetadata
-                pom('spring-test-class-runner').project pomMetadata
-                pom('spring-test-class-runner').project {
-                    description 'Spring service testing support for Multi User Test Runner'
-                }
 
             }
         }
