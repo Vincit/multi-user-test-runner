@@ -32,33 +32,27 @@ public class TestConfiguration {
 
         if (classUsers.isPresent() && ignoredUsers.isPresent()) {
             final RunWithUsers runWithUsers = classUsers.get();
+            final IgnoreForUsers resolvedIgnoredUsers = ignoredUsers.get();
+
             final UserDefinitionClass producerDefinitionClass =
                     resolveUserDefinitionClass(runWithUsers.producerClass());
-            final Collection<UserIdentifier> producerIdentifiers = getDefinitions(
-                    runWithUsers.producers(),
-                    producerDefinitionClass.getUsers(),
-                    DEFAULT_MERGE_STRATEGY
-            );
-            producerIdentifiers.removeAll(getDefinitions(
-                    ignoredUsers.get().producers(),
-                    resolveUserDefinitionClass(ignoredUsers.get().producerClass())
-                            .getUsers(),
-                    DEFAULT_MERGE_STRATEGY
-            ));
+            final Collection<UserIdentifier> producerIdentifiers =
+                    resolveDefinitions(
+                            runWithUsers.producers(),
+                            producerDefinitionClass,
+                            resolvedIgnoredUsers.producers(),
+                            resolveUserDefinitionClass(resolvedIgnoredUsers.producerClass())
+                    );
 
             final UserDefinitionClass consumerDefinitionClass =
                     resolveUserDefinitionClass(runWithUsers.consumerClass());
-            final Collection<UserIdentifier> consumerIdentifier = getDefinitions(
-                    runWithUsers.consumers(),
-                    consumerDefinitionClass.getUsers(),
-                    DEFAULT_MERGE_STRATEGY
-            );
-            consumerIdentifier.removeAll(getDefinitions(
-                    ignoredUsers.get().consumers(),
-                    resolveUserDefinitionClass(ignoredUsers.get().consumerClass())
-                            .getUsers(),
-                    DEFAULT_MERGE_STRATEGY
-            ));
+            final Collection<UserIdentifier> consumerIdentifier =
+                    resolveDefinitions(
+                            runWithUsers.consumers(),
+                            consumerDefinitionClass,
+                            resolvedIgnoredUsers.consumers(),
+                            resolveUserDefinitionClass(resolvedIgnoredUsers.consumerClass())
+                    );
 
             return new TestConfiguration(
                     producerIdentifiers,
@@ -74,6 +68,24 @@ public class TestConfiguration {
                     defaultException
             );
         }
+    }
+
+    private static Collection<UserIdentifier> resolveDefinitions(String[] includedUserDefinitions,
+                                                                 UserDefinitionClass includedUserDefinitionsClass,
+                                                                 String[] ignoredUserDefinitions,
+                                                                 UserDefinitionClass ignoreUserDefinitionsLcass) {
+        final Collection<UserIdentifier> producerIdentifiers = getDefinitions(
+                includedUserDefinitions,
+                includedUserDefinitionsClass.getUsers(),
+                DEFAULT_MERGE_STRATEGY
+        );
+        producerIdentifiers.removeAll(getDefinitions(
+                ignoredUserDefinitions,
+                ignoreUserDefinitionsLcass
+                        .getUsers(),
+                DEFAULT_MERGE_STRATEGY
+        ));
+        return producerIdentifiers;
     }
 
     /**
