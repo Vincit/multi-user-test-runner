@@ -1,7 +1,3 @@
-# Java Gradle CircleCI 2.0 configuration file
-#
-# Check https://circleci.com/docs/2.0/language-java/ for more details
-#
 version: 2
 jobs:
   build:
@@ -19,38 +15,41 @@ jobs:
             - ~/.gradle
           key: v1-dependencies-{{ checksum "build.gradle" }}
       - run: gradle test
-  findBugs:
+  findbugs:
     docker:
       - image: circleci/openjdk:8-jdk
     steps:
+      - checkout
       - run: gradle findbugsMain
   javadoc:
     docker:
       - image: circleci/openjdk:8-jdk
     steps:
+      - checkout
       - run: gradle :core:javadoc
-    persist_to_workspace:
-      root: javadoc
-      paths:
-       - core/build/docs/javadoc
-   publishSnapshots:
+      - persist_to_workspace:
+          root: "core/build"
+          paths:
+            - "docs/javadoc"
+  publish_snapshots:
     docker:
       - image: circleci/openjdk:8-jdk
     steps:
+      - checkout
       - run: gradle uploadArchives
-
 workflows:
   version: 2
-  release-workflow:
+  release_workflow:
     jobs:
       - build
-      - findBugs:
+      - findbugs:
           requires:
             - build
       - javadoc:
           requires:
             - build
-      - publishSnapshots:
+      - publish_snapshots:
+          type: approval
           requires:
-            - findBugs
+            - findbugs
             - javadoc
