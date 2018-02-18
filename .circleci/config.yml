@@ -15,6 +15,20 @@ jobs:
             - ~/.gradle
           key: v1-dependencies-{{ checksum "build.gradle" }}
       - run: gradle test
+      - store_test_results:
+          path: core/build/test-results
+      - store_test_results:
+          path: examples/build/test-results
+      - store_test_results:
+          path: integration-test/build/test-results
+      - store_test_results:
+          path: java-8-test/build/test-results
+      - store_test_results:
+          path: junit-5-legacy-test/build/test-results
+      - store_test_results:
+          path: spring-test/build/test-results
+      - store_test_results:
+          path: string-test-class-runner/build/test-results
   findbugs:
     docker:
       - image: circleci/openjdk:8-jdk
@@ -31,6 +45,9 @@ jobs:
           root: "core/build"
           paths:
             - "docs/javadoc"
+      - store_artifacts:
+          path: "core/build/docs/javadoc"
+          destination: "javadoc"
   publish_snapshots:
     docker:
       - image: circleci/openjdk:8-jdk
