@@ -70,12 +70,14 @@ public @interface RunWithUsers {
     /**
      * Producer roles/users to be used from a user definition class
      * @return Class defining user definitions
+     * @since 0.6
      */
     Class<? extends UserDefinitionClass> producerClass() default EmptyUserDefinitionClass.class;
 
     /**
      * Consumer roles/users to be used from a user definition class
      * @return Class defining user definitions
+     * @since 0.6
      */
     Class<? extends UserDefinitionClass> consumerClass() default EmptyUserDefinitionClass.class;
 
