@@ -6,8 +6,12 @@ import fi.vincit.multiusertest.annotation.RunWithUsers;
 import fi.vincit.multiusertest.rule.EmptyUserDefinitionClass;
 import fi.vincit.multiusertest.rule.UserDefinitionClass;
 import fi.vincit.multiusertest.runner.junit.framework.BlockMultiUserTestClassRunner;
+import fi.vincit.multiusertest.util.merge.AlphabeticalMergeStrategy;
+import fi.vincit.multiusertest.util.merge.MergeStrategy;
 
 import java.util.*;
+
+import static java.util.stream.Collectors.toCollection;
 
 /**
  * Abstraction of configuration test class
@@ -18,6 +22,8 @@ public class TestConfiguration {
     private final Collection<UserIdentifier> consumerIdentifiers;
     private final Optional<Class<?>> runner;
     private final Optional<Class<? extends Throwable>> defaultException;
+
+    private static final AlphabeticalMergeStrategy DEFAULT_MERGE_STRATEGY = new AlphabeticalMergeStrategy();
 
     public static TestConfiguration fromIgnoreForUsers(Optional<IgnoreForUsers> ignoredUsers, Optional<RunWithUsers> classUsers) {
 
@@ -30,22 +36,28 @@ public class TestConfiguration {
                     resolveUserDefinitionClass(runWithUsers.producerClass());
             final Collection<UserIdentifier> producerIdentifiers = getDefinitions(
                     runWithUsers.producers(),
-                    producerDefinitionClass
+                    producerDefinitionClass.getUsers(),
+                    DEFAULT_MERGE_STRATEGY
             );
             producerIdentifiers.removeAll(getDefinitions(
                     ignoredUsers.get().producers(),
                     resolveUserDefinitionClass(ignoredUsers.get().producerClass())
+                            .getUsers(),
+                    DEFAULT_MERGE_STRATEGY
             ));
 
             final UserDefinitionClass consumerDefinitionClass =
                     resolveUserDefinitionClass(runWithUsers.consumerClass());
             final Collection<UserIdentifier> consumerIdentifier = getDefinitions(
                     runWithUsers.consumers(),
-                    consumerDefinitionClass
+                    consumerDefinitionClass.getUsers(),
+                    DEFAULT_MERGE_STRATEGY
             );
             consumerIdentifier.removeAll(getDefinitions(
                     ignoredUsers.get().consumers(),
                     resolveUserDefinitionClass(ignoredUsers.get().consumerClass())
+                            .getUsers(),
+                    DEFAULT_MERGE_STRATEGY
             ));
 
             return new TestConfiguration(
@@ -83,10 +95,14 @@ public class TestConfiguration {
             producerIdentifiers = getDefinitions(
                     runWithUsers.producers(),
                     resolveUserDefinitionClass(runWithUsers.producerClass())
+                            .getUsers(),
+                    DEFAULT_MERGE_STRATEGY
             );
             consumerIdentifier = getDefinitions(
                     runWithUsers.consumers(),
                     resolveUserDefinitionClass(runWithUsers.consumerClass())
+                            .getUsers(),
+                    DEFAULT_MERGE_STRATEGY
             );
         }
         if (multiUserTestConfig.isPresent()) {
@@ -102,33 +118,17 @@ public class TestConfiguration {
         );
     }
 
-    static Collection<UserIdentifier> getDefinitions(String[] definitions, UserDefinitionClass userDefinitionClass) {
-        final String[] resolvedDefinitions = resolveDefinitions(definitions, userDefinitionClass);
+    static Collection<UserIdentifier> getDefinitions(String[] definitionsPrimary,
+                                                     String[] definitionsSecondary,
+                                                     MergeStrategy mergeStrategy) {
+        final String[] resolvedDefinitions =
+                mergeStrategy.mergeDefinitions(definitionsPrimary, definitionsSecondary);
 
-        final Collection<UserIdentifier> userIdentifiers = new LinkedHashSet<>();
-        for (String user : resolvedDefinitions) {
-            userIdentifiers.add(UserIdentifier.parse(user));
-        }
-        return userIdentifiers;
+        return Arrays.stream(resolvedDefinitions)
+                        .map(UserIdentifier::parse)
+                        .collect(toCollection(LinkedHashSet::new));
     }
 
-    static String[] resolveDefinitions(String[] definitions, UserDefinitionClass userDefinitionClass) {
-        final Set<String> mergedDefinitions = new HashSet<>();
-
-        if (definitions != null && definitions.length > 0) {
-            mergedDefinitions.addAll(Arrays.asList(definitions));
-        }
-
-        if (userDefinitionClass != null
-                && userDefinitionClass.hasUsers()) {
-            mergedDefinitions.addAll(Arrays.asList(userDefinitionClass.getUsers()));
-        }
-
-        final String[] finalDefinitions = mergedDefinitions.toArray(new String[0]);
-        Arrays.sort(finalDefinitions);
-
-        return finalDefinitions;
-    }
 
     static UserDefinitionClass resolveUserDefinitionClass(Class<? extends UserDefinitionClass> userClass) {
         if (userClass != null) {

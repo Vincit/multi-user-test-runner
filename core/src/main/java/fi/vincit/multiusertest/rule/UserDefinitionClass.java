@@ -8,8 +8,4 @@ public interface UserDefinitionClass {
 
     String[] getUsers();
 
-    default boolean hasUsers() {
-        return getUsers() != null && getUsers().length > 0;
-    }
-
 }
