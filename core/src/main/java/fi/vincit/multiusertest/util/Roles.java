@@ -2,6 +2,7 @@ package fi.vincit.multiusertest.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -9,24 +10,24 @@ import java.util.Objects;
  * Use {@link UserIdentifiers#roles(String...)} to initialize.
  * Contains a collection of roles names.
  */
-public class Roles implements UserIdentifierCollection {
+public class Roles extends GenericUserIdentifierCollection {
 
-    private Collection<String> roleIdentifiers;
+    private Roles(Collection<UserIdentifier> identifiers) {
+        super(identifiers);
+    }
 
     /**
      * Initializes the Roles with the given role names
      * @param roles
      */
-    public Roles(String... roles) {
-        roleIdentifiers = new ArrayList<>(roles.length);
+    public static Roles create(String... roles) {
+        List <UserIdentifier> roleIdentifiers = new ArrayList<>(roles.length);
         for (int i = 0; i < roles.length; ++i) {
-            Objects.requireNonNull(roles[i], "Role must not be null: role at index " + i + " was");
-            roleIdentifiers.add(new UserIdentifier(UserIdentifier.Type.ROLE, roles[i]).toString());
+            Objects.requireNonNull(roles[i], "Role must not be null: role at index " + i + " was null");
+            roleIdentifiers.add(new UserIdentifier(UserIdentifier.Type.ROLE, roles[i]));
         }
+
+        return new Roles(roleIdentifiers);
     }
 
-    @Override
-    public Collection<String> getUserIdentifiers() {
-        return roleIdentifiers;
-    }
 }

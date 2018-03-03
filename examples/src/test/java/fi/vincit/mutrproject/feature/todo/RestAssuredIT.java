@@ -7,6 +7,7 @@ import fi.vincit.multiusertest.annotation.RunWithUsers;
 import fi.vincit.multiusertest.rule.AuthorizationRule;
 import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
 import fi.vincit.multiusertest.util.LoginRole;
+import fi.vincit.multiusertest.util.UserIdentifiers;
 import fi.vincit.mutrproject.Application;
 import fi.vincit.mutrproject.config.SecurityConfig;
 import fi.vincit.mutrproject.configuration.TestMultiUserRestConfig;
@@ -31,7 +32,8 @@ import org.springframework.test.context.transaction.TransactionalTestExecutionLi
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import static fi.vincit.multiusertest.rule.expectation.TestExpectations.assertResponse;
-import static fi.vincit.multiusertest.util.UserIdentifiers.anyOf;
+import static fi.vincit.multiusertest.util.UserIdentifiers.roles;
+import static fi.vincit.multiusertest.util.UserIdentifiers.users;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 
@@ -106,13 +108,13 @@ public class RestAssuredIT {
         Response response = config.whenAuthenticated().get("/api/todo/lists");
 
         authorizationRule.testCall(response::then)
-                .whenCalledWith(anyOf("role:ROLE_ADMIN", RunWithUsers.PRODUCER))
+                .whenCalledWithAnyOf(roles("ROLE_ADMIN"), UserIdentifiers.producer())
                 .then(assertResponse(t -> t
                         .statusCode(HttpStatus.SC_OK)
                         .body("", hasSize(2))
                         .body("[0].name", equalTo("Test List 1"))
                         .body("[1].name", equalTo("Test List 2"))))
-                .whenCalledWith(anyOf("role:ROLE_USER", "user:user1", RunWithUsers.ANONYMOUS))
+                .whenCalledWithAnyOf(roles("ROLE_USER"), users("user1"), UserIdentifiers.anonymous())
                 .then(assertResponse(t -> t
                         .statusCode(HttpStatus.SC_OK)
                         .body("", hasSize(1))
@@ -131,14 +133,14 @@ public class RestAssuredIT {
         Response response = config.whenAuthenticated().get("/api/todo/list/" + id);
 
         authorizationRule.testCall(response::then)
-                .whenCalledWith(anyOf("role:ROLE_ADMIN", RunWithUsers.PRODUCER))
+                .whenCalledWithAnyOf(roles("ROLE_ADMIN"), UserIdentifiers.producer())
                 .then(assertResponse(t -> t
                         .statusCode(HttpStatus.SC_OK)
                         .body("name", equalTo("Test List")))
-                ).whenCalledWith(anyOf("role:ROLE_USER", "user:user1"))
+                ).whenCalledWithAnyOf(roles("ROLE_USER"), users("user1"))
                 .then(assertResponse(t -> t
                         .statusCode(HttpStatus.SC_FORBIDDEN))
-                ).whenCalledWith(anyOf(RunWithUsers.ANONYMOUS))
+                ).whenCalledWithAnyOf(UserIdentifiers.anonymous())
                 .then(assertResponse(t -> t
                         .statusCode(HttpStatus.SC_UNAUTHORIZED))
                 ).test();
@@ -156,11 +158,11 @@ public class RestAssuredIT {
                 .body(new TodoItemCommand(listId, "Test List")).post("/api/todo/list/item");
 
         authorizationRule.testCall(response::then)
-                .whenCalledWith(anyOf("role:ROLE_ADMIN", RunWithUsers.PRODUCER))
+                .whenCalledWithAnyOf(roles("ROLE_ADMIN"), UserIdentifiers.producer())
                 .then(assertResponse(t -> t.statusCode(HttpStatus.SC_OK)))
-                .whenCalledWith(anyOf("role:ROLE_USER", "user:user1"))
+                .whenCalledWithAnyOf(roles("ROLE_USER"), users("user1"))
                 .then(assertResponse(t -> t.statusCode(HttpStatus.SC_FORBIDDEN)))
-                .whenCalledWith(anyOf(RunWithUsers.ANONYMOUS))
+                .whenCalledWithAnyOf(UserIdentifiers.anonymous())
                 .then(assertResponse(t -> t.statusCode(HttpStatus.SC_UNAUTHORIZED)))
                 .test();
     }
@@ -177,11 +179,11 @@ public class RestAssuredIT {
                 .body(new TodoItemCommand(listId, "Test List")).post("/api/todo/list/item");
 
         authorizationRule.testCall(response::then)
-                .whenCalledWith(anyOf("role:ROLE_ADMIN", RunWithUsers.PRODUCER))
+                .whenCalledWithAnyOf(roles("ROLE_ADMIN"), UserIdentifiers.producer())
                 .then(assertResponse(t -> t.statusCode(HttpStatus.SC_OK)))
-                .whenCalledWith(anyOf("role:ROLE_USER", "user:user1"))
+                .whenCalledWithAnyOf(roles("ROLE_USER"), users("user1"))
                 .then(assertResponse(t -> t.statusCode(HttpStatus.SC_FORBIDDEN)))
-                .whenCalledWith(anyOf(RunWithUsers.ANONYMOUS))
+                .whenCalledWithAnyOf(UserIdentifiers.anonymous())
                 .then(assertResponse(t -> t.statusCode(HttpStatus.SC_UNAUTHORIZED)))
                 .test();
     }
@@ -201,11 +203,11 @@ public class RestAssuredIT {
         Response response = config.whenAuthenticated().post(String.format("/api/todo/list/%s/%s/done", listId, itemId));
 
         authorizationRule.testCall(response::then)
-                .whenCalledWith(anyOf("role:ROLE_ADMIN", RunWithUsers.PRODUCER))
+                .whenCalledWithAnyOf(roles("ROLE_ADMIN"), UserIdentifiers.producer())
                 .then(assertResponse(t -> t.statusCode(HttpStatus.SC_OK)))
-                .whenCalledWith(anyOf("role:ROLE_USER", "user:user1"))
+                .whenCalledWithAnyOf(roles("ROLE_USER"), users("user1"))
                 .then(assertResponse(t -> t.statusCode(HttpStatus.SC_FORBIDDEN)))
-                .whenCalledWith(anyOf(RunWithUsers.ANONYMOUS))
+                .whenCalledWithAnyOf(UserIdentifiers.anonymous())
                 .then(assertResponse(t -> t.statusCode(HttpStatus.SC_UNAUTHORIZED)))
                 .test();
     }
@@ -225,11 +227,11 @@ public class RestAssuredIT {
         Response response = config.whenAuthenticated().post(String.format("/api/todo/list/%s/%s/done", listId, itemId));
 
         authorizationRule.testCall(response::then)
-                .whenCalledWith(anyOf("role:ROLE_ADMIN", RunWithUsers.PRODUCER))
+                .whenCalledWithAnyOf(roles("ROLE_ADMIN"), UserIdentifiers.producer())
                 .then(assertResponse(t -> t.statusCode(HttpStatus.SC_OK)))
-                .whenCalledWith(anyOf("role:ROLE_USER", "user:user1"))
+                .whenCalledWithAnyOf(roles("ROLE_USER"), users("user1"))
                 .then(assertResponse(t -> t.statusCode(HttpStatus.SC_FORBIDDEN)))
-                .whenCalledWith(anyOf(RunWithUsers.ANONYMOUS))
+                .whenCalledWithAnyOf(UserIdentifiers.anonymous())
                 .then(assertResponse(t -> t.statusCode(HttpStatus.SC_UNAUTHORIZED)))
                 .test();
     }

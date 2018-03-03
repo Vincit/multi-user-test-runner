@@ -6,6 +6,7 @@ import fi.vincit.multiusertest.annotation.RunWithUsers;
 import fi.vincit.multiusertest.rule.AuthorizationRule;
 import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
 import fi.vincit.multiusertest.util.LoginRole;
+import fi.vincit.multiusertest.util.UserIdentifiers;
 import fi.vincit.mutrproject.Application;
 import fi.vincit.mutrproject.config.SecurityConfig;
 import fi.vincit.mutrproject.configuration.TestMultiRoleConfig;
@@ -28,6 +29,7 @@ import org.springframework.test.context.transaction.TransactionalTestExecutionLi
 
 import static fi.vincit.multiusertest.rule.expectation.TestExpectations.expectExceptionInsteadOfValue;
 import static fi.vincit.multiusertest.rule.expectation.TestExpectations.expectNotToFailIgnoringValue;
+import static fi.vincit.multiusertest.util.UserIdentifiers.roles;
 
 /**
  * Example how to use multiple roles per user using intermediate role.
@@ -76,7 +78,7 @@ public class TodoServiceMultiRoleIT {
         long id = todoService.createTodoList("Test list", false);
         config.logInAs(LoginRole.CONSUMER);
         authorizationRule.testCall(() -> todoService.getTodoList(id))
-                .whenCalledWithAnyOf("role:USER")
+                .whenCalledWithAnyOf(roles("USER"))
                 .then(expectExceptionInsteadOfValue(AccessDeniedException.class))
                 .test();
     }
@@ -95,7 +97,7 @@ public class TodoServiceMultiRoleIT {
         long listId = todoService.createTodoList("Test list", false);
         config.logInAs(LoginRole.CONSUMER);
         authorizationRule.testCall(() -> todoService.addItemToList(listId, "Write tests"))
-                .whenCalledWithAnyOf("role:ADMIN:USER", RunWithUsers.PRODUCER)
+                .whenCalledWithAnyOf(roles("ADMIN:USER"), UserIdentifiers.producer())
                 .then(expectNotToFailIgnoringValue())
                 .otherwise(expectExceptionInsteadOfValue(AccessDeniedException.class))
                 .test();

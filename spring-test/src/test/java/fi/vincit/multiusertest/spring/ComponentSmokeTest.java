@@ -25,6 +25,7 @@ import java.io.IOException;
 
 import static fi.vincit.multiusertest.rule.expectation.TestExpectations.expectException;
 import static fi.vincit.multiusertest.rule.expectation.TestExpectations.expectNotToFail;
+import static fi.vincit.multiusertest.util.UserIdentifiers.roles;
 
 @RunWithUsers(
         producers = {"role:ROLE_ADMIN"}, consumers = "role:ROLE_USER"
@@ -70,7 +71,7 @@ public class ComponentSmokeTest {
         multiUserConfig.logInAs(LoginRole.CONSUMER);
 
         authorizationRule.testCall(this::pass)
-                .whenCalledWithAnyOf("role:ROLE_USER")
+                .whenCalledWithAnyOf(roles("ROLE_USER"))
                 .then(expectNotToFail())
                 .test();
     }
@@ -80,7 +81,7 @@ public class ComponentSmokeTest {
         multiUserConfig.logInAs(LoginRole.CONSUMER);
 
         authorizationRule.testCall(this::fail)
-                .whenCalledWithAnyOf("role:ROLE_USER")
+                .whenCalledWithAnyOf(roles("ROLE_USER"))
                 .then(expectException(IllegalStateException.class))
                 .test();
     }
@@ -90,7 +91,7 @@ public class ComponentSmokeTest {
         multiUserConfig.logInAs(LoginRole.CONSUMER);
 
         authorizationRule.testCall(this::failIO)
-                .whenCalledWithAnyOf("role:ROLE_USER")
+                .whenCalledWithAnyOf(roles("ROLE_USER"))
                 .then(expectException(IOException.class))
                 .test();
     }

@@ -3,6 +3,7 @@ package fi.vincit.mutrproject.feature.todo;
 import fi.vincit.multiusertest.annotation.IgnoreForUsers;
 import fi.vincit.multiusertest.annotation.RunWithUsers;
 import fi.vincit.multiusertest.util.LoginRole;
+import fi.vincit.multiusertest.util.UserIdentifiers;
 import fi.vincit.mutrproject.testconfig.AbstractConfiguredMultiRoleIT;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,9 +11,8 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 
 import static fi.vincit.multiusertest.rule.expectation.TestExpectations.*;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.nullValue;
+import static fi.vincit.multiusertest.util.UserIdentifiers.roles;
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
 
 /**
@@ -38,7 +38,7 @@ public class TodoServiceUserDefinitionsIT extends AbstractConfiguredMultiRoleIT 
         config().logInAs(LoginRole.CONSUMER);
 
         authorization().testCall(() -> todoService.getTodoList(id))
-                .whenCalledWithAnyOf("role:ROLE_USER", RunWithUsers.ANONYMOUS)
+                .whenCalledWithAnyOf(roles("ROLE_USER"), UserIdentifiers.anonymous())
                 .then(expectExceptionInsteadOfValue(AccessDeniedException.class))
                 .otherwise(assertValue(todoList -> {
                     assertThat(todoList, notNullValue());
@@ -107,7 +107,7 @@ public class TodoServiceUserDefinitionsIT extends AbstractConfiguredMultiRoleIT 
         long listId = todoService.createTodoList("Test list", false);
         config().logInAs(LoginRole.CONSUMER);
         authorization().testCall(() -> todoService.addItemToList(listId, "Write tests"))
-                .whenCalledWithAnyOf("role:ROLE_ADMIN", "role:ROLE_SYSTEM_ADMIN", RunWithUsers.PRODUCER)
+                .whenCalledWithAnyOf(roles("ROLE_ADMIN", "ROLE_SYSTEM_ADMIN"), UserIdentifiers.producer())
                 .then(expectNotToFailIgnoringValue())
                 .otherwise(expectExceptionInsteadOfValue(AccessDeniedException.class))
                 .test();

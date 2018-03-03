@@ -2,7 +2,6 @@ package fi.vincit.multiusertest.rule.expectation;
 
 import fi.vincit.multiusertest.rule.AuthorizationRule;
 import fi.vincit.multiusertest.util.UserIdentifier;
-import fi.vincit.multiusertest.util.UserIdentifiers;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -47,7 +46,7 @@ public class AbstractWhenThenTest {
                 UserIdentifier.getAnonymous()
         );
 
-        sut.whenCalledWith(UserIdentifier.getAnonymous(), UserIdentifier.getProducer());
+        sut.whenCalledWithAnyOf(UserIdentifier.getAnonymous(), UserIdentifier.getProducer());
 
         assertThat(
                 sut.getCurrentIdentifiers(),
@@ -62,35 +61,7 @@ public class AbstractWhenThenTest {
         );
 
         expectedException.expect(IllegalStateException.class);
-        sut.whenCalledWith(UserIdentifier.getAnonymous(), UserIdentifier.getAnonymous());
-    }
-
-    @Test
-    public void whenCalledWith_UserIdentifiers() {
-        AbstractWhenThen<TestExpectation> sut = new SUT(
-                UserIdentifier.getAnonymous()
-        );
-
-        sut.whenCalledWith(UserIdentifiers.anyOf("role:ROLE_ADMIN", "role:ROLE_USER"));
-
-        assertThat(
-                sut.getCurrentIdentifiers(),
-                is(setOf(UserIdentifier.parse("role:ROLE_ADMIN"), UserIdentifier.parse("role:ROLE_USER")))
-        );
-    }
-
-    @Test
-    public void whenCalledWith_UserIdentifierCollection() {
-        AbstractWhenThen<TestExpectation> sut = new SUT(
-                UserIdentifier.getAnonymous()
-        );
-
-        sut.whenCalledWith(UserIdentifiers.anyOf(roles("ROLE_ADMIN", "ROLE_USER")));
-
-        assertThat(
-                sut.getCurrentIdentifiers(),
-                is(setOf(UserIdentifier.parse("role:ROLE_ADMIN"), UserIdentifier.parse("role:ROLE_USER")))
-        );
+        sut.whenCalledWithAnyOf(UserIdentifier.getAnonymous(), UserIdentifier.getAnonymous());
     }
 
     @Test
@@ -99,7 +70,7 @@ public class AbstractWhenThenTest {
                 UserIdentifier.getAnonymous()
         );
 
-        sut.whenCalledWithAnyOf("role:ROLE_ADMIN", "role:ROLE_USER");
+        sut.whenCalledWithAnyOf(roles("ROLE_ADMIN", "ROLE_USER"));
 
         assertThat(
                 sut.getCurrentIdentifiers(),
@@ -122,99 +93,6 @@ public class AbstractWhenThenTest {
     }
 
     @Test
-    public void whenCalledWith_UserIdentifiers_ThrowsIfNoIdentifiersGiven() {
-        AbstractWhenThen<TestExpectation> sut = new SUT(
-                UserIdentifier.getAnonymous()
-        );
-
-        expectedException.expect(IllegalArgumentException.class);
-        sut.whenCalledWith(new UserIdentifiers[] {});
-
-        assertThat(
-                sut.getCurrentIdentifiers(),
-                is(setOf())
-        );
-    }
-
-    @Test
-    public void whenCalledWith_UserIdentifier_ThrowsIfNoIdentifiersGiven() {
-        AbstractWhenThen<TestExpectation> sut = new SUT(
-                UserIdentifier.getAnonymous()
-        );
-
-        expectedException.expect(IllegalArgumentException.class);
-        sut.whenCalledWith(new UserIdentifier[] {});
-
-        assertThat(
-                sut.getCurrentIdentifiers(),
-                is(setOf())
-        );
-    }
-
-    @Test
-    public void whenCalledWith_UserIdentifiers_CurrentCleared_OnEachCall() {
-        AbstractWhenThen<TestExpectation> sut = new SUT(
-                UserIdentifier.getAnonymous()
-        );
-        sut.getCurrentIdentifiers().add(UserIdentifier.getAnonymous());
-
-        sut.whenCalledWith(UserIdentifiers.anyOf("role:ROLE_USER"));
-
-        assertThat(
-                sut.getCurrentIdentifiers(),
-                is(setOf(UserIdentifier.parse("role:ROLE_USER")))
-        );
-    }
-
-    @Test
-    public void whenCalledWith_UserIdentifier_CurrentCleared_OnEachCall() {
-        AbstractWhenThen<TestExpectation> sut = new SUT(
-                UserIdentifier.getAnonymous()
-        );
-        sut.getCurrentIdentifiers().add(UserIdentifier.getAnonymous());
-
-        sut.whenCalledWith(UserIdentifier.getProducer());
-
-        assertThat(
-                sut.getCurrentIdentifiers(),
-                is(setOf(UserIdentifier.getProducer()))
-        );
-    }
-
-
-    @Test
-    public void whenCalledWith_UserIdentifiers_CurrentCleared_WhenThrown() {
-        AbstractWhenThen<TestExpectation> sut = new SUT(
-                UserIdentifier.getAnonymous()
-        );
-        sut.getCurrentIdentifiers().add(UserIdentifier.getAnonymous());
-
-        expectedException.expect(IllegalArgumentException.class);
-        sut.whenCalledWith(new UserIdentifiers[] {});
-
-        assertThat(
-                sut.getCurrentIdentifiers(),
-                is(setOf())
-        );
-    }
-
-    @Test
-    public void whenCalledWith_UserIdentifier_CurrentCleared_WhenThrown() {
-        AbstractWhenThen<TestExpectation> sut = new SUT(
-                UserIdentifier.getAnonymous()
-        );
-        sut.getCurrentIdentifiers().add(UserIdentifier.getAnonymous());
-
-        expectedException.expect(IllegalArgumentException.class);
-        sut.whenCalledWith(new UserIdentifier[] {});
-
-        assertThat(
-                sut.getCurrentIdentifiers(),
-                is(setOf())
-        );
-    }
-
-    @Test
     public void then_CalledBeforeWhen_Throws() {
         AbstractWhenThen<TestExpectation> sut = new SUT(
                 UserIdentifier.getAnonymous()
@@ -231,9 +109,9 @@ public class AbstractWhenThenTest {
         );
 
         expectedException.expect(IllegalStateException.class);
-        sut.whenCalledWith(UserIdentifier.getAnonymous())
+        sut.whenCalledWithAnyOf(UserIdentifier.getAnonymous())
             .then(mock(TestExpectation.class))
-            .whenCalledWith(UserIdentifier.getAnonymous())
+            .whenCalledWithAnyOf(UserIdentifier.getAnonymous())
             .then(mock(TestExpectation.class));
     }
 
@@ -244,9 +122,9 @@ public class AbstractWhenThenTest {
         );
 
         expectedException.expect(IllegalStateException.class);
-        sut.whenCalledWith(UserIdentifier.getAnonymous())
+        sut.whenCalledWithAnyOf(UserIdentifier.getAnonymous())
             .then(mock(TestExpectation.class))
-            .whenCalledWith(UserIdentifier.getAnonymous())
+            .whenCalledWithAnyOf(UserIdentifier.getAnonymous())
             .then(mock(TestExpectation.class));
         assertThat(sut.getCurrentIdentifiers(), is(setOf()));
     }
@@ -263,9 +141,9 @@ public class AbstractWhenThenTest {
         TestExpectation testExpectation1 = mock(TestExpectation.class);
         TestExpectation testExpectation2 = mock(TestExpectation.class);
 
-        sut.whenCalledWith(role1, role2)
+        sut.whenCalledWithAnyOf(role1, role2)
                 .then(testExpectation1)
-                .whenCalledWith(role3)
+                .whenCalledWithAnyOf(role3)
                 .then(testExpectation2);
 
         assertThat(sut.getExpectationsByIdentifier().get(role1), is(testExpectation1));
@@ -282,7 +160,7 @@ public class AbstractWhenThenTest {
                 role1
         ));
 
-        sut.whenCalledWith(role1).then(expectation);
+        sut.whenCalledWithAnyOf(role1).then(expectation);
 
         sut.test();
 

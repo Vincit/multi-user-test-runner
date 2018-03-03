@@ -40,7 +40,7 @@ public class ComponentSmokeTest {
         multiUserConfig.logInAs(LoginRole.CONSUMER);
 
         authorizationRule.testCall(this::pass)
-                .whenCalledWithAnyOf("role:ROLE_ADMIN")
+                .whenCalledWithAnyOf(roles("ROLE_ADMIN"))
                 .then(expectNotToFail())
                 .test();
     }
@@ -60,7 +60,7 @@ public class ComponentSmokeTest {
         multiUserConfig.logInAs(LoginRole.CONSUMER);
 
         authorizationRule.testCall(this::fail)
-                .whenCalledWithAnyOf("role:ROLE_ADMIN")
+                .whenCalledWithAnyOf(roles("ROLE_ADMIN"))
                 .then(expectException(IllegalStateException.class))
                 .test();
     }

@@ -6,6 +6,7 @@ import fi.vincit.multiusertest.annotation.RunWithUsers;
 import fi.vincit.multiusertest.rule.AuthorizationRule;
 import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
 import fi.vincit.multiusertest.util.LoginRole;
+import fi.vincit.multiusertest.util.UserIdentifiers;
 import fi.vincit.mutrproject.Application;
 import fi.vincit.mutrproject.config.SecurityConfig;
 import fi.vincit.mutrproject.configuration.TestMultiUserAliasConfig;
@@ -27,6 +28,7 @@ import org.springframework.test.context.transaction.TransactionalTestExecutionLi
 
 import static fi.vincit.multiusertest.rule.expectation.TestExpectations.expectExceptionInsteadOfValue;
 import static fi.vincit.multiusertest.rule.expectation.TestExpectations.expectNotToFailIgnoringValue;
+import static fi.vincit.multiusertest.util.UserIdentifiers.roles;
 
 /**
  * Example test using role aliasing. See {@link TestMultiUserAliasConfig} for an example
@@ -75,7 +77,7 @@ public class TodoServiceRoleAliasIT {
         long id = todoService.createTodoList("Test list", false);
         config.logInAs(LoginRole.CONSUMER);
         authorizationRule.testCall(() -> todoService.getTodoList(id))
-                .whenCalledWithAnyOf("role:REGULAR")
+                .whenCalledWithAnyOf(roles("REGULAR"))
                 .then(expectExceptionInsteadOfValue(AccessDeniedException.class))
                 .test();
     }
@@ -93,7 +95,7 @@ public class TodoServiceRoleAliasIT {
         long listId = todoService.createTodoList("Test list", false);
         config.logInAs(LoginRole.CONSUMER);
         authorizationRule.testCall(() -> todoService.addItemToList(listId, "Write tests"))
-                .whenCalledWithAnyOf("role:ADMIN", "role:SYSTEM_ADMIN", RunWithUsers.PRODUCER)
+                .whenCalledWithAnyOf(roles("ADMIN", "SYSTEM_ADMIN"), UserIdentifiers.producer())
                 .then(expectNotToFailIgnoringValue())
                 .otherwise(expectExceptionInsteadOfValue(AccessDeniedException.class))
                 .test();

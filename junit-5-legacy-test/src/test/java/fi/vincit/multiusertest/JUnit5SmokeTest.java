@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static fi.vincit.multiusertest.rule.expectation.TestExpectations.*;
+import static fi.vincit.multiusertest.util.UserIdentifiers.roles;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -40,7 +41,7 @@ public class JUnit5SmokeTest {
     public void expectCallNotToFail() throws Throwable {
         configuredTest.logInAs(LoginRole.CONSUMER);
         authorizationRule.testCall(testService::noThrow)
-                .whenCalledWithAnyOf("role:ROLE_ADMIN")
+                .whenCalledWithAnyOf(roles("ROLE_ADMIN"))
                 .then(expectNotToFail())
                 .test();
     }
@@ -48,7 +49,7 @@ public class JUnit5SmokeTest {
     @Test
     public void expectAssert_toPass() throws Throwable {
         authorizationRule.testCall(() -> testService.returnsValue(3))
-                .whenCalledWithAnyOf("role:ROLE_ADMIN")
+                .whenCalledWithAnyOf(roles("ROLE_ADMIN"))
                 .then(assertValue(value -> assertThat(value, is(3))))
                 .test();
     }
@@ -58,7 +59,7 @@ public class JUnit5SmokeTest {
         configuredTest.logInAs(LoginRole.CONSUMER);
 
         authorizationRule.testCall(() -> testService.returnsValue(3))
-                .whenCalledWithAnyOf("role:ROLE_USER")
+                .whenCalledWithAnyOf(roles("ROLE_USER"))
                 .then(assertValue(value -> assertThat(value, is(1))))
                 .test();
     }
@@ -68,7 +69,7 @@ public class JUnit5SmokeTest {
         configuredTest.logInAs(LoginRole.CONSUMER);
 
         authorizationRule.testCall(() -> testService.returnsValue(3))
-                .whenCalledWithAnyOf("role:ROLE_USER")
+                .whenCalledWithAnyOf(roles("ROLE_USER"))
                 .then(expectValue(1))
                 .test();
     }
@@ -78,7 +79,7 @@ public class JUnit5SmokeTest {
         configuredTest.logInAs(LoginRole.CONSUMER);
 
         authorizationRule.testCall(() -> testService.returnsValue(3))
-                .whenCalledWithAnyOf("role:ROLE_USER")
+                .whenCalledWithAnyOf(roles("ROLE_USER"))
                 .then(expectValue(3))
                 .test();
     }

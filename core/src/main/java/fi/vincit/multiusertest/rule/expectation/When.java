@@ -7,17 +7,7 @@ import fi.vincit.multiusertest.util.UserIdentifiers;
 public interface When<EXPECTATION extends TestExpectation> {
 
     /**
-     * Set user identifiers to be used with the {@link Then#then(TestExpectation)}
-     * call. {@link Then#then(TestExpectation)} should be called immediately
-     * after this call to add the expectation.
-     * @param userIdentifiers User identifiers
-     * @return
-     * @since 1.0
-     */
-    Then<EXPECTATION> whenCalledWith(UserIdentifiers... userIdentifiers);
-
-    /**
-     * Shorthand method for <pre>whenCalledWith(anyOf(UserIdentifierCollection...))</pre>
+     * Called by using methods found in {@link UserIdentifiers}
      * @param userIdentifiers User identifier collections
      * @return
      * @since 1.0
@@ -25,21 +15,12 @@ public interface When<EXPECTATION extends TestExpectation> {
     Then<EXPECTATION> whenCalledWithAnyOf(UserIdentifierCollection... userIdentifiers);
 
     /**
-     * Shorthand method for <pre>whenCalledWith(anyOf(String...))</pre>
-     * @param userIdentifiers User identifier collections
+     * Called with zero or more {@link UserIdentifier} objects. In most cases {@link #whenCalledWithAnyOf(UserIdentifierCollection...)}
+     * is preferred since it works well with {@link UserIdentifiers} helper methods.
+     * @param userIdentifiers User identifiers
      * @return
      * @since 1.0
      */
-    Then<EXPECTATION> whenCalledWithAnyOf(String... userIdentifiers);
+    Then<EXPECTATION> whenCalledWithAnyOf(UserIdentifier... userIdentifiers);
 
-
-    /**
-     * Set user identifiers to be used with the {@link Then#then(TestExpectation)}
-     * call. {@link Then#then(TestExpectation)} should be called immediately
-     * after this call to add the expectation.
-     * @param userIdentifiers
-     * @return
-     * @since 1.0
-     */
-    Then<EXPECTATION> whenCalledWith(UserIdentifier... userIdentifiers);
 }

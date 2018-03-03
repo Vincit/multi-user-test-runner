@@ -9,6 +9,7 @@ import org.springframework.security.access.AccessDeniedException;
 
 import static fi.vincit.multiusertest.rule.expectation.TestExpectations.expectExceptionInsteadOfValue;
 import static fi.vincit.multiusertest.rule.expectation.TestExpectations.expectNotToFailIgnoringValue;
+import static fi.vincit.multiusertest.util.UserIdentifiers.roles;
 
 /**
  * Basic examples on how to use multi-user-test-runner with {@link RunWithUsers#WITH_PRODUCER_ROLE}.
@@ -27,7 +28,7 @@ public class TodoServiceProducerRoleIT extends AbstractConfiguredMultiRoleIT {
         long id = todoService.createTodoList("Test list", false);
         config().logInAs(LoginRole.CONSUMER);
         authorization().testCall(() -> todoService.getTodoList(id))
-                .whenCalledWithAnyOf("role:ROLE_USER")
+                .whenCalledWithAnyOf(roles("ROLE_USER"))
                 .then(expectExceptionInsteadOfValue(AccessDeniedException.class))
                 .test();
     }
@@ -45,7 +46,7 @@ public class TodoServiceProducerRoleIT extends AbstractConfiguredMultiRoleIT {
         long listId = todoService.createTodoList("Test list", false);
         config().logInAs(LoginRole.CONSUMER);
         authorization().testCall(() -> todoService.addItemToList(listId, "Write tests"))
-                .whenCalledWithAnyOf("role:ROLE_ADMIN", "role:ROLE_SYSTEM_ADMIN")
+                .whenCalledWithAnyOf(roles("ROLE_ADMIN", "ROLE_SYSTEM_ADMIN"))
                 .then(expectNotToFailIgnoringValue())
                 .otherwise(expectExceptionInsteadOfValue(AccessDeniedException.class))
                 .test();

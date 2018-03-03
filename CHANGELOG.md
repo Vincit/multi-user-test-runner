@@ -17,6 +17,11 @@ Expectation API.
 * Old assertion methods are removed. Only available way is to use 
   Expectation API v2 introduced in MUTR 0.5.
 * `expectation2` package has been renamed to `expectation`
+* Clean up Expectations API. Changes make the API easier to understand and use when there is less methods
+  with the same name but different arguments.
+  * Removed `whenCalledWith(anyOf(...))` methods calls in favour of `whenCalledWithAnyOf(...)`
+  * Removed String argument based `whenCalledWithAnyOf` methods in favour of using only `roles(...)` and `users(...)` methods
+
 # 0.6.0
 
 ## Changes

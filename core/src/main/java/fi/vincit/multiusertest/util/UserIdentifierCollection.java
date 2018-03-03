@@ -7,5 +7,5 @@ import java.util.Collection;
  * of identifiers.
  */
 public interface UserIdentifierCollection {
-    Collection<String> getUserIdentifiers();
+    Collection<UserIdentifier> getUserIdentifiers();
 }

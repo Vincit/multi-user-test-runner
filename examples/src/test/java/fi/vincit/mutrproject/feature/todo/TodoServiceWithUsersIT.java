@@ -2,6 +2,7 @@ package fi.vincit.mutrproject.feature.todo;
 
 import fi.vincit.multiusertest.annotation.RunWithUsers;
 import fi.vincit.multiusertest.util.LoginRole;
+import fi.vincit.multiusertest.util.UserIdentifiers;
 import fi.vincit.mutrproject.feature.todo.dto.TodoItemDto;
 import fi.vincit.mutrproject.feature.user.UserService;
 import fi.vincit.mutrproject.feature.user.model.Role;
@@ -13,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 
 import static fi.vincit.multiusertest.rule.expectation.TestExpectations.*;
+import static fi.vincit.multiusertest.util.UserIdentifiers.roles;
+import static fi.vincit.multiusertest.util.UserIdentifiers.users;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -48,7 +51,7 @@ public class TodoServiceWithUsersIT extends AbstractConfiguredMultiRoleIT {
         long id = todoService.createTodoList("Test list", false);
         config().logInAs(LoginRole.CONSUMER);
         authorization().testCall(() -> todoService.getTodoList(id))
-                .whenCalledWithAnyOf("user:user2")
+                .whenCalledWithAnyOf(users("user2"))
                 .then(expectExceptionInsteadOfValue(AccessDeniedException.class))
                 .test();
     }
@@ -70,7 +73,7 @@ public class TodoServiceWithUsersIT extends AbstractConfiguredMultiRoleIT {
         long listId = todoService.createTodoList("Test list", false);
         config().logInAs(LoginRole.CONSUMER);
         authorization().testCall(() -> todoService.addItemToList(listId, "Write tests"))
-                .whenCalledWithAnyOf("role:ROLE_SYSTEM_ADMIN", RunWithUsers.PRODUCER)
+                .whenCalledWithAnyOf(roles("ROLE_SYSTEM_ADMIN"), UserIdentifiers.producer())
                 .then(expectNotToFailIgnoringValue())
                 .otherwise(expectExceptionInsteadOfValue(AccessDeniedException.class))
                 .test();
@@ -87,7 +90,7 @@ public class TodoServiceWithUsersIT extends AbstractConfiguredMultiRoleIT {
             TodoItemDto item = todoService.getTodoItem(listId, itemId);
             todoService.setItemStatus(listId, item.getId(), true);
         })
-                .whenCalledWithAnyOf("role:ROLE_SYSTEM_ADMIN", RunWithUsers.PRODUCER)
+                .whenCalledWithAnyOf(roles("ROLE_SYSTEM_ADMIN"), UserIdentifiers.producer())
                 .then(expectNotToFail())
                 .otherwise(expectException(AccessDeniedException.class))
                 .test();

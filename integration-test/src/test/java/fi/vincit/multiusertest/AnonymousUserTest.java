@@ -6,10 +6,7 @@ import fi.vincit.multiusertest.annotation.RunWithUsers;
 import fi.vincit.multiusertest.configuration.ConfiguredTest;
 import fi.vincit.multiusertest.rule.AuthorizationRule;
 import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
-import fi.vincit.multiusertest.util.LoginRole;
-import fi.vincit.multiusertest.util.SecurityUtil;
-import fi.vincit.multiusertest.util.User;
-import fi.vincit.multiusertest.util.UserIdentifier;
+import fi.vincit.multiusertest.util.*;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -56,7 +53,7 @@ public class AnonymousUserTest {
         configuredTest.logInAs(LoginRole.CONSUMER);
 
         authorizationRule.testCall(() -> throwIfUserRole(RunWithUsers.ANONYMOUS))
-                .whenCalledWithAnyOf(RunWithUsers.ANONYMOUS)
+                .whenCalledWithAnyOf(UserIdentifiers.anonymous())
                 .then(expectException(IllegalStateException.class))
                 .test();
     }

@@ -36,7 +36,7 @@ public class SmokeTest {
         configuredTest.logInAs(LoginRole.CONSUMER);
 
         authorizationRule.testCall(this::callPass)
-                .whenCalledWithAnyOf("role:ROLE_ADMIN")
+                .whenCalledWithAnyOf(roles("ROLE_ADMIN"))
                 .then(TestExpectations.expectNotToFail())
                 .test();
     }
@@ -56,7 +56,7 @@ public class SmokeTest {
         configuredTest.logInAs(LoginRole.CONSUMER);
 
         authorizationRule.testCall(this::callFails)
-                .whenCalledWithAnyOf("role:ROLE_ADMIN")
+                .whenCalledWithAnyOf(roles("ROLE_ADMIN"))
                 .then(TestExpectations.expectException(IllegalStateException.class))
                 .test();
     }

@@ -6,15 +6,13 @@ import fi.vincit.multiusertest.annotation.RunWithUsers;
 import fi.vincit.multiusertest.configuration.ConfiguredTest;
 import fi.vincit.multiusertest.rule.AuthorizationRule;
 import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
-import fi.vincit.multiusertest.util.LoginRole;
-import fi.vincit.multiusertest.util.SecurityUtil;
-import fi.vincit.multiusertest.util.User;
-import fi.vincit.multiusertest.util.UserIdentifier;
+import fi.vincit.multiusertest.util.*;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static fi.vincit.multiusertest.rule.expectation.TestExpectations.expectException;
+import static fi.vincit.multiusertest.util.UserIdentifiers.roles;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -54,7 +52,7 @@ public class NewUserTest {
     @Test
     public void expectFailureProducer() throws Throwable {
         authorizationRule.testCall(() -> throwIfUserIs(configuredTest.getProducer()))
-                .whenCalledWithAnyOf(RunWithUsers.PRODUCER)
+                .whenCalledWithAnyOf(UserIdentifiers.producer())
                 .then(expectException(IllegalStateException.class))
                 .test();
     }
@@ -62,7 +60,7 @@ public class NewUserTest {
     @Test
     public void expectFailureUserWithProducerRole() throws Throwable {
         authorizationRule.testCall(() -> throwIfUserIs(configuredTest.getConsumer()))
-                .whenCalledWithAnyOf(RunWithUsers.WITH_PRODUCER_ROLE)
+                .whenCalledWithAnyOf(UserIdentifiers.withProducerRole())
                 .then(expectException(IllegalStateException.class))
                 .test();
     }
@@ -72,7 +70,7 @@ public class NewUserTest {
         configuredTest.logInAs(LoginRole.CONSUMER);
 
         authorizationRule.testCall(() -> throwIfUserRole("role:ROLE_USER"))
-                .whenCalledWithAnyOf("role:ROLE_USER")
+                .whenCalledWithAnyOf(roles("ROLE_USER"))
                 .then(expectException(IllegalStateException.class))
                 .test();
     }
