@@ -23,8 +23,8 @@ import org.springframework.test.context.junit4.rules.SpringMethodRule;
 
 import java.io.IOException;
 
-import static fi.vincit.multiusertest.rule.expectation2.TestExpectations.expectException;
-import static fi.vincit.multiusertest.rule.expectation2.TestExpectations.expectNotToFail;
+import static fi.vincit.multiusertest.rule.expectation.TestExpectations.expectException;
+import static fi.vincit.multiusertest.rule.expectation.TestExpectations.expectNotToFail;
 
 @RunWithUsers(
         producers = {"role:ROLE_ADMIN"}, consumers = "role:ROLE_USER"

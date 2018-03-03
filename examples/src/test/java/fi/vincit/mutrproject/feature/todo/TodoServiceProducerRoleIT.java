@@ -7,8 +7,8 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 
-import static fi.vincit.multiusertest.rule.expectation2.TestExpectations.expectExceptionInsteadOfValue;
-import static fi.vincit.multiusertest.rule.expectation2.TestExpectations.expectNotToFailIgnoringValue;
+import static fi.vincit.multiusertest.rule.expectation.TestExpectations.expectExceptionInsteadOfValue;
+import static fi.vincit.multiusertest.rule.expectation.TestExpectations.expectNotToFailIgnoringValue;
 
 /**
  * Basic examples on how to use multi-user-test-runner with {@link RunWithUsers#WITH_PRODUCER_ROLE}.

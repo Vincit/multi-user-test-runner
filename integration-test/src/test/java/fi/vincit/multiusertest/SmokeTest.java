@@ -4,7 +4,7 @@ import fi.vincit.multiusertest.annotation.MultiUserConfigClass;
 import fi.vincit.multiusertest.annotation.RunWithUsers;
 import fi.vincit.multiusertest.configuration.ConfiguredTest;
 import fi.vincit.multiusertest.rule.AuthorizationRule;
-import fi.vincit.multiusertest.rule.expectation2.TestExpectations;
+import fi.vincit.multiusertest.rule.expectation.TestExpectations;
 import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
 import fi.vincit.multiusertest.util.LoginRole;
 import org.junit.Rule;

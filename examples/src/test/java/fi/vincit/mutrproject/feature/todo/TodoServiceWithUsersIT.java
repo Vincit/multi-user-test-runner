@@ -12,7 +12,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 
-import static fi.vincit.multiusertest.rule.expectation2.TestExpectations.*;
+import static fi.vincit.multiusertest.rule.expectation.TestExpectations.*;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 

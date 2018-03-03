@@ -14,7 +14,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static fi.vincit.multiusertest.rule.expectation2.TestExpectations.expectException;
+import static fi.vincit.multiusertest.rule.expectation.TestExpectations.expectException;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertThat;

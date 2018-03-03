@@ -5,8 +5,8 @@ import fi.vincit.multiusertest.configuration.TestBaseClass;
 import fi.vincit.multiusertest.util.LoginRole;
 import org.junit.Test;
 
-import static fi.vincit.multiusertest.rule.expectation2.TestExpectations.expectException;
-import static fi.vincit.multiusertest.rule.expectation2.TestExpectations.expectNotToFail;
+import static fi.vincit.multiusertest.rule.expectation.TestExpectations.expectException;
+import static fi.vincit.multiusertest.rule.expectation.TestExpectations.expectNotToFail;
 import static fi.vincit.multiusertest.util.UserIdentifiers.roles;
 import static fi.vincit.multiusertest.util.UserIdentifiers.users;
 

@@ -11,11 +11,12 @@ Multi User Test Runner
 ## Breaking Changes
 
 Version 1.0 removes deprecated APIs and feature in order to make the library
-cleaner and easier to use.
+cleaner and easier to use. Expectation API2 is from now onwards known as 
+Expectation API.
 
 * Old assertion methods are removed. Only available way is to use 
   Expectation API v2 introduced in MUTR 0.5.
-
+* `expectation2` package has been renamed to `expectation`
 # 0.6.0
 
 ## Changes

@@ -17,7 +17,7 @@ import org.junit.runner.RunWith;
 import java.util.Collection;
 import java.util.Objects;
 
-import static fi.vincit.multiusertest.rule.expectation2.TestExpectations.expectException;
+import static fi.vincit.multiusertest.rule.expectation.TestExpectations.expectException;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 

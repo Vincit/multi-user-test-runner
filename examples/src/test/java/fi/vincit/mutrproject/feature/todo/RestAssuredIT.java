@@ -30,14 +30,14 @@ import org.springframework.test.context.support.DirtiesContextTestExecutionListe
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import org.springframework.test.context.web.WebAppConfiguration;
 
-import static fi.vincit.multiusertest.rule.expectation2.TestExpectations.assertResponse;
+import static fi.vincit.multiusertest.rule.expectation.TestExpectations.assertResponse;
 import static fi.vincit.multiusertest.util.UserIdentifiers.anyOf;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 
 /**
  * Example of basic Spring project system integration tests
- * using MUTR expectation2 syntax and REST-assured.
+ * using MUTR expectation syntax and REST-assured.
  */
 @TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
         DirtiesContextTestExecutionListener.class,

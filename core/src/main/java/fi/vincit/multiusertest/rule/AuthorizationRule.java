@@ -1,12 +1,12 @@
 package fi.vincit.multiusertest.rule;
 
-import fi.vincit.multiusertest.rule.expectation2.TestExpectation;
-import fi.vincit.multiusertest.rule.expectation2.WhenThen;
-import fi.vincit.multiusertest.rule.expectation2.call.FunctionCallWhenThen;
-import fi.vincit.multiusertest.rule.expectation2.value.ReturnValueWhenThen;
-import fi.vincit.multiusertest.rule.expectation2.value.TestValueExpectation;
-import fi.vincit.multiusertest.rule.expection.FunctionCall;
-import fi.vincit.multiusertest.rule.expection.ReturnValueCall;
+import fi.vincit.multiusertest.rule.expectation.TestExpectation;
+import fi.vincit.multiusertest.rule.expectation.WhenThen;
+import fi.vincit.multiusertest.rule.expectation.call.FunctionCallWhenThen;
+import fi.vincit.multiusertest.rule.expectation.value.ReturnValueWhenThen;
+import fi.vincit.multiusertest.rule.expectation.value.TestValueExpectation;
+import fi.vincit.multiusertest.rule.expectation.FunctionCall;
+import fi.vincit.multiusertest.rule.expectation.ReturnValueCall;
 import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
 import fi.vincit.multiusertest.util.UserIdentifier;
 import org.junit.rules.TestRule;
@@ -23,7 +23,7 @@ public class AuthorizationRule implements TestRule {
 
     private UserIdentifier userIdentifier;
     private FailMode failMode = FailMode.NONE;
-    private boolean expectation2ConstructionFinished = false;
+    private boolean expectationConstructionFinished = false;
 
     public void setRole(UserIdentifier identifier) {
         this.userIdentifier = new UserIdentifier(identifier.getType(), identifier.getIdentifier());
@@ -40,32 +40,32 @@ public class AuthorizationRule implements TestRule {
     }
 
     public void markExpectationConstructed() {
-        if (expectation2ConstructionFinished) {
-            expectation2ConstructionFinished = false;
+        if (expectationConstructionFinished) {
+            expectationConstructionFinished = false;
         } else {
-            throw new IllegalStateException("Expectation API 2 configuration is not currently open");
+            throw new IllegalStateException("Expectation configuration is not currently open");
         }
     }
 
     /**
-     * Starts constructing expectation for a function call with API 2 syntax.
+     * Starts constructing expectation for a function call.
      * @param functionCall Call to test
      * @return
      * @since 0.5
      */
     public WhenThen<TestExpectation> testCall(FunctionCall functionCall) {
-        expectation2ConstructionFinished = true;
+        expectationConstructionFinished = true;
         return new FunctionCallWhenThen(functionCall, userIdentifier, this);
     }
 
     /**
-     * Starts constructing expectation for a return value call with API 2 syntax.
+     * Starts constructing expectation for a return value call.
      * @param returnValueCall Call to test
      * @return
      * @since 0.5
      */
     public <VALUE_TYPE> WhenThen<TestValueExpectation<VALUE_TYPE>> testCall(ReturnValueCall<VALUE_TYPE> returnValueCall) {
-        expectation2ConstructionFinished = true;
+        expectationConstructionFinished = true;
         return new ReturnValueWhenThen<>(
                 returnValueCall,
                 userIdentifier,
@@ -93,7 +93,7 @@ public class AuthorizationRule implements TestRule {
     }
 
     private void validateExpectationConstructionFinished() {
-        if (expectation2ConstructionFinished) {
+        if (expectationConstructionFinished) {
             throw new IllegalStateException("Expectation still in progress. " +
                     "Please call test() method. " +
                     "Otherwise the assertions are not run properly."

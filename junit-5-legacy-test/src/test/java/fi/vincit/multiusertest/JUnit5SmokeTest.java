@@ -11,7 +11,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static fi.vincit.multiusertest.rule.expectation2.TestExpectations.*;
+import static fi.vincit.multiusertest.rule.expectation.TestExpectations.*;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
