@@ -41,11 +41,4 @@ public @interface MultiUserTestConfig {
      */
     Class runner() default BlockMultiUserTestClassRunner.class;
 
-    /**
-     * Default class type for failed tests
-     * @return Default exception
-     * @deprecated Not used with ht enew 0.5 expectations API
-     */
-    @Deprecated
-    Class<? extends Throwable> defaultException() default IllegalStateException.class;
 }

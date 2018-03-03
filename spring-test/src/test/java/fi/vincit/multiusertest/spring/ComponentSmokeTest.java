@@ -16,7 +16,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.rules.SpringClassRule;
 import org.springframework.test.context.junit4.rules.SpringMethodRule;
@@ -30,9 +29,7 @@ import static fi.vincit.multiusertest.util.UserIdentifiers.roles;
 @RunWithUsers(
         producers = {"role:ROLE_ADMIN"}, consumers = "role:ROLE_USER"
 )
-@MultiUserTestConfig(
-        defaultException = AccessDeniedException.class
-)
+@MultiUserTestConfig
 @RunWith(MultiUserTestRunner.class)
 @ContextConfiguration(classes = {TestConfiguration.class, ComponentTestContext.class})
 public class ComponentSmokeTest {

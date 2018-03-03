@@ -81,7 +81,7 @@ public class MultiUserTestRunner extends Suite {
     }
 
 
-    private TestConfiguration getConfigurationOrThrow() throws Exception {
+    private TestConfiguration getConfigurationOrThrow() {
         Optional<RunWithUsers> runWithUsersAnnotation =
                 Optional.ofNullable(getTestClass().getJavaClass().getAnnotation(RunWithUsers.class));
         Optional<MultiUserTestConfig> config =

@@ -119,7 +119,6 @@ public class TestConfiguration {
         }
         if (multiUserTestConfig.isPresent()) {
             runner = multiUserTestConfig.get().runner();
-            defaultException = multiUserTestConfig.get().defaultException();
         }
 
         return new TestConfiguration(

@@ -38,8 +38,7 @@ import static fi.vincit.multiusertest.util.UserIdentifiers.roles;
 @TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
         DirtiesContextTestExecutionListener.class,
         TransactionalTestExecutionListener.class})
-@MultiUserTestConfig(
-        defaultException = AccessDeniedException.class)
+@MultiUserTestConfig
 @ContextConfiguration(classes = {Application.class, SecurityConfig.class})
 @RunWith(MultiUserTestRunner.class)
 @RunWithUsers(

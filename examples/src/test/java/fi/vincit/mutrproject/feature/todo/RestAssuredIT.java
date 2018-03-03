@@ -44,8 +44,7 @@ import static org.hamcrest.Matchers.hasSize;
 @TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
         DirtiesContextTestExecutionListener.class,
         TransactionalTestExecutionListener.class})
-@MultiUserTestConfig(
-        defaultException = AccessDeniedException.class)
+@MultiUserTestConfig
 @SpringApplicationConfiguration(classes = {Application.class, SecurityConfig.class})
 @WebAppConfiguration
 @IntegrationTest("server.port:0")

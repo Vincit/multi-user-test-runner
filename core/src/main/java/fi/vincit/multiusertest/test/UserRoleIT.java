@@ -44,11 +44,5 @@ public interface UserRoleIT<USER> {
      */
     void loginAnonymous();
 
-    /**
-     * Returns the default expected exception configured to the class
-     * @return Default expected exception
-     */
-    Class<? extends Throwable> getDefaultException();
-
     Class<? extends Throwable> getDefaultException(Class<?> cls);
 }

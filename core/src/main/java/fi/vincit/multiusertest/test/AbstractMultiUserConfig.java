@@ -94,14 +94,6 @@ public abstract class AbstractMultiUserConfig<USER, ROLE> implements MultiUserCo
         return "testuser-" + random.nextInt(Integer.MAX_VALUE);
     }
 
-    /**
-     * Returns the default exception configured for the test.
-     * @return Default configuration
-     */
-    @Override
-    public Class<? extends Throwable> getDefaultException() {
-        return getDefaultException(getClass());
-    }
 
     @Override
     public Class<? extends Throwable> getDefaultException(Class<?> cls) {

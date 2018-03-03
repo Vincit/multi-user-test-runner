@@ -18,7 +18,7 @@ public class UserIdentifiers {
         return Roles.create(roles);
     }
 
-        public static UserIdentifierCollection producer() {
+    public static UserIdentifierCollection producer() {
         return new GenericUserIdentifierCollection(UserIdentifier.getProducer());
     }
 

@@ -19,10 +19,7 @@ import static fi.vincit.multiusertest.util.UserIdentifiers.users;
 
 @RunWithUsers(producers = {"role:ROLE_ADMIN"}, consumers = "role:ROLE_ADMIN")
 @RunWith(MultiUserTestRunner.class)
-@MultiUserTestConfig(
-        runner = MockTestRunner.class,
-        defaultException = IllegalArgumentException.class
-)
+@MultiUserTestConfig(runner = MockTestRunner.class)
 public class TestUsersCustomRunnerAndException {
 
     @MultiUserConfigClass

@@ -22,7 +22,6 @@ import org.junit.runners.model.Statement;
 public class AuthorizationRule implements TestRule {
 
     private UserIdentifier userIdentifier;
-    private FailMode failMode = FailMode.NONE;
     private boolean expectationConstructionFinished = false;
 
     public void setRole(UserIdentifier identifier) {
@@ -34,10 +33,6 @@ public class AuthorizationRule implements TestRule {
         return new AuthChecker(base);
     }
 
-
-    public FailMode getFailMode() {
-        return failMode;
-    }
 
     public void markExpectationConstructed() {
         if (expectationConstructionFinished) {
