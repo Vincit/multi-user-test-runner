@@ -45,7 +45,7 @@ public class AuthorizationRule implements TestRule {
     /**
      * Starts constructing expectation for a function call.
      * @param functionCall Call to test
-     * @return
+     * @return Expectation object
      * @since 0.5
      */
     public WhenThen<TestExpectation> testCall(FunctionCall functionCall) {
@@ -56,7 +56,7 @@ public class AuthorizationRule implements TestRule {
     /**
      * Starts constructing expectation for a return value call.
      * @param returnValueCall Call to test
-     * @return
+     * @return Expectation API object
      * @since 0.5
      */
     public <VALUE_TYPE> WhenThen<TestValueExpectation<VALUE_TYPE>> testCall(ReturnValueCall<VALUE_TYPE> returnValueCall) {

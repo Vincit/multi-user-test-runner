@@ -21,7 +21,7 @@ public class UserResolver<USER, ROLE> {
     private final UserFactory<USER, ROLE> userFactory;
 
     /**
-     * Initializes the resolver. Calling {@link this#resolve()} will actually
+     * Initializes the resolver. Calling {@link #resolve()} will actually
      * resolve the users and creates them if necessary.
      * @param userFactory User factory used to create new users
      * @param roleConverter Role converter class
@@ -79,7 +79,7 @@ public class UserResolver<USER, ROLE> {
     }
 
     /**
-     * Returns consumer user to use. {@link this#resolve()} must be called before.
+     * Returns consumer user to use. {@link #resolve()} must be called before.
      * @return Consumer user instance
      */
     public USER resolveConsumer() {
@@ -95,7 +95,7 @@ public class UserResolver<USER, ROLE> {
     }
 
     /**
-     * Returns producer user to use. {@link this#resolve()} must be called before.
+     * Returns producer user to use. {@link #resolve()} must be called before.
      * @return Producer user instance
      */
     public USER resolverProducer() {

@@ -93,7 +93,7 @@ public class TestConfiguration {
      * annotations. Uses MultiUserTestConfig for defaults.
      * @param testUsers annotation
      * @param multiUserTestConfig Optional configurations class level configuration
-     * @return
+     * @return Test configuration
      */
     public static TestConfiguration fromRunWithUsers(Optional<RunWithUsers> testUsers, Optional<MultiUserTestConfig> multiUserTestConfig) {
 

@@ -109,7 +109,7 @@ public class UserIdentifier {
 
     /**
      * Creates a new {@link UserIdentifier} with the given type and identifier.
-     * Usually objects are instantiated using {@link this#parse(String)} for creating objects.
+     * Usually objects are instantiated using {@link #parse(String)} for creating objects.
      * @param type Role type
      * @param identifier Identifier (user name or role name)
      */

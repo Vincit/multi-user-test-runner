@@ -7,8 +7,8 @@ public interface Then<T extends TestExpectation> {
     /**
      * Make sure to call {@link When#whenCalledWithAnyOf(fi.vincit.multiusertest.util.UserIdentifierCollection...)} or {@link When#whenCalledWithAnyOf(UserIdentifier...)}
      * first to set the user identifiers this call will add the expectation.
-     * @param testExpectation
-     * @return
+     * @param testExpectation Expectation to test for the previous when identifiers
+     * @return Expectation API object
      * @since 1.0
      */
     WhenThen<T> then(T testExpectation);
@@ -16,16 +16,16 @@ public interface Then<T extends TestExpectation> {
     /**
      * Define default expectation.
      * @param testExpectation Default expectation
-     * @return
+     * @return Expectation API object
      * @since 1.0
      */
     WhenThen<T> otherwise(T testExpectation);
 
     /**
      * Define default expectation.
-     * Alias for {@link this#otherwise(TestExpectation)}.
-     * @param testExpectation
-     * @return
+     * Alias for {@link #otherwise(TestExpectation)}.
+     * @param testExpectation Default expectation
+     * @return Expectation API object
      * @since 1.0
      */
     WhenThen<T> byDefault(T testExpectation);

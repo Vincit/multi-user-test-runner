@@ -17,7 +17,7 @@ public class TestExpectations {
     /**
      * Expect that an exception of the given type should be thrown
      * @param exception Exception expected
-     * @return
+     * @return Expectation object
      * @since 1.0
      */
     public static <T extends Throwable> TestExpectation expectException(Class<T> exception) {
@@ -30,7 +30,7 @@ public class TestExpectations {
      * @param exception Exception expected
      * @param assertion Custom assertion
      * @param <T> Type of the exception
-     * @return
+     * @return Expectation object
      * @since 1.0
      */
     public static <T extends Throwable> TestExpectation expectException(Class<T> exception, AssertionCall<T> assertion) {
@@ -39,7 +39,7 @@ public class TestExpectations {
 
     /**
      * Explicitly mark that a call shouldn't fail.
-     * @return
+     * @return Expectation object
      * @since 1.0
      */
     public static TestExpectation expectNotToFail() {
@@ -47,8 +47,8 @@ public class TestExpectations {
     }
 
     /**
-     * Return value variant of {@link this#expectNotToFail()}
-     * @return
+     * Return value variant of {@link #expectNotToFail()}
+     * @return Expectation object
      * @since 1.0
      */
     public static <VALUE_TYPE> TestValueExpectation<VALUE_TYPE> expectNotToFailIgnoringValue() {
@@ -60,7 +60,7 @@ public class TestExpectations {
      * @param exception Exception expected
      * @param <VALUE_TYPE> Type of the return value of the call under test
      * @param <T> Type of the exception
-     * @return
+     * @return Expectation object
      * @since 1.0
      */
     public static <VALUE_TYPE, T extends Throwable> TestValueExpectation<VALUE_TYPE> expectExceptionInsteadOfValue(Class<T> exception) {
@@ -75,7 +75,7 @@ public class TestExpectations {
      * @param assertionCall Custom assertion
      * @param <VALUE_TYPE> Type of the return value of the call under test
      * @param <T> Type of the exception
-     * @return
+     * @return Expectation object
      * @since 1.0
      */
     public static <VALUE_TYPE, T extends Throwable> TestValueExpectation<VALUE_TYPE> expectExceptionInsteadOfValue(Class<T> exception, AssertionCall<T> assertionCall) {
@@ -86,7 +86,7 @@ public class TestExpectations {
      * Assert returned value with the given {@link AssertionCall}
      * @param assertion Custom assertion
      * @param <VALUE_TYPE> Type of the value to be asserted
-     * @return
+     * @return Expectation object
      * @since 1.0
      */
     public static <VALUE_TYPE> TestValueExpectation<VALUE_TYPE> assertValue(AssertionCall<VALUE_TYPE> assertion) {
@@ -94,12 +94,12 @@ public class TestExpectations {
     }
 
     /**
-     * Alias for {@link this#assertValue(AssertionCall)}. Intended to be used
+     * Alias for {@link #assertValue(AssertionCall)}. Intended to be used
      * for example with RestAssured tests where the asserted value is an
      * HTTP response.
      * @param assertion Assertion
      * @param <VALUE_TYPE> Type of the response to assert
-     * @return
+     * @return Expectation object
      * @since 1.0
      */
     public static <VALUE_TYPE> TestValueExpectation<VALUE_TYPE> assertResponse(AssertionCall<VALUE_TYPE> assertion) {
@@ -111,9 +111,9 @@ public class TestExpectations {
      * essentially the same:
      * <pre>assertValue(value -> assertThat(value, is(1))</pre>
      * <pre>expectValue(1)</pre>
-     * @param value
-     * @param <VALUE_TYPE>
-     * @return
+     * @param value Value expected
+     * @param <VALUE_TYPE> Type of the value
+     * @return Expectation object
      * @since 1.0
      */
     public static <VALUE_TYPE> TestValueExpectation<VALUE_TYPE> expectValue(VALUE_TYPE value) {
