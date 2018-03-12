@@ -6,14 +6,15 @@ Multi User Test Runner
 
 ## Changes
 
-* Removed old assertion methods
 * Added `given` alias for `testCall` method
+* Removed old assertion and expectation APIs
+* Simplified the remaining API
 
 ## Breaking Changes
 
 Version 1.0 removes deprecated APIs and feature in order to make the library
 cleaner and easier to use. Expectation API2 is from now onwards known as 
-Expectation API.
+Expectation API. From 1.0 onwards the API will considered stable.
 
 * Old assertion methods are removed. Only available way is to use 
   Expectation API v2 introduced in MUTR 0.5.
@@ -22,6 +23,17 @@ Expectation API.
   with the same name but different arguments.
   * Removed `whenCalledWith(anyOf(...))` methods calls in favour of `whenCalledWithAnyOf(...)`
   * Removed String argument based `whenCalledWithAnyOf` methods in favour of using only `roles(...)` and `users(...)` methods
+* Removed `defaultException` from `MultiUserTestConfig` annotation
+
+## Migration Guide
+
+Since the old methods for writing the tests have been removed the tests using these methods should
+be migrated to the new API.
+
+The API introduced in 0.5 has changed slightly so some modifications are needed even for the tests using
+newer APIs. Most notably the package has been changed from `fi.vincit.multiusertest.rule.expectation2` to 
+`fi.vincit.multiusertest.rule.expectation` and package `fi.vincit.multiusertest.rule.expection` classes 
+have been moved under `fi.vincit.multiusertest.rule.expectation`.
 
 # 0.6.0
 
