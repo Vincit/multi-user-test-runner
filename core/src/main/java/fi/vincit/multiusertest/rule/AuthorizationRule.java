@@ -8,7 +8,6 @@ import fi.vincit.multiusertest.rule.expectation.value.TestValueExpectation;
 import fi.vincit.multiusertest.rule.expectation.FunctionCall;
 import fi.vincit.multiusertest.rule.expectation.ReturnValueCall;
 import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
-import fi.vincit.multiusertest.runner.junit5.Authorization;
 import fi.vincit.multiusertest.util.UserIdentifier;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;

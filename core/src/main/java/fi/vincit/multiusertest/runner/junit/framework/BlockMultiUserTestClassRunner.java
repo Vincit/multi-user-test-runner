@@ -1,6 +1,6 @@
 package fi.vincit.multiusertest.runner.junit.framework;
 
-import fi.vincit.multiusertest.util.RunnerDelegate;
+import fi.vincit.multiusertest.runner.junit.RunnerDelegate;
 import fi.vincit.multiusertest.util.UserIdentifier;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.BlockJUnit4ClassRunner;

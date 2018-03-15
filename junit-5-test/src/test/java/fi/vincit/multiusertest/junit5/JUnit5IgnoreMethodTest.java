@@ -4,7 +4,7 @@ import fi.vincit.multiusertest.annotation.IgnoreForUsers;
 import fi.vincit.multiusertest.annotation.MultiUserConfigClass;
 import fi.vincit.multiusertest.annotation.RunWithUsers;
 import fi.vincit.multiusertest.configuration.ConfiguredTest;
-import fi.vincit.multiusertest.runner.junit5.Authorization;
+import fi.vincit.multiusertest.rule.Authorization;
 import fi.vincit.multiusertest.runner.junit5.JUnit5MultiUserTestRunner;
 import fi.vincit.multiusertest.util.MethodCalls;
 import fi.vincit.multiusertest.util.User;

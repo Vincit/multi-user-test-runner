@@ -1,5 +1,6 @@
 package fi.vincit.multiusertest.runner.junit5;
 
+import fi.vincit.multiusertest.rule.Authorization;
 import fi.vincit.multiusertest.rule.expectation.FunctionCall;
 import fi.vincit.multiusertest.rule.expectation.ReturnValueCall;
 import fi.vincit.multiusertest.rule.expectation.TestExpectation;
@@ -12,7 +13,6 @@ import fi.vincit.multiusertest.util.UserIdentifier;
 public class JUnit5Authorization implements Authorization {
 
     private UserIdentifier userIdentifier;
-    private boolean expectationConstructionFinished = false;
 
     @Override
     public void setRole(UserIdentifier identifier) {
@@ -21,13 +21,11 @@ public class JUnit5Authorization implements Authorization {
 
     @Override
     public WhenThen<TestExpectation> testCall(FunctionCall functionCall) {
-        expectationConstructionFinished = true;
         return new FunctionCallWhenThen(functionCall, userIdentifier, this);
     }
 
     @Override
     public <VALUE_TYPE> WhenThen<TestValueExpectation<VALUE_TYPE>> testCall(ReturnValueCall<VALUE_TYPE> returnValueCall) {
-        expectationConstructionFinished = true;
         return new ReturnValueWhenThen<>(
                 returnValueCall,
                 userIdentifier,
@@ -37,6 +35,6 @@ public class JUnit5Authorization implements Authorization {
 
     @Override
     public void markExpectationConstructed() {
-        expectationConstructionFinished = true;
+        // NOOP
     }
 }

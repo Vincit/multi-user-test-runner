@@ -3,7 +3,7 @@ package fi.vincit.multiusertest.rule.expectation.call;
 import fi.vincit.multiusertest.rule.expectation.AbstractWhenThen;
 import fi.vincit.multiusertest.rule.expectation.FunctionCall;
 import fi.vincit.multiusertest.rule.expectation.TestExpectation;
-import fi.vincit.multiusertest.runner.junit5.Authorization;
+import fi.vincit.multiusertest.rule.Authorization;
 import fi.vincit.multiusertest.util.UserIdentifier;
 
 public class FunctionCallWhenThen extends AbstractWhenThen<TestExpectation> {

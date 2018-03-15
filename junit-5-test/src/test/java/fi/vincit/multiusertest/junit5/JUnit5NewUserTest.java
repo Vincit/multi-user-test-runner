@@ -3,7 +3,7 @@ package fi.vincit.multiusertest.junit5;
 import fi.vincit.multiusertest.annotation.MultiUserConfigClass;
 import fi.vincit.multiusertest.annotation.RunWithUsers;
 import fi.vincit.multiusertest.configuration.ConfiguredTest;
-import fi.vincit.multiusertest.runner.junit5.Authorization;
+import fi.vincit.multiusertest.rule.Authorization;
 import fi.vincit.multiusertest.runner.junit5.JUnit5MultiUserTestRunner;
 import fi.vincit.multiusertest.util.*;
 import org.junit.jupiter.api.TestTemplate;

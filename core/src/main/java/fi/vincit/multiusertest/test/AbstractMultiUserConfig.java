@@ -3,7 +3,7 @@ package fi.vincit.multiusertest.test;
 import fi.vincit.multiusertest.annotation.MultiUserTestConfig;
 import fi.vincit.multiusertest.annotation.RunWithUsers;
 import fi.vincit.multiusertest.runner.junit.framework.BlockMultiUserTestClassRunner;
-import fi.vincit.multiusertest.runner.junit5.Authorization;
+import fi.vincit.multiusertest.rule.Authorization;
 import fi.vincit.multiusertest.util.*;
 
 import java.util.Optional;
@@ -46,7 +46,7 @@ public abstract class AbstractMultiUserConfig<USER, ROLE> implements MultiUserCo
     }
 
     @Override
-    public void setAuthorizationRule(Authorization authorizationRule, Object testClassInstance) {
+    public void setAuthorizationRule(Authorization authorizationRule) {
         this.authorizationRule = authorizationRule;
     }
 

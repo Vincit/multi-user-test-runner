@@ -1,5 +1,6 @@
 package fi.vincit.multiusertest.annotation;
 
+import fi.vincit.multiusertest.runner.junit.RunnerDelegate;
 import fi.vincit.multiusertest.runner.junit.framework.BlockMultiUserTestClassRunner;
 
 import java.lang.annotation.Inherited;
@@ -18,7 +19,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  *
  * <p>
  * If the provided class runners don't suit the needs custom class runner can be created.
- * Helper class {@link fi.vincit.multiusertest.util.RunnerDelegate} implements the basic
+ * Helper class {@link RunnerDelegate} implements the basic
  * functionality of the class runner.
  * The runner class has to have a constructor with:
  * </p>

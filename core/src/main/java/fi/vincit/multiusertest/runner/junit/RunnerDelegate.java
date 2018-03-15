@@ -1,10 +1,14 @@
-package fi.vincit.multiusertest.util;
+package fi.vincit.multiusertest.runner.junit;
 
 import fi.vincit.multiusertest.annotation.MultiUserConfigClass;
 import fi.vincit.multiusertest.rule.AuthorizationRule;
 import fi.vincit.multiusertest.test.AbstractMultiUserConfig;
 import fi.vincit.multiusertest.test.MultiUserConfig;
 import fi.vincit.multiusertest.test.UserRoleIT;
+import fi.vincit.multiusertest.util.LoginRole;
+import fi.vincit.multiusertest.util.RunInitAndBefores;
+import fi.vincit.multiusertest.util.TestMethodFilter;
+import fi.vincit.multiusertest.util.UserIdentifier;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.runners.model.FrameworkField;
@@ -17,7 +21,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import static fi.vincit.multiusertest.util.TestNameUtil.getIdentifiers;
+import static fi.vincit.multiusertest.util.ConfigurationUtil.findFieldWithConfig;
+import static fi.vincit.multiusertest.util.ConfigurationUtil.getConfigComponent;
+import static fi.vincit.multiusertest.util.TestNameUtil.resolveTestName;
 
 /**
  * Helper class for delegating calls from JUnit runner.
@@ -72,7 +78,7 @@ public class RunnerDelegate {
     }
 
     private String getIdentifierDescription() {
-        return getIdentifiers(producerIdentifier, userIdentifier);
+        return resolveTestName(producerIdentifier, userIdentifier);
     }
 
     public Object validateTestInstance(Object testInstance) {
@@ -94,43 +100,6 @@ public class RunnerDelegate {
         }
     }
 
-    private static MultiUserConfig getConfigComponent(Object testInstance) {
-        Optional<MultiUserConfig> config = Optional.empty();
-        try {
-            Optional<Field> field = findFieldWithConfig(testInstance);
-
-            if (field.isPresent()) {
-                Field fieldInstance = field.get();
-                fieldInstance.setAccessible(true);
-                config = Optional.ofNullable((MultiUserConfig) fieldInstance.get(testInstance));
-                fieldInstance.setAccessible(false);
-            }
-
-            if (config.isPresent()) {
-                return config.get();
-            } else {
-                throw new IllegalStateException("MultiUserConfigClass not found on " + testInstance.getClass().getSimpleName());
-            }
-        } catch (IllegalAccessException e) {
-            throw new IllegalStateException(e);
-        }
-    }
-
-    private static Optional<Field> findFieldWithConfig(Object testInstance) throws IllegalAccessException {
-        for (Field field : testInstance.getClass().getDeclaredFields()) {
-            if (field.isAnnotationPresent(MultiUserConfigClass.class)) {
-                return Optional.of(field);
-            }
-        }
-
-        for (Field field : testInstance.getClass().getFields()) {
-            if (field.isAnnotationPresent(MultiUserConfigClass.class)) {
-                return Optional.of(field);
-            }
-        }
-        return Optional.empty();
-    }
-
     public Statement withBefores(final TestClass testClass, final Object target, final Statement statement) {
         final Statement initializeConfig = new Statement() {
             @Override
@@ -142,7 +111,7 @@ public class RunnerDelegate {
                     AbstractMultiUserConfig multiUserConfig = (AbstractMultiUserConfig) userRoleIt;
                     AuthorizationRule authorizationRule = getAuthorizationRule(testClass, target);
 
-                    multiUserConfig.setAuthorizationRule(authorizationRule, target);
+                    multiUserConfig.setAuthorizationRule(authorizationRule);
                     multiUserConfig.initialize();
                 } else {
                     throw new IllegalStateException("Invalid userRoleIt implementation: " + userRoleIt.getClass().toString());

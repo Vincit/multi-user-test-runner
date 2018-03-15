@@ -49,7 +49,7 @@ public class ComponentSmokeTest {
 
     @Before
     public void init() {
-        this.multiUserConfig.setAuthorizationRule(authorizationRule, this);
+        this.multiUserConfig.setAuthorizationRule(authorizationRule);
     }
 
     private void pass() {

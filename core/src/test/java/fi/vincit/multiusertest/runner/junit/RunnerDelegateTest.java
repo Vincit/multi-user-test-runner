@@ -1,8 +1,12 @@
-package fi.vincit.multiusertest.util;
+package fi.vincit.multiusertest.runner.junit;
 
 import fi.vincit.multiusertest.annotation.MultiUserConfigClass;
 import fi.vincit.multiusertest.test.AbstractMultiUserConfig;
 import fi.vincit.multiusertest.test.UserRoleIT;
+import fi.vincit.multiusertest.util.LoginRole;
+import fi.vincit.multiusertest.util.RoleContainer;
+import fi.vincit.multiusertest.util.TestMethodFilter;
+import fi.vincit.multiusertest.util.UserIdentifier;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runners.model.FrameworkMethod;

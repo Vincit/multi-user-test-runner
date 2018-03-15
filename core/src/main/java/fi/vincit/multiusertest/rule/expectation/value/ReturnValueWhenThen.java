@@ -2,7 +2,7 @@ package fi.vincit.multiusertest.rule.expectation.value;
 
 import fi.vincit.multiusertest.rule.expectation.AbstractWhenThen;
 import fi.vincit.multiusertest.rule.expectation.ReturnValueCall;
-import fi.vincit.multiusertest.runner.junit5.Authorization;
+import fi.vincit.multiusertest.rule.Authorization;
 import fi.vincit.multiusertest.util.UserIdentifier;
 
 public class ReturnValueWhenThen<VALUE_TYPE> extends AbstractWhenThen<TestValueExpectation<VALUE_TYPE>> {

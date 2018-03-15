@@ -1,4 +1,4 @@
-package fi.vincit.multiusertest.runner.junit5;
+package fi.vincit.multiusertest.rule;
 
 import fi.vincit.multiusertest.rule.expectation.FunctionCall;
 import fi.vincit.multiusertest.rule.expectation.ReturnValueCall;
