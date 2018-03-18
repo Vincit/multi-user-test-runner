@@ -7,6 +7,7 @@ Multi User Test Runner
 ## Changes
 
 * Removed old assertion methods
+* Added `given` alias for `testCall` method
 
 ## Breaking Changes
 

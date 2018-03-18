@@ -54,6 +54,17 @@ public class AuthorizationRule implements TestRule {
     }
 
     /**
+     * Starts constructing expectation for a function call.
+     * Alias for {@link #testCall(FunctionCall)}.
+     * @param functionCall Call to test
+     * @return Expectation object
+     * @since 1.0
+     */
+    public WhenThen<TestExpectation> given(FunctionCall functionCall) {
+        return testCall(functionCall);
+    }
+
+    /**
      * Starts constructing expectation for a return value call.
      * @param returnValueCall Call to test
      * @return Expectation API object
@@ -66,6 +77,17 @@ public class AuthorizationRule implements TestRule {
                 userIdentifier,
                 this
         );
+    }
+
+    /**
+     * Starts constructing expectation for a return value call.
+     * Alias for {@link #testCall(ReturnValueCall)}.
+     * @param returnValueCall Call to test
+     * @return Expectation API object
+     * @since 1.0
+     */
+    public <VALUE_TYPE> WhenThen<TestValueExpectation<VALUE_TYPE>> given(ReturnValueCall<VALUE_TYPE> returnValueCall) {
+        return testCall(returnValueCall);
     }
 
     private class AuthChecker extends Statement {
