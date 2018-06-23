@@ -93,11 +93,7 @@ public class RunnerDelegate {
     }
 
     private boolean hasComponentConfig(Object testInstance) {
-        try {
-            return findFieldWithConfig(testInstance).isPresent();
-        } catch (IllegalAccessException e) {
-            throw new IllegalStateException(e);
-        }
+        return findFieldWithConfig(testInstance).isPresent();
     }
 
     public Statement withBefores(final TestClass testClass, final Object target, final Statement statement) {

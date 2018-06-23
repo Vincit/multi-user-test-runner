@@ -37,4 +37,14 @@ public class JUnit5Authorization implements Authorization {
     public void markExpectationConstructed() {
         // NOOP
     }
+
+    @Override
+    public WhenThen<TestExpectation> given(FunctionCall functionCall) {
+        return testCall(functionCall);
+    }
+
+    @Override
+    public <VALUE_TYPE> WhenThen<TestValueExpectation<VALUE_TYPE>> given(ReturnValueCall<VALUE_TYPE> returnValueCall) {
+        return testCall(returnValueCall);
+    }
 }
