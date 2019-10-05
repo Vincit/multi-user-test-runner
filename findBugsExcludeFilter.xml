@@ -1,0 +1,12 @@
+<FindBugsFilter>
+     <Match>
+         <Or>
+             <!-- Don't check because tests equals in way that FindBugs thinks is wrong -->
+             <Class name="fi.vincit.multiusertest.util.UserIdentifierTest" />
+             <!-- Don't check because test uses test class in a way that FindBugs thinks is wrong-->
+             <Class name="fi.vincit.multiusertest.util.TestConfigurationTest" />
+             <!-- Don't check because test uses test class in a way that FindBugs thinks is wrong-->
+             <Class name="fi.vincit.multiusertest.util.TestConfigurationTest$TestUserDefinitionClass" />
+         </Or>
+     </Match>
+</FindBugsFilter>
