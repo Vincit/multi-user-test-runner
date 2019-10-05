@@ -1,14 +1,5 @@
 package fi.vincit.mutrproject.feature.todo;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Service;
-
 import fi.vincit.mutrproject.feature.todo.dto.TodoItemDto;
 import fi.vincit.mutrproject.feature.todo.dto.TodoListDto;
 import fi.vincit.mutrproject.feature.todo.model.TodoItem;
@@ -18,17 +9,30 @@ import fi.vincit.mutrproject.feature.todo.repository.TodoListRepository;
 import fi.vincit.mutrproject.feature.user.UserService;
 import fi.vincit.mutrproject.feature.user.model.Role;
 import fi.vincit.mutrproject.feature.user.model.User;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class TodoService {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+    private final TodoItemRepository todoItemRepository;
+    private final TodoListRepository todoListRepository;
 
     @Autowired
-    private TodoItemRepository todoItemRepository;
-    @Autowired
-    private TodoListRepository todoListRepository;
+    public TodoService(UserService userService, TodoItemRepository todoItemRepository, TodoListRepository todoListRepository) {
+        this.userService = userService;
+        this.todoItemRepository = todoItemRepository;
+        this.todoListRepository = todoListRepository;
+    }
 
 
     public void clearList() {
@@ -90,17 +94,17 @@ public class TodoService {
     }
 
     private TodoItem getTodoItemInternal(long listId, long id) {
-        TodoList list = todoListRepository.findOne(listId);
+        Optional<TodoList> list = todoListRepository.findById(listId);
         Optional<User> user = userService.getLoggedInUser();
-        authorizeRead(list, user);
+        authorizeRead(list.orElse(null), user);
 
-        return todoItemRepository.findOne(id);
+        return todoItemRepository.findById(id).orElse(null);
     }
 
     private TodoList getTodoListInternal(long id) {
-        TodoList list = todoListRepository.findOne(id);
+        Optional<TodoList> list = todoListRepository.findById(id);
         Optional<User> user = userService.getLoggedInUser();
-        return authorizeRead(list, user);
+        return authorizeRead(list.orElse(null), user);
     }
 
     private TodoList authorizeRead(TodoList list, Optional<User> user) {

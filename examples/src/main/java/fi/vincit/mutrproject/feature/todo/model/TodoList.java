@@ -25,9 +25,9 @@ public class TodoList {
     private String name;
     @Column(name = "is_public")
     private boolean publicList;
-    @ManyToOne(targetEntity = User.class, fetch = FetchType.EAGER)
+    @ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY)
     private User owner;
-    @OneToMany(targetEntity = TodoItem.class, fetch = FetchType.EAGER, mappedBy = "todoListId")
+    @OneToMany(targetEntity = TodoItem.class, fetch = FetchType.LAZY, mappedBy = "todoListId")
     private List<TodoItem> items;
 
     public TodoList() {

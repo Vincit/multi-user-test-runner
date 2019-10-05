@@ -5,7 +5,7 @@ import java.util.HashSet;
 
 import static java.util.Collections.singletonList;
 
-public class User {
+public class UserUser {
     public enum Role {
         ROLE_ADMIN,
         ROLE_USER,
