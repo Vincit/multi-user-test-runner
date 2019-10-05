@@ -10,17 +10,17 @@ import fi.vincit.mutrproject.feature.user.UserService;
 import fi.vincit.mutrproject.feature.user.model.Role;
 import fi.vincit.mutrproject.feature.user.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class TodoService {
 
     private final UserService userService;

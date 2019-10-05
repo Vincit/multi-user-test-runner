@@ -8,6 +8,8 @@ import fi.vincit.mutrproject.feature.user.model.User;
 import org.junit.After;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import static java.util.Optional.ofNullable;
+
 /**
  * Example configuration that uses role aliases. Coverts role definitions
  * to roles used by the system under test. See {@link #stringToRole(String)}
@@ -23,7 +25,7 @@ public class TestMultiUserAliasConfig extends AbstractMultiUserConfig<User, Role
 
     @Override
     public void loginWithUser(User user) {
-        userService.loginUser(user);
+        userService.loginUser(ofNullable(user).map(User::getUsername).orElse(null));
     }
 
     @After

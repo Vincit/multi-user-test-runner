@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Arrays;
 import java.util.Collection;
 
+import static java.util.Optional.ofNullable;
+
 /**
  * Example on how to configure users with multiple roles. Uses a custom role
  * {@link RoleGroup} to configure which roles to configure for the user. RoleGroup
@@ -23,7 +25,7 @@ public class TestMultiRoleConfig extends AbstractMultiUserAndRoleConfig<User, Ro
 
     @Override
     public void loginWithUser(User user) {
-        userService.loginUser(user);
+        userService.loginUser(ofNullable(user).map(User::getUsername).orElse(null));
     }
 
     @Override

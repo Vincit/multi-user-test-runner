@@ -1,9 +1,8 @@
 package fi.vincit.mutrproject.feature.user;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Optional;
-
+import fi.vincit.mutrproject.feature.user.model.Role;
+import fi.vincit.mutrproject.feature.user.model.User;
+import fi.vincit.mutrproject.feature.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -12,9 +11,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import fi.vincit.mutrproject.feature.user.model.Role;
-import fi.vincit.mutrproject.feature.user.model.User;
-import fi.vincit.mutrproject.feature.user.repository.UserRepository;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Optional;
 
 @Service
 public class DefaultUserService implements UserService, UserDetailsService {
@@ -22,6 +21,7 @@ public class DefaultUserService implements UserService, UserDetailsService {
     @Autowired
     private UserRepository userRepository;
 
+    @Transactional(readOnly = true)
     @Override
     public Optional<User> getLoggedInUser() {
         if (SecurityContextHolder.getContext().getAuthentication() != null) {
@@ -61,8 +61,9 @@ public class DefaultUserService implements UserService, UserDetailsService {
 
     @Transactional
     @Override
-    public void loginUser(User user) {
-        if (user != null) {
+    public void loginUser(String userId) {
+        if (userId != null) {
+            User user = userRepository.getOne(userId);
             SecurityContextHolder.getContext().setAuthentication(
                     new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities())
             );

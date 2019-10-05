@@ -6,6 +6,9 @@ import fi.vincit.mutrproject.feature.user.UserService;
 import fi.vincit.mutrproject.feature.user.model.Role;
 import fi.vincit.mutrproject.feature.user.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+
+import static java.util.Optional.ofNullable;
 
 /**
  * Basic example for configuring MUTR config class. This config class
@@ -26,7 +29,7 @@ public class TestMultiUserConfig extends AbstractMultiUserConfig<User, Role> {
 
     @Override
     public void loginWithUser(User user) {
-        userService.loginUser(user);
+        userService.loginUser(ofNullable(user).map(User::getUsername).orElse(null));
     }
 
     @Override
@@ -39,8 +42,12 @@ public class TestMultiUserConfig extends AbstractMultiUserConfig<User, Role> {
         return Role.valueOf(role);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public User getUserByUsername(String username) {
-        return userService.loadUserByUsername(username);
+        User user = userService.loadUserByUsername(username);
+        // "Eagerly" fetch authorities for later use
+        user.getAuthorities();
+        return user;
     }
 }
