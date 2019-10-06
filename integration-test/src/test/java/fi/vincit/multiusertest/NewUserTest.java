@@ -50,25 +50,7 @@ public class NewUserTest {
     }
 
     @Test
-    public void expectFailureProducer() throws Throwable {
-        authorizationRule.testCall(() -> throwIfUserIs(configuredTest.getProducer()))
-                .whenCalledWithAnyOf(UserIdentifiers.producer())
-                .then(expectException(IllegalStateException.class))
-                .test();
-    }
-
-    @Test
-    public void expectFailureUserWithProducerRole() throws Throwable {
-        authorizationRule.testCall(() -> throwIfUserIs(configuredTest.getConsumer()))
-                .whenCalledWithAnyOf(UserIdentifiers.withProducerRole())
-                .then(expectException(IllegalStateException.class))
-                .test();
-    }
-
-    @Test
     public void expectFailureConsumer() throws Throwable {
-        configuredTest.logInAs(LoginRole.CONSUMER);
-
         authorizationRule.testCall(() -> throwIfUserRole("role:ROLE_USER"))
                 .whenCalledWithAnyOf(roles("ROLE_USER"))
                 .then(expectException(IllegalStateException.class))
@@ -79,12 +61,6 @@ public class NewUserTest {
         User.Role identifierRole = configuredTest.stringToRole(UserIdentifier.parse(identifier).getIdentifier());
         if (SecurityUtil.getLoggedInUser().getRole() == identifierRole) {
             throw new IllegalStateException("Thrown when role was " + identifier);
-        }
-    }
-
-    private void throwIfUserIs(User user) {
-        if (SecurityUtil.getLoggedInUser().getUsername().equals(user.getUsername())) {
-            throw new IllegalStateException("Thrown when user was " + user);
         }
     }
 

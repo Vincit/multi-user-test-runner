@@ -55,16 +55,7 @@ public class BasicTest {
     }
 
     @Test
-    public void expectFailureWithProducerRole() throws Throwable {
-        authorization.testCall(() -> throwIfUserIs(configuredTest.getConsumer()))
-                .whenCalledWithAnyOf(UserIdentifiers.withProducerRole())
-                .then(expectException(IllegalStateException.class))
-                .test();
-    }
-
-    @Test
     public void expectFailureConsumer() throws Throwable {
-        configuredTest.logInAs(LoginRole.CONSUMER);
         authorization.testCall(() -> throwIfUserRole("role:ROLE_USER"))
                 .whenCalledWithAnyOf(roles("ROLE_USER"))
                 .then(expectException(IllegalStateException.class))

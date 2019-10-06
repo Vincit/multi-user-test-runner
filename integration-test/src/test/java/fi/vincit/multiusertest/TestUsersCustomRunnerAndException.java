@@ -7,7 +7,6 @@ import fi.vincit.multiusertest.configuration.ConfiguredTestWithCustomRunnerAndEx
 import fi.vincit.multiusertest.configuration.MockTestRunner;
 import fi.vincit.multiusertest.rule.AuthorizationRule;
 import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
-import fi.vincit.multiusertest.util.LoginRole;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,8 +38,6 @@ public class TestUsersCustomRunnerAndException {
 
     @Test
     public void passes() throws Throwable {
-        configTest.logInAs(LoginRole.CONSUMER);
-
         authorizationRule.testCall(this::pass)
                 .whenCalledWithAnyOf(roles("ROLE_ADMIN"))
                 .then(expectNotToFail())
@@ -49,8 +46,6 @@ public class TestUsersCustomRunnerAndException {
 
     @Test
     public void passes_users_roles_syntax() throws Throwable {
-        configTest.logInAs(LoginRole.CONSUMER);
-
         authorizationRule.testCall(this::pass)
                 .whenCalledWithAnyOf(roles("ROLE_ADMIN"), users("foo"))
                 .then(expectNotToFail())
@@ -59,8 +54,6 @@ public class TestUsersCustomRunnerAndException {
 
     @Test
     public void fails() throws Throwable {
-        configTest.logInAs(LoginRole.CONSUMER);
-
         authorizationRule.testCall(this::fail)
                 .whenCalledWithAnyOf(roles("ROLE_ADMIN"))
                 .then(expectException(IllegalStateException.class))

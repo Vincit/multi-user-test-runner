@@ -2,7 +2,6 @@ package fi.vincit.mutrproject.feature.todo;
 
 import fi.vincit.multiusertest.annotation.IgnoreForUsers;
 import fi.vincit.multiusertest.annotation.RunWithUsers;
-import fi.vincit.multiusertest.util.LoginRole;
 import fi.vincit.multiusertest.util.UserIdentifiers;
 import fi.vincit.mutrproject.testconfig.AbstractConfiguredMultiRoleIT;
 import org.junit.Test;
@@ -10,7 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 
-import static fi.vincit.multiusertest.rule.expectation.TestExpectations.*;
+import static fi.vincit.multiusertest.rule.expectation.TestExpectations.assertValue;
+import static fi.vincit.multiusertest.rule.expectation.TestExpectations.expectExceptionInsteadOfValue;
+import static fi.vincit.multiusertest.rule.expectation.TestExpectations.expectNotToFailIgnoringValue;
 import static fi.vincit.multiusertest.util.UserIdentifiers.roles;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -36,9 +37,6 @@ public class TodoServiceIT extends AbstractConfiguredMultiRoleIT {
         // At this point the producer has been logged in automatically
         long id = todoService.createTodoList("Test list", false);
 
-        // Change user to consumer in order to test how getTodoList works
-        config().logInAs(LoginRole.CONSUMER);
-
         authorization().testCall(() -> todoService.getTodoList(id))
                 .whenCalledWithAnyOf(roles("ROLE_USER"), UserIdentifiers.anonymous())
                 .then(expectExceptionInsteadOfValue(AccessDeniedException.class))
@@ -54,7 +52,6 @@ public class TodoServiceIT extends AbstractConfiguredMultiRoleIT {
     @Test
     public void getPublicTodoList() throws Throwable {
         long id = todoService.createTodoList("Test list", true);
-        config().logInAs(LoginRole.CONSUMER);
         authorization().testCall(() -> todoService.getTodoList(id))
                 .otherwise(assertValue(todoList -> {
                     assertThat(todoList, notNullValue());
@@ -75,7 +72,6 @@ public class TodoServiceIT extends AbstractConfiguredMultiRoleIT {
     @Test
     public void getPublicTodoListNotFailsExplicit() throws Throwable {
         long id = todoService.createTodoList("Test list", true);
-        config().logInAs(LoginRole.CONSUMER);
         authorization().testCall(() -> todoService.getTodoList(id))
                 .byDefault(expectNotToFailIgnoringValue())
                 .test();
@@ -91,7 +87,6 @@ public class TodoServiceIT extends AbstractConfiguredMultiRoleIT {
     @Test
     public void getPublicTodoListNotFailsSimple() throws Throwable {
         long id = todoService.createTodoList("Test list", true);
-        config().logInAs(LoginRole.CONSUMER);
         authorization().testCall(() -> todoService.getTodoList(id))
                 .test();
     }
@@ -104,7 +99,6 @@ public class TodoServiceIT extends AbstractConfiguredMultiRoleIT {
     @IgnoreForUsers(consumers = RunWithUsers.ANONYMOUS)
     public void addTodoItem() throws Throwable {
         long listId = todoService.createTodoList("Test list", false);
-        config().logInAs(LoginRole.CONSUMER);
         authorization().testCall(() -> todoService.addItemToList(listId, "Write tests"))
                 .whenCalledWithAnyOf(roles("ROLE_ADMIN", "ROLE_SYSTEM_ADMIN"), UserIdentifiers.producer())
                 .then(expectNotToFailIgnoringValue())
@@ -120,7 +114,6 @@ public class TodoServiceIT extends AbstractConfiguredMultiRoleIT {
     @RunWithUsers(consumers = RunWithUsers.ANONYMOUS)
     public void addTodoItemAnonymous() throws Throwable {
         long listId = todoService.createTodoList("Test list", false);
-        config().logInAs(LoginRole.CONSUMER);
         authorization().testCall(() -> todoService.addItemToList(listId, "Write tests"))
                 .byDefault(expectExceptionInsteadOfValue(AuthenticationCredentialsNotFoundException.class))
                 .test();

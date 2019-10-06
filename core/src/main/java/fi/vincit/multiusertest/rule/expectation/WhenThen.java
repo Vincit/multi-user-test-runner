@@ -8,5 +8,4 @@ public interface WhenThen<T extends TestExpectation> extends When<T>, Then<T> {
      * @since 1.0
      */
     void test() throws Throwable;
-
 }

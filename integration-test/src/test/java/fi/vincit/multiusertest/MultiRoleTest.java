@@ -53,14 +53,6 @@ public class MultiRoleTest {
     }
 
     @Test
-    public void expectFailureWithProducerRole() throws Throwable {
-        authorizationRule.testCall(() -> throwIfUserIs(configuredTest.getConsumer()))
-                .whenCalledWithAnyOf(UserIdentifiers.withProducerRole())
-                .then(expectException(IllegalStateException.class))
-                .test();
-    }
-
-    @Test
     public void expectFailureConsumer() throws Throwable {
         configuredTest.logInAs(LoginRole.CONSUMER);
 

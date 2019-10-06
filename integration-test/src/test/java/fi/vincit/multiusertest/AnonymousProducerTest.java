@@ -6,12 +6,12 @@ import fi.vincit.multiusertest.annotation.RunWithUsers;
 import fi.vincit.multiusertest.configuration.ConfiguredTest;
 import fi.vincit.multiusertest.rule.AuthorizationRule;
 import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
-import fi.vincit.multiusertest.util.*;
+import fi.vincit.multiusertest.util.LoginRole;
+import fi.vincit.multiusertest.util.SecurityUtil;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static fi.vincit.multiusertest.rule.expectation.TestExpectations.expectException;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertThat;
@@ -45,25 +45,6 @@ public class AnonymousProducerTest {
         configuredTest.logInAs(LoginRole.PRODUCER);
 
         assertThat(SecurityUtil.getLoggedInUser(), nullValue());
-    }
-
-    @Test
-    public void expectFailureAnonymousProducer() throws Throwable {
-        authorizationRule.testCall(() -> throwIfUserRole(RunWithUsers.ANONYMOUS))
-                .whenCalledWithAnyOf(UserIdentifiers.producer())
-                .then(expectException(IllegalStateException.class))
-                .test();
-    }
-
-    private void throwIfUserRole(String identifier) {
-        if (identifier.equals(RunWithUsers.ANONYMOUS)) {
-            throw new IllegalStateException("Thrown when role was ANONYMOUS");
-        } else {
-            User.Role identifierRole = configuredTest.stringToRole(UserIdentifier.parse(identifier).getIdentifier());
-            if (SecurityUtil.getLoggedInUser().getRole() == identifierRole) {
-                throw new IllegalStateException("Thrown when role was " + identifier);
-            }
-        }
     }
 
 }

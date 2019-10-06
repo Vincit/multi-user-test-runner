@@ -24,6 +24,7 @@ Expectation API. From 1.0 onwards the API will considered stable.
   * Removed `whenCalledWith(anyOf(...))` methods calls in favour of `whenCalledWithAnyOf(...)`
   * Removed String argument based `whenCalledWithAnyOf` methods in favour of using only `roles(...)` and `users(...)` methods
 * Removed `defaultException` from `MultiUserTestConfig` annotation
+* Tests can't be run with `producer` role anymore
 
 ## Migration Guide
 

@@ -3,6 +3,7 @@ package fi.vincit.multiusertest.rule.expectation.value;
 
 import fi.vincit.multiusertest.rule.AuthorizationRule;
 import fi.vincit.multiusertest.rule.expectation.ReturnValueCall;
+import fi.vincit.multiusertest.test.UserRoleIT;
 import fi.vincit.multiusertest.util.UserIdentifier;
 import org.junit.Rule;
 import org.junit.Test;
@@ -10,7 +11,10 @@ import org.junit.rules.ExpectedException;
 
 import static org.hamcrest.CoreMatchers.isA;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 public class ReturnValueWhenThenTest {
 
@@ -21,7 +25,8 @@ public class ReturnValueWhenThenTest {
     public void getDefaultExpectation() {
         ReturnValueWhenThen<Integer> sut = new ReturnValueWhenThen<>(
                 () -> 1, UserIdentifier.getAnonymous(),
-                mock(AuthorizationRule.class)
+                mock(AuthorizationRule.class),
+                mock(UserRoleIT.class)
         );
 
         ReturnValueCallNoExceptionExpectation<Integer> defaultExpectation =
@@ -35,7 +40,8 @@ public class ReturnValueWhenThenTest {
         ReturnValueCall<Integer> call = () -> 1;
         ReturnValueWhenThen<Integer> sut = new ReturnValueWhenThen<>(
                 call, UserIdentifier.getAnonymous(),
-                mock(AuthorizationRule.class)
+                mock(AuthorizationRule.class),
+                mock(UserRoleIT.class)
         );
 
         TestValueExpectation expectation = mock(TestValueExpectation.class);
@@ -50,7 +56,8 @@ public class ReturnValueWhenThenTest {
         ReturnValueCall<Integer> call = () -> 1;
         ReturnValueWhenThen<Integer> sut = new ReturnValueWhenThen<>(
                 call, UserIdentifier.getAnonymous(),
-                mock(AuthorizationRule.class)
+                mock(AuthorizationRule.class),
+                mock(UserRoleIT.class)
         );
 
         TestValueExpectation expectation = mock(TestValueExpectation.class);
@@ -70,7 +77,8 @@ public class ReturnValueWhenThenTest {
     public void test_CallThrows_WhenExpectedButNotThrown() throws Throwable {
         ReturnValueWhenThen<Integer> sut = new ReturnValueWhenThen<>(
                 () -> 1, UserIdentifier.getAnonymous(),
-                mock(AuthorizationRule.class)
+                mock(AuthorizationRule.class),
+                mock(UserRoleIT.class)
         );
 
         TestValueExpectation expectation = mock(TestValueExpectation.class);
@@ -87,7 +95,8 @@ public class ReturnValueWhenThenTest {
     public void test_CallDoesntThrow_WhenExpectedAndThrown() throws Throwable {
         ReturnValueWhenThen<Integer> sut = new ReturnValueWhenThen<>(
                 () -> 1, UserIdentifier.getAnonymous(),
-                mock(AuthorizationRule.class)
+                mock(AuthorizationRule.class),
+                mock(UserRoleIT.class)
         );
 
         TestValueExpectation expectation = mock(TestValueExpectation.class);
@@ -102,7 +111,8 @@ public class ReturnValueWhenThenTest {
     public void test_CallDoesntThrown_WhenNotExpectedAndNotThrown() throws Throwable {
         ReturnValueWhenThen<Integer> sut = new ReturnValueWhenThen<>(
                 () -> 1, UserIdentifier.getAnonymous(),
-                mock(AuthorizationRule.class)
+                mock(AuthorizationRule.class),
+                mock(UserRoleIT.class)
         );
 
         TestValueExpectation expectation = mock(TestValueExpectation.class);

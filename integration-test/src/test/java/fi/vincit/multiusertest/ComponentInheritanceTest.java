@@ -2,7 +2,6 @@ package fi.vincit.multiusertest;
 
 import fi.vincit.multiusertest.annotation.RunWithUsers;
 import fi.vincit.multiusertest.configuration.TestBaseClass;
-import fi.vincit.multiusertest.util.LoginRole;
 import org.junit.Test;
 
 import static fi.vincit.multiusertest.rule.expectation.TestExpectations.expectException;
@@ -22,8 +21,6 @@ public class ComponentInheritanceTest extends TestBaseClass {
 
     @Test
     public void passes() throws Throwable {
-        multiUserConfig.logInAs(LoginRole.CONSUMER);
-
         authorizationRule.testCall(this::pass)
                 .whenCalledWithAnyOf(roles("ROLE_ADMIN"))
                 .then(expectNotToFail())
@@ -32,8 +29,6 @@ public class ComponentInheritanceTest extends TestBaseClass {
 
     @Test
     public void passes_users_roles_syntax() throws Throwable {
-        multiUserConfig.logInAs(LoginRole.CONSUMER);
-
         authorizationRule.testCall(this::pass)
                 .whenCalledWithAnyOf(roles("ROLE_ADMIN"), users("foo"))
                 .then(expectNotToFail())
@@ -42,8 +37,6 @@ public class ComponentInheritanceTest extends TestBaseClass {
 
     @Test
     public void fails() throws Throwable {
-        multiUserConfig.logInAs(LoginRole.CONSUMER);
-
         authorizationRule.testCall(this::fail)
                 .whenCalledWithAnyOf(roles("ROLE_ADMIN"))
                 .then(expectException(IllegalStateException.class))

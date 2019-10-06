@@ -6,12 +6,13 @@ import fi.vincit.multiusertest.annotation.RunWithUsers;
 import fi.vincit.multiusertest.configuration.ConfiguredTest;
 import fi.vincit.multiusertest.rule.AuthorizationRule;
 import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
-import fi.vincit.multiusertest.util.LoginRole;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static fi.vincit.multiusertest.rule.expectation.TestExpectations.*;
+import static fi.vincit.multiusertest.rule.expectation.TestExpectations.assertValue;
+import static fi.vincit.multiusertest.rule.expectation.TestExpectations.expectNotToFail;
+import static fi.vincit.multiusertest.rule.expectation.TestExpectations.expectValue;
 import static fi.vincit.multiusertest.util.UserIdentifiers.roles;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -39,7 +40,6 @@ public class JUnit5SmokeTest {
 
     @Test
     public void expectCallNotToFail() throws Throwable {
-        configuredTest.logInAs(LoginRole.CONSUMER);
         authorizationRule.testCall(testService::noThrow)
                 .whenCalledWithAnyOf(roles("ROLE_ADMIN"))
                 .then(expectNotToFail())
@@ -56,8 +56,6 @@ public class JUnit5SmokeTest {
 
     @Test(expected = AssertionError.class)
     public void expectAssert_toFail() throws Throwable {
-        configuredTest.logInAs(LoginRole.CONSUMER);
-
         authorizationRule.testCall(() -> testService.returnsValue(3))
                 .whenCalledWithAnyOf(roles("ROLE_USER"))
                 .then(assertValue(value -> assertThat(value, is(1))))
@@ -66,8 +64,6 @@ public class JUnit5SmokeTest {
 
     @Test(expected = AssertionError.class)
     public void expectEqual_toFail() throws Throwable {
-        configuredTest.logInAs(LoginRole.CONSUMER);
-
         authorizationRule.testCall(() -> testService.returnsValue(3))
                 .whenCalledWithAnyOf(roles("ROLE_USER"))
                 .then(expectValue(1))
@@ -76,8 +72,6 @@ public class JUnit5SmokeTest {
 
     @Test
     public void expectEqual_toPass() throws Throwable {
-        configuredTest.logInAs(LoginRole.CONSUMER);
-
         authorizationRule.testCall(() -> testService.returnsValue(3))
                 .whenCalledWithAnyOf(roles("ROLE_USER"))
                 .then(expectValue(3))

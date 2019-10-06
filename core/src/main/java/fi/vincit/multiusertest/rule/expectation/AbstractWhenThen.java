@@ -1,11 +1,21 @@
 package fi.vincit.multiusertest.rule.expectation;
 
 import fi.vincit.multiusertest.rule.Authorization;
+import fi.vincit.multiusertest.test.UserRoleIT;
+import fi.vincit.multiusertest.util.LoginRole;
 import fi.vincit.multiusertest.util.UserIdentifier;
 import fi.vincit.multiusertest.util.UserIdentifierCollection;
 import fi.vincit.multiusertest.util.UserIdentifiers;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
@@ -17,13 +27,15 @@ public abstract class AbstractWhenThen<T extends TestExpectation> implements Whe
 
     private final UserIdentifier userIdentifier;
     private final Authorization authorizationRule;
+    private UserRoleIT userRoleIT;
     private T defaultExpectation;
 
-    public AbstractWhenThen(UserIdentifier userIdentifier, Authorization authorizationRule) {
+    public AbstractWhenThen(UserIdentifier userIdentifier, Authorization authorizationRule, UserRoleIT userRoleIT) {
         this.userIdentifier = userIdentifier;
         this.authorizationRule = authorizationRule;
+        this.userRoleIT = userRoleIT;
     }
-
+    
     @Override
     public Then<T> whenCalledWithAnyOf(UserIdentifierCollection... userIdentifiers) {
         final List<UserIdentifiers> allIdentifiers = Stream.of(userIdentifiers)
@@ -90,7 +102,9 @@ public abstract class AbstractWhenThen<T extends TestExpectation> implements Whe
         );
 
         this.authorizationRule.markExpectationConstructed();
+        this.userRoleIT.logInAs(LoginRole.CONSUMER);
         this.test(testExpectation, userIdentifier);
+        this.userRoleIT.logInAs(LoginRole.PRODUCER);
     }
 
     protected abstract void test(T testExpectation, UserIdentifier userIdentifier) throws Throwable;

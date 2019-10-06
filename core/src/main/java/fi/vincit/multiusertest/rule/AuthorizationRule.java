@@ -1,13 +1,15 @@
 package fi.vincit.multiusertest.rule;
 
+import fi.vincit.multiusertest.rule.expectation.FunctionCall;
+import fi.vincit.multiusertest.rule.expectation.ReturnValueCall;
 import fi.vincit.multiusertest.rule.expectation.TestExpectation;
 import fi.vincit.multiusertest.rule.expectation.WhenThen;
 import fi.vincit.multiusertest.rule.expectation.call.FunctionCallWhenThen;
 import fi.vincit.multiusertest.rule.expectation.value.ReturnValueWhenThen;
 import fi.vincit.multiusertest.rule.expectation.value.TestValueExpectation;
-import fi.vincit.multiusertest.rule.expectation.FunctionCall;
-import fi.vincit.multiusertest.rule.expectation.ReturnValueCall;
 import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
+import fi.vincit.multiusertest.test.UserRoleIT;
+import fi.vincit.multiusertest.util.LoginRole;
 import fi.vincit.multiusertest.util.UserIdentifier;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
@@ -22,7 +24,13 @@ import org.junit.runners.model.Statement;
 public class AuthorizationRule implements TestRule, Authorization {
 
     private UserIdentifier userIdentifier;
+    private UserRoleIT userRoleIT;
     private boolean expectationConstructionFinished = false;
+
+    @Override
+    public void setUserRoleIT(UserRoleIT userRoleIT) {
+        this.userRoleIT = userRoleIT;
+    }
 
     @Override
     public void setRole(UserIdentifier identifier) {
@@ -52,7 +60,8 @@ public class AuthorizationRule implements TestRule, Authorization {
     @Override
     public WhenThen<TestExpectation> testCall(FunctionCall functionCall) {
         expectationConstructionFinished = true;
-        return new FunctionCallWhenThen(functionCall, userIdentifier, this);
+        userRoleIT.logInAs(LoginRole.CONSUMER);
+        return new FunctionCallWhenThen(functionCall, userIdentifier, this, userRoleIT);
     }
 
     /**
@@ -75,10 +84,12 @@ public class AuthorizationRule implements TestRule, Authorization {
     @Override
     public <VALUE_TYPE> WhenThen<TestValueExpectation<VALUE_TYPE>> testCall(ReturnValueCall<VALUE_TYPE> returnValueCall) {
         expectationConstructionFinished = true;
+        userRoleIT.logInAs(LoginRole.CONSUMER);
         return new ReturnValueWhenThen<>(
                 returnValueCall,
                 userIdentifier,
-                this
+                this,
+                userRoleIT
         );
     }
 

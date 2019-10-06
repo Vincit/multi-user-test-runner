@@ -1,9 +1,7 @@
 package fi.vincit.multiusertest.runner.junit;
 
-import fi.vincit.multiusertest.annotation.MultiUserConfigClass;
 import fi.vincit.multiusertest.rule.AuthorizationRule;
 import fi.vincit.multiusertest.test.AbstractMultiUserConfig;
-import fi.vincit.multiusertest.test.MultiUserConfig;
 import fi.vincit.multiusertest.test.UserRoleIT;
 import fi.vincit.multiusertest.util.LoginRole;
 import fi.vincit.multiusertest.util.RunInitAndBefores;
@@ -16,10 +14,8 @@ import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.Statement;
 import org.junit.runners.model.TestClass;
 
-import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 import static fi.vincit.multiusertest.util.ConfigurationUtil.findFieldWithConfig;
 import static fi.vincit.multiusertest.util.ConfigurationUtil.getConfigComponent;
@@ -108,6 +104,7 @@ public class RunnerDelegate {
                     AuthorizationRule authorizationRule = getAuthorizationRule(testClass, target);
 
                     multiUserConfig.setAuthorizationRule(authorizationRule);
+                    authorizationRule.setUserRoleIT(userRoleIt);
                     multiUserConfig.initialize();
                 } else {
                     throw new IllegalStateException("Invalid userRoleIt implementation: " + userRoleIt.getClass().toString());

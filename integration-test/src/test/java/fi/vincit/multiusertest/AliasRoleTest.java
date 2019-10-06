@@ -6,12 +6,13 @@ import fi.vincit.multiusertest.annotation.RunWithUsers;
 import fi.vincit.multiusertest.configuration.ConfiguredTestWithRoleAlias;
 import fi.vincit.multiusertest.rule.AuthorizationRule;
 import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
-import fi.vincit.multiusertest.util.*;
+import fi.vincit.multiusertest.util.LoginRole;
+import fi.vincit.multiusertest.util.SecurityUtil;
+import fi.vincit.multiusertest.util.User;
+import fi.vincit.multiusertest.util.UserIdentifier;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import java.util.Objects;
 
 import static fi.vincit.multiusertest.rule.expectation.TestExpectations.expectException;
 import static fi.vincit.multiusertest.util.UserIdentifiers.roles;
@@ -46,25 +47,7 @@ public class AliasRoleTest {
     }
 
     @Test
-    public void expectFailureProducer() throws Throwable {
-        authorizationRule.testCall(() -> throwIfUserIs(configuredTest.getProducer()))
-                .whenCalledWithAnyOf(UserIdentifiers.producer())
-                .then(expectException(IllegalStateException.class))
-                .test();
-    }
-
-    @Test
-    public void expectFailureWithProducerRole() throws Throwable {
-        authorizationRule.testCall(() -> throwIfUserIs(configuredTest.getConsumer()))
-                .whenCalledWithAnyOf(UserIdentifiers.withProducerRole())
-                .then(expectException(IllegalStateException.class))
-                .test();
-    }
-
-    @Test
     public void expectFailureConsumer() throws Throwable {
-        configuredTest.logInAs(LoginRole.CONSUMER);
-
         authorizationRule.testCall(() -> throwIfUserRole("role:NORMAL"))
                 .whenCalledWithAnyOf(roles("NORMAL"))
                 .then(expectException(IllegalStateException.class))
@@ -75,18 +58,6 @@ public class AliasRoleTest {
         User.Role identifierRole = configuredTest.stringToRole(UserIdentifier.parse(identifier).getIdentifier());
         if (SecurityUtil.getLoggedInUser().getRole() == identifierRole) {
             throw new IllegalStateException("Thrown when role was " + identifier);
-        }
-    }
-
-    private void throwIfUserIs(User user) {
-        User loggedInUser = SecurityUtil.getLoggedInUser();
-        Objects.requireNonNull(loggedInUser, "Logged in user must not be null");
-        Objects.requireNonNull(user, "User must not be null");
-
-        Objects.requireNonNull(loggedInUser.getUsername(), "Logged in user username must not be null");
-
-        if (loggedInUser.getUsername().equals(user.getUsername())) {
-            throw new IllegalStateException("Thrown when user was " + user);
         }
     }
 }

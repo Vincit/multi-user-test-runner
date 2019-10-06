@@ -5,6 +5,7 @@ import fi.vincit.multiusertest.rule.expectation.ReturnValueCall;
 import fi.vincit.multiusertest.rule.expectation.TestExpectation;
 import fi.vincit.multiusertest.rule.expectation.WhenThen;
 import fi.vincit.multiusertest.rule.expectation.value.TestValueExpectation;
+import fi.vincit.multiusertest.test.UserRoleIT;
 import fi.vincit.multiusertest.util.UserIdentifier;
 
 public interface Authorization {
@@ -20,4 +21,6 @@ public interface Authorization {
     void markExpectationConstructed();
 
     void setRole(UserIdentifier identifier);
+    
+    void setUserRoleIT(UserRoleIT userRoleIT);
 }

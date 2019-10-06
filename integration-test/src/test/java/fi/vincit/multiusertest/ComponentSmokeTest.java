@@ -6,7 +6,6 @@ import fi.vincit.multiusertest.configuration.TestMultiUserConfig;
 import fi.vincit.multiusertest.rule.AuthorizationRule;
 import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
 import fi.vincit.multiusertest.test.MultiUserConfig;
-import fi.vincit.multiusertest.util.LoginRole;
 import fi.vincit.multiusertest.util.User;
 import org.junit.Rule;
 import org.junit.Test;
@@ -37,8 +36,6 @@ public class ComponentSmokeTest {
 
     @Test
     public void passes() throws Throwable {
-        multiUserConfig.logInAs(LoginRole.CONSUMER);
-
         authorizationRule.testCall(this::pass)
                 .whenCalledWithAnyOf(roles("ROLE_ADMIN"))
                 .then(expectNotToFail())
@@ -47,8 +44,6 @@ public class ComponentSmokeTest {
 
     @Test
     public void passes_users_roles_syntax() throws Throwable {
-        multiUserConfig.logInAs(LoginRole.CONSUMER);
-
         authorizationRule.testCall(this::pass)
                 .whenCalledWithAnyOf(roles("ROLE_ADMIN"), users("foo"))
                 .then(expectNotToFail())
@@ -57,8 +52,6 @@ public class ComponentSmokeTest {
 
     @Test
     public void fails() throws Throwable {
-        multiUserConfig.logInAs(LoginRole.CONSUMER);
-
         authorizationRule.testCall(this::fail)
                 .whenCalledWithAnyOf(roles("ROLE_ADMIN"))
                 .then(expectException(IllegalStateException.class))

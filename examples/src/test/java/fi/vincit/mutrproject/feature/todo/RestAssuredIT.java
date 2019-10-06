@@ -6,7 +6,6 @@ import fi.vincit.multiusertest.annotation.MultiUserTestConfig;
 import fi.vincit.multiusertest.annotation.RunWithUsers;
 import fi.vincit.multiusertest.rule.Authorization;
 import fi.vincit.multiusertest.runner.junit5.JUnit5MultiUserTestRunner;
-import fi.vincit.multiusertest.util.LoginRole;
 import fi.vincit.multiusertest.util.UserIdentifiers;
 import fi.vincit.mutrproject.Application;
 import fi.vincit.mutrproject.config.SecurityConfig;
@@ -92,8 +91,6 @@ public class RestAssuredIT {
                 .body(new TodoListCommand("Test List 2", true)).post("/api/todo/list")
                 .then().assertThat().statusCode(HttpStatus.SC_OK);
 
-        config.logInAs(LoginRole.CONSUMER);
-
         Response response = config.whenAuthenticated().get("/api/todo/lists");
 
         authorization.testCall(response::then)
@@ -117,8 +114,6 @@ public class RestAssuredIT {
                 .body(new TodoListCommand("Test List", false)).post("/api/todo/list")
                 .body().as(Long.class);
 
-        config.logInAs(LoginRole.CONSUMER);
-
         Response response = config.whenAuthenticated().get("/api/todo/list/" + id);
 
         authorization.testCall(response::then)
@@ -141,8 +136,6 @@ public class RestAssuredIT {
                 .body(new TodoListCommand("Test List", false)).post("/api/todo/list")
                 .body().as(Long.class);
 
-        config.logInAs(LoginRole.CONSUMER);
-
         Response response = config.whenAuthenticated()
                 .body(new TodoItemCommand(listId, "Test List")).post("/api/todo/list/item");
 
@@ -161,8 +154,6 @@ public class RestAssuredIT {
         long listId = config.whenAuthenticated()
                 .body(new TodoListCommand("Test List", false)).post("/api/todo/list")
                 .body().as(Long.class);
-
-        config.logInAs(LoginRole.CONSUMER);
 
         Response response = config.whenAuthenticated()
                 .body(new TodoItemCommand(listId, "Test List")).post("/api/todo/list/item");
@@ -187,8 +178,6 @@ public class RestAssuredIT {
                 .body(new TodoItemCommand(listId, "Test List")).post("/api/todo/list/item")
                 .body().as(Long.class);
 
-        config.logInAs(LoginRole.CONSUMER);
-
         Response response = config.whenAuthenticated().post(String.format("/api/todo/list/%s/%s/done", listId, itemId));
 
         authorization.testCall(response::then)
@@ -210,8 +199,6 @@ public class RestAssuredIT {
         long itemId = config.whenAuthenticated()
                 .body(new TodoItemCommand(listId, "Test List")).post("/api/todo/list/item")
                 .body().as(Long.class);
-
-        config.logInAs(LoginRole.CONSUMER);
 
         Response response = config.whenAuthenticated().post(String.format("/api/todo/list/%s/%s/done", listId, itemId));
 

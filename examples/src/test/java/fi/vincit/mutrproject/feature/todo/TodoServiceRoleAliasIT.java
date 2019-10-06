@@ -5,7 +5,6 @@ import fi.vincit.multiusertest.annotation.MultiUserTestConfig;
 import fi.vincit.multiusertest.annotation.RunWithUsers;
 import fi.vincit.multiusertest.rule.AuthorizationRule;
 import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
-import fi.vincit.multiusertest.util.LoginRole;
 import fi.vincit.multiusertest.util.UserIdentifiers;
 import fi.vincit.mutrproject.Application;
 import fi.vincit.mutrproject.config.SecurityConfig;
@@ -74,7 +73,6 @@ public class TodoServiceRoleAliasIT {
     @Test
     public void getPrivateTodoList() throws Throwable {
         long id = todoService.createTodoList("Test list", false);
-        config.logInAs(LoginRole.CONSUMER);
         authorizationRule.given(() -> todoService.getTodoList(id))
                 .whenCalledWithAnyOf(roles("REGULAR"))
                 .then(expectExceptionInsteadOfValue(AccessDeniedException.class))
@@ -84,7 +82,6 @@ public class TodoServiceRoleAliasIT {
     @Test
     public void getPublicTodoList() throws Throwable {
         long id = todoService.createTodoList("Test list", true);
-        config.logInAs(LoginRole.CONSUMER);
         authorizationRule.given(() -> todoService.getTodoList(id))
                 .test();
     }
@@ -92,7 +89,6 @@ public class TodoServiceRoleAliasIT {
     @Test
     public void addTodoItem() throws Throwable {
         long listId = todoService.createTodoList("Test list", false);
-        config.logInAs(LoginRole.CONSUMER);
         authorizationRule.given(() -> todoService.addItemToList(listId, "Write tests"))
                 .whenCalledWithAnyOf(roles("ADMIN", "SYSTEM_ADMIN"), UserIdentifiers.producer())
                 .then(expectNotToFailIgnoringValue())

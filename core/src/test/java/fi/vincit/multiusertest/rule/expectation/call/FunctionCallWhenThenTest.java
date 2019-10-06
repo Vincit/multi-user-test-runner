@@ -2,6 +2,7 @@ package fi.vincit.multiusertest.rule.expectation.call;
 
 import fi.vincit.multiusertest.rule.AuthorizationRule;
 import fi.vincit.multiusertest.rule.expectation.TestExpectation;
+import fi.vincit.multiusertest.test.UserRoleIT;
 import fi.vincit.multiusertest.util.UserIdentifier;
 import org.junit.Rule;
 import org.junit.Test;
@@ -21,7 +22,8 @@ public class FunctionCallWhenThenTest {
     public void test_CallDoesntThrow_WhenNotExpectedAndNotThrown() throws Throwable {
         FunctionCallWhenThen sut = new FunctionCallWhenThen(
                 () -> {}, UserIdentifier.getAnonymous(),
-                mock(AuthorizationRule.class)
+                mock(AuthorizationRule.class),
+                mock(UserRoleIT.class)
         );
 
         sut.test(mock(TestExpectation.class), UserIdentifier.getAnonymous());
@@ -31,7 +33,8 @@ public class FunctionCallWhenThenTest {
     public void test_CallDoesntThrow_WhenExpectedAndThrown() throws Throwable {
         FunctionCallWhenThen sut = new FunctionCallWhenThen(
                 () -> {throw new IllegalArgumentException();}, UserIdentifier.getAnonymous(),
-                mock(AuthorizationRule.class)
+                mock(AuthorizationRule.class),
+                mock(UserRoleIT.class)
         );
 
         sut.test(mock(TestExpectation.class), UserIdentifier.getAnonymous());
@@ -41,7 +44,8 @@ public class FunctionCallWhenThenTest {
     public void test_CallThrows_WhenExpectedButNotThrown() throws Throwable {
         FunctionCallWhenThen sut = new FunctionCallWhenThen(
                 () -> {}, UserIdentifier.getAnonymous(),
-                mock(AuthorizationRule.class)
+                mock(AuthorizationRule.class),
+                mock(UserRoleIT.class)
         );
 
         TestExpectation testExpectation = mock(TestExpectation.class);
@@ -60,7 +64,8 @@ public class FunctionCallWhenThenTest {
         FunctionCallWhenThen sut = new FunctionCallWhenThen(
                 () -> {throw originalThrownException;},
                 UserIdentifier.getAnonymous(),
-                mock(AuthorizationRule.class)
+                mock(AuthorizationRule.class),
+                mock(UserRoleIT.class)
         );
 
         TestExpectation testExpectation = mock(TestExpectation.class);
@@ -77,7 +82,8 @@ public class FunctionCallWhenThenTest {
     public void getDefaultExpectation() {
         FunctionCallWhenThen sut = new FunctionCallWhenThen(
                 () -> {}, UserIdentifier.getAnonymous(),
-                mock(AuthorizationRule.class)
+                mock(AuthorizationRule.class),
+                mock(UserRoleIT.class)
         );
 
         assertThat(

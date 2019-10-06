@@ -1,7 +1,6 @@
 package fi.vincit.mutrproject.feature.todo;
 
 import fi.vincit.multiusertest.annotation.RunWithUsers;
-import fi.vincit.multiusertest.util.LoginRole;
 import fi.vincit.multiusertest.util.UserIdentifiers;
 import fi.vincit.mutrproject.feature.todo.dto.TodoItemDto;
 import fi.vincit.mutrproject.feature.user.UserService;
@@ -13,7 +12,11 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 
-import static fi.vincit.multiusertest.rule.expectation.TestExpectations.*;
+import static fi.vincit.multiusertest.rule.expectation.TestExpectations.assertValue;
+import static fi.vincit.multiusertest.rule.expectation.TestExpectations.expectException;
+import static fi.vincit.multiusertest.rule.expectation.TestExpectations.expectExceptionInsteadOfValue;
+import static fi.vincit.multiusertest.rule.expectation.TestExpectations.expectNotToFail;
+import static fi.vincit.multiusertest.rule.expectation.TestExpectations.expectNotToFailIgnoringValue;
 import static fi.vincit.multiusertest.util.UserIdentifiers.roles;
 import static fi.vincit.multiusertest.util.UserIdentifiers.users;
 import static org.hamcrest.CoreMatchers.is;
@@ -49,7 +52,6 @@ public class TodoServiceWithUsersIT extends AbstractConfiguredMultiRoleIT {
     @Test
     public void getPrivateTodoList() throws Throwable {
         long id = todoService.createTodoList("Test list", false);
-        config().logInAs(LoginRole.CONSUMER);
         authorization().testCall(() -> todoService.getTodoList(id))
                 .whenCalledWithAnyOf(users("user2"))
                 .then(expectExceptionInsteadOfValue(AccessDeniedException.class))
@@ -59,7 +61,6 @@ public class TodoServiceWithUsersIT extends AbstractConfiguredMultiRoleIT {
     @Test
     public void getPublicTodoList() throws Throwable {
         long id = todoService.createTodoList("Test list", true);
-        config().logInAs(LoginRole.CONSUMER);
         authorization().testCall(() -> todoService.getTodoList(id))
                 .byDefault(assertValue(todoList -> {
                     assertThat(todoList.getId(), is(id));
@@ -71,7 +72,6 @@ public class TodoServiceWithUsersIT extends AbstractConfiguredMultiRoleIT {
     @Test
     public void addTodoItem() throws Throwable {
         long listId = todoService.createTodoList("Test list", false);
-        config().logInAs(LoginRole.CONSUMER);
         authorization().testCall(() -> todoService.addItemToList(listId, "Write tests"))
                 .whenCalledWithAnyOf(roles("ROLE_SYSTEM_ADMIN"), UserIdentifiers.producer())
                 .then(expectNotToFailIgnoringValue())
@@ -82,8 +82,6 @@ public class TodoServiceWithUsersIT extends AbstractConfiguredMultiRoleIT {
     @Test
     public void setTaskAsDone() throws Throwable {
         long listId = todoService.createTodoList("Test list", false);
-
-        config().logInAs(LoginRole.CONSUMER);
 
         authorization().testCall(() -> {
             long itemId = todoService.addItemToList(listId, "Write tests");

@@ -8,11 +8,18 @@ import fi.vincit.multiusertest.rule.expectation.WhenThen;
 import fi.vincit.multiusertest.rule.expectation.call.FunctionCallWhenThen;
 import fi.vincit.multiusertest.rule.expectation.value.ReturnValueWhenThen;
 import fi.vincit.multiusertest.rule.expectation.value.TestValueExpectation;
+import fi.vincit.multiusertest.test.UserRoleIT;
 import fi.vincit.multiusertest.util.UserIdentifier;
 
 public class JUnit5Authorization implements Authorization {
 
     private UserIdentifier userIdentifier;
+    private UserRoleIT userRoleIT;
+    
+    @Override
+    public void setUserRoleIT(UserRoleIT userRoleIT) {
+        this.userRoleIT = userRoleIT;
+    }
 
     @Override
     public void setRole(UserIdentifier identifier) {
@@ -21,7 +28,7 @@ public class JUnit5Authorization implements Authorization {
 
     @Override
     public WhenThen<TestExpectation> testCall(FunctionCall functionCall) {
-        return new FunctionCallWhenThen(functionCall, userIdentifier, this);
+        return new FunctionCallWhenThen(functionCall, userIdentifier, this, userRoleIT);
     }
 
     @Override
@@ -29,7 +36,8 @@ public class JUnit5Authorization implements Authorization {
         return new ReturnValueWhenThen<>(
                 returnValueCall,
                 userIdentifier,
-                this
+                this, 
+                userRoleIT
         );
     }
 

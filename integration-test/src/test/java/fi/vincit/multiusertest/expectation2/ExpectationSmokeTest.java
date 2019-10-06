@@ -6,13 +6,13 @@ import fi.vincit.multiusertest.annotation.RunWithUsers;
 import fi.vincit.multiusertest.configuration.ConfiguredTest;
 import fi.vincit.multiusertest.rule.AuthorizationRule;
 import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
-import fi.vincit.multiusertest.util.LoginRole;
-import fi.vincit.multiusertest.util.UserIdentifiers;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static fi.vincit.multiusertest.rule.expectation.TestExpectations.*;
+import static fi.vincit.multiusertest.rule.expectation.TestExpectations.assertValue;
+import static fi.vincit.multiusertest.rule.expectation.TestExpectations.expectException;
+import static fi.vincit.multiusertest.rule.expectation.TestExpectations.expectValue;
 import static fi.vincit.multiusertest.util.UserIdentifiers.roles;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -38,24 +38,7 @@ public class ExpectationSmokeTest {
     }
 
     @Test
-    public void expectToFail_AsProducer_WhenAccessDeniedThrown() throws Throwable {
-        authorizationRule.testCall(this::throwDefaultException)
-                .whenCalledWithAnyOf(UserIdentifiers.producer())
-                .then(expectException(IllegalStateException.class))
-                .test();
-    }
-
-    @Test(expected = AssertionError.class)
-    public void expectNotToFail_AsProducer_WhenAccessDeniedThrown() throws Throwable {
-        authorizationRule.testCall(this::throwDefaultException)
-                .whenCalledWithAnyOf(roles("ROLE_USER"))
-                .then(expectException(IllegalStateException.class))
-                .test();
-    }
-
-    @Test
     public void expectToFail_WhenAccessDeniedThrown() throws Throwable {
-        configuredTest.logInAs(LoginRole.CONSUMER);
         authorizationRule.testCall(this::throwDefaultException)
                 .whenCalledWithAnyOf(roles("ROLE_USER"))
                 .then(expectException(IllegalStateException.class))
@@ -64,7 +47,6 @@ public class ExpectationSmokeTest {
 
     @Test(expected = AssertionError.class)
     public void expectNotToFail_WhenAccessDeniedThrown() throws Throwable {
-        configuredTest.logInAs(LoginRole.CONSUMER);
         authorizationRule.testCall(this::throwDefaultException)
                 .whenCalledWithAnyOf(roles("ROLE_ADMIN"))
                 .then(expectException(IllegalStateException.class))
@@ -73,8 +55,6 @@ public class ExpectationSmokeTest {
 
     @Test(expected = AssertionError.class)
     public void assertionFails_WithValue() throws Throwable {
-        configuredTest.logInAs(LoginRole.CONSUMER);
-
         authorizationRule.testCall(this::returnValueCall)
                 .whenCalledWithAnyOf(roles("ROLE_USER"))
                 .then(expectValue(104))
@@ -83,8 +63,6 @@ public class ExpectationSmokeTest {
 
     @Test(expected = AssertionError.class)
     public void assertionFails_WithCustomAssertion() throws Throwable {
-        configuredTest.logInAs(LoginRole.CONSUMER);
-
         authorizationRule.testCall(this::returnValueCall)
                 .whenCalledWithAnyOf(roles("ROLE_USER"))
                 .then(assertValue(value -> fail()))
@@ -93,8 +71,6 @@ public class ExpectationSmokeTest {
 
     @Test
     public void assertionPasses_WithValue() throws Throwable {
-        configuredTest.logInAs(LoginRole.CONSUMER);
-
         authorizationRule.testCall(this::returnValueCall)
                 .whenCalledWithAnyOf(roles("ROLE_USER"))
                 .then(expectValue(103))
@@ -103,8 +79,6 @@ public class ExpectationSmokeTest {
 
     @Test
     public void assertionPasses_WithCustomerAssert() throws Throwable {
-        configuredTest.logInAs(LoginRole.CONSUMER);
-
         authorizationRule.testCall(this::returnValueCall)
                 .whenCalledWithAnyOf(roles("ROLE_USER"))
                 .then(assertValue(value -> assertThat(value, is(103))))

@@ -1,17 +1,19 @@
 package fi.vincit.multiusertest.rule.expectation.call;
 
+import fi.vincit.multiusertest.rule.Authorization;
 import fi.vincit.multiusertest.rule.expectation.AbstractWhenThen;
 import fi.vincit.multiusertest.rule.expectation.FunctionCall;
 import fi.vincit.multiusertest.rule.expectation.TestExpectation;
-import fi.vincit.multiusertest.rule.Authorization;
+import fi.vincit.multiusertest.test.UserRoleIT;
 import fi.vincit.multiusertest.util.UserIdentifier;
 
 public class FunctionCallWhenThen extends AbstractWhenThen<TestExpectation> {
 
     private final FunctionCall functionCall;
 
-    public FunctionCallWhenThen(FunctionCall function, UserIdentifier identifier, Authorization authorizationRule) {
-        super(identifier, authorizationRule);
+    public FunctionCallWhenThen(FunctionCall function, UserIdentifier identifier, Authorization authorizationRule,
+                                UserRoleIT userRoleIT) {
+        super(identifier, authorizationRule, userRoleIT);
         this.functionCall = function;
     }
 
