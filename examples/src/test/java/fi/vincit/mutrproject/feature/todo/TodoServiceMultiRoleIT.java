@@ -74,7 +74,7 @@ public class TodoServiceMultiRoleIT {
     @Test
     public void getPrivateTodoList() throws Throwable {
         long id = todoService.createTodoList("Test list", false);
-        authorizationRule.testCall(() -> todoService.getTodoList(id))
+        authorizationRule.given(() -> todoService.getTodoList(id))
                 .whenCalledWithAnyOf(roles("USER"))
                 .then(expectExceptionInsteadOfValue(AccessDeniedException.class))
                 .test();
@@ -83,7 +83,7 @@ public class TodoServiceMultiRoleIT {
     @Test
     public void getPublicTodoList() throws Throwable {
         long id = todoService.createTodoList("Test list", true);
-        authorizationRule.testCall(() -> todoService.getTodoList(id))
+        authorizationRule.given(() -> todoService.getTodoList(id))
                 .byDefault(expectNotToFailIgnoringValue())
                 .test();
     }
@@ -91,7 +91,7 @@ public class TodoServiceMultiRoleIT {
     @Test
     public void addTodoItem() throws Throwable {
         long listId = todoService.createTodoList("Test list", false);
-        authorizationRule.testCall(() -> todoService.addItemToList(listId, "Write tests"))
+        authorizationRule.given(() -> todoService.addItemToList(listId, "Write tests"))
                 .whenCalledWithAnyOf(roles("ADMIN:USER"), UserIdentifiers.producer())
                 .then(expectNotToFailIgnoringValue())
                 .otherwise(expectExceptionInsteadOfValue(AccessDeniedException.class))

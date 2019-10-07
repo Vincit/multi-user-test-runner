@@ -52,7 +52,7 @@ public class TodoServiceWithUsersIT extends AbstractConfiguredMultiRoleIT {
     @Test
     public void getPrivateTodoList() throws Throwable {
         long id = todoService.createTodoList("Test list", false);
-        authorization().testCall(() -> todoService.getTodoList(id))
+        authorization().given(() -> todoService.getTodoList(id))
                 .whenCalledWithAnyOf(users("user2"))
                 .then(expectExceptionInsteadOfValue(AccessDeniedException.class))
                 .test();
@@ -61,7 +61,7 @@ public class TodoServiceWithUsersIT extends AbstractConfiguredMultiRoleIT {
     @Test
     public void getPublicTodoList() throws Throwable {
         long id = todoService.createTodoList("Test list", true);
-        authorization().testCall(() -> todoService.getTodoList(id))
+        authorization().given(() -> todoService.getTodoList(id))
                 .byDefault(assertValue(todoList -> {
                     assertThat(todoList.getId(), is(id));
                     assertThat(todoList.getName(), is("Test list"));
@@ -72,7 +72,7 @@ public class TodoServiceWithUsersIT extends AbstractConfiguredMultiRoleIT {
     @Test
     public void addTodoItem() throws Throwable {
         long listId = todoService.createTodoList("Test list", false);
-        authorization().testCall(() -> todoService.addItemToList(listId, "Write tests"))
+        authorization().given(() -> todoService.addItemToList(listId, "Write tests"))
                 .whenCalledWithAnyOf(roles("ROLE_SYSTEM_ADMIN"), UserIdentifiers.producer())
                 .then(expectNotToFailIgnoringValue())
                 .otherwise(expectExceptionInsteadOfValue(AccessDeniedException.class))
@@ -83,7 +83,7 @@ public class TodoServiceWithUsersIT extends AbstractConfiguredMultiRoleIT {
     public void setTaskAsDone() throws Throwable {
         long listId = todoService.createTodoList("Test list", false);
 
-        authorization().testCall(() -> {
+        authorization().given(() -> {
             long itemId = todoService.addItemToList(listId, "Write tests");
             TodoItemDto item = todoService.getTodoItem(listId, itemId);
             todoService.setItemStatus(listId, item.getId(), true);

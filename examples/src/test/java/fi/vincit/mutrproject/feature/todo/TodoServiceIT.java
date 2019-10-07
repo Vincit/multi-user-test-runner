@@ -37,7 +37,7 @@ public class TodoServiceIT extends AbstractConfiguredMultiRoleIT {
         // At this point the producer has been logged in automatically
         long id = todoService.createTodoList("Test list", false);
 
-        authorization().testCall(() -> todoService.getTodoList(id))
+        authorization().given(() -> todoService.getTodoList(id))
                 .whenCalledWithAnyOf(roles("ROLE_USER"), UserIdentifiers.anonymous())
                 .then(expectExceptionInsteadOfValue(AccessDeniedException.class))
                 .otherwise(assertValue(todoList -> {
@@ -52,7 +52,7 @@ public class TodoServiceIT extends AbstractConfiguredMultiRoleIT {
     @Test
     public void getPublicTodoList() throws Throwable {
         long id = todoService.createTodoList("Test list", true);
-        authorization().testCall(() -> todoService.getTodoList(id))
+        authorization().given(() -> todoService.getTodoList(id))
                 .otherwise(assertValue(todoList -> {
                     assertThat(todoList, notNullValue());
                     assertThat(todoList.getId(), is(id));
@@ -72,7 +72,7 @@ public class TodoServiceIT extends AbstractConfiguredMultiRoleIT {
     @Test
     public void getPublicTodoListNotFailsExplicit() throws Throwable {
         long id = todoService.createTodoList("Test list", true);
-        authorization().testCall(() -> todoService.getTodoList(id))
+        authorization().given(() -> todoService.getTodoList(id))
                 .byDefault(expectNotToFailIgnoringValue())
                 .test();
     }
@@ -87,7 +87,7 @@ public class TodoServiceIT extends AbstractConfiguredMultiRoleIT {
     @Test
     public void getPublicTodoListNotFailsSimple() throws Throwable {
         long id = todoService.createTodoList("Test list", true);
-        authorization().testCall(() -> todoService.getTodoList(id))
+        authorization().given(() -> todoService.getTodoList(id))
                 .test();
     }
 
@@ -99,7 +99,7 @@ public class TodoServiceIT extends AbstractConfiguredMultiRoleIT {
     @IgnoreForUsers(consumers = RunWithUsers.ANONYMOUS)
     public void addTodoItem() throws Throwable {
         long listId = todoService.createTodoList("Test list", false);
-        authorization().testCall(() -> todoService.addItemToList(listId, "Write tests"))
+        authorization().given(() -> todoService.addItemToList(listId, "Write tests"))
                 .whenCalledWithAnyOf(roles("ROLE_ADMIN", "ROLE_SYSTEM_ADMIN"), UserIdentifiers.producer())
                 .then(expectNotToFailIgnoringValue())
                 .otherwise(expectExceptionInsteadOfValue(AccessDeniedException.class))
@@ -114,7 +114,7 @@ public class TodoServiceIT extends AbstractConfiguredMultiRoleIT {
     @RunWithUsers(consumers = RunWithUsers.ANONYMOUS)
     public void addTodoItemAnonymous() throws Throwable {
         long listId = todoService.createTodoList("Test list", false);
-        authorization().testCall(() -> todoService.addItemToList(listId, "Write tests"))
+        authorization().given(() -> todoService.addItemToList(listId, "Write tests"))
                 .byDefault(expectExceptionInsteadOfValue(AuthenticationCredentialsNotFoundException.class))
                 .test();
     }

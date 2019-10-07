@@ -93,7 +93,7 @@ public class RestAssuredIT {
 
         Response response = config.whenAuthenticated().get("/api/todo/lists");
 
-        authorization.testCall(response::then)
+        authorization.given(response::then)
                 .whenCalledWithAnyOf(roles("ROLE_ADMIN"), UserIdentifiers.producer())
                 .then(assertResponse(t -> t
                         .statusCode(HttpStatus.SC_OK)
@@ -116,7 +116,7 @@ public class RestAssuredIT {
 
         Response response = config.whenAuthenticated().get("/api/todo/list/" + id);
 
-        authorization.testCall(response::then)
+        authorization.given(response::then)
                 .whenCalledWithAnyOf(roles("ROLE_ADMIN"), UserIdentifiers.producer())
                 .then(assertResponse(t -> t
                         .statusCode(HttpStatus.SC_OK)
@@ -139,7 +139,7 @@ public class RestAssuredIT {
         Response response = config.whenAuthenticated()
                 .body(new TodoItemCommand(listId, "Test List")).post("/api/todo/list/item");
 
-        authorization.testCall(response::then)
+        authorization.given(response::then)
                 .whenCalledWithAnyOf(roles("ROLE_ADMIN"), UserIdentifiers.producer())
                 .then(assertResponse(t -> t.statusCode(HttpStatus.SC_OK)))
                 .whenCalledWithAnyOf(roles("ROLE_USER"), users("user1"))
@@ -158,7 +158,7 @@ public class RestAssuredIT {
         Response response = config.whenAuthenticated()
                 .body(new TodoItemCommand(listId, "Test List")).post("/api/todo/list/item");
 
-        authorization.testCall(response::then)
+        authorization.given(response::then)
                 .whenCalledWithAnyOf(roles("ROLE_ADMIN"), UserIdentifiers.producer())
                 .then(assertResponse(t -> t.statusCode(HttpStatus.SC_OK)))
                 .whenCalledWithAnyOf(roles("ROLE_USER"), users("user1"))
@@ -180,7 +180,7 @@ public class RestAssuredIT {
 
         Response response = config.whenAuthenticated().post(String.format("/api/todo/list/%s/%s/done", listId, itemId));
 
-        authorization.testCall(response::then)
+        authorization.given(response::then)
                 .whenCalledWithAnyOf(roles("ROLE_ADMIN"), UserIdentifiers.producer())
                 .then(assertResponse(t -> t.statusCode(HttpStatus.SC_OK)))
                 .whenCalledWithAnyOf(roles("ROLE_USER"), users("user1"))
@@ -202,7 +202,7 @@ public class RestAssuredIT {
 
         Response response = config.whenAuthenticated().post(String.format("/api/todo/list/%s/%s/done", listId, itemId));
 
-        authorization.testCall(response::then)
+        authorization.given(response::then)
                 .whenCalledWithAnyOf(roles("ROLE_ADMIN"), UserIdentifiers.producer())
                 .then(assertResponse(t -> t.statusCode(HttpStatus.SC_OK)))
                 .whenCalledWithAnyOf(roles("ROLE_USER"), users("user1"))

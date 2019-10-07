@@ -48,7 +48,7 @@ public class TodoServiceJUnit5IT {
         // At this point the producer has been logged in automatically
         long id = todoService.createTodoList("Test list", false);
 
-        authorization.testCall(() -> todoService.getTodoList(id))
+        authorization.given(() -> todoService.getTodoList(id))
                 .whenCalledWithAnyOf(roles("ROLE_USER"), UserIdentifiers.anonymous())
                 .then(expectExceptionInsteadOfValue(AccessDeniedException.class))
                 .otherwise(assertValue(todoList -> {
@@ -63,7 +63,7 @@ public class TodoServiceJUnit5IT {
     @TestTemplate
     public void getPublicTodoList(Authorization authorization) throws Throwable {
         long id = todoService.createTodoList("Test list", true);
-        authorization.testCall(() -> todoService.getTodoList(id))
+        authorization.given(() -> todoService.getTodoList(id))
                 .otherwise(assertValue(todoList -> {
                     assertThat(todoList, notNullValue());
                     assertThat(todoList.getId(), is(id));
@@ -83,7 +83,7 @@ public class TodoServiceJUnit5IT {
     @TestTemplate
     public void getPublicTodoListNotFailsExplicit(Authorization authorization) throws Throwable {
         long id = todoService.createTodoList("Test list", true);
-        authorization.testCall(() -> todoService.getTodoList(id))
+        authorization.given(() -> todoService.getTodoList(id))
                 .byDefault(expectNotToFailIgnoringValue())
                 .test();
     }
@@ -98,7 +98,7 @@ public class TodoServiceJUnit5IT {
     @TestTemplate
     public void getPublicTodoListNotFailsSimple(Authorization authorization) throws Throwable {
         long id = todoService.createTodoList("Test list", true);
-        authorization.testCall(() -> todoService.getTodoList(id))
+        authorization.given(() -> todoService.getTodoList(id))
                 .test();
     }
 
@@ -110,7 +110,7 @@ public class TodoServiceJUnit5IT {
     @IgnoreForUsers(consumers = RunWithUsers.ANONYMOUS)
     public void addTodoItem(Authorization authorization) throws Throwable {
         long listId = todoService.createTodoList("Test list", false);
-        authorization.testCall(() -> todoService.addItemToList(listId, "Write tests"))
+        authorization.given(() -> todoService.addItemToList(listId, "Write tests"))
                 .whenCalledWithAnyOf(roles("ROLE_ADMIN", "ROLE_SYSTEM_ADMIN"), UserIdentifiers.producer())
                 .then(expectNotToFailIgnoringValue())
                 .otherwise(expectExceptionInsteadOfValue(AccessDeniedException.class))
@@ -125,7 +125,7 @@ public class TodoServiceJUnit5IT {
     @RunWithUsers(consumers = RunWithUsers.ANONYMOUS)
     public void addTodoItemAnonymous(Authorization authorization) throws Throwable {
         long listId = todoService.createTodoList("Test list", false);
-        authorization.testCall(() -> todoService.addItemToList(listId, "Write tests"))
+        authorization.given(() -> todoService.addItemToList(listId, "Write tests"))
                 .byDefault(expectExceptionInsteadOfValue(AuthenticationCredentialsNotFoundException.class))
                 .test();
     }
