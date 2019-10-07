@@ -42,7 +42,7 @@ public class JUnit5BasicTest {
 
     @TestTemplate
     public void expectFailureProducer(Authorization authorization) throws Throwable {
-        authorization.testCall(() -> throwIfUserIs(configuredTest.getProducer()))
+        authorization.given(() -> throwIfUserIs(configuredTest.getProducer()))
                 .whenCalledWithAnyOf(UserIdentifiers.producer())
                 .then(expectException(IllegalStateException.class))
                 .test();
@@ -50,7 +50,7 @@ public class JUnit5BasicTest {
 
     @TestTemplate
     public void expectFailureWithProducerRole(Authorization authorization) throws Throwable {
-        authorization.testCall(() -> throwIfUserIs(configuredTest.getConsumer()))
+        authorization.given(() -> throwIfUserIs(configuredTest.getConsumer()))
                 .whenCalledWithAnyOf(UserIdentifiers.withProducerRole())
                 .then(expectException(IllegalStateException.class))
                 .test();
@@ -59,7 +59,7 @@ public class JUnit5BasicTest {
     @TestTemplate
     public void expectFailureConsumer(Authorization authorization) throws Throwable {
         configuredTest.logInAs(LoginRole.CONSUMER);
-        authorization.testCall(() -> throwIfUserRole("role:ROLE_USER"))
+        authorization.given(() -> throwIfUserRole("role:ROLE_USER"))
                 .whenCalledWithAnyOf(roles("ROLE_USER"))
                 .then(expectException(IllegalStateException.class))
                 .test();

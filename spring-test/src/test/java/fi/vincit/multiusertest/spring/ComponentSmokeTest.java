@@ -64,7 +64,7 @@ public class ComponentSmokeTest {
 
     @Test
     public void testNotFail() throws Throwable {
-        authorizationRule.testCall(this::pass)
+        authorizationRule.given(this::pass)
                 .whenCalledWithAnyOf(roles("ROLE_USER"))
                 .then(expectNotToFail())
                 .test();
@@ -72,7 +72,7 @@ public class ComponentSmokeTest {
 
     @Test
     public void testFail() throws Throwable {
-        authorizationRule.testCall(this::fail)
+        authorizationRule.given(this::fail)
                 .whenCalledWithAnyOf(roles("ROLE_USER"))
                 .then(expectException(IllegalStateException.class))
                 .test();
@@ -80,7 +80,7 @@ public class ComponentSmokeTest {
 
     @Test
     public void testFail_CustomException() throws Throwable {
-        authorizationRule.testCall(this::failIO)
+        authorizationRule.given(this::failIO)
                 .whenCalledWithAnyOf(roles("ROLE_USER"))
                 .then(expectException(IOException.class))
                 .test();

@@ -6,7 +6,7 @@ Multi User Test Runner
 
 ## Changes
 
-* Added `given` alias for `testCall` method
+* Changed `testCall` to `given`
 * Removed old assertion and expectation APIs
 * Simplified the remaining API
 
@@ -26,6 +26,7 @@ Expectation API. From 1.0 onwards the API will considered stable.
 * Removed `defaultException` from `MultiUserTestConfig` annotation
 * Tests can't be run with `producer` role anymore. Just before calling the method under test,
   framework logs in as `consumer`. After the call the `producer` is logged back in.
+* Replaced `testCall` with `given`. Given is more in line with the `when` and `then`
 
 ## Migration Guide
 

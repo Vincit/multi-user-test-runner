@@ -10,11 +10,7 @@ import fi.vincit.multiusertest.util.UserIdentifier;
 
 public interface Authorization {
 
-    WhenThen<TestExpectation> testCall(FunctionCall functionCall);
-
     WhenThen<TestExpectation> given(FunctionCall functionCall);
-
-    <VALUE_TYPE> WhenThen<TestValueExpectation<VALUE_TYPE>> testCall(ReturnValueCall<VALUE_TYPE> returnValueCall);
 
     <VALUE_TYPE> WhenThen<TestValueExpectation<VALUE_TYPE>> given(ReturnValueCall<VALUE_TYPE> returnValueCall);
 

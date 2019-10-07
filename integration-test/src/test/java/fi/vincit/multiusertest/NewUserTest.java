@@ -51,7 +51,7 @@ public class NewUserTest {
 
     @Test
     public void expectFailureConsumer() throws Throwable {
-        authorizationRule.testCall(() -> throwIfUserRole("role:ROLE_USER"))
+        authorizationRule.given(() -> throwIfUserRole("role:ROLE_USER"))
                 .whenCalledWithAnyOf(roles("ROLE_USER"))
                 .then(expectException(IllegalStateException.class))
                 .test();

@@ -32,7 +32,7 @@ public class SmokeTest {
 
     @Test
     public void passes() throws Throwable {
-        authorizationRule.testCall(this::callPass)
+        authorizationRule.given(this::callPass)
                 .whenCalledWithAnyOf(roles("ROLE_ADMIN"))
                 .then(TestExpectations.expectNotToFail())
                 .test();
@@ -40,7 +40,7 @@ public class SmokeTest {
 
     @Test
     public void passes_users_roles_syntax() throws Throwable {
-        authorizationRule.testCall(this::callPass)
+        authorizationRule.given(this::callPass)
                 .whenCalledWithAnyOf(roles("ROLE_ADMIN"), users("foo"))
                 .then(TestExpectations.expectNotToFail())
                 .test();
@@ -48,7 +48,7 @@ public class SmokeTest {
 
     @Test
     public void fails() throws Throwable {
-        authorizationRule.testCall(this::callFails)
+        authorizationRule.given(this::callFails)
                 .whenCalledWithAnyOf(roles("ROLE_ADMIN"))
                 .then(TestExpectations.expectException(IllegalStateException.class))
                 .test();

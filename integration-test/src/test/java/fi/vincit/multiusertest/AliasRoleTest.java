@@ -48,7 +48,7 @@ public class AliasRoleTest {
 
     @Test
     public void expectFailureConsumer() throws Throwable {
-        authorizationRule.testCall(() -> throwIfUserRole("role:NORMAL"))
+        authorizationRule.given(() -> throwIfUserRole("role:NORMAL"))
                 .whenCalledWithAnyOf(roles("NORMAL"))
                 .then(expectException(IllegalStateException.class))
                 .test();

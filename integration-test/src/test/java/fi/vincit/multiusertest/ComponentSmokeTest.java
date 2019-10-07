@@ -36,7 +36,7 @@ public class ComponentSmokeTest {
 
     @Test
     public void passes() throws Throwable {
-        authorizationRule.testCall(this::pass)
+        authorizationRule.given(this::pass)
                 .whenCalledWithAnyOf(roles("ROLE_ADMIN"))
                 .then(expectNotToFail())
                 .test();
@@ -44,7 +44,7 @@ public class ComponentSmokeTest {
 
     @Test
     public void passes_users_roles_syntax() throws Throwable {
-        authorizationRule.testCall(this::pass)
+        authorizationRule.given(this::pass)
                 .whenCalledWithAnyOf(roles("ROLE_ADMIN"), users("foo"))
                 .then(expectNotToFail())
                 .test();
@@ -52,7 +52,7 @@ public class ComponentSmokeTest {
 
     @Test
     public void fails() throws Throwable {
-        authorizationRule.testCall(this::fail)
+        authorizationRule.given(this::fail)
                 .whenCalledWithAnyOf(roles("ROLE_ADMIN"))
                 .then(expectException(IllegalStateException.class))
                 .test();

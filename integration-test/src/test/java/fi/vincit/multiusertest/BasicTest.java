@@ -48,7 +48,7 @@ public class BasicTest {
 
     @Test
     public void expectFailureProducer() throws Throwable {
-        authorization.testCall(() -> throwIfUserIs(configuredTest.getProducer()))
+        authorization.given(() -> throwIfUserIs(configuredTest.getProducer()))
                 .whenCalledWithAnyOf(UserIdentifiers.producer())
                 .then(expectException(IllegalStateException.class))
                 .test();
@@ -56,7 +56,7 @@ public class BasicTest {
 
     @Test
     public void expectFailureConsumer() throws Throwable {
-        authorization.testCall(() -> throwIfUserRole("role:ROLE_USER"))
+        authorization.given(() -> throwIfUserRole("role:ROLE_USER"))
                 .whenCalledWithAnyOf(roles("ROLE_USER"))
                 .then(expectException(IllegalStateException.class))
                 .test();

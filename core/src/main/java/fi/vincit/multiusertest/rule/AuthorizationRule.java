@@ -55,34 +55,23 @@ public class AuthorizationRule implements TestRule, Authorization {
      * Starts constructing expectation for a function call.
      * @param functionCall Call to test
      * @return Expectation object
-     * @since 0.5
+     * @since 1.0
      */
     @Override
-    public WhenThen<TestExpectation> testCall(FunctionCall functionCall) {
+    public WhenThen<TestExpectation> given(FunctionCall functionCall) {
         expectationConstructionFinished = true;
         userRoleIT.logInAs(LoginRole.CONSUMER);
         return new FunctionCallWhenThen(functionCall, userIdentifier, this, userRoleIT);
     }
 
     /**
-     * Starts constructing expectation for a function call.
-     * Alias for {@link #testCall(FunctionCall)}.
-     * @param functionCall Call to test
-     * @return Expectation object
-     * @since 1.0
-     */
-    public WhenThen<TestExpectation> given(FunctionCall functionCall) {
-        return testCall(functionCall);
-    }
-
-    /**
      * Starts constructing expectation for a return value call.
      * @param returnValueCall Call to test
      * @return Expectation API object
-     * @since 0.5
+     * @since 1.0
      */
     @Override
-    public <VALUE_TYPE> WhenThen<TestValueExpectation<VALUE_TYPE>> testCall(ReturnValueCall<VALUE_TYPE> returnValueCall) {
+    public <VALUE_TYPE> WhenThen<TestValueExpectation<VALUE_TYPE>> given(ReturnValueCall<VALUE_TYPE> returnValueCall) {
         expectationConstructionFinished = true;
         userRoleIT.logInAs(LoginRole.CONSUMER);
         return new ReturnValueWhenThen<>(
@@ -91,17 +80,6 @@ public class AuthorizationRule implements TestRule, Authorization {
                 this,
                 userRoleIT
         );
-    }
-
-    /**
-     * Starts constructing expectation for a return value call.
-     * Alias for {@link #testCall(ReturnValueCall)}.
-     * @param returnValueCall Call to test
-     * @return Expectation API object
-     * @since 1.0
-     */
-    public <VALUE_TYPE> WhenThen<TestValueExpectation<VALUE_TYPE>> given(ReturnValueCall<VALUE_TYPE> returnValueCall) {
-        return testCall(returnValueCall);
     }
 
     private class AuthChecker extends Statement {

@@ -33,14 +33,14 @@ public class JUnit5SmokeTest {
 
     @Test(expected = AssertionError.class)
     public void expectAssertionToFail() throws Throwable {
-        authorizationRule.testCall(testService::throwAccessDenied)
+        authorizationRule.given(testService::throwAccessDenied)
                 .byDefault(expectNotToFail())
                 .test();
     }
 
     @Test
     public void expectCallNotToFail() throws Throwable {
-        authorizationRule.testCall(testService::noThrow)
+        authorizationRule.given(testService::noThrow)
                 .whenCalledWithAnyOf(roles("ROLE_ADMIN"))
                 .then(expectNotToFail())
                 .test();
@@ -48,7 +48,7 @@ public class JUnit5SmokeTest {
 
     @Test
     public void expectAssert_toPass() throws Throwable {
-        authorizationRule.testCall(() -> testService.returnsValue(3))
+        authorizationRule.given(() -> testService.returnsValue(3))
                 .whenCalledWithAnyOf(roles("ROLE_ADMIN"))
                 .then(assertValue(value -> assertThat(value, is(3))))
                 .test();
@@ -56,7 +56,7 @@ public class JUnit5SmokeTest {
 
     @Test(expected = AssertionError.class)
     public void expectAssert_toFail() throws Throwable {
-        authorizationRule.testCall(() -> testService.returnsValue(3))
+        authorizationRule.given(() -> testService.returnsValue(3))
                 .whenCalledWithAnyOf(roles("ROLE_USER"))
                 .then(assertValue(value -> assertThat(value, is(1))))
                 .test();
@@ -64,7 +64,7 @@ public class JUnit5SmokeTest {
 
     @Test(expected = AssertionError.class)
     public void expectEqual_toFail() throws Throwable {
-        authorizationRule.testCall(() -> testService.returnsValue(3))
+        authorizationRule.given(() -> testService.returnsValue(3))
                 .whenCalledWithAnyOf(roles("ROLE_USER"))
                 .then(expectValue(1))
                 .test();
@@ -72,7 +72,7 @@ public class JUnit5SmokeTest {
 
     @Test
     public void expectEqual_toPass() throws Throwable {
-        authorizationRule.testCall(() -> testService.returnsValue(3))
+        authorizationRule.given(() -> testService.returnsValue(3))
                 .whenCalledWithAnyOf(roles("ROLE_USER"))
                 .then(expectValue(3))
                 .test();

@@ -52,7 +52,7 @@ public class AnonymousUserTest {
     public void expectFailureAnonymousUser() throws Throwable {
         configuredTest.logInAs(LoginRole.CONSUMER);
 
-        authorizationRule.testCall(() -> throwIfUserRole(RunWithUsers.ANONYMOUS))
+        authorizationRule.given(() -> throwIfUserRole(RunWithUsers.ANONYMOUS))
                 .whenCalledWithAnyOf(UserIdentifiers.anonymous())
                 .then(expectException(IllegalStateException.class))
                 .test();

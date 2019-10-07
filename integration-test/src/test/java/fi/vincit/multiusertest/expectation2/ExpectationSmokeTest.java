@@ -39,7 +39,7 @@ public class ExpectationSmokeTest {
 
     @Test
     public void expectToFail_WhenAccessDeniedThrown() throws Throwable {
-        authorizationRule.testCall(this::throwDefaultException)
+        authorizationRule.given(this::throwDefaultException)
                 .whenCalledWithAnyOf(roles("ROLE_USER"))
                 .then(expectException(IllegalStateException.class))
                 .test();
@@ -47,7 +47,7 @@ public class ExpectationSmokeTest {
 
     @Test(expected = AssertionError.class)
     public void expectNotToFail_WhenAccessDeniedThrown() throws Throwable {
-        authorizationRule.testCall(this::throwDefaultException)
+        authorizationRule.given(this::throwDefaultException)
                 .whenCalledWithAnyOf(roles("ROLE_ADMIN"))
                 .then(expectException(IllegalStateException.class))
                 .test();
@@ -55,7 +55,7 @@ public class ExpectationSmokeTest {
 
     @Test(expected = AssertionError.class)
     public void assertionFails_WithValue() throws Throwable {
-        authorizationRule.testCall(this::returnValueCall)
+        authorizationRule.given(this::returnValueCall)
                 .whenCalledWithAnyOf(roles("ROLE_USER"))
                 .then(expectValue(104))
                 .test();
@@ -63,7 +63,7 @@ public class ExpectationSmokeTest {
 
     @Test(expected = AssertionError.class)
     public void assertionFails_WithCustomAssertion() throws Throwable {
-        authorizationRule.testCall(this::returnValueCall)
+        authorizationRule.given(this::returnValueCall)
                 .whenCalledWithAnyOf(roles("ROLE_USER"))
                 .then(assertValue(value -> fail()))
                 .test();
@@ -71,7 +71,7 @@ public class ExpectationSmokeTest {
 
     @Test
     public void assertionPasses_WithValue() throws Throwable {
-        authorizationRule.testCall(this::returnValueCall)
+        authorizationRule.given(this::returnValueCall)
                 .whenCalledWithAnyOf(roles("ROLE_USER"))
                 .then(expectValue(103))
                 .test();
@@ -79,7 +79,7 @@ public class ExpectationSmokeTest {
 
     @Test
     public void assertionPasses_WithCustomerAssert() throws Throwable {
-        authorizationRule.testCall(this::returnValueCall)
+        authorizationRule.given(this::returnValueCall)
                 .whenCalledWithAnyOf(roles("ROLE_USER"))
                 .then(assertValue(value -> assertThat(value, is(103))))
                 .test();

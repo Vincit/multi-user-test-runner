@@ -27,12 +27,12 @@ public class JUnit5Authorization implements Authorization {
     }
 
     @Override
-    public WhenThen<TestExpectation> testCall(FunctionCall functionCall) {
+    public WhenThen<TestExpectation> given(FunctionCall functionCall) {
         return new FunctionCallWhenThen(functionCall, userIdentifier, this, userRoleIT);
     }
 
     @Override
-    public <VALUE_TYPE> WhenThen<TestValueExpectation<VALUE_TYPE>> testCall(ReturnValueCall<VALUE_TYPE> returnValueCall) {
+    public <VALUE_TYPE> WhenThen<TestValueExpectation<VALUE_TYPE>> given(ReturnValueCall<VALUE_TYPE> returnValueCall) {
         return new ReturnValueWhenThen<>(
                 returnValueCall,
                 userIdentifier,
@@ -46,13 +46,4 @@ public class JUnit5Authorization implements Authorization {
         // NOOP
     }
 
-    @Override
-    public WhenThen<TestExpectation> given(FunctionCall functionCall) {
-        return testCall(functionCall);
-    }
-
-    @Override
-    public <VALUE_TYPE> WhenThen<TestValueExpectation<VALUE_TYPE>> given(ReturnValueCall<VALUE_TYPE> returnValueCall) {
-        return testCall(returnValueCall);
-    }
 }
