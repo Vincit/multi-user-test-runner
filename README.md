@@ -191,20 +191,24 @@ existing user definitions will not create new users.
 
 ## Changing the User During Test
 
-By default the producer user is logged in by using the implemented `loginWithUser(USER user)` method. To change
-the test to use the consumer (i.e. current user definition) the `logInAs(LoginRole role)` method can be called at
-any point of the test method. This method takes `LoginRole.PRODUCER` or `LoginRole.CONSUMER` as parameter. Normally
-after creating data with the producer user the user is changed before calling the method under test:
+By default the producer user is logged in by using the implemented `loginWithUser(USER user)` method. The consumer
+is logged in automatically just before the method under test is called. After successful call of the method under test,
+producer is logged back in.
+
+To change the test to use the consumer (i.e. current user definition) the `logInAs(LoginRole role)` method can be called at
+any point of the test method. This method takes `LoginRole.PRODUCER` or `LoginRole.CONSUMER` as parameter. The basic way
+to write a test method is:
 
 ```java
 @Test
 public void fetchProduct() {
     String productId = productService.createProduct("Ice cream");
 
-    logInAs(LoginRole.CONSUMER);
-
-    authorization().expect(toFail(ifAnyOf("role:ROLE_ANONYMOUS")));
-    productService.fetchProduct(productId);
+    authorization.given(() -> productService.fetchProduct(productId))
+                .whenCalledWithAnyOf(roles("ROLE_ADMIN", "ROLE_SYSTEM_ADMIN"))
+                .then(expectNotToFailIgnoringValue())
+                .otherwise(expectExceptionInsteadOfValue(AccessDeniedException.class))
+                .test();
 }
 ```
 
@@ -326,13 +330,13 @@ Writing and reading the rules is easier when the `when-then` structure is on the
 (as opposed to nested like in 0.2).
 
 ```java
-authorizationRule.testCall(() -> testService.getAllUsernames())
-        .whenCalledWith(anyOf(roles("ROLE_ADMIN", "ROLE_USER")))
+authorizationRule.given(() -> testService.getAllUsernames())
+        .whenCalledWithAnyOf(roles("ROLE_ADMIN", "ROLE_USER"))
         .then(expectValue(Arrays.asList("admin", "user 1", "user 2")))
 
-        .whenCalledWith(anyOf(roles("ROLE_SUPER_ADMIN")))
+        .whenCalledWithAnyOf(roles("ROLE_SUPER_ADMIN"))
         .then(expectValue(Arrays.asList("super_admin", "admin", "user 1", "user 2", "user 3")))
-        // Shorthand version of whenCalledWith + anyOf
+
         .whenCalledWithAnyOf(roles("ROLE_VISITOR"))
         .then(expectExceptionInsteadOfValue(AccessDeniedException.class,
                 exception -> assertThat(exception.getMessage(), is("Access is denied"))
