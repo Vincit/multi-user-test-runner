@@ -18,7 +18,8 @@ public class Users extends GenericUserIdentifierCollection {
 
     /**
      * Initializes the Users with the given user names
-     * @param usernames
+     * @param usernames User identifiers to create
+     * @return User identifiers
      */
     public static Users create(String... usernames) {
         List<UserIdentifier>  userIdentifiers = new ArrayList<>(usernames.length);

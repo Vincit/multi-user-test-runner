@@ -17,6 +17,7 @@ public class TestExpectations {
     /**
      * Expect that an exception of the given type should be thrown
      * @param exception Exception expected
+     * @param <T> Type of the exception
      * @return Expectation object
      * @since 1.0
      */
@@ -48,6 +49,7 @@ public class TestExpectations {
 
     /**
      * Return value variant of {@link #expectNotToFail()}
+     * @param <VALUE_TYPE> Type of return value
      * @return Expectation object
      * @since 1.0
      */
@@ -109,7 +111,7 @@ public class TestExpectations {
     /**
      * Shorthand method for asserting a single value. The following are
      * essentially the same:
-     * <pre>assertValue(value -> assertThat(value, is(1))</pre>
+     * <pre>assertValue(value -&gt; assertThat(value, is(1))</pre>
      * <pre>expectValue(1)</pre>
      * @param value Value expected
      * @param <VALUE_TYPE> Type of the value

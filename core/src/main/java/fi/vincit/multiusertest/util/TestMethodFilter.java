@@ -18,8 +18,8 @@ public class TestMethodFilter {
 
     /**
      * Initialize filter with the given identifiers which are used for filtering.
-     * @param producerIdentifier
-     * @param consumerIdentifier
+     * @param producerIdentifier Producer identifier
+     * @param consumerIdentifier Consumer identifier
      */
     public TestMethodFilter(UserIdentifier producerIdentifier, UserIdentifier consumerIdentifier) {
         Objects.requireNonNull(producerIdentifier);

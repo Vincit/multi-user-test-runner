@@ -17,7 +17,7 @@ public interface TestExpectation {
      * not otherwise expected (e.g. custom assertion fails).
      * @param userIdentifier User identifier used when calling the call under test
      * @param thrownException Thrown exception
-     * @throws Throwable
+     * @throws Throwable If exception is thrown 
      */
     void handleThrownException(UserIdentifier userIdentifier, Throwable thrownException) throws Throwable;
 

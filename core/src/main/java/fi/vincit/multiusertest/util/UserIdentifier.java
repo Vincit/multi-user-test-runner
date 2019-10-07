@@ -54,7 +54,9 @@ public class UserIdentifier {
 
     /**
      * Parses a user identifier string and creates a {@link UserIdentifier} instance.
-     * user identifier string is in format <i><type>:<identifier></identifier></i> e.g. <i>user:admin</i> or <i>role:ROLE_ADMIN</i>
+     * user identifier string is in format <i>&lt;type&gt;:&lt;identifier&gt;&lt;/identifier&gt;</i> e.g. 
+     * <i>user:admin</i> or 
+     * <i>role:ROLE_ADMIN</i>
      * @param identifierString User identifier string to parse
      * @return UserIdentifier object
      */
@@ -81,7 +83,8 @@ public class UserIdentifier {
      * In future major version updates this may change.
      * @since 0.5
      * @param identifier Identifier without type
-     * @param mapper Mapper function for String -> role type mapping
+     * @param mapper Mapper function for String -&gt; role type mapping
+     * @param <T> Type of mapped role
      * @return One or more identifiers
      */
     public static <T> Collection<T> mapMultiRoleIdentifier(String identifier, Function<String, T> mapper) {
