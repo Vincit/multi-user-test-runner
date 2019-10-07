@@ -25,7 +25,8 @@ Expectation API. From 1.0 onwards the API will considered stable.
   * Removed String argument based `whenCalledWithAnyOf` methods in favour of using only `roles(...)` and `users(...)` methods
 * Removed `defaultException` from `MultiUserTestConfig` annotation
 * Tests can't be run with `producer` role anymore. Just before calling the method under test,
-  framework logs in as `consumer`. After the call the `producer` is logged back in.
+  framework logs in as `consumer`. After the call the `producer` is logged back in. This is done because it
+  is very easy to forget to change the user to `consumer` which may result false positive test results.
 * Replaced `testCall` with `given`. Given is more in line with the `when` and `then`
 
 ## Migration Guide
