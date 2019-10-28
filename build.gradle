@@ -54,7 +54,7 @@ subprojects {
 
     group = 'fi.vincit'
     sourceCompatibility = 1.8
-    version = System.env.SNAPSHOT ? mutrVersion + snapshotPrefix : mutrVersion
+    version = Boolean.parseBoolean("${System.env.SNAPSHOT?:true}") ? mutrVersion + snapshotPrefix : mutrVersion
 
     configurations {
         deployerJars
