@@ -45,6 +45,25 @@ pipeline {
                         // TODO: Stash
                     }
                 }
+                stage('Integration') {
+                    agent {
+                        dockerfile {
+                            filename 'Dockerfile'
+                            dir 'scripts/ci/docker'
+                            label 'docker'
+                            args '-v $HOME/.m2:/root/.m2'
+                        }
+                    }
+                    steps {
+                        withEnv([
+                                'SPRING_VERSION=4.2.7.RELEASE',
+                                'SPRING_TEST_COMPONENT=true'
+                        ]) {
+                            sh 'scripts/ci/test-integration.sh'
+                            junit 'spring-test/build/test-results/test/*.xml'
+                        }
+                    }
+                }
                 stage('Integration - Spring') {
                     agent {
                         dockerfile {
