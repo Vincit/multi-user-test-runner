@@ -55,16 +55,12 @@ pipeline {
                         }
                     }
                     steps {
-                        withEnv([
-                                'SPRING_VERSION=4.2.7.RELEASE',
-                                'SPRING_TEST_COMPONENT=true'
-                        ]) {
-                            sh 'scripts/ci/test-integration.sh'
-                            junit 'spring-test/build/test-results/test/*.xml'
-                        }
+                        sh 'scripts/ci/test-integration.sh'
+                        junit '*/build/test-results/test/*.xml'
                     }
                 }
-                stage('Integration - Spring') {
+                // TODO: Better build matrix like setup for testing Spring versions
+                stage("Integration - Spring - 4.2.9.RELEASE") {
                     agent {
                         dockerfile {
                             filename 'Dockerfile'
@@ -74,10 +70,55 @@ pipeline {
                         }
                     }
                     steps {
-                        withEnv([
-                                'SPRING_VERSION=4.2.7.RELEASE',
-                                'SPRING_TEST_COMPONENT=true'
-                        ]) {
+                        withEnv(["SPRING_VERSION=4.2.9.RELEASE"]) {
+                            sh 'scripts/ci/test-spring-compatibility.sh'
+                            junit 'spring-test/build/test-results/test/*.xml'
+                        }
+                    }
+                }
+                stage("Integration - Spring - 4.3.25.RELEASE") {
+                    agent {
+                        dockerfile {
+                            filename 'Dockerfile'
+                            dir 'scripts/ci/docker'
+                            label 'docker'
+                            args '-v $HOME/.m2:/root/.m2'
+                        }
+                    }
+                    steps {
+                        withEnv(["SPRING_VERSION=4.3.25.RELEASE"]) {
+                            sh 'scripts/ci/test-spring-compatibility.sh'
+                            junit 'spring-test/build/test-results/test/*.xml'
+                        }
+                    }
+                }
+                stage("Integration - Spring - 5.0.0.RELEASE") {
+                    agent {
+                        dockerfile {
+                            filename 'Dockerfile'
+                            dir 'scripts/ci/docker'
+                            label 'docker'
+                            args '-v $HOME/.m2:/root/.m2'
+                        }
+                    }
+                    steps {
+                        withEnv(["SPRING_VERSION=5.0.0.RELEASE"]) {
+                            sh 'scripts/ci/test-spring-compatibility.sh'
+                            junit 'spring-test/build/test-results/test/*.xml'
+                        }
+                    }
+                }
+                stage("Integration - Spring - 5.1.10.RELEASE") {
+                    agent {
+                        dockerfile {
+                            filename 'Dockerfile'
+                            dir 'scripts/ci/docker'
+                            label 'docker'
+                            args '-v $HOME/.m2:/root/.m2'
+                        }
+                    }
+                    steps {
+                        withEnv(["SPRING_VERSION=5.1.10.RELEASE"]) {
                             sh 'scripts/ci/test-spring-compatibility.sh'
                             junit 'spring-test/build/test-results/test/*.xml'
                         }
