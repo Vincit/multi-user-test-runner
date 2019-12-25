@@ -5,7 +5,10 @@ import fi.vincit.multiusertest.annotation.RunWithUsers;
 import fi.vincit.multiusertest.configuration.ConfiguredTest;
 import fi.vincit.multiusertest.rule.Authorization;
 import fi.vincit.multiusertest.runner.junit5.JUnit5MultiUserTestRunner;
-import fi.vincit.multiusertest.util.*;
+import fi.vincit.multiusertest.util.LoginRole;
+import fi.vincit.multiusertest.util.SecurityUtil;
+import fi.vincit.multiusertest.util.User;
+import fi.vincit.multiusertest.util.UserIdentifier;
 import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -17,47 +20,31 @@ import static org.hamcrest.core.Is.is;
 @RunWithUsers(producers = {"role:ROLE_ADMIN", "role:ROLE_USER"},
         consumers = {"role:ROLE_ADMIN", "role:ROLE_USER"})
 @ExtendWith(JUnit5MultiUserTestRunner.class)
-public class JUnit5BasicTest {
+class JUnit5BasicTest {
 
     @MultiUserConfigClass
     private ConfiguredTest configuredTest = new ConfiguredTest();
 
     @TestTemplate
-    public void producerLoggedIn(Authorization authorization) {
+    void producerLoggedIn(Authorization authorization) {
         assertThat(SecurityUtil.getLoggedInUser().getUsername(), is(configuredTest.getProducer().getUsername()));
     }
 
     @TestTemplate
-    public void consumerLoggedIn(Authorization authorization) {
+    void consumerLoggedIn(Authorization authorization) {
         configuredTest.logInAs(LoginRole.CONSUMER);
         assertThat(SecurityUtil.getLoggedInUser().getUsername(), is(configuredTest.getConsumer().getUsername()));
     }
 
     @TestTemplate
-    public void producerLoggedInAfterConsumer(Authorization authorization) {
+    void producerLoggedInAfterConsumer(Authorization authorization) {
         configuredTest.logInAs(LoginRole.CONSUMER);
         configuredTest.logInAs(LoginRole.PRODUCER);
         assertThat(SecurityUtil.getLoggedInUser().getUsername(), is(configuredTest.getProducer().getUsername()));
     }
 
     @TestTemplate
-    public void expectFailureProducer(Authorization authorization) throws Throwable {
-        authorization.given(() -> throwIfUserIs(configuredTest.getProducer()))
-                .whenCalledWithAnyOf(UserIdentifiers.producer())
-                .then(expectException(IllegalStateException.class))
-                .test();
-    }
-
-    @TestTemplate
-    public void expectFailureWithProducerRole(Authorization authorization) throws Throwable {
-        authorization.given(() -> throwIfUserIs(configuredTest.getConsumer()))
-                .whenCalledWithAnyOf(UserIdentifiers.withProducerRole())
-                .then(expectException(IllegalStateException.class))
-                .test();
-    }
-
-    @TestTemplate
-    public void expectFailureConsumer(Authorization authorization) throws Throwable {
+    void expectFailureConsumer(Authorization authorization) throws Throwable {
         configuredTest.logInAs(LoginRole.CONSUMER);
         authorization.given(() -> throwIfUserRole("role:ROLE_USER"))
                 .whenCalledWithAnyOf(roles("ROLE_USER"))

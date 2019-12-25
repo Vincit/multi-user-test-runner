@@ -37,6 +37,7 @@ class MutrParameterResolver implements ParameterResolver {
         userIt.setAuthorizationRule(authorization);
         userIt.initialize();
 
+        authorization.setUserRoleIT(userIt);
         authorization.setRole(producer);
 
         userIt.logInAs(LoginRole.PRODUCER);

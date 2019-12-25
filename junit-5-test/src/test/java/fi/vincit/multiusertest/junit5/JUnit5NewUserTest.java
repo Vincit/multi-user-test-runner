@@ -49,22 +49,6 @@ public class JUnit5NewUserTest {
     }
 
     @TestTemplate
-    public void expectFailureProducer(Authorization authorization) throws Throwable {
-        authorization.given(() -> throwIfUserIs(configuredTest.getProducer()))
-                .whenCalledWithAnyOf(UserIdentifiers.producer())
-                .then(expectException(IllegalStateException.class))
-                .test();
-    }
-
-    @TestTemplate
-    public void expectFailureUserWithProducerRole(Authorization authorization) throws Throwable {
-        authorization.given(() -> throwIfUserIs(configuredTest.getConsumer()))
-                .whenCalledWithAnyOf(UserIdentifiers.withProducerRole())
-                .then(expectException(IllegalStateException.class))
-                .test();
-    }
-
-    @TestTemplate
     public void expectFailureConsumer(Authorization authorization) throws Throwable {
         configuredTest.logInAs(LoginRole.CONSUMER);
 
