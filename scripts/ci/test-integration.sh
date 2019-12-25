@@ -1,3 +1,3 @@
 #!/bin/bash
 
-./gradlew clean integartionTest
+./gradlew clean integrationTest

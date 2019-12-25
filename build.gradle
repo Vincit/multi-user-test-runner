@@ -351,3 +351,51 @@ project(':examples') {
     check.dependsOn integrationTest
     integrationTest.mustRunAfter test
 }
+
+project(':integration-test') {
+
+    sourceCompatibility = 1.8
+
+    def springBootVersion = '2.0.0.RELEASE'
+    def h2Version = '1.4.192'
+
+    dependencies {
+        compile("org.springframework.boot:spring-boot-starter-web:$springBootVersion")
+        compile("org.springframework.boot:spring-boot-starter-security:$springBootVersion")
+        compile("org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion")
+        compile("com.h2database:h2:$h2Version")
+        compile("org.apache.httpcomponents:httpclient:4.5.3")
+        compile("javax.interceptor:javax.interceptor-api:1.2")
+        testCompile project(':core')
+        testCompile project(':spring-test-class-runner')
+        testCompile("org.springframework.boot:spring-boot-starter-test:$springBootVersion")
+        testCompile group: 'junit', name: 'junit', version: '4.12'
+        testCompile 'com.jayway.restassured:rest-assured:2.5.0'
+        testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.0.0'
+        testCompile group: 'org.junit.platform', name: 'junit-platform-runner', version: '1.0.0'
+    }
+
+    // From Petri Kainnulainen's examples
+    // https://github.com/pkainulainen/gradle-examples/blob/master/integration-tests/build.gradle
+
+    sourceSets {
+        integrationTest {
+            java {
+                compileClasspath += main.output + test.output
+                runtimeClasspath += main.output + test.output
+                srcDir file('src/test/java')
+            }
+        }
+    }
+
+    task integrationTest(type: Test) {
+        testClassesDir = sourceSets.integrationTest.output.classesDir
+        classpath = sourceSets.integrationTest.runtimeClasspath
+    }
+    configurations {
+        integrationTestCompile.extendsFrom testCompile
+        integrationTestRuntime.extendsFrom testRuntime
+    }
+    check.dependsOn integrationTest
+    integrationTest.mustRunAfter test
+}
