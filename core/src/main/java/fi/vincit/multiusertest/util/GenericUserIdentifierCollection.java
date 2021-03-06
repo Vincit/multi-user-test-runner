@@ -2,10 +2,11 @@ package fi.vincit.multiusertest.util;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 public class GenericUserIdentifierCollection implements UserIdentifierCollection {
 
-    private Collection<UserIdentifier> identifiers;
+    private final Collection<UserIdentifier> identifiers;
 
     public GenericUserIdentifierCollection(Collection<UserIdentifier> identifiers) {
         this.identifiers = identifiers;

@@ -4,6 +4,9 @@ import fi.vincit.multiusertest.util.UserIdentifier;
 import fi.vincit.multiusertest.util.UserIdentifierCollection;
 import fi.vincit.multiusertest.util.UserIdentifiers;
 
+import java.util.Collection;
+import java.util.function.Supplier;
+
 public interface When<EXPECTATION extends TestExpectation> {
 
     /**
@@ -22,5 +25,21 @@ public interface When<EXPECTATION extends TestExpectation> {
      * @since 1.0
      */
     Then<EXPECTATION> whenCalledWithAnyOf(UserIdentifier... userIdentifiers);
+
+    /**
+     * Called with a list of {@link UserIdentifier} objects.
+     * @param userIdentifiers Collection of user identifiers
+     * @return Expectation API object
+     * @since 1.0
+     */
+    Then<EXPECTATION> whenCalledWithAnyOf(Collection<UserIdentifier> userIdentifiers);
+
+    /**
+     * Called with a supplier method that returns a collection of identifiers
+     * @param userIdentifierSupplier Supplier method
+     * @return Expectation API object
+     * @since 1.0
+     */
+    Then<EXPECTATION> whenCalledWithAnyOf(Supplier<Collection<UserIdentifier>> userIdentifierSupplier);
 
 }

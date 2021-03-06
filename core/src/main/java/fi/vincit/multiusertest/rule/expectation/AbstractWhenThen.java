@@ -7,18 +7,8 @@ import fi.vincit.multiusertest.util.UserIdentifier;
 import fi.vincit.multiusertest.util.UserIdentifierCollection;
 import fi.vincit.multiusertest.util.UserIdentifiers;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Stream;
-
-import static java.util.stream.Collectors.toList;
+import java.util.*;
+import java.util.function.Supplier;
 
 public abstract class AbstractWhenThen<T extends TestExpectation> implements WhenThen<T> {
 
@@ -38,18 +28,22 @@ public abstract class AbstractWhenThen<T extends TestExpectation> implements Whe
     
     @Override
     public Then<T> whenCalledWithAnyOf(UserIdentifierCollection... userIdentifiers) {
-        final List<UserIdentifiers> allIdentifiers = Stream.of(userIdentifiers)
-                .map(UserIdentifierCollection::getUserIdentifiers)
-                .flatMap(Collection::stream)
-                .map(UserIdentifiers::new)
-                .collect(toList());
-
-        return whenCalledWith(allIdentifiers);
+        return whenCalledWithIdentifiers(UserIdentifiers.listOf(userIdentifiers));
     }
 
     @Override
     public Then<T> whenCalledWithAnyOf(UserIdentifier... userIdentifiers) {
         return whenCalledWithIdentifiers(Arrays.asList(userIdentifiers));
+    }
+
+    @Override
+    public Then<T> whenCalledWithAnyOf(Collection<UserIdentifier> userIdentifiers) {
+        return whenCalledWithIdentifiers(userIdentifiers);
+    }
+
+    @Override
+    public Then<T> whenCalledWithAnyOf(Supplier<Collection<UserIdentifier>> userIdentifierSupplier) {
+        return whenCalledWithAnyOf(userIdentifierSupplier.get());
     }
 
     @Override
@@ -116,18 +110,7 @@ public abstract class AbstractWhenThen<T extends TestExpectation> implements Whe
                 .orElseGet(() -> getDefaultExpectation(userIdentifier));
     }
 
-    private WhenThen<T> whenCalledWith(List<UserIdentifiers> userIdentifiers) {
-        currentIdentifiers.clear();
-
-        validateWhen(userIdentifiers);
-
-        for (UserIdentifiers identifiers : userIdentifiers) {
-            identifiers.getIdentifiers().forEach(this::addCurrentUserIdentifiers);
-        }
-        return this;
-    }
-
-    private WhenThen<T> whenCalledWithIdentifiers(List<UserIdentifier> userIdentifiers) {
+    private WhenThen<T> whenCalledWithIdentifiers(Collection<UserIdentifier> userIdentifiers) {
         currentIdentifiers.clear();
 
         validateWhen(userIdentifiers);
@@ -143,7 +126,7 @@ public abstract class AbstractWhenThen<T extends TestExpectation> implements Whe
         currentIdentifiers.add(userIdentifier);
     }
 
-    private static <T> void validateWhen(List<T> userIdentifiers) {
+    private static <T> void validateWhen(Collection<T> userIdentifiers) {
         if (userIdentifiers.isEmpty()) {
             throw new IllegalArgumentException("At least one identifier must be defined");
         }

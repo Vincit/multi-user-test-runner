@@ -3,6 +3,7 @@ package fi.vincit.multiusertest.rule.expectation;
 import fi.vincit.multiusertest.rule.AuthorizationRule;
 import fi.vincit.multiusertest.test.UserRoleIT;
 import fi.vincit.multiusertest.util.UserIdentifier;
+import fi.vincit.multiusertest.util.UserIdentifiers;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -12,6 +13,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static fi.vincit.multiusertest.util.UserIdentifiers.roles;
+import static fi.vincit.multiusertest.util.UserIdentifiers.users;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.*;
@@ -90,6 +92,48 @@ public class AbstractWhenThenTest {
         assertThat(
                 sut.getCurrentIdentifiers(),
                 is(setOf(UserIdentifier.parse("role:ROLE_ADMIN"), UserIdentifier.parse("role:ROLE_USER")))
+        );
+    }
+
+    @Test
+    public void whenCalledWithAnyOf_ListOfUserIdentifier() {
+        AbstractWhenThen<TestExpectation> sut = new SUT(
+                UserIdentifier.getAnonymous()
+        );
+
+        sut.whenCalledWithAnyOf(roles("ROLE_ADMIN", "ROLE_USER").getUserIdentifiers());
+
+        assertThat(
+                sut.getCurrentIdentifiers(),
+                is(setOf(UserIdentifier.parse("role:ROLE_ADMIN"), UserIdentifier.parse("role:ROLE_USER")))
+        );
+    }
+
+    @Test
+    public void whenCalledWithAnyOf_UserIdentifierSupplier() {
+        AbstractWhenThen<TestExpectation> sut = new SUT(
+                UserIdentifier.getAnonymous()
+        );
+
+        sut.whenCalledWithAnyOf(() -> roles("ROLE_ADMIN", "ROLE_USER").getUserIdentifiers());
+
+        assertThat(
+                sut.getCurrentIdentifiers(),
+                is(setOf(UserIdentifier.parse("role:ROLE_ADMIN"), UserIdentifier.parse("role:ROLE_USER")))
+        );
+    }
+
+    @Test
+    public void whenCalledWithAnyOf_UserIdentifierSupplierCollection() {
+        AbstractWhenThen<TestExpectation> sut = new SUT(
+                UserIdentifier.getAnonymous()
+        );
+
+        sut.whenCalledWithAnyOf(() -> UserIdentifiers.listOf(roles("ROLE_ADMIN", "ROLE_USER"), users("user1")));
+
+        assertThat(
+                sut.getCurrentIdentifiers(),
+                is(setOf(UserIdentifier.parse("role:ROLE_ADMIN"), UserIdentifier.parse("role:ROLE_USER"), UserIdentifier.parse("user:user1")))
         );
     }
 

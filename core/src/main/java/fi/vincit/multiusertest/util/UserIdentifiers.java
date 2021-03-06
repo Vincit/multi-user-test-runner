@@ -1,6 +1,7 @@
 package fi.vincit.multiusertest.util;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -28,6 +29,20 @@ public class UserIdentifiers {
 
     public static UserIdentifierCollection withProducerRole() {
         return new GenericUserIdentifierCollection(UserIdentifier.getWithProducerRole());
+    }
+
+    public static Collection<UserIdentifier> listOf(UserIdentifierCollection... userIdentifiers) {
+        return Stream.of(userIdentifiers)
+                .map(UserIdentifierCollection::getUserIdentifiers)
+                .flatMap(Collection::stream)
+                .collect(toList());
+    }
+
+    public static Collection<UserIdentifier> listOf(UserIdentifiers... userIdentifiers) {
+        return Stream.of(userIdentifiers)
+                .map(UserIdentifiers::getIdentifiers)
+                .flatMap(Collection::stream)
+                .collect(toList());
     }
 
     public UserIdentifiers(String... identifiers) {
