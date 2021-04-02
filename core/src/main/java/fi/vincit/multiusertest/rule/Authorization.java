@@ -16,7 +16,7 @@ public interface Authorization {
 
     void markExpectationConstructed();
 
-    void setRole(UserIdentifier identifier);
+    void setRole(UserIdentifier producerIdentifier, UserIdentifier consumerIdentifier);
     
     void setUserRoleIT(UserRoleIT userRoleIT);
 }

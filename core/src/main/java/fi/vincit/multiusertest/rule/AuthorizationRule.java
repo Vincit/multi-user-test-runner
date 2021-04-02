@@ -24,6 +24,7 @@ import org.junit.runners.model.Statement;
 public class AuthorizationRule implements TestRule, Authorization {
 
     private UserIdentifier userIdentifier;
+    private UserIdentifier producerIdentifier;
     private UserRoleIT userRoleIT;
     private boolean expectationConstructionFinished = false;
 
@@ -33,8 +34,9 @@ public class AuthorizationRule implements TestRule, Authorization {
     }
 
     @Override
-    public void setRole(UserIdentifier identifier) {
-        this.userIdentifier = new UserIdentifier(identifier.getType(), identifier.getIdentifier());
+    public void setRole(UserIdentifier producerIdentifier, UserIdentifier consumerIdentifier) {
+        this.producerIdentifier = new UserIdentifier(producerIdentifier.getType(), producerIdentifier.getIdentifier());
+        this.userIdentifier = new UserIdentifier(consumerIdentifier.getType(), consumerIdentifier.getIdentifier());
     }
 
     @Override
@@ -61,7 +63,7 @@ public class AuthorizationRule implements TestRule, Authorization {
     public WhenThen<TestExpectation> given(FunctionCall functionCall) {
         expectationConstructionFinished = true;
         userRoleIT.logInAs(LoginRole.CONSUMER);
-        return new FunctionCallWhenThen(functionCall, userIdentifier, this, userRoleIT);
+        return new FunctionCallWhenThen(functionCall, producerIdentifier, userIdentifier, this, userRoleIT);
     }
 
     /**
@@ -76,6 +78,7 @@ public class AuthorizationRule implements TestRule, Authorization {
         userRoleIT.logInAs(LoginRole.CONSUMER);
         return new ReturnValueWhenThen<>(
                 returnValueCall,
+                producerIdentifier,
                 userIdentifier,
                 this,
                 userRoleIT

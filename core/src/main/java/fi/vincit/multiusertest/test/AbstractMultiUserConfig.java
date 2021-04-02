@@ -74,7 +74,10 @@ public abstract class AbstractMultiUserConfig<USER, ROLE> implements MultiUserCo
             loginAnonymous();
         }
 
-        getAuthorizationRule().setRole(new IdentifierResolver<>(userResolver).getIdentifierFor(role));
+        getAuthorizationRule().setRole(
+                new IdentifierResolver<>(userResolver).getProducerIdentifier(),
+                new IdentifierResolver<>(userResolver).getIdentifierFor(LoginRole.CONSUMER)
+        );
     }
 
     private USER resolveUserToLoginWith(LoginRole loginRole) {

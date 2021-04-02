@@ -14,6 +14,7 @@ import fi.vincit.multiusertest.util.UserIdentifier;
 public class JUnit5Authorization implements Authorization {
 
     private UserIdentifier userIdentifier;
+    private UserIdentifier producerIdentifier;
     private UserRoleIT userRoleIT;
     
     @Override
@@ -22,19 +23,21 @@ public class JUnit5Authorization implements Authorization {
     }
 
     @Override
-    public void setRole(UserIdentifier identifier) {
-        this.userIdentifier = new UserIdentifier(identifier.getType(), identifier.getIdentifier());
+    public void setRole(UserIdentifier producerIdentifier, UserIdentifier consumerIdentifier) {
+        this.producerIdentifier = new UserIdentifier(producerIdentifier.getType(), producerIdentifier.getIdentifier());
+        this.userIdentifier = new UserIdentifier(consumerIdentifier.getType(), consumerIdentifier.getIdentifier());
     }
 
     @Override
     public WhenThen<TestExpectation> given(FunctionCall functionCall) {
-        return new FunctionCallWhenThen(functionCall, userIdentifier, this, userRoleIT);
+        return new FunctionCallWhenThen(functionCall, null, userIdentifier, this, userRoleIT);
     }
 
     @Override
     public <VALUE_TYPE> WhenThen<TestValueExpectation<VALUE_TYPE>> given(ReturnValueCall<VALUE_TYPE> returnValueCall) {
         return new ReturnValueWhenThen<>(
                 returnValueCall,
+                null,
                 userIdentifier,
                 this, 
                 userRoleIT

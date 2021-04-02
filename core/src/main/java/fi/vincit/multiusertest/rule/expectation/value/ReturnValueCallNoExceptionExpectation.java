@@ -1,8 +1,8 @@
 package fi.vincit.multiusertest.rule.expectation.value;
 
 import fi.vincit.multiusertest.exception.CallFailedError;
+import fi.vincit.multiusertest.rule.expectation.ConsumerProducerSet;
 import fi.vincit.multiusertest.rule.expectation.ReturnValueCall;
-import fi.vincit.multiusertest.util.UserIdentifier;
 
 public class ReturnValueCallNoExceptionExpectation<VALUE_TYPE> implements TestValueExpectation<VALUE_TYPE> {
 
@@ -11,13 +11,13 @@ public class ReturnValueCallNoExceptionExpectation<VALUE_TYPE> implements TestVa
     }
 
     @Override
-    public void handleExceptionNotThrown(UserIdentifier userIdentifier) {
+    public void handleExceptionNotThrown(ConsumerProducerSet consumerProducerSet) {
         // NOOP
     }
 
     @Override
-    public void handleThrownException(UserIdentifier userIdentifier, Throwable thrownException)  throws Throwable {
-        throw CallFailedError.expectCallNotToFail(userIdentifier, thrownException);
+    public void handleThrownException(ConsumerProducerSet consumerProducerSet, Throwable thrownException)  throws Throwable {
+        throw CallFailedError.expectCallNotToFail(consumerProducerSet, thrownException);
     }
 
     @Override
@@ -25,4 +25,8 @@ public class ReturnValueCallNoExceptionExpectation<VALUE_TYPE> implements TestVa
         valueCall.call();
     }
 
+    @Override
+    public String toString() {
+        return "No exception expected (Value returned)";
+    }
 }

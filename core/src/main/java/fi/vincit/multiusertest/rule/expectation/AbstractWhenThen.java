@@ -13,37 +13,65 @@ import java.util.function.Supplier;
 public abstract class AbstractWhenThen<T extends TestExpectation> implements WhenThen<T> {
 
     private final Set<UserIdentifier> currentIdentifiers = new HashSet<>();
-    private final Map<UserIdentifier, T> expectationsByIdentifier = new HashMap<>();
+    private final Set<UserIdentifier> currentProducerIdentifiers = new HashSet<>();
+    private final Map<ConsumerProducerSet, T> expectationsByIdentifier = new HashMap<>();
 
     private final UserIdentifier userIdentifier;
+    private final UserIdentifier producerIdentifier;
     private final Authorization authorizationRule;
-    private UserRoleIT userRoleIT;
+    private final UserRoleIT userRoleIT;
     private T defaultExpectation;
 
-    public AbstractWhenThen(UserIdentifier userIdentifier, Authorization authorizationRule, UserRoleIT userRoleIT) {
+    public AbstractWhenThen(UserIdentifier producerIdentifier, UserIdentifier userIdentifier, Authorization authorizationRule, UserRoleIT userRoleIT) {
         this.userIdentifier = userIdentifier;
+        this.producerIdentifier = producerIdentifier;
         this.authorizationRule = authorizationRule;
         this.userRoleIT = userRoleIT;
     }
     
     @Override
-    public Then<T> whenCalledWithAnyOf(UserIdentifierCollection... userIdentifiers) {
+    public ThenProducer<T> whenCalledWithAnyOf(UserIdentifierCollection... userIdentifiers) {
         return whenCalledWithIdentifiers(UserIdentifiers.listOf(userIdentifiers));
     }
 
     @Override
-    public Then<T> whenCalledWithAnyOf(UserIdentifier... userIdentifiers) {
+    public ThenProducer<T> whenCalledWithAnyOf(UserIdentifier... userIdentifiers) {
         return whenCalledWithIdentifiers(Arrays.asList(userIdentifiers));
     }
 
     @Override
-    public Then<T> whenCalledWithAnyOf(Collection<UserIdentifier> userIdentifiers) {
+    public ThenProducer<T> whenCalledWithAnyOf(Collection<UserIdentifier> userIdentifiers) {
         return whenCalledWithIdentifiers(userIdentifiers);
     }
 
     @Override
-    public Then<T> whenCalledWithAnyOf(Supplier<Collection<UserIdentifier>> userIdentifierSupplier) {
+    public ThenProducer<T> whenCalledWithAnyOf(Supplier<Collection<UserIdentifier>> userIdentifierSupplier) {
         return whenCalledWithAnyOf(userIdentifierSupplier.get());
+    }
+
+    @Override
+    public When<T> whenProducerIsAny() {
+        return whenProducerIsAnyOf(Collections.emptyList());
+    }
+
+    @Override
+    public When<T> whenProducerIsAnyOf(UserIdentifierCollection... producerIdentifiers) {
+        return whenCalledWithProducerIdentifiers(UserIdentifiers.listOf(producerIdentifiers));
+    }
+
+    @Override
+    public When<T> whenProducerIsAnyOf(UserIdentifier... producerIdentifiers) {
+        return whenCalledWithProducerIdentifiers(Arrays.asList(producerIdentifiers));
+    }
+
+    @Override
+    public When<T> whenProducerIsAnyOf(Collection<UserIdentifier> producerIdentifiers) {
+        return whenCalledWithProducerIdentifiers(producerIdentifiers);
+    }
+
+    @Override
+    public When<T> whenProducerIsAnyOf(Supplier<Collection<UserIdentifier>> producerIdentifierSupplier) {
+        return whenProducerIsAnyOf(producerIdentifierSupplier.get());
     }
 
     @Override
@@ -51,29 +79,37 @@ public abstract class AbstractWhenThen<T extends TestExpectation> implements Whe
         Objects.requireNonNull(testExpectation, "testExpectation must not be null");
 
         if (currentIdentifiers.isEmpty()) {
-            throw new IllegalStateException("Call whenCalledWith before calling then method");
+            throw new IllegalStateException("Call whenCalledWithAnyOf before calling then method");
         }
 
-        try {
-            currentIdentifiers.forEach(identifier -> {
-                if (expectationsByIdentifier.containsKey(identifier)) {
-                    throw new IllegalStateException(
-                            String.format("User identifier %s already has expectation",
-                                    identifier.toString()
-                            )
-                    );
-                } else {
-                    expectationsByIdentifier.put(
-                            identifier,
-                            testExpectation
-                    );
-                }
-            });
-        } finally {
-            currentIdentifiers.clear();
-        }
+        currentIdentifiers.forEach(identifier -> {
+            if (currentProducerIdentifiers.isEmpty()) {
+                final ConsumerProducerSet consumerProducerSet = new ConsumerProducerSet(null, identifier);
+                addExpectation(testExpectation, consumerProducerSet);
+            } else {
+                currentProducerIdentifiers.forEach(producer -> {
+                    final ConsumerProducerSet consumerProducerSet = new ConsumerProducerSet(producer, identifier);
+                    addExpectation(testExpectation, consumerProducerSet);
+                });
+            }
+        });
 
         return this;
+    }
+
+    private void addExpectation(T testExpectation, ConsumerProducerSet consumerProducerSet) {
+        if (expectationsByIdentifier.containsKey(consumerProducerSet)) {
+            throw new IllegalStateException(
+                    String.format("User identifier %s already has expectation",
+                            consumerProducerSet.toString()
+                    )
+            );
+        } else {
+            expectationsByIdentifier.put(
+                    consumerProducerSet,
+                    testExpectation
+            );
+        }
     }
 
     @Override
@@ -90,24 +126,25 @@ public abstract class AbstractWhenThen<T extends TestExpectation> implements Whe
 
     @Override
     public void test() throws Throwable {
+        final ConsumerProducerSet consumerProducerSet = new ConsumerProducerSet(producerIdentifier, userIdentifier);
         T testExpectation = expectationsByIdentifier.computeIfAbsent(
-                userIdentifier,
+                consumerProducerSet,
                 this::getDefinedDefaultException
         );
 
         this.authorizationRule.markExpectationConstructed();
         this.userRoleIT.logInAs(LoginRole.CONSUMER);
-        this.test(testExpectation, userIdentifier);
+        this.test(testExpectation, consumerProducerSet);
         this.userRoleIT.logInAs(LoginRole.PRODUCER);
     }
 
-    protected abstract void test(T testExpectation, UserIdentifier userIdentifier) throws Throwable;
+    protected abstract void test(T testExpectation, ConsumerProducerSet consumerProducerSet) throws Throwable;
 
-    protected abstract T getDefaultExpectation(UserIdentifier userIdentifier);
+    protected abstract T getDefaultExpectation(ConsumerProducerSet consumerProducerSet);
 
-    private T getDefinedDefaultException(UserIdentifier userIdentifier) {
+    private T getDefinedDefaultException(ConsumerProducerSet consumerProducerSet) {
         return Optional.ofNullable(defaultExpectation)
-                .orElseGet(() -> getDefaultExpectation(userIdentifier));
+                .orElseGet(() -> getDefaultExpectation(consumerProducerSet));
     }
 
     private WhenThen<T> whenCalledWithIdentifiers(Collection<UserIdentifier> userIdentifiers) {
@@ -119,11 +156,26 @@ public abstract class AbstractWhenThen<T extends TestExpectation> implements Whe
         return this;
     }
 
+    private WhenThen<T> whenCalledWithProducerIdentifiers(Collection<UserIdentifier> userIdentifiers) {
+        currentIdentifiers.clear();
+        currentProducerIdentifiers.clear();
+
+        userIdentifiers.forEach(this::addCurrentProducerIdentifiers);
+        return this;
+    }
+
     private void addCurrentUserIdentifiers(UserIdentifier userIdentifier) {
         if (currentIdentifiers.contains(userIdentifier)) {
             throw new IllegalStateException("User identifier " + userIdentifier.toString() + " already set");
         }
         currentIdentifiers.add(userIdentifier);
+    }
+
+    private void addCurrentProducerIdentifiers(UserIdentifier userIdentifier) {
+        if (currentProducerIdentifiers.contains(userIdentifier)) {
+            throw new IllegalStateException("Producer identifier " + userIdentifier.toString() + " already set");
+        }
+        currentProducerIdentifiers.add(userIdentifier);
     }
 
     private static <T> void validateWhen(Collection<T> userIdentifiers) {
@@ -140,7 +192,7 @@ public abstract class AbstractWhenThen<T extends TestExpectation> implements Whe
         return currentIdentifiers;
     }
 
-    Map<UserIdentifier, T> getExpectationsByIdentifier() {
+    Map<ConsumerProducerSet, T> getExpectationsByIdentifier() {
         return expectationsByIdentifier;
     }
 

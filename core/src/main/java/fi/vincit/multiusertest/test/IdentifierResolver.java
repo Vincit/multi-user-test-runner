@@ -31,10 +31,14 @@ public class IdentifierResolver<USER, ROLE> {
      */
     public UserIdentifier getIdentifierFor(LoginRole loginRole) {
         if (loginRole == LoginRole.PRODUCER) {
-            return getProducerIdentifier();
+            return UserIdentifier.getProducer();
         } else {
             return getConsumerIdentifier();
         }
+    }
+
+    public UserIdentifier getProducerIdentifier() {
+        return new UserIdentifier(UserIdentifier.Type.ROLE, producer.getIdentifier());
     }
 
     private UserIdentifier getConsumerIdentifier() {
@@ -54,9 +58,5 @@ public class IdentifierResolver<USER, ROLE> {
         } else {
             return new UserIdentifier(UserIdentifier.Type.ROLE, consumer.getIdentifier());
         }
-    }
-
-    private UserIdentifier getProducerIdentifier() {
-        return UserIdentifier.getProducer();
     }
 }

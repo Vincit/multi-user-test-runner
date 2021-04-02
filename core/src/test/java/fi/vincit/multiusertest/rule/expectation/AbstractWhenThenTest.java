@@ -15,6 +15,7 @@ import java.util.Set;
 import static fi.vincit.multiusertest.util.UserIdentifiers.roles;
 import static fi.vincit.multiusertest.util.UserIdentifiers.users;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.*;
 
@@ -29,16 +30,16 @@ public class AbstractWhenThenTest {
 
     private static class SUT extends AbstractWhenThen<TestExpectation> {
 
-        public SUT(UserIdentifier userIdentifier) {
-            super(userIdentifier, mock(AuthorizationRule.class), mock(UserRoleIT.class));
+        public SUT(UserIdentifier producerIdentifier, UserIdentifier userIdentifier) {
+            super(producerIdentifier, userIdentifier, mock(AuthorizationRule.class), mock(UserRoleIT.class));
         }
 
         @Override
-        protected void test(TestExpectation testExpectation, UserIdentifier userIdentifier) throws Throwable {
+        protected void test(TestExpectation testExpectation, ConsumerProducerSet consumerProducerSet) throws Throwable {
         }
 
         @Override
-        protected TestExpectation getDefaultExpectation(UserIdentifier userIdentifier) {
+        protected TestExpectation getDefaultExpectation(ConsumerProducerSet consumerProducerSet) {
             return null;
         }
     }
@@ -46,6 +47,7 @@ public class AbstractWhenThenTest {
     @Test
     public void whenCalledWith_UserIdentifier() {
         AbstractWhenThen<TestExpectation> sut = new SUT(
+                null,
                 UserIdentifier.getAnonymous()
         );
 
@@ -60,6 +62,7 @@ public class AbstractWhenThenTest {
     @Test
     public void whenCalledWith_UserIdentifier_ThrowIfSameAddedTwice() {
         AbstractWhenThen<TestExpectation> sut = new SUT(
+                null,
                 UserIdentifier.getAnonymous()
         );
 
@@ -70,6 +73,7 @@ public class AbstractWhenThenTest {
     @Test
     public void whenCalledWithAnyOf_UserIdentifiers() {
         AbstractWhenThen<TestExpectation> sut = new SUT(
+                null,
                 UserIdentifier.getAnonymous()
         );
 
@@ -84,6 +88,7 @@ public class AbstractWhenThenTest {
     @Test
     public void whenCalledWithAnyOf_UserIdentifierCollection() {
         AbstractWhenThen<TestExpectation> sut = new SUT(
+                null,
                 UserIdentifier.getAnonymous()
         );
 
@@ -98,6 +103,7 @@ public class AbstractWhenThenTest {
     @Test
     public void whenCalledWithAnyOf_ListOfUserIdentifier() {
         AbstractWhenThen<TestExpectation> sut = new SUT(
+                null,
                 UserIdentifier.getAnonymous()
         );
 
@@ -112,6 +118,7 @@ public class AbstractWhenThenTest {
     @Test
     public void whenCalledWithAnyOf_UserIdentifierSupplier() {
         AbstractWhenThen<TestExpectation> sut = new SUT(
+                null,
                 UserIdentifier.getAnonymous()
         );
 
@@ -126,6 +133,7 @@ public class AbstractWhenThenTest {
     @Test
     public void whenCalledWithAnyOf_UserIdentifierSupplierCollection() {
         AbstractWhenThen<TestExpectation> sut = new SUT(
+                null,
                 UserIdentifier.getAnonymous()
         );
 
@@ -140,6 +148,7 @@ public class AbstractWhenThenTest {
     @Test
     public void then_CalledBeforeWhen_Throws() {
         AbstractWhenThen<TestExpectation> sut = new SUT(
+                null,
                 UserIdentifier.getAnonymous()
         );
 
@@ -150,6 +159,7 @@ public class AbstractWhenThenTest {
     @Test
     public void then_TryingToOverrideSetExpectation_Throws() {
         AbstractWhenThen<TestExpectation> sut = new SUT(
+                null,
                 UserIdentifier.getAnonymous()
         );
 
@@ -163,6 +173,7 @@ public class AbstractWhenThenTest {
     @Test
     public void then_TryingToOverrideSetExpectation_CurrentIdentifiersIsCleared() {
         AbstractWhenThen<TestExpectation> sut = new SUT(
+                null,
                 UserIdentifier.getAnonymous()
         );
 
@@ -175,13 +186,17 @@ public class AbstractWhenThenTest {
     }
 
     @Test
-    public void then_AddsTestExpectationToCurrentIdentifiers() {
+    public void then_AddsTestExpectationToCurrentIdentifiers_ConsumerOnly() {
         AbstractWhenThen<TestExpectation> sut = new SUT(
+                null,
                 UserIdentifier.getAnonymous()
         );
         UserIdentifier role1 = UserIdentifier.parse("role:ROLE_1");
+        ConsumerProducerSet s1 = new ConsumerProducerSet(null, role1);
         UserIdentifier role2 = UserIdentifier.parse("role:ROLE_2");
+        ConsumerProducerSet s2 = new ConsumerProducerSet(null, role2);
         UserIdentifier role3 = UserIdentifier.parse("role:ROLE_3");
+        ConsumerProducerSet s3 = new ConsumerProducerSet(null, role3);
 
         TestExpectation testExpectation1 = mock(TestExpectation.class);
         TestExpectation testExpectation2 = mock(TestExpectation.class);
@@ -191,74 +206,115 @@ public class AbstractWhenThenTest {
                 .whenCalledWithAnyOf(role3)
                 .then(testExpectation2);
 
-        assertThat(sut.getExpectationsByIdentifier().get(role1), is(testExpectation1));
-        assertThat(sut.getExpectationsByIdentifier().get(role2), is(testExpectation1));
-        assertThat(sut.getExpectationsByIdentifier().get(role3), is(testExpectation2));
+        assertThat(sut.getExpectationsByIdentifier().get(s1), is(testExpectation1));
+        assertThat(sut.getExpectationsByIdentifier().get(s2), is(testExpectation1));
+        assertThat(sut.getExpectationsByIdentifier().get(s3), is(testExpectation2));
+    }
+
+    @Test
+    public void then_AddsTestExpectationToCurrentIdentifiers_ProducerAndConsumer() {
+        AbstractWhenThen<TestExpectation> sut = new SUT(
+                null,
+                UserIdentifier.getAnonymous()
+        );
+        UserIdentifier role1 = UserIdentifier.parse("role:ROLE_1");
+        UserIdentifier role2 = UserIdentifier.parse("role:ROLE_2");
+        UserIdentifier role3 = UserIdentifier.parse("role:ROLE_3");
+
+        ConsumerProducerSet set1_1 = new ConsumerProducerSet(role1, role1);
+        ConsumerProducerSet set1_2 = new ConsumerProducerSet(role1, role2);
+        ConsumerProducerSet set2_2 = new ConsumerProducerSet(role2, role2);
+        ConsumerProducerSet set1_3 = new ConsumerProducerSet(role1, role3);
+        ConsumerProducerSet set2_3 = new ConsumerProducerSet(role2, role3);
+        ConsumerProducerSet setA_3 = new ConsumerProducerSet(null, role3);
+
+        TestExpectation testExpectation1 = mock(TestExpectation.class);
+        TestExpectation testExpectation2 = mock(TestExpectation.class);
+
+        sut.whenProducerIsAnyOf(role1)
+                .whenCalledWithAnyOf(role1, role2)
+                .then(testExpectation1)
+                .whenProducerIsAny()
+                .whenCalledWithAnyOf(role3)
+                .then(testExpectation2);
+
+        assertThat(sut.getExpectationsByIdentifier().get(set1_1), is(testExpectation1));
+        assertThat(sut.getExpectationsByIdentifier().get(set1_2), is(testExpectation1));
+        assertThat(sut.getExpectationsByIdentifier().get(set1_3), is(testExpectation2));
+
+        assertThat(sut.getExpectationsByIdentifier().get(set2_2), nullValue());
+        assertThat(sut.getExpectationsByIdentifier().get(set2_3), is(testExpectation2));
+
+        assertThat(sut.getExpectationsByIdentifier().get(setA_3), is(testExpectation2));
     }
 
     @Test
     public void testIsCalledWithCorrectValues() throws Throwable {
         UserIdentifier role1 = UserIdentifier.parse("role:ROLE_1");
+        UserIdentifier role2 = UserIdentifier.parse("role:ROLE_2");
         TestExpectation expectation = mock(TestExpectation.class);
 
         AbstractWhenThen<TestExpectation> sut = spy(new SUT(
-                role1
+                role1, role2
         ));
 
-        sut.whenCalledWithAnyOf(role1).then(expectation);
+        sut.whenCalledWithAnyOf(role2).then(expectation);
 
         sut.test();
 
-        verify(sut).test(expectation, role1);
+        verify(sut).test(expectation, new ConsumerProducerSet(role1, role2));
     }
 
     @Test
     public void testIsCalledWithDefault() throws Throwable {
         UserIdentifier role1 = UserIdentifier.parse("role:ROLE_1");
+        UserIdentifier role2 = UserIdentifier.parse("role:ROLE_2");
         TestExpectation expectation = mock(TestExpectation.class);
 
         AbstractWhenThen<TestExpectation> sut = spy(new SUT(
-                role1
+                role1, role2
         ));
-        when(sut.getDefaultExpectation(role1)).thenReturn(expectation);
+        when(sut.getDefaultExpectation(new ConsumerProducerSet(role2))).thenReturn(expectation);
 
         sut.test();
 
-        verify(sut).test(expectation, role1);
+        verify(sut).test(expectation, new ConsumerProducerSet(role1, role2));
     }
 
     @Test
     public void testIsCalledWithDefaultSetWithOtherwise() throws Throwable {
         UserIdentifier role1 = UserIdentifier.parse("role:ROLE_1");
+        UserIdentifier role2 = UserIdentifier.parse("role:ROLE_2");
         TestExpectation userSetExpectation = mock(TestExpectation.class);
         TestExpectation expectationInSubclass = mock(TestExpectation.class);
 
         AbstractWhenThen<TestExpectation> sut = spy(new SUT(
-                role1
+                role1, role2
         ));
         sut.otherwise(userSetExpectation);
-        when(sut.getDefaultExpectation(role1)).thenReturn(expectationInSubclass);
+        when(sut.getDefaultExpectation(new ConsumerProducerSet(role1))).thenReturn(expectationInSubclass);
 
         sut.test();
 
-        verify(sut).test(userSetExpectation, role1);
+        verify(sut).test(userSetExpectation, new ConsumerProducerSet(role1, role2));
     }
 
     @Test
     public void testIsCalledWithDefaultSetWithByDefault() throws Throwable {
         UserIdentifier role1 = UserIdentifier.parse("role:ROLE_1");
+        UserIdentifier role2 = UserIdentifier.parse("role:ROLE_2");
         TestExpectation userSetExpectation = mock(TestExpectation.class);
         TestExpectation expectationInSubclass = mock(TestExpectation.class);
 
         AbstractWhenThen<TestExpectation> sut = spy(new SUT(
-                role1
+                role1, role2
         ));
         sut.byDefault(userSetExpectation);
-        when(sut.getDefaultExpectation(role1)).thenReturn(expectationInSubclass);
+        when(sut.getDefaultExpectation(new ConsumerProducerSet(role1))).thenReturn(expectationInSubclass);
 
         sut.test();
 
-        verify(sut).test(userSetExpectation, role1);
+        verify(sut).test(userSetExpectation, new ConsumerProducerSet(role1, role2));
     }
 
 }

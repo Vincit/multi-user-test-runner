@@ -1,5 +1,6 @@
 package fi.vincit.multiusertest.rule.expectation.value;
 
+import fi.vincit.multiusertest.rule.expectation.ConsumerProducerSet;
 import fi.vincit.multiusertest.util.UserIdentifier;
 import org.junit.Rule;
 import org.junit.Test;
@@ -16,13 +17,13 @@ public class ReturnValueCallExpectationTest {
     @Test
     public void throwIfExceptionIsExpected_value() throws Exception {
         ReturnValueCallExpectation<Integer> sut = new ReturnValueCallExpectation<>(1);
-        sut.handleExceptionNotThrown(UserIdentifier.getAnonymous());
+        sut.handleExceptionNotThrown(new ConsumerProducerSet(UserIdentifier.getAnonymous()));
     }
 
     @Test
     public void throwIfExceptionIsExpected_assertion() throws Exception {
         ReturnValueCallExpectation<Integer> sut = new ReturnValueCallExpectation<>(value -> {});
-        sut.handleExceptionNotThrown(UserIdentifier.getAnonymous());
+        sut.handleExceptionNotThrown(new ConsumerProducerSet(UserIdentifier.getAnonymous()));
     }
 
     @Test
@@ -30,7 +31,7 @@ public class ReturnValueCallExpectationTest {
         ReturnValueCallExpectation<Integer> sut = new ReturnValueCallExpectation<>(1);
 
         expectException.expect(AssertionError.class);
-        sut.handleThrownException(UserIdentifier.getAnonymous(), new IllegalArgumentException());
+        sut.handleThrownException(new ConsumerProducerSet(UserIdentifier.getAnonymous()), new IllegalArgumentException());
     }
 
     @Test
@@ -38,7 +39,7 @@ public class ReturnValueCallExpectationTest {
         ReturnValueCallExpectation<Integer> sut = new ReturnValueCallExpectation<>(value -> {});
 
         expectException.expect(AssertionError.class);
-        sut.handleThrownException(UserIdentifier.getAnonymous(), new IllegalArgumentException());
+        sut.handleThrownException(new ConsumerProducerSet(UserIdentifier.getAnonymous()), new IllegalArgumentException());
     }
 
     @Test

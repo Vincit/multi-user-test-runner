@@ -1,9 +1,9 @@
 package fi.vincit.multiusertest.rule.expectation.call;
 
 import fi.vincit.multiusertest.exception.CallFailedError;
-import fi.vincit.multiusertest.rule.expectation.TestExpectation;
 import fi.vincit.multiusertest.rule.expectation.AssertionCall;
-import fi.vincit.multiusertest.util.UserIdentifier;
+import fi.vincit.multiusertest.rule.expectation.ConsumerProducerSet;
+import fi.vincit.multiusertest.rule.expectation.TestExpectation;
 
 import java.util.Optional;
 
@@ -21,13 +21,13 @@ public class FunctionCallExceptionExpectation<T extends Throwable> implements Te
         this.assertion = Optional.ofNullable(assertion);
     }
 
-    public void handleExceptionNotThrown(UserIdentifier userIdentifier) {
-        throw CallFailedError.expectedCallToFail(userIdentifier, defaultExpectedException);
+    public void handleExceptionNotThrown(ConsumerProducerSet consumerProducerSet) {
+        throw CallFailedError.expectedCallToFail(consumerProducerSet, defaultExpectedException);
     }
 
-    public void handleThrownException(UserIdentifier userIdentifier, Throwable thrownException)  throws Throwable {
+    public void handleThrownException(ConsumerProducerSet consumerProducerSet, Throwable thrownException)  throws Throwable {
         if (!defaultExpectedException.isInstance(thrownException)) {
-            throw CallFailedError.unexpectedException(userIdentifier, defaultExpectedException, thrownException);
+            throw CallFailedError.unexpectedException(consumerProducerSet, defaultExpectedException, thrownException);
         }
 
         if (assertion.isPresent()) {
@@ -35,4 +35,8 @@ public class FunctionCallExceptionExpectation<T extends Throwable> implements Te
         }
     }
 
+    @Override
+    public String toString() {
+        return "Expect exception: " + defaultExpectedException.getSimpleName();
+    }
 }

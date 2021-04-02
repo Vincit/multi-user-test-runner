@@ -71,6 +71,7 @@ public class RestAssuredIT {
     @Before
     public void initUsers() {
         todoService.clearList();
+        todoService.setSecureSystemAdminTodos(false);
         userService.createUser("admin", "admin", Role.ROLE_ADMIN);
         userService.createUser("user1", "user1", Role.ROLE_USER);
     }

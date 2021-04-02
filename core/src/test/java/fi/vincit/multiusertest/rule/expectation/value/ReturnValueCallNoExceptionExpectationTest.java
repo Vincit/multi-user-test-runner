@@ -1,6 +1,7 @@
 package fi.vincit.multiusertest.rule.expectation.value;
 
 import fi.vincit.multiusertest.rule.expectation.CallbackCalled;
+import fi.vincit.multiusertest.rule.expectation.ConsumerProducerSet;
 import fi.vincit.multiusertest.util.UserIdentifier;
 import org.junit.Rule;
 import org.junit.Test;
@@ -18,7 +19,7 @@ public class ReturnValueCallNoExceptionExpectationTest {
         ReturnValueCallNoExceptionExpectation<Integer> sut =
                 new ReturnValueCallNoExceptionExpectation<>();
 
-        sut.handleExceptionNotThrown(UserIdentifier.getAnonymous());
+        sut.handleExceptionNotThrown(new ConsumerProducerSet(UserIdentifier.getAnonymous()));
     }
 
     @Test
@@ -27,7 +28,7 @@ public class ReturnValueCallNoExceptionExpectationTest {
                 new ReturnValueCallNoExceptionExpectation<>();
 
         expectException.expect(AssertionError.class);
-        sut.handleThrownException(UserIdentifier.getAnonymous(), new IllegalArgumentException());
+        sut.handleThrownException(new ConsumerProducerSet(UserIdentifier.getAnonymous()), new IllegalArgumentException());
     }
 
     @Test

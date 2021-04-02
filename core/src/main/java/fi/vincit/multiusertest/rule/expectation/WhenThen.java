@@ -1,6 +1,6 @@
 package fi.vincit.multiusertest.rule.expectation;
 
-public interface WhenThen<T extends TestExpectation> extends When<T>, Then<T> {
+public interface WhenThen<T extends TestExpectation> extends When<T>, ThenProducer<T> {
 
     /**
      * Execute the call under test and run assertions
@@ -8,4 +8,5 @@ public interface WhenThen<T extends TestExpectation> extends When<T>, Then<T> {
      * @since 1.0
      */
     void test() throws Throwable;
+
 }

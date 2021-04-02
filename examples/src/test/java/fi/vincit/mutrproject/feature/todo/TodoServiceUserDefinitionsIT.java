@@ -4,6 +4,7 @@ import fi.vincit.multiusertest.annotation.IgnoreForUsers;
 import fi.vincit.multiusertest.annotation.RunWithUsers;
 import fi.vincit.multiusertest.util.UserIdentifiers;
 import fi.vincit.mutrproject.testconfig.AbstractConfiguredMultiRoleIT;
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
@@ -31,6 +32,11 @@ public class TodoServiceUserDefinitionsIT extends AbstractConfiguredMultiRoleIT 
     // Service under test
     @Autowired
     private TodoService todoService;
+
+    @Before
+    public void init() {
+        todoService.setSecureSystemAdminTodos(false);
+    }
 
     @Test
     public void getPrivateTodoList() throws Throwable {

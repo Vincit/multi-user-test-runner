@@ -7,6 +7,7 @@ import fi.vincit.multiusertest.rule.Authorization;
 import fi.vincit.multiusertest.runner.junit5.JUnit5MultiUserTestRunner;
 import fi.vincit.multiusertest.util.UserIdentifiers;
 import fi.vincit.mutrproject.configuration.TestMultiUserConfig;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +15,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import static fi.vincit.multiusertest.rule.expectation.TestExpectations.assertValue;
-import static fi.vincit.multiusertest.rule.expectation.TestExpectations.expectExceptionInsteadOfValue;
-import static fi.vincit.multiusertest.rule.expectation.TestExpectations.expectNotToFailIgnoringValue;
+import static fi.vincit.multiusertest.rule.expectation.TestExpectations.*;
 import static fi.vincit.multiusertest.util.UserIdentifiers.roles;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -42,6 +41,11 @@ public class TodoServiceJUnit5IT {
     @Autowired
     @MultiUserConfigClass
     private TestMultiUserConfig config;
+
+    @BeforeEach
+    public void init() {
+        todoService.setSecureSystemAdminTodos(false);
+    }
 
     @TestTemplate
     public void getPrivateTodoList(Authorization authorization) throws Throwable {

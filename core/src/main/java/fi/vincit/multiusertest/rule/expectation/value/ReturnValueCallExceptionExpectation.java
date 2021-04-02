@@ -2,8 +2,8 @@ package fi.vincit.multiusertest.rule.expectation.value;
 
 import fi.vincit.multiusertest.exception.CallFailedError;
 import fi.vincit.multiusertest.rule.expectation.AssertionCall;
+import fi.vincit.multiusertest.rule.expectation.ConsumerProducerSet;
 import fi.vincit.multiusertest.rule.expectation.ReturnValueCall;
-import fi.vincit.multiusertest.util.UserIdentifier;
 
 import java.util.Optional;
 
@@ -21,14 +21,14 @@ public class ReturnValueCallExceptionExpectation<VALUE_TYPE, EXCEPTION extends T
         this.expectedException = expectedException;
     }
 
-    public void handleExceptionNotThrown(UserIdentifier userIdentifier) {
-        throw CallFailedError.expectedCallToFail(userIdentifier, expectedException);
+    public void handleExceptionNotThrown(ConsumerProducerSet consumerProducerSet) {
+        throw CallFailedError.expectedCallToFail(consumerProducerSet, expectedException);
     }
 
-    public void handleThrownException(UserIdentifier userIdentifier, Throwable thrownException)  throws Throwable {
+    public void handleThrownException(ConsumerProducerSet consumerProducerSet, Throwable thrownException)  throws Throwable {
         if (!expectedException.isInstance(thrownException)) {
             throw CallFailedError.unexpectedException(
-                    userIdentifier,
+                    consumerProducerSet,
                     expectedException,
                     thrownException
             );
@@ -44,4 +44,8 @@ public class ReturnValueCallExceptionExpectation<VALUE_TYPE, EXCEPTION extends T
         valueCall.call();
     }
 
+    @Override
+    public String toString() {
+        return "Expect exception and assert it: " + expectedException.getSimpleName();
+    }
 }

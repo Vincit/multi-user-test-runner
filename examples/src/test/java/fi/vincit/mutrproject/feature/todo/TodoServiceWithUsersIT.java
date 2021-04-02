@@ -47,6 +47,7 @@ public class TodoServiceWithUsersIT extends AbstractConfiguredMultiRoleIT {
         userService.createUser("admin", "admin", Role.ROLE_ADMIN);
         userService.createUser("user1", "user1", Role.ROLE_USER);
         userService.createUser("user2", "user2", Role.ROLE_USER);
+        todoService.setSecureSystemAdminTodos(false);
     }
 
     @Test

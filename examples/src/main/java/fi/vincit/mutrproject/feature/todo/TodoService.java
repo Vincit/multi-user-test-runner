@@ -26,14 +26,19 @@ public class TodoService {
     private final UserService userService;
     private final TodoItemRepository todoItemRepository;
     private final TodoListRepository todoListRepository;
+    private boolean secureSystemAdminTodos;
 
     @Autowired
     public TodoService(UserService userService, TodoItemRepository todoItemRepository, TodoListRepository todoListRepository) {
         this.userService = userService;
         this.todoItemRepository = todoItemRepository;
         this.todoListRepository = todoListRepository;
+        this.secureSystemAdminTodos = secureSystemAdminTodos;
     }
 
+    public void setSecureSystemAdminTodos(boolean secureSystemAdminTodos) {
+        this.secureSystemAdminTodos = secureSystemAdminTodos;
+    }
 
     public void clearList() {
         todoItemRepository.deleteAll();
@@ -42,10 +47,12 @@ public class TodoService {
 
     @PreAuthorize("isAuthenticated()")
     public long createTodoList(String listName, boolean publicList) {
+        User user = userService.getLoggedInUser().orElseThrow(() -> new AccessDeniedException("Not logged in"));
+
         TodoList list = todoListRepository.save(new TodoList(
                 listName,
                 publicList,
-                userService.getLoggedInUser().get()
+                user
         ));
         return list.getId();
     }
@@ -54,7 +61,7 @@ public class TodoService {
         final Optional<User> currentUser = userService.getLoggedInUser();
         List<TodoList> todoLists;
         if (currentUser.isPresent()) {
-            if (isAdmin(currentUser.get())) {
+            if (isAnyAdmin(currentUser.get())) {
                 todoLists = todoListRepository.findAll();
             } else {
                 todoLists = todoListRepository.findPublicAndOwnedBy(currentUser.get().getUsername());
@@ -118,21 +125,34 @@ public class TodoService {
     private void authorizeEdit(TodoList list, Optional<User> user) {
         if (user.isPresent()) {
             User loggedInUser = user.get();
-            if (isAdmin(loggedInUser)) {
+            if (secureSystemAdminTodos) {
+                final boolean ownedByStemAdmin = isSystemAdmin(list.getOwner());
+                if (ownedByStemAdmin && isSystemAdmin(loggedInUser)) {
+                    return;
+                } else if (!ownedByStemAdmin && (isAnyAdmin(loggedInUser) || isOwner(list, loggedInUser))) {
+                    return;
+                }
+            } else if (isAnyAdmin(loggedInUser)) {
                 return;
             } else if (isOwner(list, loggedInUser)) {
                 return;
             }
+            throw new AccessDeniedException("User role <" + loggedInUser.getAuthorities() + "> doesn't have privileges to edit.");
         }
-        throw new AccessDeniedException("");
+        throw new AccessDeniedException("No user");
     }
 
-    private boolean isAdmin(User loggedInUser) {
+    private boolean isAnyAdmin(User loggedInUser) {
         return loggedInUser.getAuthorities().contains(Role.ROLE_ADMIN)
                 || loggedInUser.getAuthorities().contains(Role.ROLE_SYSTEM_ADMIN);
+    }
+    private boolean isNormalAdmin(User loggedInUser) {
+        return loggedInUser.getAuthorities().contains(Role.ROLE_ADMIN);
+    }
+    private boolean isSystemAdmin(User loggedInUser) {
+        return loggedInUser.getAuthorities().contains(Role.ROLE_SYSTEM_ADMIN);
     }
     private boolean isOwner(TodoList list, User currentUser) {
         return list.getOwner().getUsername().equals(currentUser.getUsername());
     }
-
 }

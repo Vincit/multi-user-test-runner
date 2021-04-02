@@ -11,10 +11,7 @@ import fi.vincit.mutrproject.config.SecurityConfig;
 import fi.vincit.mutrproject.configuration.TestMultiRoleConfig;
 import fi.vincit.mutrproject.testconfig.AbstractConfiguredMultiRoleIT;
 import fi.vincit.mutrproject.util.DatabaseUtil;
-import org.junit.After;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
@@ -65,6 +62,10 @@ public class TodoServiceMultiRoleIT {
     @Rule
     public final SpringMethodRule springMethodRule = new SpringMethodRule();
 
+    @Before
+    public void init() {
+        todoService.setSecureSystemAdminTodos(false);
+    }
 
     @After
     public void tearDown() {

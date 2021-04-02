@@ -10,10 +10,7 @@ import fi.vincit.mutrproject.Application;
 import fi.vincit.mutrproject.config.SecurityConfig;
 import fi.vincit.mutrproject.configuration.TestMultiUserAliasConfig;
 import fi.vincit.mutrproject.util.DatabaseUtil;
-import org.junit.After;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
@@ -64,6 +61,11 @@ public class TodoServiceRoleAliasIT {
 
     @Rule
     public AuthorizationRule authorizationRule = new AuthorizationRule();
+
+    @Before
+    public void init() {
+        todoService.setSecureSystemAdminTodos(false);
+    }
 
     @After
     public void clear() {

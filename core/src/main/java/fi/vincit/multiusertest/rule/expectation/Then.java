@@ -29,4 +29,5 @@ public interface Then<T extends TestExpectation> {
      * @since 1.0
      */
     WhenThen<T> byDefault(T testExpectation);
+
 }

@@ -9,37 +9,41 @@ import java.util.function.Supplier;
 
 public interface When<EXPECTATION extends TestExpectation> {
 
+    // Consumer
+
     /**
-     * Called by using methods found in {@link UserIdentifiers}
+     * Sets the active consumers for assertions. Called by using methods found in {@link UserIdentifiers}.
      * @param userIdentifiers User identifier collections
      * @return Expectation API object
      * @since 1.0
      */
-    Then<EXPECTATION> whenCalledWithAnyOf(UserIdentifierCollection... userIdentifiers);
+    ThenProducer<EXPECTATION> whenCalledWithAnyOf(UserIdentifierCollection... userIdentifiers);
 
     /**
-     * Called with zero or more {@link UserIdentifier} objects. In most cases {@link #whenCalledWithAnyOf(UserIdentifierCollection...)}
-     * is preferred since it works well with {@link UserIdentifiers} helper methods.
+     * Sets the active consumers for assertions. Called with zero or more {@link UserIdentifier} objects.
+     * In most cases {@link #whenCalledWithAnyOf(UserIdentifierCollection...)} is preferred since it works well
+     * with {@link UserIdentifiers} helper methods.
      * @param userIdentifiers User identifiers
      * @return Expectation API object
      * @since 1.0
      */
-    Then<EXPECTATION> whenCalledWithAnyOf(UserIdentifier... userIdentifiers);
+    ThenProducer<EXPECTATION> whenCalledWithAnyOf(UserIdentifier... userIdentifiers);
 
     /**
-     * Called with a list of {@link UserIdentifier} objects.
+     * Sets the active consumers for assertions. Called with a list of {@link UserIdentifier} objects.
      * @param userIdentifiers Collection of user identifiers
      * @return Expectation API object
      * @since 1.0
      */
-    Then<EXPECTATION> whenCalledWithAnyOf(Collection<UserIdentifier> userIdentifiers);
+    ThenProducer<EXPECTATION> whenCalledWithAnyOf(Collection<UserIdentifier> userIdentifiers);
 
     /**
-     * Called with a supplier method that returns a collection of identifiers
+     * Sets the active consumers for assertions. Called with a supplier method that returns a collection of identifiers.
+     * Calling this will clear active producer identifiers.
      * @param userIdentifierSupplier Supplier method
      * @return Expectation API object
      * @since 1.0
      */
-    Then<EXPECTATION> whenCalledWithAnyOf(Supplier<Collection<UserIdentifier>> userIdentifierSupplier);
+    ThenProducer<EXPECTATION> whenCalledWithAnyOf(Supplier<Collection<UserIdentifier>> userIdentifierSupplier);
 
 }

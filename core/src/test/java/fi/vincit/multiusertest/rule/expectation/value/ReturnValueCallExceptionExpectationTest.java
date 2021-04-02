@@ -2,6 +2,7 @@ package fi.vincit.multiusertest.rule.expectation.value;
 
 import fi.vincit.multiusertest.rule.expectation.AssertionCalled;
 import fi.vincit.multiusertest.rule.expectation.CallbackCalled;
+import fi.vincit.multiusertest.rule.expectation.ConsumerProducerSet;
 import fi.vincit.multiusertest.util.UserIdentifier;
 import org.junit.Rule;
 import org.junit.Test;
@@ -21,7 +22,7 @@ public class ReturnValueCallExceptionExpectationTest {
                 new ReturnValueCallExceptionExpectation<>(IllegalStateException.class);
 
         expectException.expect(AssertionError.class);
-        sut.handleExceptionNotThrown(UserIdentifier.getAnonymous());
+        sut.handleExceptionNotThrown(new ConsumerProducerSet(UserIdentifier.getAnonymous()));
     }
 
     @Test
@@ -29,7 +30,7 @@ public class ReturnValueCallExceptionExpectationTest {
         ReturnValueCallExceptionExpectation<Object, IllegalStateException> sut =
                 new ReturnValueCallExceptionExpectation<>(IllegalStateException.class);
 
-        sut.handleThrownException(UserIdentifier.getAnonymous(), new IllegalStateException());
+        sut.handleThrownException(new ConsumerProducerSet(UserIdentifier.getAnonymous()), new IllegalStateException());
     }
 
     @Test
@@ -42,7 +43,7 @@ public class ReturnValueCallExceptionExpectationTest {
                         expectException -> called.withThrowable(expectException)
                 );
 
-        sut.handleThrownException(UserIdentifier.getAnonymous(), new IllegalStateException("Foo"));
+        sut.handleThrownException(new ConsumerProducerSet(UserIdentifier.getAnonymous()), new IllegalStateException("Foo"));
 
         assertThat(called.getException().getMessage(), is("Foo"));
     }
@@ -53,7 +54,7 @@ public class ReturnValueCallExceptionExpectationTest {
                 new ReturnValueCallExceptionExpectation<>(IllegalStateException.class);
 
         expectException.expect(AssertionError.class);
-        sut.handleThrownException(UserIdentifier.getAnonymous(), new IllegalArgumentException());
+        sut.handleThrownException(new ConsumerProducerSet(UserIdentifier.getAnonymous()), new IllegalArgumentException());
     }
 
     @Test

@@ -1,6 +1,7 @@
 package fi.vincit.multiusertest.rule.expectation.call;
 
 import fi.vincit.multiusertest.rule.expectation.AssertionCalled;
+import fi.vincit.multiusertest.rule.expectation.ConsumerProducerSet;
 import fi.vincit.multiusertest.util.UserIdentifier;
 import org.junit.Rule;
 import org.junit.Test;
@@ -22,7 +23,7 @@ public class FunctionCallExceptionExpectationTest {
                 );
 
         expectException.expect(AssertionError.class);
-        sut.handleExceptionNotThrown(UserIdentifier.getAnonymous());
+        sut.handleExceptionNotThrown(new ConsumerProducerSet(UserIdentifier.getAnonymous()));
     }
 
     @Test
@@ -32,7 +33,7 @@ public class FunctionCallExceptionExpectationTest {
                         IllegalStateException.class
                 );
 
-        sut.handleThrownException(UserIdentifier.getAnonymous(), new IllegalStateException());
+        sut.handleThrownException(new ConsumerProducerSet(UserIdentifier.getAnonymous()), new IllegalStateException());
     }
 
     @Test
@@ -43,8 +44,8 @@ public class FunctionCallExceptionExpectationTest {
                 );
 
         expectException.expect(AssertionError.class);
-        expectException.expectMessage("Unexpected exception thrown with role <anonymous>: Expected <IllegalStateException> but was <IllegalArgumentException>");
-        sut.handleThrownException(UserIdentifier.getAnonymous(), new IllegalArgumentException());
+        expectException.expectMessage("Unexpected exception thrown with role <producer=<any>, consumer=anonymous>: Expected <IllegalStateException> but was <IllegalArgumentException>");
+        sut.handleThrownException(new ConsumerProducerSet(UserIdentifier.getAnonymous()), new IllegalArgumentException());
     }
 
     @Test
@@ -54,7 +55,7 @@ public class FunctionCallExceptionExpectationTest {
                         RuntimeException.class
                 );
 
-        sut.handleThrownException(UserIdentifier.getAnonymous(), new IllegalArgumentException());
+        sut.handleThrownException(new ConsumerProducerSet(UserIdentifier.getAnonymous()), new IllegalArgumentException());
     }
 
     @Test
@@ -67,7 +68,7 @@ public class FunctionCallExceptionExpectationTest {
                         expectException -> called.withThrowable(expectException)
                 );
 
-        sut.handleThrownException(UserIdentifier.getAnonymous(), new IllegalStateException("Foo"));
+        sut.handleThrownException(new ConsumerProducerSet(UserIdentifier.getAnonymous()), new IllegalStateException("Foo"));
         assertThat(called.getException().getMessage(), is("Foo"));
     }
 
@@ -82,8 +83,8 @@ public class FunctionCallExceptionExpectationTest {
                 );
 
         expectException.expect(AssertionError.class);
-        expectException.expectMessage("Unexpected exception thrown with role <anonymous>: Expected <IllegalStateException> but was <IllegalArgumentException>: Foo");
-        sut.handleThrownException(UserIdentifier.getAnonymous(), new IllegalArgumentException("Foo"));
+        expectException.expectMessage("Unexpected exception thrown with role <producer=<any>, consumer=anonymous>: Expected <IllegalStateException> but was <IllegalArgumentException>: Foo");
+        sut.handleThrownException(new ConsumerProducerSet(UserIdentifier.getAnonymous()), new IllegalArgumentException("Foo"));
         assertThat(called.getException(), nullValue());
     }
 

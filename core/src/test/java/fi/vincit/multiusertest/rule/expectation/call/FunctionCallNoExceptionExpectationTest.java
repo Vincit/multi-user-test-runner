@@ -1,5 +1,6 @@
 package fi.vincit.multiusertest.rule.expectation.call;
 
+import fi.vincit.multiusertest.rule.expectation.ConsumerProducerSet;
 import fi.vincit.multiusertest.util.UserIdentifier;
 import org.junit.Rule;
 import org.junit.Test;
@@ -13,7 +14,7 @@ public class FunctionCallNoExceptionExpectationTest {
     @Test
     public void throwIfExceptionIsExpected() throws Exception {
         FunctionCallNoExceptionExpectation sut = new FunctionCallNoExceptionExpectation();
-        sut.handleExceptionNotThrown(UserIdentifier.getAnonymous());
+        sut.handleExceptionNotThrown(new ConsumerProducerSet(UserIdentifier.getAnonymous()));
     }
 
     @Test
@@ -21,7 +22,7 @@ public class FunctionCallNoExceptionExpectationTest {
         FunctionCallNoExceptionExpectation sut = new FunctionCallNoExceptionExpectation();
 
         expectException.expect(AssertionError.class);
-        sut.handleThrownException(UserIdentifier.getAnonymous(), new IllegalArgumentException());
+        sut.handleThrownException(new ConsumerProducerSet(UserIdentifier.getAnonymous()), new IllegalArgumentException());
     }
 
 }
