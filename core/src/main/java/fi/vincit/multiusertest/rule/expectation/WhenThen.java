@@ -1,5 +1,7 @@
 package fi.vincit.multiusertest.rule.expectation;
 
+import java.util.function.Consumer;
+
 public interface WhenThen<T extends TestExpectation> extends When<T>, ThenProducer<T> {
 
     /**
@@ -9,4 +11,10 @@ public interface WhenThen<T extends TestExpectation> extends When<T>, ThenProduc
      */
     void test() throws Throwable;
 
+    /**
+     * Prints role mappings using the given consumer to print them
+     * @param logger Logger printer
+     * @return Expectation API object
+     */
+    WhenThen<T> debugRoleMappings(Consumer<String> logger);
 }

@@ -4,6 +4,7 @@ import fi.vincit.multiusertest.rule.AuthorizationRule;
 import fi.vincit.multiusertest.test.UserRoleIT;
 import fi.vincit.multiusertest.util.UserIdentifier;
 import fi.vincit.multiusertest.util.UserIdentifiers;
+import org.hamcrest.CoreMatchers;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -315,6 +316,27 @@ public class AbstractWhenThenTest {
         sut.test();
 
         verify(sut).test(userSetExpectation, new ConsumerProducerSet(role1, role2));
+    }
+
+    @Test
+    public void testDebbugerLogger() throws Throwable {
+        UserIdentifier role1 = UserIdentifier.parse("role:ROLE_1");
+        UserIdentifier role2 = UserIdentifier.parse("role:ROLE_2");
+        TestExpectation userSetExpectation = mock(TestExpectation.class);
+        TestExpectation expectationInSubclass = mock(TestExpectation.class);
+
+        AbstractWhenThen<TestExpectation> sut = spy(new SUT(
+                role1, role2
+        ));
+        sut.byDefault(userSetExpectation);
+        when(sut.getDefaultExpectation(new ConsumerProducerSet(role1))).thenReturn(expectationInSubclass);
+
+        StringBuilder sb = new StringBuilder();
+        sut.debugRoleMappings(sb::append);
+
+        sut.test();
+
+        assertThat(sb.toString(), CoreMatchers.startsWith("Running with expectations:  otherwise=Mock for TestExpectation"));
     }
 
 }

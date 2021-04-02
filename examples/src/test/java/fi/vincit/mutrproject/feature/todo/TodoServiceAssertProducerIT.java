@@ -55,6 +55,7 @@ public class TodoServiceAssertProducerIT extends AbstractConfiguredMultiRoleIT {
                 .then(expectExceptionInsteadOfValue(AuthenticationCredentialsNotFoundException.class))
 
                 .otherwise(expectExceptionInsteadOfValue(AccessDeniedException.class))
+                .debugRoleMappings(System.out::println)
                 .test();
     }
 

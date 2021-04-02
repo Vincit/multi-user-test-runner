@@ -8,10 +8,12 @@ import fi.vincit.multiusertest.util.UserIdentifierCollection;
 import fi.vincit.multiusertest.util.UserIdentifiers;
 
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public abstract class AbstractWhenThen<T extends TestExpectation> implements WhenThen<T> {
 
+    private static final String DEBUG_LOG_INDENT = "  ";
     private final Set<UserIdentifier> currentIdentifiers = new HashSet<>();
     private final Set<UserIdentifier> currentProducerIdentifiers = new HashSet<>();
     private final Map<ConsumerProducerSet, T> expectationsByIdentifier = new HashMap<>();
@@ -21,6 +23,7 @@ public abstract class AbstractWhenThen<T extends TestExpectation> implements Whe
     private final Authorization authorizationRule;
     private final UserRoleIT userRoleIT;
     private T defaultExpectation;
+    private Consumer<String> debugLogger;
 
     public AbstractWhenThen(UserIdentifier producerIdentifier, UserIdentifier userIdentifier, Authorization authorizationRule, UserRoleIT userRoleIT) {
         this.userIdentifier = userIdentifier;
@@ -125,7 +128,15 @@ public abstract class AbstractWhenThen<T extends TestExpectation> implements Whe
     }
 
     @Override
+    public WhenThen<T> debugRoleMappings(Consumer<String> logger) {
+        this.debugLogger = logger;
+        return this;
+    }
+
+    @Override
     public void test() throws Throwable {
+        printRoleDebugLog();
+
         final ConsumerProducerSet consumerProducerSet = new ConsumerProducerSet(producerIdentifier, userIdentifier);
         T testExpectation = expectationsByIdentifier.computeIfAbsent(
                 consumerProducerSet,
@@ -176,6 +187,23 @@ public abstract class AbstractWhenThen<T extends TestExpectation> implements Whe
             throw new IllegalStateException("Producer identifier " + userIdentifier.toString() + " already set");
         }
         currentProducerIdentifiers.add(userIdentifier);
+    }
+
+    private void printRoleDebugLog() {
+        if (debugLogger != null) {
+            debugLogger.accept("Running with expectations:");
+            expectationsByIdentifier.entrySet().stream()
+                    .map(Object::toString)
+                    .map(roleDebugLine -> DEBUG_LOG_INDENT + roleDebugLine)
+                    .sorted()
+                    .forEach(debugLogger);
+
+            if (defaultExpectation != null) {
+                debugLogger.accept("  otherwise=" + defaultExpectation.toString());
+            } else {
+                debugLogger.accept("  No otherwise condition set");
+            }
+        }
     }
 
     private static <T> void validateWhen(Collection<T> userIdentifiers) {
