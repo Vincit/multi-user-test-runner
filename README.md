@@ -9,14 +9,13 @@ scenarios where the authorization depends on multiple users and their roles.
 Originally the library was created to test the security of Spring service-layer methods. Now the core 
 library also with any plain Java classes and has been successfully used with REST-assured based API testing.
 From 0.5.0 onwards `multi-user-test-runner-spring` dependency is deprecated. Spring support is achieved by using
-rules.
+JUnit rules.
 
-# Requirements version 1.0 and newer
+# Requirements for version 1.0 and newer
 
  * Java 8 or newer
  * JUnit 4.12 or newer (supports JUnit5 with JUnit vintage 4.12)
 
- 
  
 # Optional Requirements
 

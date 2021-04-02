@@ -9,6 +9,8 @@ Multi User Test Runner
 * Changed `testCall` to `given`
 * Removed old assertion and expectation APIs
 * Simplified the remaining API
+* Support for producer roles when defining rules
+* Support for defining role rules via Supplier functions
 
 ## Breaking Changes
 
