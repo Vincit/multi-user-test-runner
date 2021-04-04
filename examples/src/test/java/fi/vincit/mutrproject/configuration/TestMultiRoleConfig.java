@@ -33,19 +33,6 @@ public class TestMultiRoleConfig extends AbstractMultiUserAndRoleConfig<User, Ro
         return userService.createUser(username, username, userRoles);
     }
 
-    /**
-     * Map role group to real system roles
-     * @param roleGroup Role group to map
-     * @return Role group mapped to system roles
-     */
-    private Collection<Role> roleGroupToRoles(RoleGroup roleGroup) {
-        switch (roleGroup) {
-            case ADMINISTRATOR: return Arrays.asList(Role.ROLE_ADMIN, Role.ROLE_MODERATOR, Role.ROLE_USER);
-            case REGULAR_USER: return Arrays.asList(Role.ROLE_USER);
-            default: throw new IllegalArgumentException("Invalid role group " + roleGroup);
-        }
-    }
-
     @Override
     protected Role identifierPartToRole(String identifier) {
         return Role.valueOf("ROLE_" + identifier);

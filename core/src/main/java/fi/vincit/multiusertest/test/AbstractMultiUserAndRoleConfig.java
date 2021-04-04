@@ -19,17 +19,25 @@ public abstract class AbstractMultiUserAndRoleConfig<USER, ROLE> extends Abstrac
     public AbstractMultiUserAndRoleConfig() {
     }
 
-
+    /**
+     * Transforms the given role to a collection of roles using {@link this#identifierPartToRole(String)}
+     * method.
+     * @param role Role as string.
+     * @return Collection of roles
+     */
     @Override
     public Collection<ROLE> stringToRole(String role) {
         return UserIdentifier.mapMultiRoleIdentifier(role, this::identifierPartToRole);
     }
 
     /**
-     * Maps single multi-role role part to a role.
+     * Maps single multi-role role part to a role. By default throws an exception so it must
+     * be implemented in case the default {@link this#stringToRole(String)} method is used.
      * @param identifier Multi-role identifier part
      * @return Part as role
      */
-    protected abstract ROLE identifierPartToRole(String identifier);
+    protected ROLE identifierPartToRole(String identifier) {
+        throw new UnsupportedOperationException("Please implement. This method");
+    }
 
 }
