@@ -34,7 +34,7 @@ public class TestRunnerFactory {
      * @param producerIdentifiers Producer identifiers
      * @param consumerIdentifiers Consumer identifiers
      * @return All required combinations for given identifiers
-     * @throws Exception
+     * @throws Exception If an exception is thrown
      */
     public List<Runner> createRunnersForRoles(Collection<UserIdentifier> producerIdentifiers, Collection<UserIdentifier> consumerIdentifiers) throws Exception {
         List<Runner> runners = new ArrayList<>();

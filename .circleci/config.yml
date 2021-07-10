@@ -1,0 +1,59 @@
+# Java/Gradle CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-java/ for more details
+version: 2 # use CircleCI 2.0
+jobs:
+  build:
+    environment:
+      _JAVA_OPTIONS: "-Xmx3g"
+      GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+    docker:
+      - image: circleci/openjdk:8-jdk-stretch
+    steps:
+      - checkout
+      - restore_cache:
+          key: v1-gradle-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
+      - restore_cache:
+          key: v1-gradle-cache-{{ checksum "build.gradle" }}
+      - run:
+          name: Run tests
+          command: |
+            ./build/test-and-package-all.sh
+      - run:
+          name: Copy test artifacts
+          command: |
+            ./build/gather-test-artifacts.sh
+          when: always
+      - run:
+          name: Run integration tests
+          command: |
+            ./build/test-integration.sh
+      - run:
+          name: Copy test artifacts
+          command: |
+            ./build/gather-test-artifacts.sh
+          when: always
+      - run:
+          name: Find bugs
+          command: |
+            ./build/generate-findbugs-report.sh
+      - save_cache:
+          paths:
+            - ~/.gradle/wrapper
+          key: v1-gradle-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
+      - save_cache:
+          paths:
+            - ~/.gradle/caches
+          key: v1-gradle-cache-{{ checksum "build.gradle" }}
+      - store_test_results:
+          path: "test-results-all"
+      - store_artifacts:
+          path: "test-results-all"
+          when: always
+      - store_artifacts:
+          path: core/build/libs
+workflows:
+  version: 2
+  workflow:
+    jobs:
+    - build

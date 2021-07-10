@@ -1,3 +1,3 @@
 #!/bin/bash
 
-gradle :core:javadoc
+./gradlew :core:javadoc
