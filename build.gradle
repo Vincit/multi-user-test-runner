@@ -265,6 +265,7 @@ project(':examples') {
         compile("org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion")
         compile("com.h2database:h2:$h2Version")
         compile("org.apache.httpcomponents:httpclient:4.5.3")
+        compile("javax.interceptor:javax.interceptor-api:1.2.2") // For JavaDoc as @Transactional requires it
         testCompile project(':core')
         testCompile project(':spring-test-class-runner')
         testCompile("org.springframework.boot:spring-boot-starter-test:$springBootVersion")

@@ -20,7 +20,7 @@ public abstract class AbstractMultiUserAndRoleConfig<USER, ROLE> extends Abstrac
     }
 
     /**
-     * Transforms the given role to a collection of roles using {@link this#identifierPartToRole(String)}
+     * Transforms the given role to a collection of roles using {@link AbstractMultiUserAndRoleConfig#identifierPartToRole(String)}
      * method.
      * @param role Role as string.
      * @return Collection of roles
@@ -31,8 +31,8 @@ public abstract class AbstractMultiUserAndRoleConfig<USER, ROLE> extends Abstrac
     }
 
     /**
-     * Maps single multi-role role part to a role. By default throws an exception so it must
-     * be implemented in case the default {@link this#stringToRole(String)} method is used.
+     * Maps single multi-role role part to a role. By default, throws an exception, so it must
+     * be implemented in case the default {@link AbstractMultiUserAndRoleConfig#stringToRole(String)} method is used.
      * @param identifier Multi-role identifier part
      * @return Part as role
      */

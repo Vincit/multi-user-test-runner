@@ -15,7 +15,7 @@ public interface TestExpectation {
      * not otherwise expected (e.g. custom assertion fails).
      * @param consumerProducerSet User identifiers used when calling the call under test
      * @param thrownException Thrown exception
-     * @throws Throwable
+     * @throws Throwable If an exception is thrown
      */
     void handleThrownException(ConsumerProducerSet consumerProducerSet, Throwable thrownException) throws Throwable;
 

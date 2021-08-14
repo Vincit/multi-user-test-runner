@@ -18,7 +18,8 @@ public class Roles extends GenericUserIdentifierCollection {
 
     /**
      * Initializes the Roles with the given role names
-     * @param roles
+     * @param roles Roles to create
+     * @return Created roles
      */
     public static Roles create(String... roles) {
         List <UserIdentifier> roleIdentifiers = new ArrayList<>(roles.length);
