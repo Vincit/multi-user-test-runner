@@ -38,7 +38,7 @@ jobs:
       - run:
           name: Copy test artifacts
           command: |
-            ./build/gather-test-results.sh
+            ./build/gather-test-artifacts.sh
           when: always
       - store_test_results:
           path: "test-results"
