@@ -20,9 +20,19 @@ jobs:
           command: |
             ./build/test-and-package-all.sh
       - run:
+          name: Copy test artifacts
+          command: |
+            ./build/gather-test-artifacts.sh
+          when: always
+      - run:
           name: Run integration tests
           command: |
             ./build/test-integration.sh
+      - run:
+          name: Copy test artifacts
+          command: |
+            ./build/gather-test-artifacts.sh
+          when: always
       - run:
           name: Find bugs
           command: |
@@ -35,11 +45,6 @@ jobs:
           paths:
             - ~/.gradle/caches
           key: v1-gradle-cache-{{ checksum "build.gradle" }}
-      - run:
-          name: Copy test artifacts
-          command: |
-            ./build/gather-test-artifacts.sh
-          when: always
       - store_test_results:
           path: "test-results"
       - store_artifacts:
