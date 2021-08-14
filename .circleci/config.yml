@@ -46,9 +46,9 @@ jobs:
             - ~/.gradle/caches
           key: v1-gradle-cache-{{ checksum "build.gradle" }}
       - store_test_results:
-          path: "test-results"
+          path: "test-results-all"
       - store_artifacts:
-          path: "test-results"
+          path: "test-results-all"
           when: always
       - store_artifacts:
           path: core/build/libs
