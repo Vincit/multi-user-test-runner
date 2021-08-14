@@ -35,10 +35,14 @@ jobs:
           paths:
             - ~/.gradle/caches
           key: v1-gradle-cache-{{ checksum "build.gradle" }}
+      - run:
+          name: Copy test artifacts
+          command: |
+            ./build/gather-test-results.sh
       - store_test_results:
-          path: "*/build/test-results/test"
+          path: "test-results"
       - store_artifacts:
-          path: "*/build/test-results/test"
+          path: "test-results"
           when: always
       - store_artifacts:
           path: core/build/libs
