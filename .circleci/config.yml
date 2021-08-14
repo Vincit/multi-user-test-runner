@@ -39,6 +39,7 @@ jobs:
           name: Copy test artifacts
           command: |
             ./build/gather-test-results.sh
+          when: always
       - store_test_results:
           path: "test-results"
       - store_artifacts:
