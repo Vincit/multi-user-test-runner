@@ -18,7 +18,15 @@ jobs:
       - run:
           name: Run tests
           command: |
-            ./gradlew test $GRADLE_ARGS
+            ./build/test-and-package-all.sh
+      - run:
+          name: Run integration tests
+          command: |
+            ./build/test-integration.sh
+      - run:
+          name: Find bugs
+          command: |
+            ./build/generate-findbugs-report.sh
       - save_cache:
           paths:
             - ~/.gradle/wrapper
@@ -28,19 +36,12 @@ jobs:
             - ~/.gradle/caches
           key: v1-gradle-cache-{{ checksum "build.gradle" }}
       - store_test_results:
-          path: build/test-results/test
+          path: "*/build/test-results/test"
       - store_artifacts:
-          path: build/test-results/test
+          path: "*/build/test-results/test"
           when: always
-      - run:
-          name: Assemble JAR
-          command: |
-            # Skip this for other nodes
-            if [ "$CIRCLE_NODE_INDEX" == 0 ]; then
-              ./gradlew assemble
-            fi
       - store_artifacts:
-          path: build/libs
+          path: core/build/libs
 workflows:
   version: 2
   workflow:

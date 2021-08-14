@@ -1,3 +1,3 @@
 #!/bin/bash
 
-gradle clean :examples:integartionTest
+./gradlew clean :examples:integartionTest

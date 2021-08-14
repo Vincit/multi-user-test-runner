@@ -1,3 +1,3 @@
 #!/bin/bash
 
-gradle uploadArchives
+./gradlew uploadArchives

@@ -1,3 +1,3 @@
 #!/bin/bash
 
-gradle install -x signArchives
+./gradlew install -x signArchives
