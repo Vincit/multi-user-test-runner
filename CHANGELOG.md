@@ -2,7 +2,7 @@ Multi User Test Runner
 ======================
 
 
-# 1.0.0
+# 1.0.0-beta1
 
 ## Changes
 
@@ -11,6 +11,10 @@ Multi User Test Runner
 * Simplified the remaining API
 * Support for producer roles when defining rules
 * Support for defining role rules via Supplier functions
+* UserDefinitionClass allows definition of general user/role groups that can 
+  be shared across tests. Instead of typing the same array of users/role for
+  each test separately it is now possible to define a class that can be given
+  to the RunWithUsers annotation.
 
 ## Breaking Changes
 
@@ -40,17 +44,6 @@ The API introduced in 0.5 has changed slightly so some modifications are needed 
 newer APIs. Most notably the package has been changed from `fi.vincit.multiusertest.rule.expectation2` to 
 `fi.vincit.multiusertest.rule.expectation` and package `fi.vincit.multiusertest.rule.expection` classes 
 have been moved under `fi.vincit.multiusertest.rule.expectation`.
-
-# 0.6.0
-
-## Changes
-
-Version 0.6 improves error messages and adds UserDefinitionClass
-
-* UserDefinitionClass allows definition of general user/role groups that can 
-  be shared across tests. Instead of typing the same array of users/role for
-  each test separately it is now possible to define a class that can be given
-  to the RunWithUsers annotation.
 
 # 0.5.0
 
