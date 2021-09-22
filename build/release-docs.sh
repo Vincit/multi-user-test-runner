@@ -1,18 +1,19 @@
 #!/bin/bash
 
+set -eu
+
 echo "Releasing documentation"
 
 RELEASE_VERSION=$(cat version)
 DOCS_FULL_URL="ssh://git@${DOCS_GIT_REPO}"
 DOCS_BRANCH=gh-pages
 DOCS_DIR=docs
-PROJECT_DIR=../project
+PROJECT_DIR=$(pwd)
 
 echo " * Generate JavaDoc for version $RELEASE_VERSION"
-cd project
 ./build/generate-javadoc.sh
-cd ..
 
+rm -rf $DOCS_DIR
 echo " * Cloning docs from $DOCS_GIT_REPO branch $DOCS_BRANCH to $DOCS_DIR"
 git clone $DOCS_FULL_URL -b $DOCS_BRANCH --single-branch $DOCS_DIR
 cd $DOCS_DIR
@@ -35,7 +36,7 @@ cp -r $PROJECT_DIR/core/build/docs/javadoc/** $JAVA_LATEST_DOC_DIR
 README_FILE="README.md"
 CHANGELOG_FILE="CHANGELOG.md"
 LATEST_DIR="_includes/latest"
-VERSION_DIR="_includes/$VERSION"
+VERSION_DIR="_includes/$RELEASE_VERSION"
 
 echo " * Copying $README_FILE to $LATEST_DIR"
 mkdir -p LATEST_DIR
@@ -55,6 +56,6 @@ git add $JAVA_LATEST_DOC_DIR/**
 git add $LATEST_DIR/$README_FILE
 git add $LATEST_DIR/$CHANGELOG_FILE
 
-git commit -m "Release $VERSION docs"
+git commit -m "Release $RELEASE_VERSION docs"
 
 git push origin HEAD:gh-pages
