@@ -1,6 +1,50 @@
 Multi User Test Runner
 ======================
 
+
+# 1.0.0-beta1
+
+## Changes
+
+* Changed `testCall` to `given`
+* Removed old assertion and expectation APIs
+* Simplified the remaining API
+* Support for producer roles when defining rules
+* Support for defining role rules via Supplier functions
+* UserDefinitionClass allows definition of general user/role groups that can 
+  be shared across tests. Instead of typing the same array of users/role for
+  each test separately it is now possible to define a class that can be given
+  to the RunWithUsers annotation.
+
+## Breaking Changes
+
+Version 1.0 removes deprecated APIs and feature in order to make the library
+cleaner and easier to use. Expectation API2 is from now onwards known as 
+Expectation API. From 1.0 onwards the API will considered stable.
+
+* Old assertion methods are removed. Only available way is to use 
+  Expectation API v2 introduced in MUTR 0.5.
+* `expectation2` package has been renamed to `expectation`
+* Clean up Expectations API. Changes make the API easier to understand and use when there is less methods
+  with the same name but different arguments.
+  * Removed `whenCalledWith(anyOf(...))` methods calls in favour of `whenCalledWithAnyOf(...)`
+  * Removed String argument based `whenCalledWithAnyOf` methods in favour of using only `roles(...)` and `users(...)` methods
+* Removed `defaultException` from `MultiUserTestConfig` annotation
+* Tests can't be run with `producer` role anymore. Just before calling the method under test,
+  framework logs in as `consumer`. After the call the `producer` is logged back in. This is done because it
+  is very easy to forget to change the user to `consumer` which may result false positive test results.
+* Replaced `testCall` with `given`. Given is more in line with the `when` and `then`
+
+## Migration Guide
+
+Since the old methods for writing the tests have been removed the tests using these methods should
+be migrated to the new API.
+
+The API introduced in 0.5 has changed slightly so some modifications are needed even for the tests using
+newer APIs. Most notably the package has been changed from `fi.vincit.multiusertest.rule.expectation2` to 
+`fi.vincit.multiusertest.rule.expectation` and package `fi.vincit.multiusertest.rule.expection` classes 
+have been moved under `fi.vincit.multiusertest.rule.expectation`.
+
 # 0.5.0
 
 ## Changes
