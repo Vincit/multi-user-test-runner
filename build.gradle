@@ -26,19 +26,13 @@ def snapshotPrefix = '-SNAPSHOT'
 task tagRelease << {
     version = mutrVersion ?: "test"
 
-    if (System.env.SCM_USERNAME == null) {
-        throw new java.lang.IllegalArgumentException("SCM_USERNAME must be defined")
-    }
-    if (System.env.SCM_PASSWORD == null) {
-        throw new java.lang.IllegalArgumentException("SCM_PASSWORD must be defined")
-    }
     exec {
         executable 'git'
         args 'tag', version
     }
     exec{
         executable 'git'
-        args 'push', "https://$System.env.SCM_USERNAME:$System.env.SCM_PASSWORD@$System.env.REPO_URL", "refs/tags/$version"
+        args 'push', "ssh://git@$System.env.REPO_URL", "refs/tags/$version"
     }
 }
 
