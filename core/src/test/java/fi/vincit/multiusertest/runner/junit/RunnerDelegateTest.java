@@ -12,9 +12,7 @@ import org.junit.Test;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.TestClass;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
@@ -28,6 +26,7 @@ public class RunnerDelegateTest {
     @Test
     public void testGetName() {
         RunnerDelegate delegate = new RunnerDelegate(
+                new HashSet<>(),
                 UserIdentifier.parse("role:ROLE_ADMIN"),
                 UserIdentifier.parse("role:ROLE_USER")
         );
@@ -41,6 +40,7 @@ public class RunnerDelegateTest {
     @Test
     public void testName() {
         RunnerDelegate delegate = new RunnerDelegate(
+                new HashSet<>(),
                 UserIdentifier.parse("role:ROLE_ADMIN"),
                 UserIdentifier.parse("role:ROLE_USER")
         );
@@ -134,6 +134,7 @@ public class RunnerDelegateTest {
     @Test
     public void testValidateTestInstance() {
         RunnerDelegate delegate = new RunnerDelegate(
+                new HashSet<>(),
                 UserIdentifier.parse("role:ROLE_ADMIN"),
                 UserIdentifier.parse("role:ROLE_USER")
         );
@@ -146,6 +147,7 @@ public class RunnerDelegateTest {
     @Test(expected = IllegalStateException.class)
     public void testValidateTestInstanceWithInvalidClassType() {
         RunnerDelegate delegate = new RunnerDelegate(
+                new HashSet<>(),
                 UserIdentifier.parse("role:ROLE_ADMIN"),
                 UserIdentifier.parse("role:ROLE_USER")
         );
@@ -156,6 +158,7 @@ public class RunnerDelegateTest {
     @Test(expected = IllegalStateException.class)
     public void testValidateTestInstanceWithMissingConfigClass() {
         RunnerDelegate delegate = new RunnerDelegate(
+                new HashSet<>(),
                 UserIdentifier.parse("role:ROLE_ADMIN"),
                 UserIdentifier.parse("role:ROLE_USER")
         );
@@ -165,6 +168,7 @@ public class RunnerDelegateTest {
     @Test
     public void testValidateInheritedTestInstance() {
         RunnerDelegate delegate = new RunnerDelegate(
+                new HashSet<>(),
                 UserIdentifier.parse("role:ROLE_ADMIN"),
                 UserIdentifier.parse("role:ROLE_USER")
         );
@@ -178,6 +182,7 @@ public class RunnerDelegateTest {
     public void testIsIgnoredByChild() {
         TestMethodFilter testMethodFilter = mock(TestMethodFilter.class);
         RunnerDelegate delegate = new RunnerDelegate(
+                new HashSet<>(),
                 UserIdentifier.parse("role:ROLE_ADMIN"),
                 UserIdentifier.parse("role:ROLE_USER"),
                 testMethodFilter
@@ -198,6 +203,7 @@ public class RunnerDelegateTest {
     public void testIsIgnoredWhenParentIsIgnored() {
         TestMethodFilter testMethodFilter = mock(TestMethodFilter.class);
         RunnerDelegate delegate = new RunnerDelegate(
+                new HashSet<>(),
                 UserIdentifier.parse("role:ROLE_ADMIN"),
                 UserIdentifier.parse("role:ROLE_USER"),
                 testMethodFilter
@@ -212,6 +218,7 @@ public class RunnerDelegateTest {
     public void testIsIgnoredWhenParentAndChildAreIgnored() {
         TestMethodFilter testMethodFilter = mock(TestMethodFilter.class);
         RunnerDelegate delegate = new RunnerDelegate(
+                new HashSet<>(),
                 UserIdentifier.parse("role:ROLE_ADMIN"),
                 UserIdentifier.parse("role:ROLE_USER"),
                 testMethodFilter
@@ -226,6 +233,7 @@ public class RunnerDelegateTest {
     public void testIsNotIgnored() {
         TestMethodFilter testMethodFilter = mock(TestMethodFilter.class);
         RunnerDelegate delegate = new RunnerDelegate(
+                new HashSet<>(),
                 UserIdentifier.parse("role:ROLE_ADMIN"),
                 UserIdentifier.parse("role:ROLE_USER"),
                 testMethodFilter
@@ -240,6 +248,7 @@ public class RunnerDelegateTest {
     public void testFilter() {
         TestMethodFilter testMethodFilter = mock(TestMethodFilter.class);
         RunnerDelegate delegate = new RunnerDelegate(
+                new HashSet<>(),
                 UserIdentifier.parse("role:ROLE_ADMIN"),
                 UserIdentifier.parse("role:ROLE_USER"),
                 testMethodFilter
@@ -256,6 +265,7 @@ public class RunnerDelegateTest {
     public void testFilterWhenNothingToRun() {
         TestMethodFilter testMethodFilter = mock(TestMethodFilter.class);
         RunnerDelegate delegate = new RunnerDelegate(
+                new HashSet<>(),
                 UserIdentifier.parse("role:ROLE_ADMIN"),
                 UserIdentifier.parse("role:ROLE_USER"),
                 testMethodFilter

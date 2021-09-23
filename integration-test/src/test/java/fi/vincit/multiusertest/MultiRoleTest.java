@@ -20,7 +20,7 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
 @RunWithUsers(producers = {"role:ADMIN:USER", "role:USER:VISITOR"},
-        consumers = {"role:ADMIN:USER", "role:USER:VISITOR"})
+        consumers = {"role:ADMIN:USER", "role:USER:VISITOR", RunWithUsers.PRODUCER})
 @RunWith(MultiUserTestRunner.class)
 @MultiUserTestConfig
 public class MultiRoleTest {
@@ -64,7 +64,10 @@ public class MultiRoleTest {
 
     private void throwIfUserRole(String identifier) {
         Collection<User.Role> identifierRole = configuredTest.stringToRole(UserIdentifier.parse(identifier).getIdentifier());
-        if (identifierRole.equals(SecurityUtil.getLoggedInUser().getRoles())) {
+        final boolean roleMatches = identifierRole.equals(SecurityUtil.getLoggedInUser().getRoles());
+        final boolean isNotProducer = !configuredTest.getConsumer().getUsername()
+                .equals(configuredTest.getProducer().getUsername());
+        if (roleMatches && isNotProducer) {
             throw new IllegalStateException("Thrown when role was " + identifier);
         }
     }

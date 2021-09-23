@@ -33,12 +33,16 @@ public class ExpectationSmokeTest {
         throw new IllegalStateException("Denied");
     }
 
+    void throwOtherException() {
+        throw new IllegalArgumentException("Some other exception that was expected");
+    }
+
     private int returnValueCall() {
         return 103;
     }
 
     @Test
-    public void expectToFail_WhenAccessDeniedThrown() throws Throwable {
+    public void expectToFail_WhenExpectedThrown() throws Throwable {
         authorizationRule.given(this::throwDefaultException)
                 .whenCalledWithAnyOf(roles("ROLE_USER"))
                 .then(expectException(IllegalStateException.class))
@@ -46,9 +50,9 @@ public class ExpectationSmokeTest {
     }
 
     @Test(expected = AssertionError.class)
-    public void expectNotToFail_WhenAccessDeniedThrown() throws Throwable {
-        authorizationRule.given(this::throwDefaultException)
-                .whenCalledWithAnyOf(roles("ROLE_ADMIN"))
+    public void expectNotToFail_WhenSomethingNotExpectedThrown() throws Throwable {
+        authorizationRule.given(this::throwOtherException)
+                .whenCalledWithAnyOf(roles("ROLE_USER"))
                 .then(expectException(IllegalStateException.class))
                 .test();
     }

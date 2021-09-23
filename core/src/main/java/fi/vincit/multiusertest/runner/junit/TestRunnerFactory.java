@@ -7,9 +7,7 @@ import org.junit.runners.ParentRunner;
 import org.junit.runners.model.TestClass;
 
 import java.lang.reflect.Constructor;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 /**
  * Creates instances of JUnit test runners
@@ -44,6 +42,10 @@ public class TestRunnerFactory {
         validateProducers(producerIdentifiers);
         validateConsumers(producerIdentifiers, consumerIdentifiers);
 
+        Set<UserIdentifier> allowedIdentifiers = new HashSet<>();
+        allowedIdentifiers.addAll(producerIdentifiers);
+        allowedIdentifiers.addAll(consumerIdentifiers);
+
         for (UserIdentifier producerIdentifier : producerIdentifiers) {
             for (UserIdentifier consumerIdentifier : consumerIdentifiers) {
                 Object parentRunner;
@@ -51,12 +53,14 @@ public class TestRunnerFactory {
                         && consumerIdentifier.getIdentifier().equals(RunWithUsers.WITH_PRODUCER_ROLE)) {
                     parentRunner = runnerConstructor.newInstance(
                             testClass.getJavaClass(),
+                            allowedIdentifiers,
                             producerIdentifier,
                             producerIdentifier
                     );
                 } else {
                     parentRunner = runnerConstructor.newInstance(
                             testClass.getJavaClass(),
+                            allowedIdentifiers,
                             producerIdentifier,
                             consumerIdentifier
                     );

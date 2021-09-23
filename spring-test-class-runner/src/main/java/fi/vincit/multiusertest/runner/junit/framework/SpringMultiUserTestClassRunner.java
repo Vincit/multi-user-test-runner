@@ -9,6 +9,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.junit4.statements.RunBeforeTestMethodCallbacks;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Spring specific runner. Uses SpringJUnit4ClassRunner to initialize
@@ -18,9 +19,9 @@ public class SpringMultiUserTestClassRunner extends SpringJUnit4ClassRunner {
 
     private final RunnerDelegate runnerDelegate;
 
-    public SpringMultiUserTestClassRunner(Class<?> clazz, UserIdentifier producerIdentifier, UserIdentifier consumerIdentifier) throws InitializationError {
+    public SpringMultiUserTestClassRunner(Class<?> clazz, Set<UserIdentifier> allowedIdentifiers, UserIdentifier producerIdentifier, UserIdentifier consumerIdentifier) throws InitializationError {
         super(clazz);
-        this.runnerDelegate = new RunnerDelegate(producerIdentifier, consumerIdentifier);
+        this.runnerDelegate = new RunnerDelegate(allowedIdentifiers, producerIdentifier, consumerIdentifier);
     }
 
     @Override

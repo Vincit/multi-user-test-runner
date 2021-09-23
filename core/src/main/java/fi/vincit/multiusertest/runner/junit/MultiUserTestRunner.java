@@ -11,6 +11,7 @@ import org.junit.runners.Suite;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * <p>
@@ -70,7 +71,7 @@ public class MultiUserTestRunner extends Suite {
             try {
                 return new TestRunnerFactory(
                         getTestClass(),
-                        testConfiguration.getRunner().get().getConstructor(Class.class, UserIdentifier.class, UserIdentifier.class)
+                        testConfiguration.getRunner().get().getConstructor(Class.class, Set.class, UserIdentifier.class, UserIdentifier.class)
                 );
             } catch (NoSuchMethodException e) {
                 throw new NoSuchMethodException("Runner must have constructor with class, UserIdentifier, UserIdentifier parameters");

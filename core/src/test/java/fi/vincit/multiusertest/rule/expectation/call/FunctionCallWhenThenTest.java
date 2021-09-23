@@ -9,6 +9,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import java.util.HashSet;
+
 import static org.hamcrest.CoreMatchers.isA;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.doThrow;
@@ -26,7 +28,8 @@ public class FunctionCallWhenThenTest {
                 null,
                 UserIdentifier.getAnonymous(),
                 mock(AuthorizationRule.class),
-                mock(UserRoleIT.class)
+                mock(UserRoleIT.class),
+                new HashSet<>()
         );
 
         sut.test(mock(TestExpectation.class), new ConsumerProducerSet(UserIdentifier.getAnonymous()));
@@ -39,7 +42,8 @@ public class FunctionCallWhenThenTest {
                 null,
                 UserIdentifier.getAnonymous(),
                 mock(AuthorizationRule.class),
-                mock(UserRoleIT.class)
+                mock(UserRoleIT.class),
+                new HashSet<>()
         );
 
         sut.test(mock(TestExpectation.class), new ConsumerProducerSet(UserIdentifier.getAnonymous()));
@@ -52,7 +56,8 @@ public class FunctionCallWhenThenTest {
                 null,
                 UserIdentifier.getAnonymous(),
                 mock(AuthorizationRule.class),
-                mock(UserRoleIT.class)
+                mock(UserRoleIT.class),
+                new HashSet<>()
         );
 
         TestExpectation testExpectation = mock(TestExpectation.class);
@@ -73,7 +78,8 @@ public class FunctionCallWhenThenTest {
                 null,
                 UserIdentifier.getAnonymous(),
                 mock(AuthorizationRule.class),
-                mock(UserRoleIT.class)
+                mock(UserRoleIT.class),
+                new HashSet<>()
         );
 
         TestExpectation testExpectation = mock(TestExpectation.class);
@@ -93,7 +99,8 @@ public class FunctionCallWhenThenTest {
                 null,
                 UserIdentifier.getAnonymous(),
                 mock(AuthorizationRule.class),
-                mock(UserRoleIT.class)
+                mock(UserRoleIT.class),
+                new HashSet<>()
         );
 
         assertThat(

@@ -10,6 +10,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import java.util.HashSet;
+
 import static org.hamcrest.CoreMatchers.isA;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.*;
@@ -26,7 +28,8 @@ public class ReturnValueWhenThenTest {
                 null,
                 UserIdentifier.getAnonymous(),
                 mock(AuthorizationRule.class),
-                mock(UserRoleIT.class)
+                mock(UserRoleIT.class),
+                new HashSet<>()
         );
 
         ReturnValueCallNoExceptionExpectation<Integer> defaultExpectation =
@@ -43,7 +46,8 @@ public class ReturnValueWhenThenTest {
                 null,
                 UserIdentifier.getAnonymous(),
                 mock(AuthorizationRule.class),
-                mock(UserRoleIT.class)
+                mock(UserRoleIT.class),
+                new HashSet<>()
         );
 
         TestValueExpectation expectation = mock(TestValueExpectation.class);
@@ -61,7 +65,8 @@ public class ReturnValueWhenThenTest {
                 null,
                 UserIdentifier.getAnonymous(),
                 mock(AuthorizationRule.class),
-                mock(UserRoleIT.class)
+                mock(UserRoleIT.class),
+                new HashSet<>()
         );
 
         TestValueExpectation expectation = mock(TestValueExpectation.class);
@@ -84,7 +89,8 @@ public class ReturnValueWhenThenTest {
                 null,
                 UserIdentifier.getAnonymous(),
                 mock(AuthorizationRule.class),
-                mock(UserRoleIT.class)
+                mock(UserRoleIT.class),
+                new HashSet<>()
         );
 
         TestValueExpectation expectation = mock(TestValueExpectation.class);
@@ -104,7 +110,8 @@ public class ReturnValueWhenThenTest {
                 null,
                 UserIdentifier.getAnonymous(),
                 mock(AuthorizationRule.class),
-                mock(UserRoleIT.class)
+                mock(UserRoleIT.class),
+                new HashSet<>()
         );
 
         TestValueExpectation expectation = mock(TestValueExpectation.class);
@@ -122,7 +129,8 @@ public class ReturnValueWhenThenTest {
                 null,
                 UserIdentifier.getAnonymous(),
                 mock(AuthorizationRule.class),
-                mock(UserRoleIT.class)
+                mock(UserRoleIT.class),
+                new HashSet<>()
         );
 
         TestValueExpectation expectation = mock(TestValueExpectation.class);

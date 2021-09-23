@@ -11,12 +11,22 @@ import fi.vincit.multiusertest.rule.expectation.value.TestValueExpectation;
 import fi.vincit.multiusertest.test.UserRoleIT;
 import fi.vincit.multiusertest.util.UserIdentifier;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class JUnit5Authorization implements Authorization {
 
+    private final Set<UserIdentifier> allowedIdentifiers = new HashSet<>();
     private UserIdentifier userIdentifier;
     private UserIdentifier producerIdentifier;
     private UserRoleIT userRoleIT;
-    
+
+    @Override
+    public void setAllowedIdentifiers(Set<UserIdentifier> allowedIdentifiers) {
+        this.allowedIdentifiers.clear();
+        this.allowedIdentifiers.addAll(allowedIdentifiers);
+    }
+
     @Override
     public void setUserRoleIT(UserRoleIT userRoleIT) {
         this.userRoleIT = userRoleIT;
@@ -30,7 +40,7 @@ public class JUnit5Authorization implements Authorization {
 
     @Override
     public WhenThen<TestExpectation> given(FunctionCall functionCall) {
-        return new FunctionCallWhenThen(functionCall, null, userIdentifier, this, userRoleIT);
+        return new FunctionCallWhenThen(functionCall, null, userIdentifier, this, userRoleIT, new HashSet<>());
     }
 
     @Override
@@ -40,7 +50,8 @@ public class JUnit5Authorization implements Authorization {
                 null,
                 userIdentifier,
                 this, 
-                userRoleIT
+                userRoleIT,
+                new HashSet<>()
         );
     }
 
@@ -49,4 +60,8 @@ public class JUnit5Authorization implements Authorization {
         // NOOP
     }
 
+    @Override
+    public void markErrorOccurred() {
+        // NOOP
+    }
 }
