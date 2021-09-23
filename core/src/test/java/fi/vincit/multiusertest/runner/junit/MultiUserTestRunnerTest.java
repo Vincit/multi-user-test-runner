@@ -12,7 +12,9 @@ import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
@@ -27,11 +29,13 @@ public class MultiUserTestRunnerTest {
     @Ignore
     public static class TestRunner extends ParentRunner<FrameworkMethod> {
 
+        private Set<UserIdentifier> allowedIdentifiers;
         private UserIdentifier producer;
         private UserIdentifier consumer;
 
-        public TestRunner(Class<?> clazz, UserIdentifier producer, UserIdentifier consumer) throws InitializationError {
+        public TestRunner(Class<?> clazz, Set<UserIdentifier> allowedIdentifiers, UserIdentifier producer, UserIdentifier consumer) throws InitializationError {
             super(clazz);
+            this.allowedIdentifiers = allowedIdentifiers;
             this.producer = producer;
             this.consumer = consumer;
         }
@@ -63,7 +67,7 @@ public class MultiUserTestRunnerTest {
     public static class TestRunnerNoProperConstructor extends TestRunner {
 
         public TestRunnerNoProperConstructor(UserIdentifier producer) throws InitializationError {
-            super(TestRunnerNoProperConstructor.class, producer, producer);
+            super(TestRunnerNoProperConstructor.class, new HashSet<>(), producer, producer);
         }
     }
 

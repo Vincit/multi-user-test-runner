@@ -8,13 +8,15 @@ import fi.vincit.multiusertest.rule.expectation.TestExpectation;
 import fi.vincit.multiusertest.test.UserRoleIT;
 import fi.vincit.multiusertest.util.UserIdentifier;
 
+import java.util.Set;
+
 public class FunctionCallWhenThen extends AbstractWhenThen<TestExpectation> {
 
     private final FunctionCall functionCall;
 
     public FunctionCallWhenThen(FunctionCall function, UserIdentifier producerIdentifier, UserIdentifier consumerIdentifier,
-                                Authorization authorizationRule, UserRoleIT userRoleIT) {
-        super(producerIdentifier, consumerIdentifier, authorizationRule, userRoleIT);
+                                Authorization authorizationRule, UserRoleIT userRoleIT, Set<UserIdentifier> allowedIdentifiers) {
+        super(producerIdentifier, consumerIdentifier, authorizationRule, userRoleIT, allowedIdentifiers);
         this.functionCall = function;
     }
 

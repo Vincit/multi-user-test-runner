@@ -24,7 +24,7 @@ import static org.junit.Assert.assertThat;
  */
 @RunWithUsers(
         producers = {"role:ROLE_SYSTEM_ADMIN", "role:ROLE_ADMIN", "role:ROLE_USER", "role:ROLE_USER"},
-        consumers = {"role:ROLE_SYSTEM_ADMIN", "role:ROLE_ADMIN", "role:ROLE_USER"}
+        consumers = {"role:ROLE_SYSTEM_ADMIN", "role:ROLE_ADMIN", "role:ROLE_USER", RunWithUsers.ANONYMOUS, RunWithUsers.PRODUCER}
 )
 public class TodoServiceSuppliersIT extends AbstractConfiguredMultiRoleIT {
 

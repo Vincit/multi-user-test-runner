@@ -16,6 +16,7 @@ import org.junit.runners.model.TestClass;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import static fi.vincit.multiusertest.util.ConfigurationUtil.findFieldWithConfig;
 import static fi.vincit.multiusertest.util.ConfigurationUtil.getConfigComponent;
@@ -28,25 +29,29 @@ import static fi.vincit.multiusertest.util.TestNameUtil.resolveTestName;
  */
 public class RunnerDelegate {
 
+    private final Set<UserIdentifier> allowedIdentifiers;
     private final UserIdentifier producerIdentifier;
     private final UserIdentifier userIdentifier;
     private final TestMethodFilter shouldRunChecker;
 
-    public RunnerDelegate(UserIdentifier producerIdentifier, UserIdentifier consumerIdentifier) {
+    public RunnerDelegate(Set<UserIdentifier> allowedIdentifiers, UserIdentifier producerIdentifier, UserIdentifier consumerIdentifier) {
+        Objects.requireNonNull(allowedIdentifiers);
         Objects.requireNonNull(producerIdentifier);
         Objects.requireNonNull(consumerIdentifier);
 
+        this.allowedIdentifiers = allowedIdentifiers;
         this.producerIdentifier = producerIdentifier;
         this.userIdentifier = consumerIdentifier;
         this.shouldRunChecker = new TestMethodFilter(producerIdentifier, consumerIdentifier);
     }
 
     // Only for testing
-    RunnerDelegate(UserIdentifier producerIdentifier, UserIdentifier userIdentifier, TestMethodFilter shouldRunChecker) {
+    RunnerDelegate(Set<UserIdentifier> allowedIdentifiers, UserIdentifier producerIdentifier, UserIdentifier userIdentifier, TestMethodFilter shouldRunChecker) {
         Objects.requireNonNull(producerIdentifier);
         Objects.requireNonNull(userIdentifier);
         Objects.requireNonNull(shouldRunChecker);
 
+        this.allowedIdentifiers = allowedIdentifiers;
         this.producerIdentifier = producerIdentifier;
         this.userIdentifier = userIdentifier;
         this.shouldRunChecker = shouldRunChecker;
@@ -105,6 +110,7 @@ public class RunnerDelegate {
 
                     multiUserConfig.setAuthorizationRule(authorizationRule);
                     authorizationRule.setUserRoleIT(userRoleIt);
+                    authorizationRule.setAllowedIdentifiers(allowedIdentifiers);
                     multiUserConfig.initialize();
                 } else {
                     throw new IllegalStateException("Invalid userRoleIt implementation: " + userRoleIt.getClass().toString());

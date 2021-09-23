@@ -10,6 +10,7 @@ import fi.vincit.multiusertest.util.UserIdentifiers;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 public abstract class AbstractWhenThen<T extends TestExpectation> implements WhenThen<T> {
 
@@ -18,6 +19,7 @@ public abstract class AbstractWhenThen<T extends TestExpectation> implements Whe
     private final Set<UserIdentifier> currentProducerIdentifiers = new HashSet<>();
     private final Map<ConsumerProducerSet, T> expectationsByIdentifier = new HashMap<>();
 
+    private final Set<UserIdentifier> allowedIdentifiers;
     private final UserIdentifier userIdentifier;
     private final UserIdentifier producerIdentifier;
     private final Authorization authorizationRule;
@@ -25,11 +27,12 @@ public abstract class AbstractWhenThen<T extends TestExpectation> implements Whe
     private T defaultExpectation;
     private Consumer<String> debugLogger;
 
-    public AbstractWhenThen(UserIdentifier producerIdentifier, UserIdentifier userIdentifier, Authorization authorizationRule, UserRoleIT userRoleIT) {
+    public AbstractWhenThen(UserIdentifier producerIdentifier, UserIdentifier userIdentifier, Authorization authorizationRule, UserRoleIT userRoleIT, Set<UserIdentifier> allowedIdentifiers) {
         this.userIdentifier = userIdentifier;
         this.producerIdentifier = producerIdentifier;
         this.authorizationRule = authorizationRule;
         this.userRoleIT = userRoleIT;
+        this.allowedIdentifiers = allowedIdentifiers;
     }
     
     @Override
@@ -81,23 +84,28 @@ public abstract class AbstractWhenThen<T extends TestExpectation> implements Whe
     public WhenThen<T> then(final T testExpectation) {
         Objects.requireNonNull(testExpectation, "testExpectation must not be null");
 
-        if (currentIdentifiers.isEmpty()) {
-            throw new IllegalStateException("Call whenCalledWithAnyOf before calling then method");
-        }
-
-        currentIdentifiers.forEach(identifier -> {
-            if (currentProducerIdentifiers.isEmpty()) {
-                final ConsumerProducerSet consumerProducerSet = new ConsumerProducerSet(null, identifier);
-                addExpectation(testExpectation, consumerProducerSet);
-            } else {
-                currentProducerIdentifiers.forEach(producer -> {
-                    final ConsumerProducerSet consumerProducerSet = new ConsumerProducerSet(producer, identifier);
-                    addExpectation(testExpectation, consumerProducerSet);
-                });
+        try {
+            if (currentIdentifiers.isEmpty()) {
+                throw new IllegalStateException("Call whenCalledWithAnyOf before calling then method");
             }
-        });
 
-        return this;
+            currentIdentifiers.forEach(identifier -> {
+                if (currentProducerIdentifiers.isEmpty()) {
+                    final ConsumerProducerSet consumerProducerSet = new ConsumerProducerSet(null, identifier);
+                    addExpectation(testExpectation, consumerProducerSet);
+                } else {
+                    currentProducerIdentifiers.forEach(producer -> {
+                        final ConsumerProducerSet consumerProducerSet = new ConsumerProducerSet(producer, identifier);
+                        addExpectation(testExpectation, consumerProducerSet);
+                    });
+                }
+            });
+
+            return this;
+        } catch (Exception e) {
+            this.authorizationRule.markErrorOccurred();
+            throw e;
+        }
     }
 
     private void addExpectation(T testExpectation, ConsumerProducerSet consumerProducerSet) {
@@ -117,36 +125,56 @@ public abstract class AbstractWhenThen<T extends TestExpectation> implements Whe
 
     @Override
     public WhenThen<T> otherwise(T testExpectation) {
-        Objects.requireNonNull(testExpectation, "testExpectation must not be null");
-        this.defaultExpectation = testExpectation;
-        return this;
+        try {
+            Objects.requireNonNull(testExpectation, "testExpectation must not be null");
+            this.defaultExpectation = testExpectation;
+            return this;
+        } catch (Exception e) {
+            this.authorizationRule.markErrorOccurred();
+            throw e;
+        }
     }
 
     @Override
     public WhenThen<T> byDefault(T testExpectation) {
-        return otherwise(testExpectation);
+        try {
+            return otherwise(testExpectation);
+        } catch (Exception e) {
+            this.authorizationRule.markErrorOccurred();
+            throw e;
+        }
     }
 
     @Override
     public WhenThen<T> debugRoleMappings(Consumer<String> logger) {
-        this.debugLogger = logger;
-        return this;
+        try {
+            this.debugLogger = logger;
+            return this;
+        } catch (Exception e) {
+            this.authorizationRule.markErrorOccurred();
+            throw e;
+        }
     }
 
     @Override
     public void test() throws Throwable {
         printRoleDebugLog();
 
-        final ConsumerProducerSet consumerProducerSet = new ConsumerProducerSet(producerIdentifier, userIdentifier);
-        T testExpectation = expectationsByIdentifier.computeIfAbsent(
-                consumerProducerSet,
-                this::getDefinedDefaultException
-        );
+        try {
+            final ConsumerProducerSet consumerProducerSet = new ConsumerProducerSet(producerIdentifier, userIdentifier);
+            T testExpectation = expectationsByIdentifier.computeIfAbsent(
+                    consumerProducerSet,
+                    this::getDefinedDefaultException
+            );
 
-        this.authorizationRule.markExpectationConstructed();
-        this.userRoleIT.logInAs(LoginRole.CONSUMER);
-        this.test(testExpectation, consumerProducerSet);
-        this.userRoleIT.logInAs(LoginRole.PRODUCER);
+            this.authorizationRule.markExpectationConstructed();
+            this.userRoleIT.logInAs(LoginRole.CONSUMER);
+            this.test(testExpectation, consumerProducerSet);
+            this.userRoleIT.logInAs(LoginRole.PRODUCER);
+        } catch (Exception e) {
+            this.authorizationRule.markErrorOccurred();
+            throw e;
+        }
     }
 
     protected abstract void test(T testExpectation, ConsumerProducerSet consumerProducerSet) throws Throwable;
@@ -159,20 +187,30 @@ public abstract class AbstractWhenThen<T extends TestExpectation> implements Whe
     }
 
     private WhenThen<T> whenCalledWithIdentifiers(Collection<UserIdentifier> userIdentifiers) {
-        currentIdentifiers.clear();
+        try {
+            currentIdentifiers.clear();
 
-        validateWhen(userIdentifiers);
+            validateWhen(userIdentifiers);
 
-        userIdentifiers.forEach(this::addCurrentUserIdentifiers);
-        return this;
+            userIdentifiers.forEach(this::addCurrentUserIdentifiers);
+            return this;
+        } catch (Exception e) {
+            this.authorizationRule.markErrorOccurred();
+            throw e;
+        }
     }
 
     private WhenThen<T> whenCalledWithProducerIdentifiers(Collection<UserIdentifier> userIdentifiers) {
-        currentIdentifiers.clear();
-        currentProducerIdentifiers.clear();
+        try {
+            currentIdentifiers.clear();
+            currentProducerIdentifiers.clear();
 
-        userIdentifiers.forEach(this::addCurrentProducerIdentifiers);
-        return this;
+            userIdentifiers.forEach(this::addCurrentProducerIdentifiers);
+            return this;
+        } catch (Exception e) {
+            this.authorizationRule.markErrorOccurred();
+            throw e;
+        }
     }
 
     private void addCurrentUserIdentifiers(UserIdentifier userIdentifier) {
@@ -206,9 +244,19 @@ public abstract class AbstractWhenThen<T extends TestExpectation> implements Whe
         }
     }
 
-    private static <T> void validateWhen(Collection<T> userIdentifiers) {
+    private <T> void validateWhen(Collection<T> userIdentifiers) {
         if (userIdentifiers.isEmpty()) {
             throw new IllegalArgumentException("At least one identifier must be defined");
+        }
+        final List<T> illegalIdentifiers = userIdentifiers.stream()
+                .filter(c -> !allowedIdentifiers.contains(c))
+                .collect(Collectors.toList());
+
+        if (!illegalIdentifiers.isEmpty()) {
+            final String illegals = illegalIdentifiers.stream()
+                    .map(Object::toString)
+                    .collect(Collectors.joining(", "));
+            throw new IllegalArgumentException("Following identifiers are not valid: " + illegals);
         }
     }
 

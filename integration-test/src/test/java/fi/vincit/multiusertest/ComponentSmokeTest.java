@@ -16,7 +16,7 @@ import static fi.vincit.multiusertest.rule.expectation.TestExpectations.expectNo
 import static fi.vincit.multiusertest.util.UserIdentifiers.roles;
 import static fi.vincit.multiusertest.util.UserIdentifiers.users;
 
-@RunWithUsers(producers = {"role:ROLE_ADMIN"}, consumers = "role:ROLE_ADMIN")
+@RunWithUsers(producers = {"role:ROLE_ADMIN"}, consumers = {"role:ROLE_ADMIN","user:foo"})
 @RunWith(MultiUserTestRunner.class)
 public class ComponentSmokeTest {
 
@@ -53,7 +53,7 @@ public class ComponentSmokeTest {
     @Test
     public void fails() throws Throwable {
         authorizationRule.given(this::fail)
-                .whenCalledWithAnyOf(roles("ROLE_ADMIN"))
+                .whenCalledWithAnyOf(roles("ROLE_ADMIN"), users("foo"))
                 .then(expectException(IllegalStateException.class))
                 .test();
     }

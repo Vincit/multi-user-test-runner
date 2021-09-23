@@ -20,7 +20,7 @@ import static org.junit.Assert.assertThat;
         consumers = {"role:ROLE_ADMIN", "role:ROLE_USER", RunWithUsers.PRODUCER})
 @RunWith(MultiUserTestRunner.class)
 @MultiUserTestConfig
-public class BasicTest {
+public class ValidationTest {
 
     @MultiUserConfigClass
     private ConfiguredTest configuredTest = new ConfiguredTest();
@@ -54,19 +54,18 @@ public class BasicTest {
                 .test();
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void expectFailureConsumer() throws Throwable {
-        authorization.given(() -> throwIfUserRole("role:ROLE_USER"))
-                .whenCalledWithAnyOf(roles("ROLE_USER"))
+        authorization.given(() -> {
+        })
+                .whenCalledWithAnyOf(roles("ROLE_FAKE"))
                 .then(expectException(IllegalStateException.class))
                 .test();
     }
 
     private void throwIfUserRole(String identifier) {
         User.Role identifierRole = configuredTest.stringToRole(UserIdentifier.parse(identifier).getIdentifier());
-        final boolean isNotProducer = !configuredTest.getConsumer().getUsername()
-                .equals(configuredTest.getProducer().getUsername());
-        if (SecurityUtil.getLoggedInUser().getRole() == identifierRole && isNotProducer) {
+        if (SecurityUtil.getLoggedInUser().getRole() == identifierRole) {
             throw new IllegalStateException("Thrown when role was " + identifier);
         }
     }

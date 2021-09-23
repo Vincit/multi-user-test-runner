@@ -9,6 +9,7 @@ import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.Statement;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Runner based on BlockJUnit4ClassRunner. Works with plain Java code.
@@ -17,9 +18,9 @@ public class BlockMultiUserTestClassRunner extends BlockJUnit4ClassRunner {
 
     private final RunnerDelegate runnerDelegate;
 
-    public BlockMultiUserTestClassRunner(Class<?> clazz, UserIdentifier producerIdentifier, UserIdentifier consumerIdentifier) throws InitializationError {
+    public BlockMultiUserTestClassRunner(Class<?> clazz, Set<UserIdentifier> allowedIdentifiers, UserIdentifier producerIdentifier, UserIdentifier consumerIdentifier) throws InitializationError {
         super(clazz);
-        this.runnerDelegate = new RunnerDelegate(producerIdentifier, consumerIdentifier);
+        this.runnerDelegate = new RunnerDelegate(allowedIdentifiers, producerIdentifier, consumerIdentifier);
     }
 
     @Override

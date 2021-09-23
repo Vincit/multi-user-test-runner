@@ -15,6 +15,8 @@ import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 
+import java.util.Set;
+
 /**
  * <p>
  * Rule to be used with {@link MultiUserTestRunner} to define whether a test passes or
@@ -23,10 +25,17 @@ import org.junit.runners.model.Statement;
  */
 public class AuthorizationRule implements TestRule, Authorization {
 
+    private Set<UserIdentifier> allowedIdentifiers;
     private UserIdentifier userIdentifier;
     private UserIdentifier producerIdentifier;
     private UserRoleIT userRoleIT;
     private boolean expectationConstructionFinished = false;
+    private boolean errorOccurred = false;
+
+    @Override
+    public void setAllowedIdentifiers(Set<UserIdentifier> allowedIdentifiers) {
+        this.allowedIdentifiers = allowedIdentifiers;
+    }
 
     @Override
     public void setUserRoleIT(UserRoleIT userRoleIT) {
@@ -53,6 +62,11 @@ public class AuthorizationRule implements TestRule, Authorization {
         }
     }
 
+    @Override
+    public void markErrorOccurred() {
+        errorOccurred = true;
+    }
+
     /**
      * Starts constructing expectation for a function call.
      * @param functionCall Call to test
@@ -62,8 +76,9 @@ public class AuthorizationRule implements TestRule, Authorization {
     @Override
     public WhenThen<TestExpectation> given(FunctionCall functionCall) {
         expectationConstructionFinished = true;
+        errorOccurred = false;
         userRoleIT.logInAs(LoginRole.CONSUMER);
-        return new FunctionCallWhenThen(functionCall, producerIdentifier, userIdentifier, this, userRoleIT);
+        return new FunctionCallWhenThen(functionCall, producerIdentifier, userIdentifier, this, userRoleIT, allowedIdentifiers);
     }
 
     /**
@@ -75,13 +90,15 @@ public class AuthorizationRule implements TestRule, Authorization {
     @Override
     public <VALUE_TYPE> WhenThen<TestValueExpectation<VALUE_TYPE>> given(ReturnValueCall<VALUE_TYPE> returnValueCall) {
         expectationConstructionFinished = true;
+        errorOccurred = false;
         userRoleIT.logInAs(LoginRole.CONSUMER);
         return new ReturnValueWhenThen<>(
                 returnValueCall,
                 producerIdentifier,
                 userIdentifier,
                 this,
-                userRoleIT
+                userRoleIT,
+                allowedIdentifiers
         );
     }
 
@@ -105,7 +122,7 @@ public class AuthorizationRule implements TestRule, Authorization {
     }
 
     private void validateExpectationConstructionFinished() {
-        if (expectationConstructionFinished) {
+        if (!errorOccurred && expectationConstructionFinished) {
             throw new IllegalStateException("Expectation still in progress. " +
                     "Please call test() method. " +
                     "Otherwise the assertions are not run properly."
