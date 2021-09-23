@@ -345,7 +345,7 @@ authorizationRule.given(() -> testService.getAllUsernames())
 
 # Example
 
-For all examples, please visit [multi-user-test-runner/examples](https://github.com/Vincit/multi-user-test-runner/blob/0.5.0/examples/README.md)
+For all examples, please visit [multi-user-test-runner/examples](https://github.com/Vincit/multi-user-test-runner/blob/1.0.0-beta1/examples/README.md)
 
 Configuring base class for tests:
 
