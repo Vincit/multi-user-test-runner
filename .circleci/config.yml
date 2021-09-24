@@ -1,0 +1,13 @@
+version: 2.1
+
+jobs:
+  noop:
+    docker:
+      - image: cimg/base:2021.04
+    steps:
+      - run: echo "Nothing to do"
+
+workflows:
+  noop:
+    jobs:
+      - noop
