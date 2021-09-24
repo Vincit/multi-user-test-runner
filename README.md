@@ -240,6 +240,44 @@ method.
 From version 0.5 onwards it is possible to define multiple roles for a role identifier. The syntax is `role:ADMIN:USER`.
 This requires the configuration class to be extended from `AbstractMultiUserAndRoleConfig`.
 
+## Debugging Tests
+
+Sometimes when writing tests, it's required to debug a single case to see why the test doesn't pass. IDEs usually
+don't allow to run only single producer/consumer pair from the UI.
+
+For this reason it's possible to focus only on certain producers/consumers by:
+1. Marking them with `$` e.g. `$role:ROLE_ADMIN`
+2. Setting `RunWithUsers.focusEnabled` to `true`
+
+These both need to be done, otherwise all tests are run.
+
+For the predefined user identifiers (e.g. `RunWithUsers.PRODUCER`), there are `$` variants (e.g. `RunWithUsers.$PRODUCER`)
+for this purpose.
+
+```java
+// This will only run tests for producer ROLE_USER and consumers PRODUCER, ROLE_ADMIN
+@RunWithUsers(producers = {"role:ROLE_ADMIN", "$role:ROLE_USER"},
+        consumers = {RunWithUsers.$PRODUCER, "$role:ROLE_ADMIN", "role:ROLE_USER", "user:existing-user-name"},
+        focusEnabled = true)
+public class ServiceIT extends AbstractConfiguredUserIT {
+
+    @Test
+    public void test1() {
+        // test code here
+    }
+
+    @Test
+    public void test2() {
+        // test code here
+    }
+    
+    @Test
+    public void test3() {
+        // test code here
+    }
+
+}
+```
 
 ## Ignoring a Test Method for Specific User Definitions
 
