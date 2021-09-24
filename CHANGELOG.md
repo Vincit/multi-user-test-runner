@@ -2,6 +2,17 @@ Multi User Test Runner
 ======================
 
 
+# 1.0.0-beta2
+
+## Changes
+
+* User identifiers given to `whenCalledWithAnyOf` are now validated that they exist. Before it
+  was too easy to have a typo or forgot to add a new user/role in `RunWithUsers`. Now an excpetion
+  is thrown if a wrong user identifier is given.
+* Focus mode: Now it's possible to mark user identifiers in `RunWithUsers` with `$` to mark
+  that tests should be only run for those users. Also `RunWithUsers.focusEnabled` must be set to
+  `true`. This helps when debugging tests since it is possible to only run a subset of tests.
+
 # 1.0.0-beta1
 
 ## Changes
