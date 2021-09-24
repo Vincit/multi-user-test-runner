@@ -9,6 +9,7 @@ import fi.vincit.multiusertest.rule.expectation.call.FunctionCallWhenThen;
 import fi.vincit.multiusertest.rule.expectation.value.ReturnValueWhenThen;
 import fi.vincit.multiusertest.rule.expectation.value.TestValueExpectation;
 import fi.vincit.multiusertest.test.UserRoleIT;
+import fi.vincit.multiusertest.util.FocusType;
 import fi.vincit.multiusertest.util.UserIdentifier;
 
 import java.util.HashSet;
@@ -20,11 +21,17 @@ public class JUnit5Authorization implements Authorization {
     private UserIdentifier userIdentifier;
     private UserIdentifier producerIdentifier;
     private UserRoleIT userRoleIT;
+    private FocusType focusType;
 
     @Override
     public void setAllowedIdentifiers(Set<UserIdentifier> allowedIdentifiers) {
         this.allowedIdentifiers.clear();
         this.allowedIdentifiers.addAll(allowedIdentifiers);
+    }
+
+    @Override
+    public void setFocusType(FocusType focusType) {
+        this.focusType = focusType;
     }
 
     @Override
@@ -34,13 +41,13 @@ public class JUnit5Authorization implements Authorization {
 
     @Override
     public void setRole(UserIdentifier producerIdentifier, UserIdentifier consumerIdentifier) {
-        this.producerIdentifier = new UserIdentifier(producerIdentifier.getType(), producerIdentifier.getIdentifier());
-        this.userIdentifier = new UserIdentifier(consumerIdentifier.getType(), consumerIdentifier.getIdentifier());
+        this.producerIdentifier = new UserIdentifier(producerIdentifier.getType(), producerIdentifier.getIdentifier(), producerIdentifier.getFocusMode());
+        this.userIdentifier = new UserIdentifier(consumerIdentifier.getType(), consumerIdentifier.getIdentifier(), consumerIdentifier.getFocusMode());
     }
 
     @Override
     public WhenThen<TestExpectation> given(FunctionCall functionCall) {
-        return new FunctionCallWhenThen(functionCall, null, userIdentifier, this, userRoleIT, new HashSet<>());
+        return new FunctionCallWhenThen(functionCall, null, userIdentifier, this, userRoleIT, new HashSet<>(), focusType);
     }
 
     @Override
@@ -51,7 +58,8 @@ public class JUnit5Authorization implements Authorization {
                 userIdentifier,
                 this, 
                 userRoleIT,
-                new HashSet<>()
+                new HashSet<>(),
+                focusType
         );
     }
 

@@ -1,6 +1,7 @@
 package fi.vincit.multiusertest.runner.junit.framework;
 
 import fi.vincit.multiusertest.runner.junit.RunnerDelegate;
+import fi.vincit.multiusertest.util.FocusType;
 import fi.vincit.multiusertest.util.UserIdentifier;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
@@ -19,9 +20,9 @@ public class SpringMultiUserTestClassRunner extends SpringJUnit4ClassRunner {
 
     private final RunnerDelegate runnerDelegate;
 
-    public SpringMultiUserTestClassRunner(Class<?> clazz, Set<UserIdentifier> allowedIdentifiers, UserIdentifier producerIdentifier, UserIdentifier consumerIdentifier) throws InitializationError {
+    public SpringMultiUserTestClassRunner(Class<?> clazz, Set<UserIdentifier> allowedIdentifiers, UserIdentifier producerIdentifier, UserIdentifier consumerIdentifier, FocusType focusType) throws InitializationError {
         super(clazz);
-        this.runnerDelegate = new RunnerDelegate(allowedIdentifiers, producerIdentifier, consumerIdentifier);
+        this.runnerDelegate = new RunnerDelegate(allowedIdentifiers, producerIdentifier, consumerIdentifier, focusType);
     }
 
     @Override

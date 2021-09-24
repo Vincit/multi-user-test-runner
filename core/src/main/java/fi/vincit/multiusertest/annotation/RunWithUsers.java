@@ -45,15 +45,29 @@ public @interface RunWithUsers {
      */
     String PRODUCER = "__FI_VINCIT_MULTI_ROLE_TEST_CREATOR__";
     /**
+     * Login as producer user. Focused variant
+     */
+    String $PRODUCER = "$__FI_VINCIT_MULTI_ROLE_TEST_CREATOR__";
+
+    /**
      * Login as a new user that has the same role as the producer.
      * Can't be used if producer role uses an existing user.
      */
     String WITH_PRODUCER_ROLE = "__FI_VINCIT_MULTI_ROLE_TEST_NEW_USER__";
+    /**
+     * Login as a new user that has the same role as the producer.
+     * Can't be used if producer role uses an existing user. Focused variant
+     */
+    String $WITH_PRODUCER_ROLE = "$__FI_VINCIT_MULTI_ROLE_TEST_NEW_USER__";
 
     /**
      * Don't login at all or clear login details
      */
     String ANONYMOUS = "__FI_VINCIT_MULTI_ROLE_TEST_ANONYMOUS__";
+    /**
+     * Don't login at all or clear login details. Focused variant
+     */
+    String $ANONYMOUS = "$__FI_VINCIT_MULTI_ROLE_TEST_ANONYMOUS__";
 
     /**
      * Producer roles/users to be used
@@ -80,5 +94,13 @@ public @interface RunWithUsers {
      * @since 0.6
      */
     Class<? extends UserDefinitionClass> consumerClass() default EmptyUserDefinitionClass.class;
+
+    /**
+     * Turns on focus mode where <pre>@</pre> prefix in user identifier is interpreted so that
+     * tests should only be run with those specific users.
+     * @return True if focus should be enabled, otherwise false
+     * @since 1.0
+     */
+    boolean focusEnabled() default false;
 
 }

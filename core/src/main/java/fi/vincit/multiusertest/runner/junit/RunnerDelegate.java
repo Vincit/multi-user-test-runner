@@ -3,10 +3,7 @@ package fi.vincit.multiusertest.runner.junit;
 import fi.vincit.multiusertest.rule.AuthorizationRule;
 import fi.vincit.multiusertest.test.AbstractMultiUserConfig;
 import fi.vincit.multiusertest.test.UserRoleIT;
-import fi.vincit.multiusertest.util.LoginRole;
-import fi.vincit.multiusertest.util.RunInitAndBefores;
-import fi.vincit.multiusertest.util.TestMethodFilter;
-import fi.vincit.multiusertest.util.UserIdentifier;
+import fi.vincit.multiusertest.util.*;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.runners.model.FrameworkField;
@@ -33,8 +30,9 @@ public class RunnerDelegate {
     private final UserIdentifier producerIdentifier;
     private final UserIdentifier userIdentifier;
     private final TestMethodFilter shouldRunChecker;
+    private final FocusType focusType;
 
-    public RunnerDelegate(Set<UserIdentifier> allowedIdentifiers, UserIdentifier producerIdentifier, UserIdentifier consumerIdentifier) {
+    public RunnerDelegate(Set<UserIdentifier> allowedIdentifiers, UserIdentifier producerIdentifier, UserIdentifier consumerIdentifier, FocusType focusType) {
         Objects.requireNonNull(allowedIdentifiers);
         Objects.requireNonNull(producerIdentifier);
         Objects.requireNonNull(consumerIdentifier);
@@ -43,10 +41,11 @@ public class RunnerDelegate {
         this.producerIdentifier = producerIdentifier;
         this.userIdentifier = consumerIdentifier;
         this.shouldRunChecker = new TestMethodFilter(producerIdentifier, consumerIdentifier);
+        this.focusType = focusType;
     }
 
     // Only for testing
-    RunnerDelegate(Set<UserIdentifier> allowedIdentifiers, UserIdentifier producerIdentifier, UserIdentifier userIdentifier, TestMethodFilter shouldRunChecker) {
+    RunnerDelegate(Set<UserIdentifier> allowedIdentifiers, UserIdentifier producerIdentifier, UserIdentifier userIdentifier, TestMethodFilter shouldRunChecker, FocusType focusType) {
         Objects.requireNonNull(producerIdentifier);
         Objects.requireNonNull(userIdentifier);
         Objects.requireNonNull(shouldRunChecker);
@@ -55,6 +54,7 @@ public class RunnerDelegate {
         this.producerIdentifier = producerIdentifier;
         this.userIdentifier = userIdentifier;
         this.shouldRunChecker = shouldRunChecker;
+        this.focusType = focusType;
     }
 
     public List<FrameworkMethod> filterMethods(List<FrameworkMethod> methods) {
@@ -111,6 +111,7 @@ public class RunnerDelegate {
                     multiUserConfig.setAuthorizationRule(authorizationRule);
                     authorizationRule.setUserRoleIT(userRoleIt);
                     authorizationRule.setAllowedIdentifiers(allowedIdentifiers);
+                    authorizationRule.setFocusType(focusType);
                     multiUserConfig.initialize();
                 } else {
                     throw new IllegalStateException("Invalid userRoleIt implementation: " + userRoleIt.getClass().toString());

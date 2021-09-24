@@ -3,10 +3,7 @@ package fi.vincit.multiusertest.runner.junit;
 import fi.vincit.multiusertest.annotation.MultiUserConfigClass;
 import fi.vincit.multiusertest.test.AbstractMultiUserConfig;
 import fi.vincit.multiusertest.test.UserRoleIT;
-import fi.vincit.multiusertest.util.LoginRole;
-import fi.vincit.multiusertest.util.RoleContainer;
-import fi.vincit.multiusertest.util.TestMethodFilter;
-import fi.vincit.multiusertest.util.UserIdentifier;
+import fi.vincit.multiusertest.util.*;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runners.model.FrameworkMethod;
@@ -28,7 +25,23 @@ public class RunnerDelegateTest {
         RunnerDelegate delegate = new RunnerDelegate(
                 new HashSet<>(),
                 UserIdentifier.parse("role:ROLE_ADMIN"),
-                UserIdentifier.parse("role:ROLE_USER")
+                UserIdentifier.parse("role:ROLE_USER"),
+                FocusType.NONE
+        );
+
+        assertThat(
+                delegate.getName(new TestClass(Object.class)),
+                is("producer={role:ROLE_ADMIN}, consumer={role:ROLE_USER}")
+        );
+    }
+
+    @Test
+    public void testGetName_FocusedIdentifiers() {
+        RunnerDelegate delegate = new RunnerDelegate(
+                new HashSet<>(),
+                UserIdentifier.parse("$role:ROLE_ADMIN"),
+                UserIdentifier.parse("$role:ROLE_USER"),
+                FocusType.NONE
         );
 
         assertThat(
@@ -42,7 +55,8 @@ public class RunnerDelegateTest {
         RunnerDelegate delegate = new RunnerDelegate(
                 new HashSet<>(),
                 UserIdentifier.parse("role:ROLE_ADMIN"),
-                UserIdentifier.parse("role:ROLE_USER")
+                UserIdentifier.parse("role:ROLE_USER"),
+                FocusType.NONE
         );
 
         assertThat(
@@ -136,7 +150,8 @@ public class RunnerDelegateTest {
         RunnerDelegate delegate = new RunnerDelegate(
                 new HashSet<>(),
                 UserIdentifier.parse("role:ROLE_ADMIN"),
-                UserIdentifier.parse("role:ROLE_USER")
+                UserIdentifier.parse("role:ROLE_USER"),
+                FocusType.NONE
         );
         UserRoleIT<String> mockConfig = mock(UserRoleIT.class);
         TestConfig instance = (TestConfig) delegate.validateTestInstance(new TestConfig(mockConfig));
@@ -149,7 +164,8 @@ public class RunnerDelegateTest {
         RunnerDelegate delegate = new RunnerDelegate(
                 new HashSet<>(),
                 UserIdentifier.parse("role:ROLE_ADMIN"),
-                UserIdentifier.parse("role:ROLE_USER")
+                UserIdentifier.parse("role:ROLE_USER"),
+                FocusType.NONE
         );
 
         delegate.validateTestInstance(new Object());
@@ -160,7 +176,8 @@ public class RunnerDelegateTest {
         RunnerDelegate delegate = new RunnerDelegate(
                 new HashSet<>(),
                 UserIdentifier.parse("role:ROLE_ADMIN"),
-                UserIdentifier.parse("role:ROLE_USER")
+                UserIdentifier.parse("role:ROLE_USER"),
+                FocusType.NONE
         );
         delegate.validateTestInstance(new MissingTestConfig());
     }
@@ -170,7 +187,8 @@ public class RunnerDelegateTest {
         RunnerDelegate delegate = new RunnerDelegate(
                 new HashSet<>(),
                 UserIdentifier.parse("role:ROLE_ADMIN"),
-                UserIdentifier.parse("role:ROLE_USER")
+                UserIdentifier.parse("role:ROLE_USER"),
+                FocusType.NONE
         );
         UserRoleIT<String> mockConfig = mock(UserRoleIT.class);
         TestConfig instance = (InheritedTestConfig) delegate.validateTestInstance(new InheritedTestConfig(mockConfig));
@@ -185,7 +203,8 @@ public class RunnerDelegateTest {
                 new HashSet<>(),
                 UserIdentifier.parse("role:ROLE_ADMIN"),
                 UserIdentifier.parse("role:ROLE_USER"),
-                testMethodFilter
+                testMethodFilter,
+                FocusType.NONE
         );
 
         when(testMethodFilter.shouldRun(any(FrameworkMethod.class))).thenReturn(false);
@@ -206,7 +225,8 @@ public class RunnerDelegateTest {
                 new HashSet<>(),
                 UserIdentifier.parse("role:ROLE_ADMIN"),
                 UserIdentifier.parse("role:ROLE_USER"),
-                testMethodFilter
+                testMethodFilter,
+                FocusType.NONE
         );
 
         when(testMethodFilter.shouldRun(any(FrameworkMethod.class))).thenReturn(true);
@@ -221,7 +241,8 @@ public class RunnerDelegateTest {
                 new HashSet<>(),
                 UserIdentifier.parse("role:ROLE_ADMIN"),
                 UserIdentifier.parse("role:ROLE_USER"),
-                testMethodFilter
+                testMethodFilter,
+                FocusType.NONE
         );
 
         when(testMethodFilter.shouldRun(any(FrameworkMethod.class))).thenReturn(false);
@@ -236,7 +257,8 @@ public class RunnerDelegateTest {
                 new HashSet<>(),
                 UserIdentifier.parse("role:ROLE_ADMIN"),
                 UserIdentifier.parse("role:ROLE_USER"),
-                testMethodFilter
+                testMethodFilter,
+                FocusType.NONE
         );
 
         when(testMethodFilter.shouldRun(any(FrameworkMethod.class))).thenReturn(true);
@@ -251,7 +273,8 @@ public class RunnerDelegateTest {
                 new HashSet<>(),
                 UserIdentifier.parse("role:ROLE_ADMIN"),
                 UserIdentifier.parse("role:ROLE_USER"),
-                testMethodFilter
+                testMethodFilter,
+                FocusType.NONE
         );
 
         List<FrameworkMethod> methods = Arrays.asList(mockFrameworkMethod(), mockFrameworkMethod());
@@ -268,7 +291,8 @@ public class RunnerDelegateTest {
                 new HashSet<>(),
                 UserIdentifier.parse("role:ROLE_ADMIN"),
                 UserIdentifier.parse("role:ROLE_USER"),
-                testMethodFilter
+                testMethodFilter,
+                FocusType.NONE
         );
 
         List<FrameworkMethod> methods = Collections.emptyList();

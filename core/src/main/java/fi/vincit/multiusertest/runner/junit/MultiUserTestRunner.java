@@ -3,6 +3,7 @@ package fi.vincit.multiusertest.runner.junit;
 import fi.vincit.multiusertest.annotation.MultiUserTestConfig;
 import fi.vincit.multiusertest.annotation.RunWithUsers;
 import fi.vincit.multiusertest.runner.junit.framework.BlockMultiUserTestClassRunner;
+import fi.vincit.multiusertest.util.FocusType;
 import fi.vincit.multiusertest.util.TestConfiguration;
 import fi.vincit.multiusertest.util.UserIdentifier;
 import org.junit.runner.Runner;
@@ -62,19 +63,21 @@ public class MultiUserTestRunner extends Suite {
         TestRunnerFactory runnerFactory = createTestRunner(configuration);
         this.runners = runnerFactory.createRunnersForRoles(
                 configuration.getProducerIdentifiers(),
-                configuration.getConsumerIdentifiers()
+                configuration.getConsumerIdentifiers(),
+                configuration.getFocusType()
         );
     }
 
     private TestRunnerFactory createTestRunner(TestConfiguration testConfiguration) throws NoSuchMethodException {
-        if (testConfiguration.getRunner().isPresent()) {
+        final Optional<Class<?>> runner = testConfiguration.getRunner();
+        if (runner.isPresent()) {
             try {
                 return new TestRunnerFactory(
                         getTestClass(),
-                        testConfiguration.getRunner().get().getConstructor(Class.class, Set.class, UserIdentifier.class, UserIdentifier.class)
+                        runner.get().getConstructor(Class.class, Set.class, UserIdentifier.class, UserIdentifier.class, FocusType.class)
                 );
             } catch (NoSuchMethodException e) {
-                throw new NoSuchMethodException("Runner must have constructor with class, UserIdentifier, UserIdentifier parameters");
+                throw new NoSuchMethodException("Runner " + runner.get().getName() + " must have constructor with class, UserIdentifier, UserIdentifier, boolean parameters");
             }
 
         } else {

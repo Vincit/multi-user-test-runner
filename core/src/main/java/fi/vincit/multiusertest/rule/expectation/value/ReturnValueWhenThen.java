@@ -5,6 +5,7 @@ import fi.vincit.multiusertest.rule.expectation.AbstractWhenThen;
 import fi.vincit.multiusertest.rule.expectation.ConsumerProducerSet;
 import fi.vincit.multiusertest.rule.expectation.ReturnValueCall;
 import fi.vincit.multiusertest.test.UserRoleIT;
+import fi.vincit.multiusertest.util.FocusType;
 import fi.vincit.multiusertest.util.UserIdentifier;
 
 import java.util.Set;
@@ -14,8 +15,9 @@ public class ReturnValueWhenThen<VALUE_TYPE> extends AbstractWhenThen<TestValueE
     private final ReturnValueCall<VALUE_TYPE> valueCall;
 
     public ReturnValueWhenThen(ReturnValueCall<VALUE_TYPE> valueCall, UserIdentifier producerIdentifier, UserIdentifier consumerIdentifier,
-                               Authorization authorizationRule, UserRoleIT userRoleIT, Set<UserIdentifier> allowedIdentifiers) {
-        super(producerIdentifier, consumerIdentifier, authorizationRule, userRoleIT, allowedIdentifiers);
+                               Authorization authorizationRule, UserRoleIT userRoleIT, Set<UserIdentifier> allowedIdentifiers,
+                               FocusType focusType) {
+        super(producerIdentifier, consumerIdentifier, authorizationRule, userRoleIT, allowedIdentifiers, focusType);
         this.valueCall = valueCall;
     }
 

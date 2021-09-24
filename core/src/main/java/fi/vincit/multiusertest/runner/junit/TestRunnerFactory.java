@@ -1,6 +1,7 @@
 package fi.vincit.multiusertest.runner.junit;
 
 import fi.vincit.multiusertest.annotation.RunWithUsers;
+import fi.vincit.multiusertest.util.FocusType;
 import fi.vincit.multiusertest.util.UserIdentifier;
 import org.junit.runner.Runner;
 import org.junit.runners.ParentRunner;
@@ -34,10 +35,10 @@ public class TestRunnerFactory {
      * @return All required combinations for given identifiers
      * @throws Exception If an exception is thrown
      */
-    public List<Runner> createRunnersForRoles(Collection<UserIdentifier> producerIdentifiers, Collection<UserIdentifier> consumerIdentifiers) throws Exception {
+    public List<Runner> createRunnersForRoles(Collection<UserIdentifier> producerIdentifiers, Collection<UserIdentifier> consumerIdentifiers, FocusType focusType) throws Exception {
         List<Runner> runners = new ArrayList<>();
         if (consumerIdentifiers.isEmpty()) {
-            consumerIdentifiers.add(UserIdentifier.getWithProducerRole());
+            consumerIdentifiers.add(UserIdentifier.getWithProducerRole(FocusType.NONE));
         }
         validateProducers(producerIdentifiers);
         validateConsumers(producerIdentifiers, consumerIdentifiers);
@@ -55,14 +56,16 @@ public class TestRunnerFactory {
                             testClass.getJavaClass(),
                             allowedIdentifiers,
                             producerIdentifier,
-                            producerIdentifier
+                            producerIdentifier,
+                            focusType
                     );
                 } else {
                     parentRunner = runnerConstructor.newInstance(
                             testClass.getJavaClass(),
                             allowedIdentifiers,
                             producerIdentifier,
-                            consumerIdentifier
+                            consumerIdentifier,
+                            focusType
                     );
                 }
 
@@ -82,7 +85,7 @@ public class TestRunnerFactory {
         }
 
         if (containsExistingUserDefinition
-                && consumerIdentifiers.contains(UserIdentifier.getWithProducerRole())) {
+                && consumerIdentifiers.contains(UserIdentifier.getWithProducerRole(FocusType.NONE))) {
             throw new IllegalArgumentException("User definitions can't contain WITH_PRODUCER_ROLE when producers have a 'user' definition");
         }
     }
@@ -92,11 +95,11 @@ public class TestRunnerFactory {
             throw new IllegalArgumentException("Producer must be specified");
         }
 
-        if (producerIdentifiers.contains(UserIdentifier.getProducer())) {
+        if (producerIdentifiers.contains(UserIdentifier.getProducer(FocusType.NONE))) {
             throw new IllegalArgumentException("Producer can't use PRODUCER role");
         }
 
-        if (producerIdentifiers.contains(UserIdentifier.getWithProducerRole())) {
+        if (producerIdentifiers.contains(UserIdentifier.getWithProducerRole(FocusType.NONE))) {
             throw new IllegalArgumentException("Producer can't use WITH_PRODUCER_ROLE role");
         }
     }

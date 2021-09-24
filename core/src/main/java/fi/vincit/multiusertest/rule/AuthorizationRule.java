@@ -9,6 +9,7 @@ import fi.vincit.multiusertest.rule.expectation.value.ReturnValueWhenThen;
 import fi.vincit.multiusertest.rule.expectation.value.TestValueExpectation;
 import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
 import fi.vincit.multiusertest.test.UserRoleIT;
+import fi.vincit.multiusertest.util.FocusType;
 import fi.vincit.multiusertest.util.LoginRole;
 import fi.vincit.multiusertest.util.UserIdentifier;
 import org.junit.rules.TestRule;
@@ -31,11 +32,18 @@ public class AuthorizationRule implements TestRule, Authorization {
     private UserRoleIT userRoleIT;
     private boolean expectationConstructionFinished = false;
     private boolean errorOccurred = false;
+    private FocusType focusType;
 
     @Override
     public void setAllowedIdentifiers(Set<UserIdentifier> allowedIdentifiers) {
         this.allowedIdentifiers = allowedIdentifiers;
     }
+
+    @Override
+    public void setFocusType(FocusType focusType) {
+        this.focusType = focusType;
+    }
+
 
     @Override
     public void setUserRoleIT(UserRoleIT userRoleIT) {
@@ -44,8 +52,8 @@ public class AuthorizationRule implements TestRule, Authorization {
 
     @Override
     public void setRole(UserIdentifier producerIdentifier, UserIdentifier consumerIdentifier) {
-        this.producerIdentifier = new UserIdentifier(producerIdentifier.getType(), producerIdentifier.getIdentifier());
-        this.userIdentifier = new UserIdentifier(consumerIdentifier.getType(), consumerIdentifier.getIdentifier());
+        this.producerIdentifier = new UserIdentifier(producerIdentifier.getType(), producerIdentifier.getIdentifier(), producerIdentifier.getFocusMode());
+        this.userIdentifier = new UserIdentifier(consumerIdentifier.getType(), consumerIdentifier.getIdentifier(), consumerIdentifier.getFocusMode());
     }
 
     @Override
@@ -78,7 +86,7 @@ public class AuthorizationRule implements TestRule, Authorization {
         expectationConstructionFinished = true;
         errorOccurred = false;
         userRoleIT.logInAs(LoginRole.CONSUMER);
-        return new FunctionCallWhenThen(functionCall, producerIdentifier, userIdentifier, this, userRoleIT, allowedIdentifiers);
+        return new FunctionCallWhenThen(functionCall, producerIdentifier, userIdentifier, this, userRoleIT, allowedIdentifiers, focusType);
     }
 
     /**
@@ -98,7 +106,8 @@ public class AuthorizationRule implements TestRule, Authorization {
                 userIdentifier,
                 this,
                 userRoleIT,
-                allowedIdentifiers
+                allowedIdentifiers,
+                focusType
         );
     }
 

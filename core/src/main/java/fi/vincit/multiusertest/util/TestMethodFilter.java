@@ -75,8 +75,8 @@ public class TestMethodFilter {
             shouldRun = filterProducers.contains(producerIdentifier);
         }
         if (!filterConsumers.isEmpty()) {
-            boolean consumerWithProducerRole = filterConsumers.contains(UserIdentifier.getWithProducerRole())
-                    || consumerIdentifier.equals(UserIdentifier.getWithProducerRole());
+            boolean consumerWithProducerRole = filterConsumers.contains(UserIdentifier.getWithProducerRole(FocusType.NONE))
+                    || consumerIdentifier.equals(UserIdentifier.getWithProducerRole(FocusType.NONE));
             boolean filterProducerContainsCurrentConsumer = filterProducers.contains(consumerIdentifier);
 
             shouldRun = shouldRun && (filterConsumers.contains(consumerIdentifier)

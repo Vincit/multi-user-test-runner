@@ -2,6 +2,7 @@ package fi.vincit.multiusertest.rule.expectation;
 
 import fi.vincit.multiusertest.rule.AuthorizationRule;
 import fi.vincit.multiusertest.test.UserRoleIT;
+import fi.vincit.multiusertest.util.FocusType;
 import fi.vincit.multiusertest.util.UserIdentifier;
 import fi.vincit.multiusertest.util.UserIdentifierCollection;
 import fi.vincit.multiusertest.util.UserIdentifiers;
@@ -41,7 +42,7 @@ public class AbstractWhenThenTest {
     private static class SUT extends AbstractWhenThen<TestExpectation> {
 
         public SUT(Set<UserIdentifier> allowedIdentifiers, UserIdentifier producerIdentifier, UserIdentifier userIdentifier) {
-            super(producerIdentifier, userIdentifier, mock(AuthorizationRule.class), mock(UserRoleIT.class), allowedIdentifiers);
+            super(producerIdentifier, userIdentifier, mock(AuthorizationRule.class), mock(UserRoleIT.class), allowedIdentifiers, FocusType.NONE);
         }
 
         @Override

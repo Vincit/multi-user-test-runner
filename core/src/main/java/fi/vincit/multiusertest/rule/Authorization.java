@@ -6,6 +6,7 @@ import fi.vincit.multiusertest.rule.expectation.TestExpectation;
 import fi.vincit.multiusertest.rule.expectation.WhenThen;
 import fi.vincit.multiusertest.rule.expectation.value.TestValueExpectation;
 import fi.vincit.multiusertest.test.UserRoleIT;
+import fi.vincit.multiusertest.util.FocusType;
 import fi.vincit.multiusertest.util.UserIdentifier;
 
 import java.util.Set;
@@ -25,4 +26,6 @@ public interface Authorization {
     void setUserRoleIT(UserRoleIT userRoleIT);
 
     void setAllowedIdentifiers(Set<UserIdentifier> allowedIdentifiers);
+
+    void setFocusType(FocusType focusType);
 }
