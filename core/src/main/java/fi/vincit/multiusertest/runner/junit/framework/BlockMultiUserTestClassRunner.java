@@ -1,6 +1,7 @@
 package fi.vincit.multiusertest.runner.junit.framework;
 
 import fi.vincit.multiusertest.runner.junit.RunnerDelegate;
+import fi.vincit.multiusertest.util.FocusType;
 import fi.vincit.multiusertest.util.UserIdentifier;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.BlockJUnit4ClassRunner;
@@ -18,9 +19,9 @@ public class BlockMultiUserTestClassRunner extends BlockJUnit4ClassRunner {
 
     private final RunnerDelegate runnerDelegate;
 
-    public BlockMultiUserTestClassRunner(Class<?> clazz, Set<UserIdentifier> allowedIdentifiers, UserIdentifier producerIdentifier, UserIdentifier consumerIdentifier) throws InitializationError {
+    public BlockMultiUserTestClassRunner(Class<?> clazz, Set<UserIdentifier> allowedIdentifiers, UserIdentifier producerIdentifier, UserIdentifier consumerIdentifier, FocusType focusType) throws InitializationError {
         super(clazz);
-        this.runnerDelegate = new RunnerDelegate(allowedIdentifiers, producerIdentifier, consumerIdentifier);
+        this.runnerDelegate = new RunnerDelegate(allowedIdentifiers, producerIdentifier, consumerIdentifier, focusType);
     }
 
     @Override

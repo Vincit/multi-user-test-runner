@@ -89,6 +89,11 @@ public class RoleContainer<ROLE> {
         return mode;
     }
 
+    public FocusType getFocusMode() {
+        assert userIdentifier != null : "UserIdentifier must not be null";
+        return userIdentifier.getFocusMode();
+    }
+
 
     public UserIdentifier getUserIdentifier() {
         assert userIdentifier != null : "UserIdentifier must not be null";

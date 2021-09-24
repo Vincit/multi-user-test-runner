@@ -19,6 +19,9 @@ public class UserIdentifier {
 
     public static final String ROLE_SPLITTER = ":";
     public static final String IDENTIFIER_SPLITTER = ":";
+    // $ was chosen so that it can be used also in Java variables/constants
+    // e.g. RunWithUsers.$PRODUCER
+    public static final String FOCUS_PREFIX = "$";
 
 
     /**
@@ -51,6 +54,7 @@ public class UserIdentifier {
     private final Type type;
     private final String identifier;
     private final Collection<String> identifierParts;
+    private final FocusType focusMode;
 
     /**
      * Parses a user identifier string and creates a {@link UserIdentifier} instance.
@@ -59,18 +63,24 @@ public class UserIdentifier {
      * @return UserIdentifier object
      */
     public static UserIdentifier parse(String identifierString) {
+        FocusType focusMode = FocusType.NONE;
+        if (identifierString.startsWith(FOCUS_PREFIX)) {
+            focusMode = FocusType.FOCUS;
+            identifierString = identifierString.substring(1);
+        }
+
         if (identifierString.equals(RunWithUsers.PRODUCER)) {
-            return getProducer();
+            return getProducer(focusMode);
         } else if (identifierString.equals(RunWithUsers.WITH_PRODUCER_ROLE)) {
-            return getWithProducerRole();
+            return getWithProducerRole(focusMode);
         } else if (identifierString.equals(RunWithUsers.ANONYMOUS)) {
-            return getAnonymous();
+            return getAnonymous(focusMode);
         } else if (identifierString.startsWith(MultiUserTestRunner.USER_PREFIX) || identifierString.startsWith(MultiUserTestRunner.ROLE_PREFIX)) {
             String[] data = identifierString.split(IDENTIFIER_SPLITTER, 2);
-            return new UserIdentifier(Type.valueOf(data[0].toUpperCase()), data[1]);
+            return new UserIdentifier(Type.valueOf(data[0].toUpperCase()), data[1], focusMode);
         } else {
             throw new IllegalArgumentException("invalid producer parameter: <" + identifierString +
-                    ">. Parameter has to start with \"role:\" or \"user:\" or it has to be RunWithUsers.PRODUCER or RunWithUsers.WITH_PRODUCER_ROLE.");
+                    ">. Parameter has to start with \"$role:\", \"role\", \"user:\" or \"$user\" or it has to be RunWithUsers.PRODUCER or RunWithUsers.WITH_PRODUCER_ROLE.");
         }
     }
 
@@ -96,16 +106,28 @@ public class UserIdentifier {
         }
     }
 
+    public static UserIdentifier getAnonymous(FocusType focusType) {
+        return new UserIdentifier(Type.ANONYMOUS, null, focusType);
+    }
+
+    public static UserIdentifier getProducer(FocusType focusType) {
+        return new UserIdentifier(Type.PRODUCER, null, focusType);
+    }
+
+    public static UserIdentifier getWithProducerRole(FocusType focusType) {
+        return new UserIdentifier(Type.WITH_PRODUCER_ROLE, null, focusType);
+    }
+
     public static UserIdentifier getAnonymous() {
-        return new UserIdentifier(Type.ANONYMOUS, null);
+        return getAnonymous(FocusType.NONE);
     }
 
     public static UserIdentifier getProducer() {
-        return new UserIdentifier(Type.PRODUCER, null);
+        return getProducer(FocusType.NONE);
     }
 
     public static UserIdentifier getWithProducerRole() {
-        return new UserIdentifier(Type.WITH_PRODUCER_ROLE, null);
+        return getWithProducerRole(FocusType.NONE);
     }
 
     /**
@@ -115,9 +137,21 @@ public class UserIdentifier {
      * @param identifier Identifier (user name or role name)
      */
     public UserIdentifier(Type type, String identifier) {
+        this(type, identifier, FocusType.NONE);
+    }
+
+    /**
+     * Creates a new {@link UserIdentifier} with the given type and identifier.
+     * Usually objects are instantiated using {@link #parse(String)} for creating objects.
+     * @param type Role type
+     * @param identifier Identifier (user name or role name)
+     * @param focusMode Focus mode to use
+     */
+    public UserIdentifier(Type type, String identifier, FocusType focusMode) {
         this.type = type;
         this.identifier = identifier;
         this.identifierParts = mapMultiRoleIdentifier(identifier, Function.identity());
+        this.focusMode = focusMode;
     }
 
     public Type getType() {
@@ -126,6 +160,10 @@ public class UserIdentifier {
 
     public String getIdentifier() {
         return identifier;
+    }
+
+    public FocusType getFocusMode() {
+        return focusMode;
     }
 
     @Override

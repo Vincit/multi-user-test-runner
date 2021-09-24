@@ -58,10 +58,23 @@ public class TestConfigurationTest {
         final Collection<UserIdentifier> definitions = TestConfiguration.getDefinitions(
                 new String[] {"role:A"},
                 new String[] {"role:B"},
-                new AlphabeticalMergeStrategy()
+                new AlphabeticalMergeStrategy(),
+                FocusType.NONE
         );
 
         assertThat(definitions, is(asSet("role:A", "role:B")));
+    }
+
+    @Test
+    public void getDefinitions_OnlyFocus() {
+        final Collection<UserIdentifier> definitions = TestConfiguration.getDefinitions(
+                new String[] {"role:A"},
+                new String[] {"$role:B"},
+                new AlphabeticalMergeStrategy(),
+                FocusType.FOCUS
+        );
+
+        assertThat(definitions, is(asSet("role:B")));
     }
 
     @Test
@@ -90,7 +103,20 @@ public class TestConfigurationTest {
         final Collection<UserIdentifier> definitions = TestConfiguration.getDefinitions(
                 null,
                 null,
-                new AlphabeticalMergeStrategy()
+                new AlphabeticalMergeStrategy(),
+                FocusType.NONE
+        );
+
+        assertThat(definitions.size(), is(0));
+    }
+
+    @Test
+    public void getDefinitions_empty_OnlyFocus() {
+        final Collection<UserIdentifier> definitions = TestConfiguration.getDefinitions(
+                null,
+                null,
+                new AlphabeticalMergeStrategy(),
+                FocusType.FOCUS
         );
 
         assertThat(definitions.size(), is(0));

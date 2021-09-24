@@ -2,6 +2,7 @@ package fi.vincit.multiusertest.runner.junit;
 
 import fi.vincit.multiusertest.annotation.MultiUserTestConfig;
 import fi.vincit.multiusertest.annotation.RunWithUsers;
+import fi.vincit.multiusertest.util.FocusType;
 import fi.vincit.multiusertest.util.UserIdentifier;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -32,12 +33,14 @@ public class MultiUserTestRunnerTest {
         private Set<UserIdentifier> allowedIdentifiers;
         private UserIdentifier producer;
         private UserIdentifier consumer;
+        private FocusType focusType;
 
-        public TestRunner(Class<?> clazz, Set<UserIdentifier> allowedIdentifiers, UserIdentifier producer, UserIdentifier consumer) throws InitializationError {
+        public TestRunner(Class<?> clazz, Set<UserIdentifier> allowedIdentifiers, UserIdentifier producer, UserIdentifier consumer, FocusType focusType) throws InitializationError {
             super(clazz);
             this.allowedIdentifiers = allowedIdentifiers;
             this.producer = producer;
             this.consumer = consumer;
+            this.focusType = focusType;
         }
 
         @Override
@@ -67,7 +70,7 @@ public class MultiUserTestRunnerTest {
     public static class TestRunnerNoProperConstructor extends TestRunner {
 
         public TestRunnerNoProperConstructor(UserIdentifier producer) throws InitializationError {
-            super(TestRunnerNoProperConstructor.class, new HashSet<>(), producer, producer);
+            super(TestRunnerNoProperConstructor.class, new HashSet<>(), producer, producer, FocusType.NONE);
         }
     }
 

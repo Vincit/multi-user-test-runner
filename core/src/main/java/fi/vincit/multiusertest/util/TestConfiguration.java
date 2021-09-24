@@ -21,15 +21,18 @@ public class TestConfiguration {
     private final Collection<UserIdentifier> consumerIdentifiers;
     private final Optional<Class<?>> runner;
     private final Optional<Class<? extends Throwable>> defaultException;
+    private final FocusType focusType;
 
     private static final AlphabeticalMergeStrategy DEFAULT_MERGE_STRATEGY = new AlphabeticalMergeStrategy();
 
     public static TestConfiguration fromIgnoreForUsers(Optional<IgnoreForUsers> ignoredUsers, Optional<RunWithUsers> classUsers, Class<?> runner) {
         Class<? extends Throwable> defaultException = Defaults.getDefaultException();
 
+        FocusType focusMode = FocusType.NONE;
         if (classUsers.isPresent() && ignoredUsers.isPresent()) {
             final RunWithUsers runWithUsers = classUsers.get();
             final IgnoreForUsers resolvedIgnoredUsers = ignoredUsers.get();
+            focusMode = resolveFocusType(runWithUsers);
 
             final UserDefinitionClass producerDefinitionClass =
                     resolveUserDefinitionClass(runWithUsers.producerClass());
@@ -38,7 +41,8 @@ public class TestConfiguration {
                             runWithUsers.producers(),
                             producerDefinitionClass,
                             resolvedIgnoredUsers.producers(),
-                            resolveUserDefinitionClass(resolvedIgnoredUsers.producerClass())
+                            resolveUserDefinitionClass(resolvedIgnoredUsers.producerClass()),
+                            resolveFocusType(runWithUsers)
                     );
 
             final UserDefinitionClass consumerDefinitionClass =
@@ -48,12 +52,14 @@ public class TestConfiguration {
                             runWithUsers.consumers(),
                             consumerDefinitionClass,
                             resolvedIgnoredUsers.consumers(),
-                            resolveUserDefinitionClass(resolvedIgnoredUsers.consumerClass())
+                            resolveUserDefinitionClass(resolvedIgnoredUsers.consumerClass()),
+                            resolveFocusType(runWithUsers)
                     );
 
             return new TestConfiguration(
                     producerIdentifiers,
                     consumerIdentifier,
+                    focusMode,
                     runner,
                     defaultException
             );
@@ -61,6 +67,7 @@ public class TestConfiguration {
             return new TestConfiguration(
                     Collections.emptyList(),
                     Collections.emptyList(),
+                    focusMode,
                     runner,
                     defaultException
             );
@@ -70,17 +77,20 @@ public class TestConfiguration {
     private static Collection<UserIdentifier> resolveDefinitions(String[] includedUserDefinitions,
                                                                  UserDefinitionClass includedUserDefinitionsClass,
                                                                  String[] ignoredUserDefinitions,
-                                                                 UserDefinitionClass ignoreUserDefinitionsLcass) {
+                                                                 UserDefinitionClass ignoreUserDefinitionsClass,
+                                                                 FocusType focusType) {
         final Collection<UserIdentifier> producerIdentifiers = getDefinitions(
                 includedUserDefinitions,
                 includedUserDefinitionsClass.getUsers(),
-                DEFAULT_MERGE_STRATEGY
+                DEFAULT_MERGE_STRATEGY,
+                focusType
         );
         producerIdentifiers.removeAll(getDefinitions(
                 ignoredUserDefinitions,
-                ignoreUserDefinitionsLcass
+                ignoreUserDefinitionsClass
                         .getUsers(),
-                DEFAULT_MERGE_STRATEGY
+                DEFAULT_MERGE_STRATEGY,
+                focusType
         ));
         return producerIdentifiers;
     }
@@ -99,20 +109,24 @@ public class TestConfiguration {
         Collection<UserIdentifier> consumerIdentifier = Collections.emptySet();
         Class<? extends Throwable> defaultException = Defaults.getDefaultException();
 
+        FocusType focusMode = FocusType.NONE;
         if (testUsers.isPresent()) {
             final RunWithUsers runWithUsers = testUsers.get();
             producerIdentifiers = getDefinitions(
                     runWithUsers.producers(),
                     resolveUserDefinitionClass(runWithUsers.producerClass())
                             .getUsers(),
-                    DEFAULT_MERGE_STRATEGY
+                    DEFAULT_MERGE_STRATEGY,
+                    resolveFocusType(runWithUsers)
             );
             consumerIdentifier = getDefinitions(
                     runWithUsers.consumers(),
                     resolveUserDefinitionClass(runWithUsers.consumerClass())
                             .getUsers(),
-                    DEFAULT_MERGE_STRATEGY
+                    DEFAULT_MERGE_STRATEGY,
+                    resolveFocusType(runWithUsers)
             );
+            focusMode = resolveFocusType(runWithUsers);
         }
         if (multiUserTestConfig.isPresent()) {
             runner = multiUserTestConfig.get().runner();
@@ -121,20 +135,33 @@ public class TestConfiguration {
         return new TestConfiguration(
                 producerIdentifiers,
                 consumerIdentifier,
+                focusMode,
                 runner,
                 defaultException
         );
     }
 
+    private static FocusType resolveFocusType(RunWithUsers runWithUsers) {
+        return runWithUsers.focusEnabled() ? FocusType.FOCUS : FocusType.NONE;
+    }
+
     static Collection<UserIdentifier> getDefinitions(String[] definitionsPrimary,
                                                      String[] definitionsSecondary,
-                                                     MergeStrategy mergeStrategy) {
+                                                     MergeStrategy mergeStrategy,
+                                                     FocusType focusType) {
         final String[] resolvedDefinitions =
                 mergeStrategy.mergeDefinitions(definitionsPrimary, definitionsSecondary);
 
         return Arrays.stream(resolvedDefinitions)
-                        .map(UserIdentifier::parse)
-                        .collect(toCollection(LinkedHashSet::new));
+                .map(UserIdentifier::parse)
+                .filter(m -> {
+                    if (focusType == FocusType.FOCUS) {
+                        return m.getFocusMode() == FocusType.FOCUS;
+                    } else {
+                        return true;
+                    }
+                })
+                .collect(toCollection(LinkedHashSet::new));
     }
 
 
@@ -150,11 +177,12 @@ public class TestConfiguration {
         }
     }
 
-    TestConfiguration(Collection<UserIdentifier> producerIdentifiers, Collection<UserIdentifier> consumerIdentifiers, Class<?> runner, Class<? extends Throwable> defaultException) {
+    TestConfiguration(Collection<UserIdentifier> producerIdentifiers, Collection<UserIdentifier> consumerIdentifiers, FocusType focusType, Class<?> runner, Class<? extends Throwable> defaultException) {
         this.producerIdentifiers = producerIdentifiers;
         this.consumerIdentifiers = consumerIdentifiers;
         this.runner = Optional.ofNullable(runner);
         this.defaultException = Optional.ofNullable(defaultException);
+        this.focusType = focusType;
     }
 
     public Collection<UserIdentifier> getProducerIdentifiers() {
@@ -171,5 +199,9 @@ public class TestConfiguration {
 
     public Optional<Class<? extends Throwable>> getDefaultException() {
         return defaultException;
+    }
+
+    public FocusType getFocusType() {
+        return focusType;
     }
 }

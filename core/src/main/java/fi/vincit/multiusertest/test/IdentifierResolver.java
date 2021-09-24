@@ -38,14 +38,14 @@ public class IdentifierResolver<USER, ROLE> {
     }
 
     public UserIdentifier getProducerIdentifier() {
-        return new UserIdentifier(UserIdentifier.Type.ROLE, producer.getIdentifier());
+        return new UserIdentifier(UserIdentifier.Type.ROLE, producer.getIdentifier(), producer.getFocusMode());
     }
 
     private UserIdentifier getConsumerIdentifier() {
         RoleContainer.RoleMode roleMode = consumer.getMode();
 
         if (roleMode == RoleContainer.RoleMode.EXISTING_USER) {
-            return new UserIdentifier(UserIdentifier.Type.USER, consumer.getIdentifier());
+            return new UserIdentifier(UserIdentifier.Type.USER, consumer.getIdentifier(), consumer.getFocusMode());
         } else if (roleMode == RoleContainer.RoleMode.PRODUCER_USER) {
             return UserIdentifier.getProducer();
         } else if (roleMode == RoleContainer.RoleMode.ANONYMOUS) {
@@ -54,9 +54,9 @@ public class IdentifierResolver<USER, ROLE> {
             if (producer.getMode() != RoleContainer.RoleMode.SET_USER_ROLE) {
                 throw new IllegalStateException("Cannot use NEW_WITH_PRODUCER_ROLE when producer doesn't have role");
             }
-            return new UserIdentifier(UserIdentifier.Type.ROLE, producer.getIdentifier());
+            return new UserIdentifier(UserIdentifier.Type.ROLE, producer.getIdentifier(), producer.getFocusMode());
         } else {
-            return new UserIdentifier(UserIdentifier.Type.ROLE, consumer.getIdentifier());
+            return new UserIdentifier(UserIdentifier.Type.ROLE, consumer.getIdentifier(), consumer.getFocusMode());
         }
     }
 }

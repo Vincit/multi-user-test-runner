@@ -21,11 +21,26 @@ public class UserIdentifierTest {
 
         assertThat(userIdentifier1.equals(userIdentifier2), is(true));
     }
+    @Test
+    public void testEquals_Role_FocusDoesntAffect() {
+        UserIdentifier userIdentifier1 = new UserIdentifier(UserIdentifier.Type.ROLE, "foo", FocusType.NONE);
+        UserIdentifier userIdentifier2 = new UserIdentifier(UserIdentifier.Type.ROLE, "foo", FocusType.FOCUS);
+
+        assertThat(userIdentifier1.equals(userIdentifier2), is(true));
+    }
 
     @Test
     public void testEquals_User() {
         UserIdentifier userIdentifier1 = new UserIdentifier(UserIdentifier.Type.USER, "Foo");
         UserIdentifier userIdentifier2 = new UserIdentifier(UserIdentifier.Type.USER, "Foo");
+
+        assertThat(userIdentifier1.equals(userIdentifier2), is(true));
+    }
+
+    @Test
+    public void testEquals_User_FocusDoesntAffect() {
+        UserIdentifier userIdentifier1 = new UserIdentifier(UserIdentifier.Type.USER, "Foo", FocusType.NONE);
+        UserIdentifier userIdentifier2 = new UserIdentifier(UserIdentifier.Type.USER, "Foo", FocusType.FOCUS);
 
         assertThat(userIdentifier1.equals(userIdentifier2), is(true));
     }

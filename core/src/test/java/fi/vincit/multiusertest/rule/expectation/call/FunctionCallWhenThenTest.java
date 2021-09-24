@@ -4,6 +4,7 @@ import fi.vincit.multiusertest.rule.AuthorizationRule;
 import fi.vincit.multiusertest.rule.expectation.ConsumerProducerSet;
 import fi.vincit.multiusertest.rule.expectation.TestExpectation;
 import fi.vincit.multiusertest.test.UserRoleIT;
+import fi.vincit.multiusertest.util.FocusType;
 import fi.vincit.multiusertest.util.UserIdentifier;
 import org.junit.Rule;
 import org.junit.Test;
@@ -29,7 +30,8 @@ public class FunctionCallWhenThenTest {
                 UserIdentifier.getAnonymous(),
                 mock(AuthorizationRule.class),
                 mock(UserRoleIT.class),
-                new HashSet<>()
+                new HashSet<>(),
+                FocusType.NONE
         );
 
         sut.test(mock(TestExpectation.class), new ConsumerProducerSet(UserIdentifier.getAnonymous()));
@@ -43,7 +45,8 @@ public class FunctionCallWhenThenTest {
                 UserIdentifier.getAnonymous(),
                 mock(AuthorizationRule.class),
                 mock(UserRoleIT.class),
-                new HashSet<>()
+                new HashSet<>(),
+                FocusType.NONE
         );
 
         sut.test(mock(TestExpectation.class), new ConsumerProducerSet(UserIdentifier.getAnonymous()));
@@ -57,7 +60,8 @@ public class FunctionCallWhenThenTest {
                 UserIdentifier.getAnonymous(),
                 mock(AuthorizationRule.class),
                 mock(UserRoleIT.class),
-                new HashSet<>()
+                new HashSet<>(),
+                FocusType.NONE
         );
 
         TestExpectation testExpectation = mock(TestExpectation.class);
@@ -79,7 +83,8 @@ public class FunctionCallWhenThenTest {
                 UserIdentifier.getAnonymous(),
                 mock(AuthorizationRule.class),
                 mock(UserRoleIT.class),
-                new HashSet<>()
+                new HashSet<>(),
+                FocusType.NONE
         );
 
         TestExpectation testExpectation = mock(TestExpectation.class);
@@ -100,7 +105,8 @@ public class FunctionCallWhenThenTest {
                 UserIdentifier.getAnonymous(),
                 mock(AuthorizationRule.class),
                 mock(UserRoleIT.class),
-                new HashSet<>()
+                new HashSet<>(),
+                FocusType.NONE
         );
 
         assertThat(

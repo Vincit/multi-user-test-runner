@@ -2,10 +2,7 @@ package fi.vincit.multiusertest.rule.expectation;
 
 import fi.vincit.multiusertest.rule.Authorization;
 import fi.vincit.multiusertest.test.UserRoleIT;
-import fi.vincit.multiusertest.util.LoginRole;
-import fi.vincit.multiusertest.util.UserIdentifier;
-import fi.vincit.multiusertest.util.UserIdentifierCollection;
-import fi.vincit.multiusertest.util.UserIdentifiers;
+import fi.vincit.multiusertest.util.*;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -26,13 +23,15 @@ public abstract class AbstractWhenThen<T extends TestExpectation> implements Whe
     private final UserRoleIT userRoleIT;
     private T defaultExpectation;
     private Consumer<String> debugLogger;
+    private final FocusType focusType;
 
-    public AbstractWhenThen(UserIdentifier producerIdentifier, UserIdentifier userIdentifier, Authorization authorizationRule, UserRoleIT userRoleIT, Set<UserIdentifier> allowedIdentifiers) {
+    public AbstractWhenThen(UserIdentifier producerIdentifier, UserIdentifier userIdentifier, Authorization authorizationRule, UserRoleIT userRoleIT, Set<UserIdentifier> allowedIdentifiers, FocusType focusType) {
         this.userIdentifier = userIdentifier;
         this.producerIdentifier = producerIdentifier;
         this.authorizationRule = authorizationRule;
         this.userRoleIT = userRoleIT;
         this.allowedIdentifiers = allowedIdentifiers;
+        this.focusType = focusType;
     }
     
     @Override
@@ -248,15 +247,21 @@ public abstract class AbstractWhenThen<T extends TestExpectation> implements Whe
         if (userIdentifiers.isEmpty()) {
             throw new IllegalArgumentException("At least one identifier must be defined");
         }
-        final List<T> illegalIdentifiers = userIdentifiers.stream()
-                .filter(c -> !allowedIdentifiers.contains(c))
-                .collect(Collectors.toList());
+        validateAllowedIdentifiers(userIdentifiers);
+    }
 
-        if (!illegalIdentifiers.isEmpty()) {
-            final String illegals = illegalIdentifiers.stream()
-                    .map(Object::toString)
-                    .collect(Collectors.joining(", "));
-            throw new IllegalArgumentException("Following identifiers are not valid: " + illegals);
+    private <T> void validateAllowedIdentifiers(Collection<T> userIdentifiers) {
+        if (focusType == FocusType.NONE) {
+            final List<T> illegalIdentifiers = userIdentifiers.stream()
+                    .filter(c -> !allowedIdentifiers.contains(c))
+                    .collect(Collectors.toList());
+
+            if (!illegalIdentifiers.isEmpty()) {
+                final String illegals = illegalIdentifiers.stream()
+                        .map(Object::toString)
+                        .collect(Collectors.joining(", "));
+                throw new IllegalArgumentException("Following identifiers are not valid: " + illegals);
+            }
         }
     }
 
