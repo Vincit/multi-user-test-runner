@@ -1,4 +1,4 @@
-markdown: redcarpet
+markdown: kramdown
 highlighter: rouge
 path: https://juhasipo.github.io/juhasipo/multi-user-test-runner.git
 redcarpet:
