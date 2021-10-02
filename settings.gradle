@@ -19,5 +19,4 @@ include 'core',
         'junit-5-legacy-test',
         'junit-5-test',
         'spring-test',
-        'spring-test-class-runner',
         'examples'
