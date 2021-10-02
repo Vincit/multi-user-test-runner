@@ -1,8 +1,41 @@
-# Java/Gradle CircleCI 2.0 configuration file
+# Java/Gradle CircleCI 2.1 configuration file
 #
 # Check https://circleci.com/docs/2.0/language-java/ for more details
-version: 2 # use CircleCI 2.0
+version: 2.1
 jobs:
+  spring-test:
+    parameters:
+      spring-version:
+        type: string
+    environment:
+      _JAVA_OPTIONS: "-Xmx3g"
+      GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+      SPRING_VERSION: << parameters.spring-version >>
+    docker:
+      - image: circleci/openjdk:8-jdk-stretch
+    steps:
+      - checkout
+      - restore_cache:
+          key: v1-gradle-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
+      - restore_cache:
+          key: v1-gradle-cache-{{ checksum "build.gradle" }}
+      - run:
+          name: Test Spring compatibility
+          command: |
+            ./build/test-spring-compatibility.sh
+      - run:
+          name: Copy test artifacts
+          command: |
+            ./build/gather-test-artifacts.sh
+          when: always
+      - save_cache:
+          paths:
+            - ~/.gradle/wrapper
+          key: v1-gradle-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
+      - save_cache:
+          paths:
+            - ~/.gradle/caches
+          key: v1-gradle-cache-{{ checksum "build.gradle" }}
   build:
     environment:
       _JAVA_OPTIONS: "-Xmx3g"
@@ -57,3 +90,9 @@ workflows:
   workflow:
     jobs:
     - build
+    - spring-test:
+        matrix:
+          parameters:
+            # Spring Core/Spring Security
+            spring-version: ["5.3.10/5.5.2", "5.2.17.RELEASE/5.5.2", "5.1.20.RELEASE/5.5.2", "5.0.20.RELEASE/5.5.2",
+                             "4.3.30.RELEASE/3.2.5.RELEASE", "4.2.9.RELEASE/3.2.5.RELEASE"]
