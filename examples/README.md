@@ -18,6 +18,7 @@ These examples show one way how to test a Spring Framework based application.
 * [Basic Example with Existing Users](src/test/java/fi/vincit/mutrproject/feature/todo/TodoServiceWithUsersIT.java)
 * [Basic Example with RunWithUsers.WITH_PRODUCER_ROLE](src/test/java/fi/vincit/mutrproject/feature/todo/TodoServiceProducerRoleIT.java)
 * [Basic Example with UserDefinitionClass](src/test/java/fi/vincit/mutrproject/feature/todo/TodoServiceUserDefinitionsIT.java)
+* [Basic Example with UserDefinitionClass and focus](src/test/java/fi/vincit/mutrproject/feature/todo/TodoService_FocusedWithClassIT.java)
 * [Basic Configuration](src/test/java/fi/vincit/mutrproject/configuration/TestMultiUserConfig.java)
 
 ### REST Assured
