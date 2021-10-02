@@ -1,6 +1,5 @@
 package fi.vincit.multiusertest.runner.junit;
 
-import fi.vincit.multiusertest.annotation.RunWithUsers;
 import fi.vincit.multiusertest.util.FocusType;
 import fi.vincit.multiusertest.util.UserIdentifier;
 import org.junit.runner.Runner;
@@ -49,25 +48,13 @@ public class TestRunnerFactory {
 
         for (UserIdentifier producerIdentifier : producerIdentifiers) {
             for (UserIdentifier consumerIdentifier : consumerIdentifiers) {
-                Object parentRunner;
-                if (consumerIdentifier.getIdentifier() != null
-                        && consumerIdentifier.getIdentifier().equals(RunWithUsers.WITH_PRODUCER_ROLE)) {
-                    parentRunner = runnerConstructor.newInstance(
-                            testClass.getJavaClass(),
-                            allowedIdentifiers,
-                            producerIdentifier,
-                            producerIdentifier,
-                            focusType
-                    );
-                } else {
-                    parentRunner = runnerConstructor.newInstance(
+                final Object parentRunner = runnerConstructor.newInstance(
                             testClass.getJavaClass(),
                             allowedIdentifiers,
                             producerIdentifier,
                             consumerIdentifier,
                             focusType
                     );
-                }
 
                 runners.add((ParentRunner) parentRunner);
 
