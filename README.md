@@ -1,29 +1,14 @@
 Multi User Test Runner
 ======================
 
-This custom JUnit test runner is for testing Java applications with multiple roles, users and their combinations.
-The library makes it easy to test many authorization scenarios with minimal configuration. It is
-easy to verify that your system denies and permits the access for correct users even in more complex 
-scenarios where the authorization depends on multiple users and their roles.
-
-Originally the library was created to test the security of Spring service-layer methods. Now the core 
-library also with any plain Java classes and has been successfully used with REST-assured based API testing.
-From 0.5.0 onwards `multi-user-test-runner-spring` dependency is deprecated. Spring support is achieved by using
-JUnit rules.
+This custom JUnit test runner is for testing JVM applications with multiple roles and users.
+The library makes it easy to test many authorization scenarios by reusing test cases. It's
+easy to verify that your system returns correct data, denies and permits the access for correct users.
 
 # Requirements for version 1.0 and newer
 
  * Java 8 or newer
  * JUnit 4.12 or newer (supports JUnit5 with JUnit vintage 4.12)
-
- 
-# Optional Requirements
-
-## multi-user-test-runner-spring module (MUTR 0.4 and earlier)
- * Spring Framework 3.2.x, 4.0.x, 4.1.x, 4.2.x (tested)
- * Spring Security 3.2.x, 4.0.x (tested)
- 
-The library may work with other versions but has not been tested with versions other than the ones mentioned above.
 
 # Getting
 
@@ -50,38 +35,40 @@ dependencies {
 
 Usage is simple:
 
-## Configuring the Test Class (The New Way)
+## Configuring the Test Class
 
-Configure the test class:
+Configuration class:
 
-1. Create a configuration class that implements `MultiUserConfig<USER, ROLE>` interface (where USER and ROLE
+1. Create a configuration class that implements `MultiUserConfig<USER, ROLE>` interface (where `USER` and `ROLE`
    are your user and role types)
-1. Configure the test runner by adding `@RunWith(MultiUserTestRunner.class)` for the test class
-1. Configure users to run with by adding `@RunWithUsers(producers = {"role:ROLE_ADMIN"}, consumers = "role:ROLE_ADMIN")`
-   for the test class
-1. Create your test class and add an `AuthroizationRule` and your config class to your test class:
+2. Implement required methods for that class
+
+Test class:
+
+1. Add the following annotations:
+   1. `@RunWith(MultiUserTestRunner.class)`
+   2. `@MultiUserTestConfig`
+   3. `@RunWithUsers()` with appropriate users e.g. `@RunWithUsers(producers = {"role:ROLE_ADMIN"}, consumers = {"role:ROLE_ADMIN", "role:ROLE_USER"})`
+2. Add an `AuthroizationRule` and annotate it with JUnit's `@Rule`
+3. Add you configuration class as member variable and annotate it with `@MultiUserConfigClass`: 
 ```java
+// This can be initialized here or you can you @Resource or @Autowired if using Spring Framework
 @MultiUserConfigClass
 private MultiUserConfig<User, User.Role> multiUserConfig = new MyMultiUserConfig();
 
 @Rule
 public AuthorizationRule authorizationRule = new AuthorizationRule();
 ```
+4. Write the tests using the `AuthorizationRule`.
 
-Write the tests:
-
-1. Write the test methods
-1. Add an assertion. For example, `authenticationRule.expect(toFail(ifAnyOf("user:user")));` before the method under test
-   to define which roles/users are expected to fail
-
-### Additional Configuration for Spring
+### Additional Configuration for Spring Framework
 
 To make the test work with Spring two more rules are needed: `SpringClassRule` and `SpringMethodRule`.
 By adding these rules the bean under test and the config annotated by `@MultiUserConfigClass` can be autowired.
 The `MultiUserConfig` will also be able to use Spring's dependency injection. The test class configuration
 will look like the following:
 ```java
-@Autowired
+@Resource
 @MultiUserConfigClass
 private MultiUserConfig<User, User.Role> multiUserConfig;
 
@@ -95,28 +82,21 @@ public static final SpringClassRule SPRING_CLASS_RULE = new SpringClassRule();
 public final SpringMethodRule springMethodRule = new SpringMethodRule();
 ```
 
-### Configuring the Test Class (The Old Way)
-
-Configure the base test class:
-
-1. Create a configured abstract class by extending `AbstractUserRoleIT` class and implement methods. 
-   This will be the base class for your tests.
-1. Configure the runner and set the default exception to expect on failure with the annotation `@MultiUserTestConfig`
-
-Write the tests:
-
-1. Create a test class which is extended from your configured class.
-1. Add `@RunWithUsers` annotation for your test class and define roles/users to use in the tests
-1. Write the test methods
-1. Add an assertion. For example, `authentication().expect(toFail(ifAnyOf("user:user")));` before the method under test 
-   to define which roles/users are expected to fail
-
 ## Assertion Error Messages
 
 If the method under test fails when not expected:
 
 ```
-java.lang.AssertionError: Not expected to fail with user role role:ROLE_ADMIN
+fi.vincit.multiusertest.exception.CallFailedError: Assertion failed with role <ROLE_USER>: Permission denied
+<stack trace...>
+Caused by: org.springframework.security.access.AccessDeniedException: Permission denied
+<stack trace...>
+```
+
+If the method under test fails with a wrong exception:
+
+```
+fi.vincit.multiusertest.exception.CallFailedError: Unexpected exception thrown with role <producer=role:ROLE_SYSTEM_ADMIN, consumer=ROLE_USER>: Expected <IllegalStateException> but was <AccessDeniedException>: Permission denied
 <stack trace...>
 Caused by: org.springframework.security.access.AccessDeniedException: Permission denied
 <stack trace...>
@@ -125,31 +105,11 @@ Caused by: org.springframework.security.access.AccessDeniedException: Permission
 If a method under test doesn't fail when expected:
 
 ```
-java.lang.AssertionError: Expected to fail with user role role:ROLE_USER
+fi.vincit.multiusertest.exception.CallFailedError: Expected assertion to fail with role <ROLE_USER> with exception IllegalStateException. No exception was thrown.
 <stack trace...>
 ```
 
 # Test Configuration
-
-## Test Class Runners
-
-The default runner is the `BlockMultiUserTestClassRunner`. When using with Spring service-layer methods
-`SpringMultiUserTestClassRunner` from `multi-user-test-runner-spring` module should be used.
-The Spring runner loads the Spring context before the tests. This mean you can use Spring's dependency
-injection, `@ContextConfiguration` etc. with your test classes. The test class runner can be configured using 
-`@MultiUserTestConfig` annotation's `runner` parameter.
-
-## Default Exception
-
-By default `IllegalStateException` is expected as the exception that is thrown on failure. Other
-exceptions are ignored by the runner and will be handled normally by the test method. This behaviour can be changed:
-
-1. Using `expecations` by asserting with `authorizationRule#expect(Expectation expectation)`method. See section `Assertions`
-for more information.
-1. Adding `@MultiUserTestConfig` annotation to change the default exception for a test class.
-The annotation is inherited so it can be added to a configured base class to reduce boilerplate code.
-1. Do it in `@Before` method or in the test method itself by calling `authorizationRule#setExpectedException()`
-method. The exception is reset to default exception before each test method.
 
 ## Creating Custom Users
 
@@ -160,58 +120,63 @@ create the users to database before the test method.
 
 # Defining Users
 
-## Producer and consumer
+## Producer and Consumer
 
-There are two types of users: *producer* and *consumer*. *Producer* user is meant for creating resources (project,
-task, users in the system etc.) that the *consumer* then uses. Operations done with the *producer* user
-should always succeed. The assertions should be done with the *consumer*. If there is need to test if creating
-a resource succeeds with a specific user or role it should be done with the *consumer* (not *producer* user).
-Otherwise the tests end up testing too many things at once. This library already adds a little bit of
-complexity to the test methods so the tests should be kept as simple as possible.
+There are two types of users: **producer**s and **consumer**s.
+- **Producer** user is meant for creating resources (project, task, users in the system etc.) that the *consumer* then uses. 
+  Operations done with the *producer* user should always succeed. 
+- **Consumer** user is the one all the calls and assertions should be done.
 
-## Definitions
+## User Identifiers
 
-`@RunWithUsers` annotation defines which users are used to run the tests. Users can be defined by role (`role`),
-by existing user (`user`), use the producer (`RunWithUsers.PRODUCER`) user, use a consumer with the same role as the producer
-(`RunWithUsers.WITH_PRODUCER_ROLE`) or not log in at all (`RunWithUsers.ANONYMOUS`). All these definition types can be mixed.
-The possible definitions are shown in the table below.
+`@RunWithUsers` annotation defines which users are used to run the tests. Users can be defined by:
+- Role (`role`)
+- User instance (`user`)
+- Use the current producer user (`RunWithUsers.PRODUCER`)
+- Use a consumer with the same role as the producer but a different user instance (`RunWithUsers.WITH_PRODUCER_ROLE`)
+- Anonymous user (`RunWithUsers.ANONYMOUS`)
 
-  Type                             | Format | Example | Description
------------------------------------|--------|---------|------------
- user                              | `user:<user name>` | `@RunWithUsers(producers="user:admin-user", consumers="user:test-user")` | Use existing user
- role                              | `role:<role name>` | `@RunWithUsers(producers="role:ROLE_ADMIN", consumers="role:ROLE_USER")` | Create new user with given role
- producer                          | `RunWithUsers.PRODUCER` | `@RunWithUsers(producers="role:ROLE_ADMIN", consumers={RunWithUsers.producer, "user:test-user"})` | Use the producer as the user
- new consumer with producer role   | `RunWithUsers.WITH_PRODUCER_ROLE` | `@RunWithUsers(producers="role:ROLE_ADMIN", consumers={RunWithUsers.WITH_PRODUCER_ROLE, "user:test-user"})` | Create new consumer, uses same role as the producer has
- anonymous                         | `RunWithUsers.ANONYMOUS` | `@RunWithUsers(producers="role:ROLE_ADMIN", consumers={RunWithUsers.ANONYMOUS, "user:test-user"})` | Don't log in/clear log in details. `loginWithUser(User)` is called with null user
+Type                             | Format | Creates new user | Example | Description
+-----------------------------------|--------|------------------|---------|------------
+ user                              | `user:<user name>` | no | `@RunWithUsers(producers="user:admin-user", consumers="user:test-user")` | Use existing user
+ role                              | `role:<role name>` | yes | `@RunWithUsers(producers="role:ROLE_ADMIN", consumers="role:ROLE_USER")` | Create new user with given role
+ producer                          | `RunWithUsers.PRODUCER` | no | `@RunWithUsers(producers="role:ROLE_ADMIN", consumers={RunWithUsers.producer, "user:test-user"})` | Use the producer as the user
+ new consumer with producer role   | `RunWithUsers.WITH_PRODUCER_ROLE` | yes | `@RunWithUsers(producers="role:ROLE_ADMIN", consumers={RunWithUsers.WITH_PRODUCER_ROLE, "user:test-user"})` | Create new consumer, uses same role as the producer has
+ anonymous                         | `RunWithUsers.ANONYMOUS` | no | `@RunWithUsers(producers="role:ROLE_ADMIN", consumers={RunWithUsers.ANONYMOUS, "user:test-user"})` | Don't log in/clear log in details. `loginWithUser(User)` is called with null user
 
-Each role definition and `WITH_PRODUCER_ROLE` definition will create new users for each test method separately. They are created by calling
-`AbstractUserRoleIT#createUser(String, String, String, ROLE, LoginRole)` method. `RunWithUsers.PRODUCER` and
+Some user identifiers trigger a user creation (see the table). If a new user is created, they are created for each test method and user identifier 
+separately. They are created by calling `AbstractUserRoleIT#createUser(String, String, String, ROLE, LoginRole)` method. `RunWithUsers.PRODUCER` and
 existing user definitions will not create new users.
 
-## Changing the User During Test
+## Logging in User for Tests
 
-By default the producer user is logged in by using the implemented `loginWithUser(USER user)` method. The consumer
-is logged in automatically just before the method under test is called. After successful call of the method under test,
+Logging in user is done by implementing `loginWithUser(USER user)`. The type of `USER` depends on the generic value
+of `AbstractMultiUserConfig<USER, ROLE>` class. How the logging in is done, depends on the used frameworks and test types. 
+E.g. if creating integration tests for Spring Framework, the user can be logged in to the SecurityContext. If using something
+like `RestAssured`, the method may just store the currently logged-in user. 
+
+By default, the producer user is logged in by using the implemented `loginWithUser(USER user)` method. The consumer
+is logged in automatically when the method under test is called. After successful call of the method under test,
 producer is logged back in.
-
-To change the test to use the consumer (i.e. current user definition) the `logInAs(LoginRole role)` method can be called at
-any point of the test method. This method takes `LoginRole.PRODUCER` or `LoginRole.CONSUMER` as parameter. The basic way
-to write a test method is:
 
 ```java
 @Test
 public void fetchProduct() {
     String productId = productService.createProduct("Ice cream");
 
-    authorization.given(() -> productService.fetchProduct(productId))
+    // Here the producer is the one who is logged in
+
+    authorization().given(() -> productService.fetchProduct(productId)) // The lambda is called using the consumer
                 .whenCalledWithAnyOf(roles("ROLE_ADMIN", "ROLE_SYSTEM_ADMIN"))
                 .then(expectNotToFailIgnoringValue())
                 .otherwise(expectExceptionInsteadOfValue(AccessDeniedException.class))
                 .test();
+
+    // Here the producer is the one who is logged in
 }
 ```
 
-## The Special Roles
+## Special Roles
 
 `RunWithUsers.PRODUCER` can be used to use the current producer user as the user. A new consumer is not created
 but the same producer user is fetched with `AbstractUserRoleIT#getUserByUsername(String)` method. This can't
@@ -225,9 +190,9 @@ existing user definition.
 if necessary. `AbstractUserRoleIT#loginWithUser(USER)` will be called with null value by default. This 
 behaviour can be changed by overriding `AbstractUserRoleIT#loginAnonymous()` method.
 
-## Role Aliasing
+## Role Aliases
 
-The role definitions don't have to use the exact same role as the role enum has. By implementing the
+The role definitions don't have to use the exact same role as the role type has. By implementing the
 `AbstractUserRoleIT#stringToRole(String)` method appropriately the role definitions can have any value
 which is then mapped to the real role.
 
@@ -237,13 +202,75 @@ method.
 
 ## Multi Role Support
 
-From version 0.5 onwards it is possible to define multiple roles for a role identifier. The syntax is `role:ADMIN:USER`.
+It's possible to define multiple roles for a role identifier. The syntax is `role:ADMIN:USER`.
 This requires the configuration class to be extended from `AbstractMultiUserAndRoleConfig`.
+
+## Ignoring a Test Method for Specific User Definitions
+
+It is possible to run certain test methods with only specific user definitions by adding `@RunWithUsers`
+or `@IgnoreForUsers` annotation to the test method.
+
+```java
+@RunWithUsers(producers = {"role:ROLE_ADMIN", "role:ROLE_USER"},
+        consumers = {RunWithUsers.PRODUCER, "role:ROLE_ADMIN", "role:ROLE_USER", "user:existing-user-name"})
+public class ServiceIT extends AbstractConfiguredUserIT {
+    @RunWithUsers(producers = {"role:ROLE_ADMIN"}, users = {"role:ROLE_USER", "user:existing-user-name"})
+    @Test
+    public void onlyForAdminProducerAndConsumerUser() {
+        // Will be run only if producer is ROLE_ADMIN and consumer is either ROLE_USER or existing-user-name
+    }
+
+    @RunWithUsers(producers = {"role:ROLE_ADMIN"})
+    @Test
+    public void onlyForAdminAndAnyUser() {
+        // Will be run only if producer is ROLE_ADMIN. Consumer can be any of the ones defined for class.
+    }
+    
+    @IgnoreForUsers(producers = {"role:ROLE_ADMIN"})
+    @Test
+    public void ignoredForAdminProducer() {
+        // Will not be run if producer is ROLE_ADMIN. Consumer can be any of the ones defined for class.
+    }
+
+}
+```
+
+## UserDefinitionClasses
+
+Let's say that there are multiple tests that use exact same user/role definitions. To reduce duplicated user definitions,
+it's possible to use UserDefinitionClass. For example, if there are multiple tests that use user identifiers `{"role:ROLE_ADMIN", "role:ROLE_USER"}` as the consumer definitions,
+it's possible to make a class which defines that set of user identifiers:
+
+```
+public class GeneralTestUsers implements UserDefinitionClass {
+
+    @Override
+    public String[] getUsers() {
+        return new String[] {"role:ROLE_ADMIN", "role:ROLE_USER"};
+    }
+}
+```
+
+This class can be given to the consumer in `RunWithUsers`:
+
+```
+@RunWithUsers(consumerClass = GeneralTestUsers.class)
+public class ServiceXTest {
+    // ...
+```
+
+Or to the producer:
+
+```
+@RunWithUsers(producerClass = GeneralTestUsers.class)
+public class ServiceXTest {
+    // ...
+```
 
 ## Debugging Tests
 
-Sometimes when writing tests, it's required to debug a single case to see why the test doesn't pass. IDEs usually
-don't allow to run only single producer/consumer pair from the UI.
+Sometimes when writing tests, it's required to debug a single case to see why the test doesn't pass. The framework 
+doesn't allow to run only single producer/consumer pair from the UI from commandline or IDE.
 
 For this reason it's possible to focus only on certain producers/consumers by:
 1. Marking them with `$` e.g. `$role:ROLE_ADMIN`
@@ -279,76 +306,39 @@ public class ServiceIT extends AbstractConfiguredUserIT {
 }
 ```
 
-## Ignoring a Test Method for Specific User Definitions
-
-It is possible to run certain test methods with only specific user definitions by adding `@RunWithUsers`
-or `@IgnoreForUsers` annotation to the test method.
+This also works with UserDefinitionClasses:
 
 ```java
-@RunWithUsers(producers = {"role:ROLE_ADMIN", "role:ROLE_USER"},
-        consumers = {RunWithUsers.PRODUCER, "role:ROLE_ADMIN", "role:ROLE_USER", "user:existing-user-name"})
+// This will only run tests for producer ROLE_USER and consumer ROLE_USER
+@RunWithUsers(producers = {"role:ROLE_ADMIN", "$role:ROLE_USER"},
+        consumerClass = GeneralTestUsers.class,
+        consumers = {"$role:ROLE_USER"},
+        focusEnabled = true)
 public class ServiceIT extends AbstractConfiguredUserIT {
-    @RunWithUsers(producers = {"role:ROLE_ADMIN"}, users = {"role:ROLE_USER", "user:existing-user-name"})
+
     @Test
-    public void onlyForAdminProducerAndConsumerUser() {
-        // Will be run only if producer is ROLE_ADMIN and consumer is either ROLE_USER or existing-user-name
+    public void test1() {
+        // test code here
     }
 
-    @RunWithUsers(producers = {"role:ROLE_ADMIN"})
     @Test
-    public void onlyForAdminAndAnyUser() {
-        // Will be run only if producer is ROLE_ADMIN. Consumer can be any of the ones defined for class.
+    public void test2() {
+        // test code here
     }
     
-    // From version 0.5 onwards
-    @IgnoreForUsers(producers = {"role:ROLE_ADMIN"})
     @Test
-    public void ignoredForAdminProducer() {
-        // Will no be run if producer is ROLE_ADMIN. Consumer can be any of the ones defined for class.
+    public void test3() {
+        // test code here
     }
 
 }
 ```
 
-## UserDefinitionClasses
+# Writing the Tests and Assertions
 
-Let's say that there are multiple tests that use exact same user/role definitions. In 0.5 and older versions the only
-possibility was to copy paste the definitions to each test. In 0.6 this issue has been solved with UserDefinitionClass.
+## Identifiers in Assertions
 
-For example there are multiple tests that take `{"role:ROLE_ADMIN", "role:ROLE_USER"}` as the consumer definitions. Now
-it is possible to make a class:
-
-```
-public class GeneralTestUsers implements UserDefinitionClass {
-
-    @Override
-    public String[] getUsers() {
-        return new String[] {"role:ROLE_ADMIN", "role:ROLE_USER"};
-    }
-}
-```
-
-This class can be given to the consumer in `RunWithUsers`:
-
-```
-@RunWithUsers(consumerClass = GeneralTestUsers.class)
-public class ServiceXTest {
-    // ...
-```
-
-Or to the producer:
-
-```
-@RunWithUsers(producerClass = GeneralTestUsers.class)
-public class ServiceXTest {
-    // ...
-```
-
-# Assertions
-
-## Definitions in Assertions
-
-The user definitions `role`, `user`, `RunWithUsers.PRODUCER` and `RunWithUsers.ANONYMOUS` must be same in the assertion and in the
+The user identifiers `role`, `user`, `RunWithUsers.PRODUCER` and `RunWithUsers.ANONYMOUS` must be same in the assertion and in the
 `@RunWithUsers` annotation. For example if the `@RunWithUsers` has `user:admin` and that user has `ROLE_ADMIN` role
 it can be only asserted with `user:admin` and not `role:ROLE_ADMIN`. Also producer users can only be
 asserted with `RunWithUsers.PRODUCER` definition and not with user or role. Users specified with special
@@ -361,13 +351,23 @@ the correct way to reference the consumer in an assertion is `role:ROLE_ADMIN`.
 
 ## Assertions
 
-The preferred way to write assertions if the new expectation API introduced in version 0.5.
-The new API uses less nested calls and is more natural and fluent than the previous APIs. 
-Writing and reading the rules is easier when the `when-then` structure is on the same level 
-(as opposed to nested like in 0.2).
+The test code is written using the MUTR DSL which follows the `given-when-then` format. Usually the test format is
+the following:
+1. Initialize data (using producer)
+2. Use the DSL
+   1. Given: Define the actual call
+   2. Define assertion rules for each user identifier
+   3. Initiate the test by calling `.test()` method
 
 ```java
-authorizationRule.given(() -> testService.getAllUsernames())
+// Initialize test data
+
+// Use DSL
+authorizationRule.given(() -> 
+            // The actual call
+            testService.getAllUsernames()
+        )
+        // Assertions
         .whenCalledWithAnyOf(roles("ROLE_ADMIN", "ROLE_USER"))
         .then(expectValue(Arrays.asList("admin", "user 1", "user 2")))
 
@@ -378,6 +378,7 @@ authorizationRule.given(() -> testService.getAllUsernames())
         .then(expectExceptionInsteadOfValue(AccessDeniedException.class,
                 exception -> assertThat(exception.getMessage(), is("Access is denied"))
         ))
+        // Initiate the test
         .test();
 ```
 
@@ -385,60 +386,54 @@ authorizationRule.given(() -> testService.getAllUsernames())
 
 For all examples, please visit [multi-user-test-runner/examples](https://github.com/Vincit/multi-user-test-runner/blob/0.5.0/examples/README.md)
 
-Configuring base class for tests:
+Configuring base class for tests (using Spring Framework):
 
 ```java
 
 // Webapp specific implementation of test class
-@ContextConfiguration(classes = {IntegrationTestContext.class})
-@TestExecutionListeners({
-    DependencyInjectionTestExecutionListener.class,
-    DirtiesContextTestExecutionListener.class,
-    TransactionalTestExecutionListener.class
-})
-@MultiUserTestConfig(
-        runner = SpringMultiUserTestClassRunner.class, 
-        defaultException = AccessDeniedException.class)
+@TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
+        DirtiesContextTestExecutionListener.class,
+        TransactionalTestExecutionListener.class})
+@MultiUserTestConfig
+@ContextConfiguration(classes = {Application.class, SecurityConfig.class})
 @RunWith(MultiUserTestRunner.class)
-public class AbstractConfiguredUserIT extends AbstractUserRoleIT<User, User.Role> {
-    
+public abstract class AbstractConfiguredMultiRoleIT {
+
     @Autowired
-    protected UserService userService;
+    private UserService userService;
+
     @Autowired
-    protected UserSecurityService userSecurityService;
+    private DatabaseUtil databaseUtil;
 
-    @Override
-    public void loginWithUser(User user) {
-        final Set<SimpleGrantedAuthority> authorities = Collections
-                .singleton(new SimpleGrantedAuthority(user.getRole().toString()));
+    @ClassRule
+    public static final SpringClassRule SPRING_CLASS_RULE = new SpringClassRule();
 
-        SecurityContextHolder.getContext().setAuthentication(
-                new UsernamePasswordAuthenticationToken(UserInfo.createFromUser(user), user.getUsername(), authorities));
+    @Rule
+    public final SpringMethodRule springMethodRule = new SpringMethodRule();
+
+
+    @Autowired
+    @MultiUserConfigClass
+    public TestMultiUserConfig config;
+
+    @Rule
+    public AuthorizationRule authorizationRule = new AuthorizationRule();
+
+    @After
+    public void clear() {
+        userService.logout();
+        databaseUtil.clearDb();
     }
 
-    @Override
-    public void loginAnonymous() {
-        SecurityContextHolder.getContext().setAuthentication(null);
+    public TestMultiUserConfig config() {
+        return config;
     }
 
-    @Override
-    public User createUser(String username, String firstName, String lastName, User.Role userRole, LoginRole loginRole) {
-        User user = userService.createUser(username, firstName, lastName, userRole);
-        userSecurityService.setUserPassword(user, loginRole.toString());
-        return user;
+    public AuthorizationRule authorization() {
+        return authorizationRule;
     }
 
-    @Override
-    public User.Role stringToRole(String role) {
-        return User.Role.valueOf(role);
-    }
-
-    @Override
-    public User getUserByUsername(String username) {
-        return userService.findByUsername(username);
-    }
 }
-
 ```
 
 Writing tests in the test class:
@@ -446,41 +441,41 @@ Writing tests in the test class:
 ```java
 
 // Test implementation
-@RunWithUsers(producers = {"role:ROLE_ADMIN", "role:ROLE_USER"},
-        consumers = {RunWithUsers.PRODUCER, "role:ROLE_ADMIN", "role:ROLE_USER", "user:existing-user-name"})
-public class ServiceIT extends AbstractConfiguredUserIT {
+@RunWithUsers(
+        producers = {"role:ROLE_SYSTEM_ADMIN", "role:ROLE_ADMIN", "role:ROLE_USER", "role:ROLE_USER"},
+        consumers = {"role:ROLE_SYSTEM_ADMIN", "role:ROLE_ADMIN", "role:ROLE_USER",
+                RunWithUsers.PRODUCER, RunWithUsers.ANONYMOUS}
+)
+public class TodoServiceIT extends AbstractConfiguredMultiRoleIT {
+
+    // Service under test
+    @Autowired
+    private TodoService todoService;
+
+    @Before
+    public void init() {
+        todoService.setSecureSystemAdminTodos(false);
+    }
 
     @Test
-    public void createAndUpdateTodo() {
-        // Create data with "producer" user
-        // Logged in as "producer" user by default
-        Todo todo = todoService.create(new TodoDto("Write documentation"));
-        
-        logInAs(LoginRole.CONSUMER);
-        
-        // Create/update/read data with "user" user
-        TodoDto updateDto = new TodoDto(todo);
-        updateDto.setName("Write better documentation");
-        
-        authorization().expect(toFail(ifAnyOf("role:ROLE_USER", "user:existing-user-name")));
-        todoService.update(updateDto);
+    public void getPrivateTodoList() throws Throwable {
+        // At this point the producer has been logged in automatically
+        long id = todoService.createTodoList("Test list", false);
+
+        authorization().given(() -> todoService.getTodoList(id))
+                .whenCalledWithAnyOf(roles("ROLE_USER"), UserIdentifiers.anonymous())
+                .then(expectExceptionInsteadOfValue(AccessDeniedException.class))
+                .otherwise(assertValue(todoList -> {
+                    assertThat(todoList, notNullValue());
+                    assertThat(todoList.getId(), is(id));
+                    assertThat(todoList.getName(), is("Test list"));
+                    assertThat(todoList.isPublicList(), is(false));
+                }))
+                .test();
     }
+
 }
-
 ```
-
-This example test class will run tests:
-
-* ServiceIT
-    * createAndUpdateTodo producer = role:ROLE_ADMIN; user = producer;
-    * createAndUpdateTodo producer = role:ROLE_ADMIN; user = role:ROLE_ADMIN;
-    * createAndUpdateTodo producer = role:ROLE_ADMIN; user = role:ROLE_USER;
-    * createAndUpdateTodo producer = role:ROLE_ADMIN; user = user:existing-user-name;
-    * createAndUpdateTodo producer = role:ROLE_USER; user = producer;
-    * createAndUpdateTodo producer = role:ROLE_USER; user = role:ROLE_ADMIN;
-    * createAndUpdateTodo producer = role:ROLE_USER; user = role:ROLE_USER;
-    * createAndUpdateTodo producer = role:ROLE_USER; user = user:existing-user-name;
-
 
 # Customizing
 
@@ -490,9 +485,9 @@ It is also possible to create your own custom test class runner. The custom runn
 `org.junit.runners.ParentRunner` (doesn't have to be direct superclass) class and has to have
 a constructor with following signature:
 
-`CustomRunner(Class<?> clazz, UserIdentifier producerIdentifier, UserIdentifier consumerIdentifier)`.
+`CustomRunner(Class<?> clazz, Set<UserIdentifier> allowedIdentifiers, UserIdentifier producerIdentifier, UserIdentifier consumerIdentifier, FocusType focusType)`.
 
-When creating a custom test class runner it is important to note that `AbstractUserRoleIT.logInAs(LoginRole)`
+When creating a custom test class runner it's important to note that `AbstractUserRoleIT.logInAs(LoginRole)`
 method  has to be called **after** `@Before` methods and **before** calling the actual test method. This will
 enable creating users in `@Before` methods so that they can be used as producers.
 
@@ -500,4 +495,3 @@ The `RunnerDelegate` class contains helper methods for creating custom test clas
 the runner implementation can just call the `RunnerDelegate` class' methods without any additional logic.
 But for example implementing the `withBefores` method may require some additional logic in order to make the
 test class' `@Before` methods to work correctly (See implementation of `BlockMultiUserTestClassRunner#withBefore` method).
-
