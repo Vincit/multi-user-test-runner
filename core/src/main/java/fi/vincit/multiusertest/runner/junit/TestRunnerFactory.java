@@ -48,13 +48,15 @@ public class TestRunnerFactory {
 
         for (UserIdentifier producerIdentifier : producerIdentifiers) {
             for (UserIdentifier consumerIdentifier : consumerIdentifiers) {
-                final Object parentRunner = runnerConstructor.newInstance(
-                            testClass.getJavaClass(),
-                            allowedIdentifiers,
-                            producerIdentifier,
-                            consumerIdentifier,
-                            focusType
-                    );
+                final RunnerConfig runnerConfig = new RunnerConfig(
+                        testClass.getJavaClass(),
+                        allowedIdentifiers,
+                        producerIdentifier,
+                        consumerIdentifier,
+                        focusType
+                );
+
+                final Object parentRunner = runnerConstructor.newInstance(runnerConfig);
 
                 runners.add((ParentRunner) parentRunner);
 

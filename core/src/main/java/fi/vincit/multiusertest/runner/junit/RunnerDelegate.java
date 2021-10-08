@@ -32,6 +32,15 @@ public class RunnerDelegate {
     private final TestMethodFilter shouldRunChecker;
     private final FocusType focusType;
 
+    public static RunnerDelegate fromRunnerConfig(RunnerConfig runnerConfig) {
+        return new RunnerDelegate(
+                runnerConfig.getAllowedIdentifiers(),
+                runnerConfig.getProducerIdentifier(),
+                runnerConfig.getConsumerIdentifier(),
+                runnerConfig.getFocusType()
+        );
+    }
+
     public RunnerDelegate(Set<UserIdentifier> allowedIdentifiers, UserIdentifier producerIdentifier, UserIdentifier consumerIdentifier, FocusType focusType) {
         Objects.requireNonNull(allowedIdentifiers);
         Objects.requireNonNull(producerIdentifier);

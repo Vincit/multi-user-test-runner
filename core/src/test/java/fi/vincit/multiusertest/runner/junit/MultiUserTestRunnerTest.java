@@ -35,12 +35,12 @@ public class MultiUserTestRunnerTest {
         private UserIdentifier consumer;
         private FocusType focusType;
 
-        public TestRunner(Class<?> clazz, Set<UserIdentifier> allowedIdentifiers, UserIdentifier producer, UserIdentifier consumer, FocusType focusType) throws InitializationError {
-            super(clazz);
-            this.allowedIdentifiers = allowedIdentifiers;
-            this.producer = producer;
-            this.consumer = consumer;
-            this.focusType = focusType;
+        public TestRunner(RunnerConfig runnerConfig) throws InitializationError {
+            super(runnerConfig.getTestClassType());
+            this.allowedIdentifiers = runnerConfig.getAllowedIdentifiers();
+            this.producer = runnerConfig.getProducerIdentifier();
+            this.consumer = runnerConfig.getConsumerIdentifier();
+            this.focusType = runnerConfig.getFocusType();
         }
 
         @Override
@@ -70,7 +70,7 @@ public class MultiUserTestRunnerTest {
     public static class TestRunnerNoProperConstructor extends TestRunner {
 
         public TestRunnerNoProperConstructor(UserIdentifier producer) throws InitializationError {
-            super(TestRunnerNoProperConstructor.class, new HashSet<>(), producer, producer, FocusType.NONE);
+            super(new RunnerConfig(TestRunnerNoProperConstructor.class, new HashSet<>(), producer, producer, FocusType.NONE));
         }
     }
 

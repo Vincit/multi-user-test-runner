@@ -12,6 +12,13 @@ Multi User Test Runner
 * Focus mode: Now it's possible to mark user identifiers in `RunWithUsers` with `$` to mark
   that tests should be only run for those users. Also `RunWithUsers.focusEnabled` must be set to
   `true`. This helps when debugging tests since it is possible to only run a subset of tests.
+* Custom test runner constructor signature has changed.
+
+## Breaking Changes
+
+* Custom test runner constructor signature has changed to take only a `RunnerConfig` as the parameter. Previously
+  it took several parameters. To make the constructor call more robust, now it only has a single parameter which
+  can be modified without changing the signature.
 
 # 1.0.0-beta1
 

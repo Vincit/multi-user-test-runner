@@ -1,8 +1,7 @@
 package fi.vincit.multiusertest.runner.junit.framework;
 
+import fi.vincit.multiusertest.runner.junit.RunnerConfig;
 import fi.vincit.multiusertest.runner.junit.RunnerDelegate;
-import fi.vincit.multiusertest.util.FocusType;
-import fi.vincit.multiusertest.util.UserIdentifier;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.FrameworkMethod;
@@ -10,7 +9,6 @@ import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.Statement;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * Runner based on BlockJUnit4ClassRunner. Works with plain Java code.
@@ -19,9 +17,9 @@ public class BlockMultiUserTestClassRunner extends BlockJUnit4ClassRunner {
 
     private final RunnerDelegate runnerDelegate;
 
-    public BlockMultiUserTestClassRunner(Class<?> clazz, Set<UserIdentifier> allowedIdentifiers, UserIdentifier producerIdentifier, UserIdentifier consumerIdentifier, FocusType focusType) throws InitializationError {
-        super(clazz);
-        this.runnerDelegate = new RunnerDelegate(allowedIdentifiers, producerIdentifier, consumerIdentifier, focusType);
+    public BlockMultiUserTestClassRunner(RunnerConfig runnerConfig) throws InitializationError {
+        super(runnerConfig.getTestClassType());
+        this.runnerDelegate = RunnerDelegate.fromRunnerConfig(runnerConfig);
     }
 
     @Override
