@@ -1,5 +1,7 @@
 package fi.vincit.mutrproject.feature.todo;
 
+import fi.vincit.mutrproject.feature.todo.command.ItemStatus;
+import fi.vincit.mutrproject.feature.todo.command.ListVisibility;
 import fi.vincit.mutrproject.feature.todo.dto.TodoItemDto;
 import fi.vincit.mutrproject.feature.todo.dto.TodoListDto;
 import fi.vincit.mutrproject.feature.todo.model.TodoItem;
@@ -45,7 +47,7 @@ public class TodoService {
     }
 
     @PreAuthorize("isAuthenticated()")
-    public long createTodoList(String listName, boolean publicList) {
+    public long createTodoList(String listName, ListVisibility listVisibility) {
         final User user = userService.getLoggedInUser();
         if (!user.isLoggedIn()) {
             throw new AccessDeniedException("Not logged in");
@@ -53,7 +55,7 @@ public class TodoService {
 
         return todoListRepository.save(new TodoList(
                 listName,
-                publicList,
+                listVisibility == ListVisibility.PUBLIC,
                 user
         )).getId();
     }
@@ -85,10 +87,10 @@ public class TodoService {
     }
 
     @PreAuthorize("isAuthenticated()")
-    public void setItemStatus(long listId, long itemId, boolean done) {
+    public void setItemStatus(long listId, long itemId, ItemStatus status) {
         getTodoItemInternal(listId, itemId).ifPresent(existingItem -> {
             authorizeEdit(getTodoListInternal(listId), userService.getLoggedInUser());
-            existingItem.setDone(done);
+            existingItem.setDone(status == ItemStatus.DONE);
             todoItemRepository.save(existingItem);
         });
     }

@@ -9,6 +9,7 @@ import fi.vincit.multiusertest.util.UserIdentifiers;
 import fi.vincit.mutrproject.Application;
 import fi.vincit.mutrproject.config.SecurityConfig;
 import fi.vincit.mutrproject.configuration.TestMultiUserAliasConfig;
+import fi.vincit.mutrproject.feature.todo.command.ListVisibility;
 import fi.vincit.mutrproject.util.DatabaseUtil;
 import org.junit.*;
 import org.junit.runner.RunWith;
@@ -74,7 +75,7 @@ public class TodoServiceRoleAliasIT {
 
     @Test
     public void getPrivateTodoList() throws Throwable {
-        long id = todoService.createTodoList("Test list", false);
+        long id = todoService.createTodoList("Test list", ListVisibility.PRIVATE);
         authorizationRule.given(() -> todoService.getTodoList(id))
                 .whenCalledWithAnyOf(roles("REGULAR"))
                 .then(expectExceptionInsteadOfValue(AccessDeniedException.class))
@@ -83,14 +84,14 @@ public class TodoServiceRoleAliasIT {
 
     @Test
     public void getPublicTodoList() throws Throwable {
-        long id = todoService.createTodoList("Test list", true);
+        long id = todoService.createTodoList("Test list", ListVisibility.PUBLIC);
         authorizationRule.given(() -> todoService.getTodoList(id))
                 .test();
     }
 
     @Test
     public void addTodoItem() throws Throwable {
-        long listId = todoService.createTodoList("Test list", false);
+        long listId = todoService.createTodoList("Test list", ListVisibility.PRIVATE);
         authorizationRule.given(() -> todoService.addItemToList(listId, "Write tests"))
                 .whenCalledWithAnyOf(roles("ADMIN", "SYSTEM_ADMIN"), UserIdentifiers.producer())
                 .then(expectNotToFailIgnoringValue())

@@ -3,13 +3,15 @@ package fi.vincit.mutrproject.feature.todo;
 import fi.vincit.multiusertest.annotation.RunWithUsers;
 import fi.vincit.multiusertest.util.UserIdentifier;
 import fi.vincit.multiusertest.util.UserIdentifiers;
+import fi.vincit.mutrproject.feature.todo.command.ListVisibility;
 import fi.vincit.mutrproject.testconfig.AbstractConfiguredMultiRoleIT;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 
-import static fi.vincit.multiusertest.rule.expectation.TestExpectations.*;
+import static fi.vincit.multiusertest.rule.expectation.TestExpectations.expectExceptionInsteadOfValue;
+import static fi.vincit.multiusertest.rule.expectation.TestExpectations.expectNotToFailIgnoringValue;
 import static fi.vincit.multiusertest.util.UserIdentifiers.roles;
 
 /**
@@ -36,7 +38,7 @@ public class TodoServiceAssertProducerIT extends AbstractConfiguredMultiRoleIT {
         // Editing of system admin todos is only allowed by another system admin or the owner of the task
         todoService.setSecureSystemAdminTodos(true);
 
-        long listId = todoService.createTodoList("Test list", false);
+        long listId = todoService.createTodoList("Test list", ListVisibility.PRIVATE);
         authorization().given(() -> todoService.addItemToList(listId, "Write tests"))
                 .whenProducerIsAnyOf(roles("ROLE_SYSTEM_ADMIN"))
                 .whenCalledWithAnyOf(roles("ROLE_SYSTEM_ADMIN"), UserIdentifiers.producer())

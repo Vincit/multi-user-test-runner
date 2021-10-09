@@ -1,18 +1,14 @@
 package fi.vincit.mutrproject.api;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
 import fi.vincit.mutrproject.feature.todo.TodoService;
+import fi.vincit.mutrproject.feature.todo.command.ItemStatus;
 import fi.vincit.mutrproject.feature.todo.command.TodoItemCommand;
 import fi.vincit.mutrproject.feature.todo.command.TodoListCommand;
 import fi.vincit.mutrproject.feature.todo.dto.TodoListDto;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 public class TodoController {
@@ -37,12 +33,12 @@ public class TodoController {
 
     @RequestMapping(value = "/api/todo/list", method = RequestMethod.POST, consumes = "application/json")
     public long createPublicList(@RequestBody TodoListCommand todoListCommand) {
-        return todoService.createTodoList(todoListCommand.getName(), todoListCommand.isPublicList());
+        return todoService.createTodoList(todoListCommand.getName(), todoListCommand.getListVisibility());
     }
 
     @RequestMapping(value = "/api/todo/list/{listId}/{itemId}/done", method = RequestMethod.POST, consumes = "application/json")
-    public void saveItem(@PathVariable("listId") long listId, @PathVariable("itemId") long itemId) {
-        todoService.setItemStatus(listId, itemId, true);
+    public void markItemDone(@PathVariable("listId") long listId, @PathVariable("itemId") long itemId) {
+        todoService.setItemStatus(listId, itemId, ItemStatus.DONE);
     }
 
 }

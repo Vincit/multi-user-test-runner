@@ -2,21 +2,21 @@ package fi.vincit.mutrproject.feature.todo.command;
 
 public class TodoListCommand {
     private String name;
-    private boolean publicList;
+    private ListVisibility listVisibility;
 
     public TodoListCommand() {
     }
 
-    public TodoListCommand(String name, boolean publicList) {
+    public TodoListCommand(String name, ListVisibility listVisibility) {
         this.name = name;
-        this.publicList = publicList;
+        this.listVisibility = listVisibility;
     }
 
     public String getName() {
         return name;
     }
 
-    public boolean isPublicList() {
-        return publicList;
+    public ListVisibility getListVisibility() {
+        return listVisibility;
     }
 }

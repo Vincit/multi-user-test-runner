@@ -10,6 +10,7 @@ import fi.vincit.multiusertest.util.UserIdentifiers;
 import fi.vincit.mutrproject.Application;
 import fi.vincit.mutrproject.config.SecurityConfig;
 import fi.vincit.mutrproject.configuration.TestMultiUserRestConfig;
+import fi.vincit.mutrproject.feature.todo.command.ListVisibility;
 import fi.vincit.mutrproject.feature.todo.command.TodoItemCommand;
 import fi.vincit.mutrproject.feature.todo.command.TodoListCommand;
 import fi.vincit.mutrproject.feature.user.UserService;
@@ -86,10 +87,10 @@ public class RestAssuredIT {
     @TestTemplate
     public void getTodoLists(Authorization authorization) throws Throwable {
         config.whenAuthenticated()
-                .body(new TodoListCommand("Test List 1", false)).post("/api/todo/list")
+                .body(new TodoListCommand("Test List 1", ListVisibility.PRIVATE)).post("/api/todo/list")
                 .then().assertThat().statusCode(HttpStatus.SC_OK);
         config.whenAuthenticated()
-                .body(new TodoListCommand("Test List 2", true)).post("/api/todo/list")
+                .body(new TodoListCommand("Test List 2", ListVisibility.PUBLIC)).post("/api/todo/list")
                 .then().assertThat().statusCode(HttpStatus.SC_OK);
 
         Response response = config.whenAuthenticated().get("/api/todo/lists");
@@ -112,7 +113,7 @@ public class RestAssuredIT {
     @TestTemplate
     public void getPrivateTodoList(Authorization authorization) throws Throwable {
         long id = config.whenAuthenticated()
-                .body(new TodoListCommand("Test List", false)).post("/api/todo/list")
+                .body(new TodoListCommand("Test List", ListVisibility.PRIVATE)).post("/api/todo/list")
                 .body().as(Long.class);
 
         Response response = config.whenAuthenticated().get("/api/todo/list/" + id);
@@ -134,7 +135,7 @@ public class RestAssuredIT {
     @TestTemplate
     public void addItemToPrivateList(Authorization authorization) throws Throwable {
         long listId = config.whenAuthenticated()
-                .body(new TodoListCommand("Test List", false)).post("/api/todo/list")
+                .body(new TodoListCommand("Test List", ListVisibility.PRIVATE)).post("/api/todo/list")
                 .body().as(Long.class);
 
         Response response = config.whenAuthenticated()
@@ -153,7 +154,7 @@ public class RestAssuredIT {
     @TestTemplate
     public void addItemToPublicList(Authorization authorization) throws Throwable {
         long listId = config.whenAuthenticated()
-                .body(new TodoListCommand("Test List", false)).post("/api/todo/list")
+                .body(new TodoListCommand("Test List", ListVisibility.PRIVATE)).post("/api/todo/list")
                 .body().as(Long.class);
 
         Response response = config.whenAuthenticated()
@@ -172,7 +173,7 @@ public class RestAssuredIT {
     @TestTemplate
     public void setPrivateItemAsDone(Authorization authorization) throws Throwable {
         long listId = config.whenAuthenticated()
-                .body(new TodoListCommand("Test List", false)).post("/api/todo/list")
+                .body(new TodoListCommand("Test List", ListVisibility.PRIVATE)).post("/api/todo/list")
                 .body().as(Long.class);
 
         long itemId = config.whenAuthenticated()
@@ -194,7 +195,7 @@ public class RestAssuredIT {
     @TestTemplate
     public void setPublicItemAsDone(Authorization authorization) throws Throwable {
         long listId = config.whenAuthenticated()
-                .body(new TodoListCommand("Test List", true)).post("/api/todo/list")
+                .body(new TodoListCommand("Test List", ListVisibility.PUBLIC)).post("/api/todo/list")
                 .body().as(Long.class);
 
         long itemId = config.whenAuthenticated()

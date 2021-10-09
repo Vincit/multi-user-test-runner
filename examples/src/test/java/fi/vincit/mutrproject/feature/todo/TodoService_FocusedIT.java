@@ -3,6 +3,7 @@ package fi.vincit.mutrproject.feature.todo;
 import fi.vincit.multiusertest.annotation.IgnoreForUsers;
 import fi.vincit.multiusertest.annotation.RunWithUsers;
 import fi.vincit.multiusertest.util.UserIdentifiers;
+import fi.vincit.mutrproject.feature.todo.command.ListVisibility;
 import fi.vincit.mutrproject.testconfig.AbstractConfiguredMultiRoleIT;
 import org.junit.Before;
 import org.junit.Test;
@@ -42,7 +43,7 @@ public class TodoService_FocusedIT extends AbstractConfiguredMultiRoleIT {
     @Test
     public void getPrivateTodoList() throws Throwable {
         // At this point the producer has been logged in automatically
-        long id = todoService.createTodoList("Test list", false);
+        long id = todoService.createTodoList("Test list", ListVisibility.PRIVATE);
 
         authorization().given(() -> todoService.getTodoList(id))
                 .whenCalledWithAnyOf(roles("ROLE_USER"), UserIdentifiers.anonymous())
@@ -58,7 +59,7 @@ public class TodoService_FocusedIT extends AbstractConfiguredMultiRoleIT {
 
     @Test
     public void getPublicTodoList() throws Throwable {
-        long id = todoService.createTodoList("Test list", true);
+        long id = todoService.createTodoList("Test list", ListVisibility.PUBLIC);
         authorization().given(() -> todoService.getTodoList(id))
                 .otherwise(assertValue(todoList -> {
                     assertThat(todoList, notNullValue());
@@ -78,7 +79,7 @@ public class TodoService_FocusedIT extends AbstractConfiguredMultiRoleIT {
      */
     @Test
     public void getPublicTodoListNotFailsExplicit() throws Throwable {
-        long id = todoService.createTodoList("Test list", true);
+        long id = todoService.createTodoList("Test list", ListVisibility.PUBLIC);
         authorization().given(() -> todoService.getTodoList(id))
                 .byDefault(expectNotToFailIgnoringValue())
                 .test();
@@ -93,7 +94,7 @@ public class TodoService_FocusedIT extends AbstractConfiguredMultiRoleIT {
      */
     @Test
     public void getPublicTodoListNotFailsSimple() throws Throwable {
-        long id = todoService.createTodoList("Test list", true);
+        long id = todoService.createTodoList("Test list", ListVisibility.PUBLIC);
         authorization().given(() -> todoService.getTodoList(id))
                 .test();
     }
@@ -105,7 +106,7 @@ public class TodoService_FocusedIT extends AbstractConfiguredMultiRoleIT {
     @Test
     @IgnoreForUsers(consumers = RunWithUsers.ANONYMOUS)
     public void addTodoItem() throws Throwable {
-        long listId = todoService.createTodoList("Test list", false);
+        long listId = todoService.createTodoList("Test list", ListVisibility.PRIVATE);
         authorization().given(() -> todoService.addItemToList(listId, "Write tests"))
                 .whenCalledWithAnyOf(roles("ROLE_ADMIN", "ROLE_SYSTEM_ADMIN"), UserIdentifiers.producer())
                 .then(expectNotToFailIgnoringValue())
@@ -120,7 +121,7 @@ public class TodoService_FocusedIT extends AbstractConfiguredMultiRoleIT {
     @Test
     @RunWithUsers(consumers = RunWithUsers.ANONYMOUS)
     public void addTodoItemAnonymous() throws Throwable {
-        long listId = todoService.createTodoList("Test list", false);
+        long listId = todoService.createTodoList("Test list", ListVisibility.PRIVATE);
         authorization().given(() -> todoService.addItemToList(listId, "Write tests"))
                 .byDefault(expectExceptionInsteadOfValue(AuthenticationCredentialsNotFoundException.class))
                 .test();
