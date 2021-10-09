@@ -87,10 +87,12 @@ public class RestAssuredIT {
     @TestTemplate
     public void getTodoLists(Authorization authorization) throws Throwable {
         config.whenAuthenticated()
-                .body(new TodoListCommand("Test List 1", ListVisibility.PRIVATE)).post("/api/todo/list")
+                .body(new TodoListCommand("Test List 1", ListVisibility.PRIVATE))
+                .post("/api/todo/list")
                 .then().assertThat().statusCode(HttpStatus.SC_OK);
         config.whenAuthenticated()
-                .body(new TodoListCommand("Test List 2", ListVisibility.PUBLIC)).post("/api/todo/list")
+                .body(new TodoListCommand("Test List 2", ListVisibility.PUBLIC))
+                .post("/api/todo/list")
                 .then().assertThat().statusCode(HttpStatus.SC_OK);
 
         Response response = config.whenAuthenticated().get("/api/todo/lists");
@@ -113,7 +115,8 @@ public class RestAssuredIT {
     @TestTemplate
     public void getPrivateTodoList(Authorization authorization) throws Throwable {
         long id = config.whenAuthenticated()
-                .body(new TodoListCommand("Test List", ListVisibility.PRIVATE)).post("/api/todo/list")
+                .body(new TodoListCommand("Test List", ListVisibility.PRIVATE))
+                .post("/api/todo/list")
                 .body().as(Long.class);
 
         Response response = config.whenAuthenticated().get("/api/todo/list/" + id);
@@ -135,11 +138,13 @@ public class RestAssuredIT {
     @TestTemplate
     public void addItemToPrivateList(Authorization authorization) throws Throwable {
         long listId = config.whenAuthenticated()
-                .body(new TodoListCommand("Test List", ListVisibility.PRIVATE)).post("/api/todo/list")
+                .body(new TodoListCommand("Test List", ListVisibility.PRIVATE))
+                .post("/api/todo/list")
                 .body().as(Long.class);
 
         Response response = config.whenAuthenticated()
-                .body(new TodoItemCommand(listId, "Test List")).post("/api/todo/list/item");
+                .body(new TodoItemCommand(listId, "Test List"))
+                .post("/api/todo/list/item");
 
         authorization.given(response::then)
                 .whenCalledWithAnyOf(roles("ROLE_ADMIN"), UserIdentifiers.producer())
@@ -154,11 +159,13 @@ public class RestAssuredIT {
     @TestTemplate
     public void addItemToPublicList(Authorization authorization) throws Throwable {
         long listId = config.whenAuthenticated()
-                .body(new TodoListCommand("Test List", ListVisibility.PRIVATE)).post("/api/todo/list")
+                .body(new TodoListCommand("Test List", ListVisibility.PRIVATE))
+                .post("/api/todo/list")
                 .body().as(Long.class);
 
         Response response = config.whenAuthenticated()
-                .body(new TodoItemCommand(listId, "Test List")).post("/api/todo/list/item");
+                .body(new TodoItemCommand(listId, "Test List"))
+                .post("/api/todo/list/item");
 
         authorization.given(response::then)
                 .whenCalledWithAnyOf(roles("ROLE_ADMIN"), UserIdentifiers.producer())
@@ -173,14 +180,16 @@ public class RestAssuredIT {
     @TestTemplate
     public void setPrivateItemAsDone(Authorization authorization) throws Throwable {
         long listId = config.whenAuthenticated()
-                .body(new TodoListCommand("Test List", ListVisibility.PRIVATE)).post("/api/todo/list")
+                .body(new TodoListCommand("Test List", ListVisibility.PRIVATE))
+                .post("/api/todo/list")
                 .body().as(Long.class);
 
         long itemId = config.whenAuthenticated()
-                .body(new TodoItemCommand(listId, "Test List")).post("/api/todo/list/item")
+                .body(new TodoItemCommand(listId, "Test List"))
+                .post("/api/todo/list/item")
                 .body().as(Long.class);
 
-        Response response = config.whenAuthenticated().post(String.format("/api/todo/list/%s/%s/done", listId, itemId));
+        Response response = config.whenAuthenticated().post(String.format("/api/todo/list/%d/%d/done", listId, itemId));
 
         authorization.given(response::then)
                 .whenCalledWithAnyOf(roles("ROLE_ADMIN"), UserIdentifiers.producer())
@@ -195,14 +204,16 @@ public class RestAssuredIT {
     @TestTemplate
     public void setPublicItemAsDone(Authorization authorization) throws Throwable {
         long listId = config.whenAuthenticated()
-                .body(new TodoListCommand("Test List", ListVisibility.PUBLIC)).post("/api/todo/list")
+                .body(new TodoListCommand("Test List", ListVisibility.PUBLIC))
+                .post("/api/todo/list")
                 .body().as(Long.class);
 
         long itemId = config.whenAuthenticated()
-                .body(new TodoItemCommand(listId, "Test List")).post("/api/todo/list/item")
+                .body(new TodoItemCommand(listId, "Test List"))
+                .post("/api/todo/list/item")
                 .body().as(Long.class);
 
-        Response response = config.whenAuthenticated().post(String.format("/api/todo/list/%s/%s/done", listId, itemId));
+        Response response = config.whenAuthenticated().post(String.format("/api/todo/list/%d/%d/done", listId, itemId));
 
         authorization.given(response::then)
                 .whenCalledWithAnyOf(roles("ROLE_ADMIN"), UserIdentifiers.producer())
