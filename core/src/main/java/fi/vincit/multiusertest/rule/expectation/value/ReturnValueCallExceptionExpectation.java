@@ -5,11 +5,9 @@ import fi.vincit.multiusertest.rule.expectation.AssertionCall;
 import fi.vincit.multiusertest.rule.expectation.ConsumerProducerSet;
 import fi.vincit.multiusertest.rule.expectation.ReturnValueCall;
 
-import java.util.Optional;
-
 public class ReturnValueCallExceptionExpectation<VALUE_TYPE, EXCEPTION extends Throwable> implements TestValueExpectation<VALUE_TYPE> {
 
-    private final Optional<AssertionCall<EXCEPTION>> exceptionAssertionCall;
+    private final AssertionCall<EXCEPTION> exceptionAssertionCall;
     private final Class<? extends Throwable> expectedException;
 
     public ReturnValueCallExceptionExpectation(Class<EXCEPTION> expectedException) {
@@ -17,7 +15,7 @@ public class ReturnValueCallExceptionExpectation<VALUE_TYPE, EXCEPTION extends T
     }
 
     public ReturnValueCallExceptionExpectation(Class<EXCEPTION> expectedException, AssertionCall<EXCEPTION> assertionCall) {
-        this.exceptionAssertionCall = Optional.ofNullable(assertionCall);
+        this.exceptionAssertionCall = assertionCall;
         this.expectedException = expectedException;
     }
 
@@ -34,8 +32,8 @@ public class ReturnValueCallExceptionExpectation<VALUE_TYPE, EXCEPTION extends T
             );
         }
 
-        if (exceptionAssertionCall.isPresent()) {
-            exceptionAssertionCall.get().call((EXCEPTION) thrownException);
+        if (exceptionAssertionCall != null) {
+            exceptionAssertionCall.call((EXCEPTION) thrownException);
         }
     }
 

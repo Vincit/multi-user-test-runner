@@ -6,8 +6,8 @@ import fi.vincit.multiusertest.rule.expectation.ReturnValueCall;
 
 public class ReturnValueCallNoExceptionExpectation<VALUE_TYPE> implements TestValueExpectation<VALUE_TYPE> {
 
-
     public ReturnValueCallNoExceptionExpectation() {
+        // NOOP
     }
 
     @Override

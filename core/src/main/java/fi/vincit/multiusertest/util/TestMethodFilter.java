@@ -34,30 +34,31 @@ public class TestMethodFilter {
      * @return True if given method should be run, otherwise false.
      */
     public boolean shouldRun(FrameworkMethod frameworkMethod) {
-        Optional<RunWithUsers> runWithUsersAnnotation =
-                Optional.ofNullable(frameworkMethod.getAnnotation(RunWithUsers.class));
-        Optional<IgnoreForUsers> ignoreForUsersAnnotation =
-                Optional.ofNullable(frameworkMethod.getAnnotation(IgnoreForUsers.class));
         final Class<?> declaringClass = frameworkMethod.getDeclaringClass();
 
-        return shouldRun(runWithUsersAnnotation, ignoreForUsersAnnotation, declaringClass, BlockMultiUserTestClassRunner.class);
+        return shouldRun(
+                frameworkMethod.getAnnotation(RunWithUsers.class),
+                frameworkMethod.getAnnotation(IgnoreForUsers.class),
+                declaringClass,
+                BlockMultiUserTestClassRunner.class
+        );
     }
 
-    public boolean shouldRun(Optional<RunWithUsers> runWithUsersAnnotation, Optional<IgnoreForUsers> ignoreForUsersAnnotation, Class<?> declaringClass, Class<?> runner) {
-        if (runWithUsersAnnotation.isPresent() && ignoreForUsersAnnotation.isPresent()) {
+    public boolean shouldRun(RunWithUsers runWithUsersAnnotation, IgnoreForUsers ignoreForUsersAnnotation, Class<?> declaringClass, Class<?> runner) {
+        if (runWithUsersAnnotation != null && ignoreForUsersAnnotation != null) {
             throw new IllegalStateException("Method can only have RunWithUsers or IgnoreForUsers annotation but not both.");
         }
 
         TestConfiguration configuration;
-        if (runWithUsersAnnotation.isPresent()) {
+        if (runWithUsersAnnotation != null) {
             configuration = TestConfiguration.fromRunWithUsers(
-                    runWithUsersAnnotation.get(),
+                    runWithUsersAnnotation,
                     null,
                     runner
             );
-        } else if (ignoreForUsersAnnotation.isPresent()) {
+        } else if (ignoreForUsersAnnotation != null) {
             configuration = TestConfiguration.fromIgnoreForUsers(
-                    ignoreForUsersAnnotation.get(),
+                    ignoreForUsersAnnotation,
                     declaringClass.getAnnotation(RunWithUsers.class),
                     runner
             );

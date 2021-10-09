@@ -84,7 +84,7 @@ public class TodoService {
     @PreAuthorize("isAuthenticated()")
     public void setItemStatus(long listId, long itemId, boolean done) {
         TodoItem existingItem = getTodoItemInternal(listId, itemId);
-        authorizeEdit(getTodoListInternal(listId), userService.getLoggedInUser());
+        authorizeEdit(getTodoListInternal(listId), userService.getLoggedInUser().orElse(null));
         existingItem.setDone(done);
         todoItemRepository.save(existingItem);
     }
@@ -94,7 +94,7 @@ public class TodoService {
         TodoList list = getTodoListInternal(listId);
 
         Optional<User> user = userService.getLoggedInUser();
-        authorizeEdit(list, user);
+        authorizeEdit(list, user.orElse(null));
 
         TodoItem item = todoItemRepository.save(new TodoItem(listId, task, false));
         return item.getId();
@@ -103,7 +103,7 @@ public class TodoService {
     private TodoItem getTodoItemInternal(long listId, long id) {
         Optional<TodoList> list = todoListRepository.findById(listId);
         Optional<User> user = userService.getLoggedInUser();
-        authorizeRead(list.orElse(null), user);
+        authorizeRead(list.orElse(null), user.orElse(null));
 
         return todoItemRepository.findById(id).orElse(null);
     }
@@ -111,35 +111,33 @@ public class TodoService {
     private TodoList getTodoListInternal(long id) {
         Optional<TodoList> list = todoListRepository.findById(id);
         Optional<User> user = userService.getLoggedInUser();
-        return authorizeRead(list.orElse(null), user);
+        return authorizeRead(list.orElse(null), user.orElse(null));
     }
 
-    private TodoList authorizeRead(TodoList list, Optional<User> user) {
-        if (list.isPublicList()) {
+    private TodoList authorizeRead(TodoList list, User user) {
+        if (list == null || list.isPublicList()) {
             return list;
         }
         authorizeEdit(list, user);
         return list;
     }
 
-    private void authorizeEdit(TodoList list, Optional<User> user) {
-        if (user.isPresent()) {
-            User loggedInUser = user.get();
-            if (secureSystemAdminTodos) {
-                final boolean ownedByStemAdmin = isSystemAdmin(list.getOwner());
-                if (ownedByStemAdmin && isSystemAdmin(loggedInUser)) {
-                    return;
-                } else if (!ownedByStemAdmin && (isAnyAdmin(loggedInUser) || isOwner(list, loggedInUser))) {
-                    return;
-                }
-            } else if (isAnyAdmin(loggedInUser)) {
+    private void authorizeEdit(TodoList list, User user) {
+        if (user == null) {
+            throw new AccessDeniedException("No user");
+        } else if (secureSystemAdminTodos) {
+            final boolean ownedByStemAdmin = isSystemAdmin(list.getOwner());
+            if (ownedByStemAdmin && isSystemAdmin(user)) {
                 return;
-            } else if (isOwner(list, loggedInUser)) {
+            } else if (!ownedByStemAdmin && (isAnyAdmin(user) || isOwner(list, user))) {
                 return;
             }
-            throw new AccessDeniedException("User role <" + loggedInUser.getAuthorities() + "> doesn't have privileges to edit.");
+        } else if (isAnyAdmin(user)) {
+            return;
+        } else if (isOwner(list, user)) {
+            return;
         }
-        throw new AccessDeniedException("No user");
+        throw new AccessDeniedException("User role <" + user.getAuthorities() + "> doesn't have privileges to edit.");
     }
 
     private boolean isAnyAdmin(User loggedInUser) {

@@ -47,14 +47,16 @@ public class JUnit5MultiUserTestRunner implements
         final Method testMethod = context.getRequiredTestMethod();
         final Class<?> declaringClass = context.getRequiredTestClass();
 
-        final Optional<RunWithUsers> runWithUsersAnnotation =
-        Optional.ofNullable(testMethod.getAnnotation(RunWithUsers.class));
-        final Optional<IgnoreForUsers> ignoreForUsersAnnotation =
-                Optional.ofNullable(testMethod.getAnnotation(IgnoreForUsers.class));
-
         final TestMethodFilter testMethodFilter = new TestMethodFilter(producerIdentifier, consumerIdentifier);
 
-        if (testMethodFilter.shouldRun(runWithUsersAnnotation, ignoreForUsersAnnotation, declaringClass, Object.class)) {
+        final boolean shouldRun = testMethodFilter.shouldRun(
+                testMethod.getAnnotation(RunWithUsers.class),
+                testMethod.getAnnotation(IgnoreForUsers.class),
+                declaringClass,
+                Object.class
+        );
+
+        if (shouldRun) {
              return Optional.of(new TemplateInvocationContext(producerIdentifier, consumerIdentifier));
         } else {
             return Optional.empty();

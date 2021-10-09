@@ -5,24 +5,24 @@ import fi.vincit.multiusertest.rule.expectation.AssertionCall;
 import fi.vincit.multiusertest.rule.expectation.ConsumerProducerSet;
 import fi.vincit.multiusertest.rule.expectation.ReturnValueCall;
 
-import java.util.Optional;
+import java.util.Objects;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 public class ReturnValueCallExpectation<VALUE_TYPE> implements TestValueExpectation<VALUE_TYPE> {
 
-    private Optional<VALUE_TYPE> value;
-    private Optional<AssertionCall<VALUE_TYPE>> assertionCall;
+    private final VALUE_TYPE value;
+    private final AssertionCall<VALUE_TYPE> assertionCall;
 
     public ReturnValueCallExpectation(VALUE_TYPE value) {
-        this.value = Optional.of(value);
-        this.assertionCall = Optional.empty();
+        this.value = Objects.requireNonNull(value);
+        this.assertionCall = null;
     }
 
     public ReturnValueCallExpectation(AssertionCall<VALUE_TYPE> assertionCall) {
-        this.value = Optional.empty();
-        this.assertionCall = Optional.of(assertionCall);
+        this.value = null;
+        this.assertionCall = Objects.requireNonNull(assertionCall);
     }
 
     @Override
@@ -39,19 +39,21 @@ public class ReturnValueCallExpectation<VALUE_TYPE> implements TestValueExpectat
     public void callAndAssertValue(ReturnValueCall<VALUE_TYPE> valueCall) throws Throwable {
         VALUE_TYPE returnValue = valueCall.call();
 
-        if (assertionCall.isPresent()) {
-            try {
-                assertionCall.get().call(returnValue);
-            } catch (Throwable throwable) {
-                throw throwable;
-            }
+        if (assertionCall != null) {
+            assertionCall.call(returnValue);
         } else {
-            assertThat(returnValue, is(value.orElse(null)));
+            assertThat(returnValue, is(value));
         }
     }
 
     @Override
     public String toString() {
-        return "Expect value: " + value.orElse(null);
+        final String stringValue;
+        if (value != null) {
+            stringValue = value.toString();
+        } else {
+            stringValue = "null";
+        }
+        return "Expect value: " + stringValue;
     }
 }
