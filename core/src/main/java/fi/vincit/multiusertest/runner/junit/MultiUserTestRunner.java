@@ -86,11 +86,13 @@ public class MultiUserTestRunner extends Suite {
     private TestConfiguration getConfigurationOrThrow() {
         Optional<RunWithUsers> runWithUsersAnnotation =
                 Optional.ofNullable(getTestClass().getJavaClass().getAnnotation(RunWithUsers.class));
-        Optional<MultiUserTestConfig> config =
-                Optional.ofNullable(getTestClass().getJavaClass().getAnnotation(MultiUserTestConfig.class));
 
         if (runWithUsersAnnotation.isPresent()) {
-            return TestConfiguration.fromRunWithUsers(runWithUsersAnnotation, config, BlockMultiUserTestClassRunner.class);
+            return TestConfiguration.fromRunWithUsers(
+                    runWithUsersAnnotation.get(),
+                    getTestClass().getJavaClass().getAnnotation(MultiUserTestConfig.class),
+                    BlockMultiUserTestClassRunner.class
+            );
         } else {
             throw new IllegalStateException(
                     "No users defined for test class "

@@ -51,15 +51,14 @@ public class TestMethodFilter {
         TestConfiguration configuration;
         if (runWithUsersAnnotation.isPresent()) {
             configuration = TestConfiguration.fromRunWithUsers(
-                    runWithUsersAnnotation,
-                    Optional.empty(),
+                    runWithUsersAnnotation.get(),
+                    null,
                     runner
             );
         } else if (ignoreForUsersAnnotation.isPresent()) {
-
             configuration = TestConfiguration.fromIgnoreForUsers(
-                    ignoreForUsersAnnotation,
-                    Optional.ofNullable(declaringClass.getAnnotation(RunWithUsers.class)),
+                    ignoreForUsersAnnotation.get(),
+                    declaringClass.getAnnotation(RunWithUsers.class),
                     runner
             );
         } else {

@@ -19,47 +19,43 @@ public class TestConfiguration {
 
     private final Collection<UserIdentifier> producerIdentifiers;
     private final Collection<UserIdentifier> consumerIdentifiers;
-    private final Optional<Class<?>> runner;
-    private final Optional<Class<? extends Throwable>> defaultException;
+    private final Class<?> runner;
+    private final Class<? extends Throwable> defaultException;
     private final FocusType focusType;
 
     private static final AlphabeticalMergeStrategy DEFAULT_MERGE_STRATEGY = new AlphabeticalMergeStrategy();
 
-    public static TestConfiguration fromIgnoreForUsers(Optional<IgnoreForUsers> ignoredUsers, Optional<RunWithUsers> classUsers, Class<?> runner) {
-        Class<? extends Throwable> defaultException = Defaults.getDefaultException();
+    public static TestConfiguration fromIgnoreForUsers(IgnoreForUsers ignoredUsers, RunWithUsers classUsers, Class<?> runner) {
+        final Class<? extends Throwable> defaultException = Defaults.getDefaultException();
 
-        FocusType focusMode = FocusType.NONE;
-        if (classUsers.isPresent() && ignoredUsers.isPresent()) {
-            final RunWithUsers runWithUsers = classUsers.get();
-            final IgnoreForUsers resolvedIgnoredUsers = ignoredUsers.get();
-            focusMode = resolveFocusType(runWithUsers);
-
+        if (classUsers != null && ignoredUsers != null) {
             final UserDefinitionClass producerDefinitionClass =
-                    resolveUserDefinitionClass(runWithUsers.producerClass());
+                    resolveUserDefinitionClass(classUsers.producerClass());
+            final FocusType focusType = resolveFocusType(classUsers);
             final Collection<UserIdentifier> producerIdentifiers =
                     resolveDefinitions(
-                            runWithUsers.producers(),
+                            classUsers.producers(),
                             producerDefinitionClass,
-                            resolvedIgnoredUsers.producers(),
-                            resolveUserDefinitionClass(resolvedIgnoredUsers.producerClass()),
-                            resolveFocusType(runWithUsers)
+                            ignoredUsers.producers(),
+                            resolveUserDefinitionClass(ignoredUsers.producerClass()),
+                            focusType
                     );
 
             final UserDefinitionClass consumerDefinitionClass =
-                    resolveUserDefinitionClass(runWithUsers.consumerClass());
+                    resolveUserDefinitionClass(classUsers.consumerClass());
             final Collection<UserIdentifier> consumerIdentifier =
                     resolveDefinitions(
-                            runWithUsers.consumers(),
+                            classUsers.consumers(),
                             consumerDefinitionClass,
-                            resolvedIgnoredUsers.consumers(),
-                            resolveUserDefinitionClass(resolvedIgnoredUsers.consumerClass()),
-                            resolveFocusType(runWithUsers)
+                            ignoredUsers.consumers(),
+                            resolveUserDefinitionClass(ignoredUsers.consumerClass()),
+                            focusType
                     );
 
             return new TestConfiguration(
                     producerIdentifiers,
                     consumerIdentifier,
-                    focusMode,
+                    focusType,
                     runner,
                     defaultException
             );
@@ -67,7 +63,7 @@ public class TestConfiguration {
             return new TestConfiguration(
                     Collections.emptyList(),
                     Collections.emptyList(),
-                    focusMode,
+                    FocusType.NONE,
                     runner,
                     defaultException
             );
@@ -98,39 +94,34 @@ public class TestConfiguration {
     /**
      * Creates a new instance using {@link RunWithUsers} and {@link MultiUserTestConfig}
      * annotations. Uses MultiUserTestConfig for defaults.
-     * @param testUsers annotation
+     * @param testUsers RunWithUsers annotation
      * @param multiUserTestConfig Optional configurations class level configuration
-     * @param runner Runner class to use
+     * @param defaultRunner Runner class to use by default
      * @return Test configuration
      */
-    public static TestConfiguration fromRunWithUsers(Optional<RunWithUsers> testUsers, Optional<MultiUserTestConfig> multiUserTestConfig, Class<?> runner) {
+    public static TestConfiguration fromRunWithUsers(RunWithUsers testUsers, MultiUserTestConfig multiUserTestConfig, Class<?> defaultRunner) {
+        final Class<? extends Throwable> defaultException = Defaults.getDefaultException();
 
-        Collection<UserIdentifier> producerIdentifiers = Collections.emptySet();
-        Collection<UserIdentifier> consumerIdentifier = Collections.emptySet();
-        Class<? extends Throwable> defaultException = Defaults.getDefaultException();
-
-        FocusType focusMode = FocusType.NONE;
-        if (testUsers.isPresent()) {
-            final RunWithUsers runWithUsers = testUsers.get();
-            producerIdentifiers = getDefinitions(
-                    runWithUsers.producers(),
-                    resolveUserDefinitionClass(runWithUsers.producerClass())
-                            .getUsers(),
-                    DEFAULT_MERGE_STRATEGY,
-                    resolveFocusType(runWithUsers)
-            );
-            consumerIdentifier = getDefinitions(
-                    runWithUsers.consumers(),
-                    resolveUserDefinitionClass(runWithUsers.consumerClass())
-                            .getUsers(),
-                    DEFAULT_MERGE_STRATEGY,
-                    resolveFocusType(runWithUsers)
-            );
-            focusMode = resolveFocusType(runWithUsers);
-        }
-        if (multiUserTestConfig.isPresent()) {
-            runner = multiUserTestConfig.get().runner();
-        }
+        final Collection<UserIdentifier> producerIdentifiers = Optional.ofNullable(testUsers).map(r -> getDefinitions(
+                r.producers(),
+                resolveUserDefinitionClass(r.producerClass())
+                        .getUsers(),
+                DEFAULT_MERGE_STRATEGY,
+                resolveFocusType(r)
+        )).orElseGet(Collections::emptySet);
+        final Collection<UserIdentifier> consumerIdentifier = Optional.ofNullable(testUsers).map(r -> getDefinitions(
+                r.consumers(),
+                resolveUserDefinitionClass(r.consumerClass())
+                        .getUsers(),
+                DEFAULT_MERGE_STRATEGY,
+                resolveFocusType(r)
+        )).orElseGet(Collections::emptySet);
+        final FocusType focusMode = Optional.ofNullable(testUsers)
+                .map(TestConfiguration::resolveFocusType)
+                .orElse(FocusType.NONE);
+        final Class<?> runner = Optional.ofNullable(multiUserTestConfig)
+                .map(MultiUserTestConfig::runner)
+                .orElse(defaultRunner);
 
         return new TestConfiguration(
                 producerIdentifiers,
@@ -142,7 +133,9 @@ public class TestConfiguration {
     }
 
     private static FocusType resolveFocusType(RunWithUsers runWithUsers) {
-        return runWithUsers.focusEnabled() ? FocusType.FOCUS : FocusType.NONE;
+        return Optional.ofNullable(runWithUsers)
+                .map(r -> runWithUsers.focusEnabled() ? FocusType.FOCUS : FocusType.NONE)
+                .orElse(FocusType.NONE);
     }
 
     static Collection<UserIdentifier> getDefinitions(String[] definitionsPrimary,
@@ -180,8 +173,8 @@ public class TestConfiguration {
     TestConfiguration(Collection<UserIdentifier> producerIdentifiers, Collection<UserIdentifier> consumerIdentifiers, FocusType focusType, Class<?> runner, Class<? extends Throwable> defaultException) {
         this.producerIdentifiers = producerIdentifiers;
         this.consumerIdentifiers = consumerIdentifiers;
-        this.runner = Optional.ofNullable(runner);
-        this.defaultException = Optional.ofNullable(defaultException);
+        this.runner = runner;
+        this.defaultException = defaultException;
         this.focusType = focusType;
     }
 
@@ -194,11 +187,11 @@ public class TestConfiguration {
     }
 
     public Optional<Class<?>> getRunner() {
-        return runner;
+        return Optional.ofNullable(runner);
     }
 
     public Optional<Class<? extends Throwable>> getDefaultException() {
-        return defaultException;
+        return Optional.ofNullable(defaultException);
     }
 
     public FocusType getFocusType() {

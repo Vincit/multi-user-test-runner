@@ -494,4 +494,5 @@ the runner implementation can just call the `RunnerDelegate` class' methods with
 But for example implementing the `withBefores` method may require some additional logic in order to make the
 test class' `@Before` methods to work correctly (See implementation of `BlockMultiUserTestClassRunner#withBefore` method).
 
-To use the custom test class runner, you can use `MultiUserTestConfig` on the test class.
+To use the custom test class runner, you can use `MultiUserTestConfig` annotation on the test class. The custom
+runner is defined with `runner` property.

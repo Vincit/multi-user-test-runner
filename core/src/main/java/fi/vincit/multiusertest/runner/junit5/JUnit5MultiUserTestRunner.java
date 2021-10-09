@@ -64,11 +64,13 @@ public class JUnit5MultiUserTestRunner implements
     private TestConfiguration getConfigurationOrThrow(Class<?> testClass) {
         final Optional<RunWithUsers> runWithUsersAnnotation =
                 Optional.ofNullable(testClass.getAnnotation(RunWithUsers.class));
-        final Optional<MultiUserTestConfig> config =
-                Optional.ofNullable(testClass.getAnnotation(MultiUserTestConfig.class));
 
         if (runWithUsersAnnotation.isPresent()) {
-            return TestConfiguration.fromRunWithUsers(runWithUsersAnnotation, config, Object.class);
+            return TestConfiguration.fromRunWithUsers(
+                    runWithUsersAnnotation.get(),
+                    testClass.getAnnotation(MultiUserTestConfig.class),
+                    Object.class
+            );
         } else {
             throw new IllegalStateException(
                     "No users defined for test class "
