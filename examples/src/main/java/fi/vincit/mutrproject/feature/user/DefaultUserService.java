@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Optional;
 
 @Service
 public class DefaultUserService implements UserService, UserDetailsService {
@@ -23,14 +22,14 @@ public class DefaultUserService implements UserService, UserDetailsService {
 
     @Transactional(readOnly = true)
     @Override
-    public Optional<User> getLoggedInUser() {
+    public User getLoggedInUser() {
         if (SecurityContextHolder.getContext().getAuthentication() != null) {
             Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             if (principal instanceof User){
-                return Optional.of((User) principal);
+                return (User) principal;
             }
         }
-        return Optional.empty();
+        return User.anonymous();
     }
 
     @Transactional(readOnly = true)

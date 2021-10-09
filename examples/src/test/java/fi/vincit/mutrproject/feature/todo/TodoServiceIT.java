@@ -68,6 +68,18 @@ public class TodoServiceIT extends AbstractConfiguredMultiRoleIT {
                 .test();
     }
 
+    @Test
+    public void getTodoList_NotFound() throws Throwable {
+        // No list exists
+
+        authorization().given(() -> todoService.getTodoList(Long.MAX_VALUE))
+                // Not found is handled as "access denied" for security reasons
+                // Otherwise other users could try to find which lists exist and which
+                // not even without proper privileges
+                .byDefault(expectExceptionInsteadOfValue(AccessDeniedException.class))
+                .test();
+    }
+
     /**
      * Example on how to only check that the method do test
      * that a method call doesn't fail. This version explicitly

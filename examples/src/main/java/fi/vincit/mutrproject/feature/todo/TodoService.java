@@ -33,7 +33,6 @@ public class TodoService {
         this.userService = userService;
         this.todoItemRepository = todoItemRepository;
         this.todoListRepository = todoListRepository;
-        this.secureSystemAdminTodos = secureSystemAdminTodos;
     }
 
     public void setSecureSystemAdminTodos(boolean secureSystemAdminTodos) {
@@ -47,24 +46,26 @@ public class TodoService {
 
     @PreAuthorize("isAuthenticated()")
     public long createTodoList(String listName, boolean publicList) {
-        User user = userService.getLoggedInUser().orElseThrow(() -> new AccessDeniedException("Not logged in"));
+        final User user = userService.getLoggedInUser();
+        if (!user.isLoggedIn()) {
+            throw new AccessDeniedException("Not logged in");
+        }
 
-        TodoList list = todoListRepository.save(new TodoList(
+        return todoListRepository.save(new TodoList(
                 listName,
                 publicList,
                 user
-        ));
-        return list.getId();
+        )).getId();
     }
 
     public List<TodoListDto> getTodoLists() {
-        final Optional<User> currentUser = userService.getLoggedInUser();
+        final User currentUser = userService.getLoggedInUser();
         List<TodoList> todoLists;
-        if (currentUser.isPresent()) {
-            if (isAnyAdmin(currentUser.get())) {
+        if (currentUser.isLoggedIn()) {
+            if (isAnyAdmin(currentUser)) {
                 todoLists = todoListRepository.findAll();
             } else {
-                todoLists = todoListRepository.findPublicAndOwnedBy(currentUser.get().getUsername());
+                todoLists = todoListRepository.findPublicAndOwnedBy(currentUser.getUsername());
             }
         } else {
             todoLists = todoListRepository.findPublicLists();
@@ -78,53 +79,61 @@ public class TodoService {
 
     @PreAuthorize("isAuthenticated()")
     public TodoItemDto getTodoItem(long listId, long id) {
-        return new TodoItemDto(getTodoItemInternal(listId, id));
+        return getTodoItemInternal(listId, id)
+                .map(TodoItemDto::new)
+                .orElse(null);
     }
 
     @PreAuthorize("isAuthenticated()")
     public void setItemStatus(long listId, long itemId, boolean done) {
-        TodoItem existingItem = getTodoItemInternal(listId, itemId);
-        authorizeEdit(getTodoListInternal(listId), userService.getLoggedInUser().orElse(null));
-        existingItem.setDone(done);
-        todoItemRepository.save(existingItem);
+        getTodoItemInternal(listId, itemId).ifPresent(existingItem -> {
+            authorizeEdit(getTodoListInternal(listId), userService.getLoggedInUser());
+            existingItem.setDone(done);
+            todoItemRepository.save(existingItem);
+        });
     }
 
     @PreAuthorize("isAuthenticated()")
     public long addItemToList(long listId, String task) {
-        TodoList list = getTodoListInternal(listId);
-
-        Optional<User> user = userService.getLoggedInUser();
-        authorizeEdit(list, user.orElse(null));
+        final User user = userService.getLoggedInUser();
+        final TodoList list = getTodoListInternal(listId);
+        authorizeEdit(list, user);
 
         TodoItem item = todoItemRepository.save(new TodoItem(listId, task, false));
         return item.getId();
     }
 
-    private TodoItem getTodoItemInternal(long listId, long id) {
-        Optional<TodoList> list = todoListRepository.findById(listId);
-        Optional<User> user = userService.getLoggedInUser();
-        authorizeRead(list.orElse(null), user.orElse(null));
+    private Optional<TodoItem> getTodoItemInternal(long listId, long id) {
+        TodoList list = todoListRepository.findById(listId)
+                .orElseThrow(() -> new AccessDeniedException("Access denied"));
+        User user = userService.getLoggedInUser();
 
-        return todoItemRepository.findById(id).orElse(null);
+        authorizeRead(list, user);
+
+        return todoItemRepository.findById(id);
     }
 
     private TodoList getTodoListInternal(long id) {
-        Optional<TodoList> list = todoListRepository.findById(id);
-        Optional<User> user = userService.getLoggedInUser();
-        return authorizeRead(list.orElse(null), user.orElse(null));
-    }
+        TodoList list = todoListRepository.findById(id)
+                .orElseThrow(() -> new AccessDeniedException("Access denied"));
+        User user = userService.getLoggedInUser();
 
-    private TodoList authorizeRead(TodoList list, User user) {
-        if (list == null || list.isPublicList()) {
-            return list;
-        }
-        authorizeEdit(list, user);
+        authorizeRead(list, user);
+
         return list;
     }
 
+    private void authorizeRead(TodoList list, User user) {
+        if (!list.isPublicList()) {
+            // In this test application private list are visible
+            // only for those, how can also edit the list.
+            authorizeEdit(list, user);
+        }
+    }
+
     private void authorizeEdit(TodoList list, User user) {
-        if (user == null) {
-            throw new AccessDeniedException("No user");
+        if (!user.isLoggedIn()) {
+            throw new AccessDeniedException("Not allowed");
         } else if (secureSystemAdminTodos) {
             final boolean ownedByStemAdmin = isSystemAdmin(list.getOwner());
             if (ownedByStemAdmin && isSystemAdmin(user)) {
@@ -144,12 +153,15 @@ public class TodoService {
         return loggedInUser.getAuthorities().contains(Role.ROLE_ADMIN)
                 || loggedInUser.getAuthorities().contains(Role.ROLE_SYSTEM_ADMIN);
     }
+
     private boolean isNormalAdmin(User loggedInUser) {
         return loggedInUser.getAuthorities().contains(Role.ROLE_ADMIN);
     }
+
     private boolean isSystemAdmin(User loggedInUser) {
         return loggedInUser.getAuthorities().contains(Role.ROLE_SYSTEM_ADMIN);
     }
+
     private boolean isOwner(TodoList list, User currentUser) {
         return list.getOwner().getUsername().equals(currentUser.getUsername());
     }

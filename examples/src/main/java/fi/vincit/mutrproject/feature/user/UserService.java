@@ -4,10 +4,9 @@ import fi.vincit.mutrproject.feature.user.model.Role;
 import fi.vincit.mutrproject.feature.user.model.User;
 
 import java.util.Collection;
-import java.util.Optional;
 
 public interface UserService {
-    Optional<User> getLoggedInUser();
+    User getLoggedInUser();
 
     User createUser(String username, String password, Role role);
 

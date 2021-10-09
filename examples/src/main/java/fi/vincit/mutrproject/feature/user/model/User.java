@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.Collections;
 
 @Entity(name = "user")
 public class User implements UserDetails, CredentialsContainer {
@@ -23,6 +24,10 @@ public class User implements UserDetails, CredentialsContainer {
     @Enumerated(EnumType.STRING)
     @CollectionTable(name = "username", joinColumns = @JoinColumn(table = "user_role"))
     public Collection<Role> authorities;
+
+    public static User anonymous() {
+        return new User(null, null, null, Collections.emptySet());
+    }
 
     public User() {
     }
@@ -67,6 +72,10 @@ public class User implements UserDetails, CredentialsContainer {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return authorities;
+    }
+
+    public boolean isLoggedIn() {
+        return !authorities.isEmpty();
     }
 
     @Override
