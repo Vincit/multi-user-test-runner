@@ -1,3 +1,3 @@
 #!/bin/bash
 
-./gradlew build -x findbugsMain -x findbugsIntegrationTest -x findbugsTest -x integrationTest -x signArchives
+./gradlew build check -x findbugsMain -x findbugsIntegrationTest -x findbugsTest -x integrationTest -x signArchives

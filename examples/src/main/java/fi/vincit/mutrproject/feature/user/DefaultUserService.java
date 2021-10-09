@@ -8,6 +8,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +20,9 @@ public class DefaultUserService implements UserService, UserDetailsService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Transactional(readOnly = true)
     @Override
@@ -48,7 +52,7 @@ public class DefaultUserService implements UserService, UserDetailsService {
     @Transactional
     @Override
     public User createUser(String username, String password, Collection<Role> roles) {
-        User user = new User(username, username, password, roles);
+        User user = new User(username, username, passwordEncoder.encode(password), roles);
         return userRepository.save(user);
     }
 

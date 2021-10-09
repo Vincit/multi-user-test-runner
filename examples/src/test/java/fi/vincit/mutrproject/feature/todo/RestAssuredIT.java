@@ -4,8 +4,6 @@ import com.jayway.restassured.response.Response;
 import fi.vincit.multiusertest.annotation.MultiUserConfigClass;
 import fi.vincit.multiusertest.annotation.MultiUserTestConfig;
 import fi.vincit.multiusertest.annotation.RunWithUsers;
-import fi.vincit.multiusertest.rule.Authorization;
-import fi.vincit.multiusertest.runner.junit5.JUnit5MultiUserTestRunner;
 import fi.vincit.multiusertest.util.UserIdentifiers;
 import fi.vincit.mutrproject.Application;
 import fi.vincit.mutrproject.config.SecurityConfig;
@@ -15,17 +13,16 @@ import fi.vincit.mutrproject.feature.todo.command.TodoItemCommand;
 import fi.vincit.mutrproject.feature.todo.command.TodoListCommand;
 import fi.vincit.mutrproject.feature.user.UserService;
 import fi.vincit.mutrproject.feature.user.model.Role;
+import fi.vincit.mutrproject.testconfig.AbstractConfiguredMultiRoleIT;
 import fi.vincit.mutrproject.util.DatabaseUtil;
 import org.apache.http.HttpStatus;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.jupiter.api.TestTemplate;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
@@ -51,9 +48,7 @@ import static org.hamcrest.Matchers.hasSize;
         consumers = {"role:ROLE_ADMIN", "role:ROLE_USER", "user:user1",
                 RunWithUsers.PRODUCER, RunWithUsers.ANONYMOUS}
 )
-@ExtendWith(SpringExtension.class)
-@ExtendWith(JUnit5MultiUserTestRunner.class)
-public class RestAssuredIT {
+public class RestAssuredIT extends AbstractConfiguredMultiRoleIT {
 
     @Autowired
     private TodoService todoService;
@@ -84,8 +79,8 @@ public class RestAssuredIT {
     }
 
 
-    @TestTemplate
-    public void getTodoLists(Authorization authorization) throws Throwable {
+    @Test
+    public void getTodoLists() throws Throwable {
         config.whenAuthenticated()
                 .body(new TodoListCommand("Test List 1", ListVisibility.PRIVATE))
                 .post("/api/todo/list")
@@ -95,9 +90,7 @@ public class RestAssuredIT {
                 .post("/api/todo/list")
                 .then().assertThat().statusCode(HttpStatus.SC_OK);
 
-        Response response = config.whenAuthenticated().get("/api/todo/lists");
-
-        authorization.given(response::then)
+        authorization().given(() -> config.whenAuthenticated().get("/api/todo/lists").then())
                 .whenCalledWithAnyOf(roles("ROLE_ADMIN"), UserIdentifiers.producer())
                 .then(assertResponse(t -> t
                         .statusCode(HttpStatus.SC_OK)
@@ -112,16 +105,14 @@ public class RestAssuredIT {
                 .test();
     }
 
-    @TestTemplate
-    public void getPrivateTodoList(Authorization authorization) throws Throwable {
+    @Test
+    public void getPrivateTodoList() throws Throwable {
         long id = config.whenAuthenticated()
                 .body(new TodoListCommand("Test List", ListVisibility.PRIVATE))
                 .post("/api/todo/list")
                 .body().as(Long.class);
 
-        Response response = config.whenAuthenticated().get("/api/todo/list/" + id);
-
-        authorization.given(response::then)
+        authorization().given(() -> config.whenAuthenticated().get("/api/todo/list/" + id).then())
                 .whenCalledWithAnyOf(roles("ROLE_ADMIN"), UserIdentifiers.producer())
                 .then(assertResponse(t -> t
                         .statusCode(HttpStatus.SC_OK)
@@ -135,18 +126,19 @@ public class RestAssuredIT {
                 ).test();
     }
 
-    @TestTemplate
-    public void addItemToPrivateList(Authorization authorization) throws Throwable {
+    @Test
+    public void addItemToPrivateList() throws Throwable {
         long listId = config.whenAuthenticated()
                 .body(new TodoListCommand("Test List", ListVisibility.PRIVATE))
                 .post("/api/todo/list")
                 .body().as(Long.class);
 
-        Response response = config.whenAuthenticated()
-                .body(new TodoItemCommand(listId, "Test List"))
-                .post("/api/todo/list/item");
-
-        authorization.given(response::then)
+        authorization().given(() ->
+                        config.whenAuthenticated()
+                                .body(new TodoItemCommand(listId, "Test List"))
+                                .post("/api/todo/list/item")
+                                .then()
+                )
                 .whenCalledWithAnyOf(roles("ROLE_ADMIN"), UserIdentifiers.producer())
                 .then(assertResponse(t -> t.statusCode(HttpStatus.SC_OK)))
                 .whenCalledWithAnyOf(roles("ROLE_USER"), users("user1"))
@@ -156,8 +148,8 @@ public class RestAssuredIT {
                 .test();
     }
 
-    @TestTemplate
-    public void addItemToPublicList(Authorization authorization) throws Throwable {
+    @Test
+    public void addItemToPublicList() throws Throwable {
         long listId = config.whenAuthenticated()
                 .body(new TodoListCommand("Test List", ListVisibility.PRIVATE))
                 .post("/api/todo/list")
@@ -167,7 +159,12 @@ public class RestAssuredIT {
                 .body(new TodoItemCommand(listId, "Test List"))
                 .post("/api/todo/list/item");
 
-        authorization.given(response::then)
+        authorization().given(() ->
+                        config.whenAuthenticated()
+                                .body(new TodoItemCommand(listId, "Test List"))
+                                .post("/api/todo/list/item")
+                                .then()
+                )
                 .whenCalledWithAnyOf(roles("ROLE_ADMIN"), UserIdentifiers.producer())
                 .then(assertResponse(t -> t.statusCode(HttpStatus.SC_OK)))
                 .whenCalledWithAnyOf(roles("ROLE_USER"), users("user1"))
@@ -177,8 +174,8 @@ public class RestAssuredIT {
                 .test();
     }
 
-    @TestTemplate
-    public void setPrivateItemAsDone(Authorization authorization) throws Throwable {
+    @Test
+    public void setPrivateItemAsDone() throws Throwable {
         long listId = config.whenAuthenticated()
                 .body(new TodoListCommand("Test List", ListVisibility.PRIVATE))
                 .post("/api/todo/list")
@@ -189,9 +186,7 @@ public class RestAssuredIT {
                 .post("/api/todo/list/item")
                 .body().as(Long.class);
 
-        Response response = config.whenAuthenticated().post(String.format("/api/todo/list/%d/%d/done", listId, itemId));
-
-        authorization.given(response::then)
+        authorization().given(() -> config.whenAuthenticated().post(String.format("/api/todo/list/%d/%d/done", listId, itemId)).then())
                 .whenCalledWithAnyOf(roles("ROLE_ADMIN"), UserIdentifiers.producer())
                 .then(assertResponse(t -> t.statusCode(HttpStatus.SC_OK)))
                 .whenCalledWithAnyOf(roles("ROLE_USER"), users("user1"))
@@ -201,8 +196,8 @@ public class RestAssuredIT {
                 .test();
     }
 
-    @TestTemplate
-    public void setPublicItemAsDone(Authorization authorization) throws Throwable {
+    @Test
+    public void setPublicItemAsDone() throws Throwable {
         long listId = config.whenAuthenticated()
                 .body(new TodoListCommand("Test List", ListVisibility.PUBLIC))
                 .post("/api/todo/list")
@@ -213,9 +208,7 @@ public class RestAssuredIT {
                 .post("/api/todo/list/item")
                 .body().as(Long.class);
 
-        Response response = config.whenAuthenticated().post(String.format("/api/todo/list/%d/%d/done", listId, itemId));
-
-        authorization.given(response::then)
+        authorization().given(() -> config.whenAuthenticated().post(String.format("/api/todo/list/%d/%d/done", listId, itemId)).then())
                 .whenCalledWithAnyOf(roles("ROLE_ADMIN"), UserIdentifiers.producer())
                 .then(assertResponse(t -> t.statusCode(HttpStatus.SC_OK)))
                 .whenCalledWithAnyOf(roles("ROLE_USER"), users("user1"))

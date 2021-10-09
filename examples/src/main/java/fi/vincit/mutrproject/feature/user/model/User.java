@@ -20,7 +20,7 @@ public class User implements UserDetails, CredentialsContainer {
     @Column(name = "password")
     private String password;
 
-    @ElementCollection(targetClass = Role.class, fetch = FetchType.LAZY)
+    @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
     @CollectionTable(name = "username", joinColumns = @JoinColumn(table = "user_role"))
     public Collection<Role> authorities;

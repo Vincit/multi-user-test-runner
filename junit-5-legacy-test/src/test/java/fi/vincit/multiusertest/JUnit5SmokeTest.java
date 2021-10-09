@@ -1,7 +1,6 @@
 package fi.vincit.multiusertest;
 
 import fi.vincit.multiusertest.annotation.MultiUserConfigClass;
-import fi.vincit.multiusertest.annotation.MultiUserTestConfig;
 import fi.vincit.multiusertest.annotation.RunWithUsers;
 import fi.vincit.multiusertest.configuration.ConfiguredTest;
 import fi.vincit.multiusertest.rule.AuthorizationRule;
@@ -10,16 +9,13 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static fi.vincit.multiusertest.rule.expectation.TestExpectations.assertValue;
-import static fi.vincit.multiusertest.rule.expectation.TestExpectations.expectNotToFail;
-import static fi.vincit.multiusertest.rule.expectation.TestExpectations.expectValue;
+import static fi.vincit.multiusertest.rule.expectation.TestExpectations.*;
 import static fi.vincit.multiusertest.util.UserIdentifiers.roles;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 @RunWithUsers(producers = {"role:ROLE_ADMIN"}, consumers = "role:ROLE_USER")
 @RunWith(MultiUserTestRunner.class)
-@MultiUserTestConfig
 public class JUnit5SmokeTest {
 
     @MultiUserConfigClass
