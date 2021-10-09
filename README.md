@@ -47,7 +47,6 @@ Test class:
 
 1. Add the following annotations:
    1. `@RunWith(MultiUserTestRunner.class)`
-   2. `@MultiUserTestConfig`
    3. `@RunWithUsers()` with appropriate users e.g. `@RunWithUsers(producers = {"role:ROLE_ADMIN"}, consumers = {"role:ROLE_ADMIN", "role:ROLE_USER"})`
 2. Add an `AuthroizationRule` and annotate it with JUnit's `@Rule`
 3. Add you configuration class as member variable and annotate it with `@MultiUserConfigClass`: 
@@ -394,7 +393,6 @@ Configuring base class for tests (using Spring Framework):
 @TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
         DirtiesContextTestExecutionListener.class,
         TransactionalTestExecutionListener.class})
-@MultiUserTestConfig
 @ContextConfiguration(classes = {Application.class, SecurityConfig.class})
 @RunWith(MultiUserTestRunner.class)
 public abstract class AbstractConfiguredMultiRoleIT {
@@ -495,3 +493,5 @@ The `RunnerDelegate` class contains helper methods for creating custom test clas
 the runner implementation can just call the `RunnerDelegate` class' methods without any additional logic.
 But for example implementing the `withBefores` method may require some additional logic in order to make the
 test class' `@Before` methods to work correctly (See implementation of `BlockMultiUserTestClassRunner#withBefore` method).
+
+To use the custom test class runner, you can use `MultiUserTestConfig` on the test class.
