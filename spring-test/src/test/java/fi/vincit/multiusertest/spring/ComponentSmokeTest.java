@@ -1,7 +1,6 @@
 package fi.vincit.multiusertest.spring;
 
 import fi.vincit.multiusertest.annotation.MultiUserConfigClass;
-import fi.vincit.multiusertest.annotation.MultiUserTestConfig;
 import fi.vincit.multiusertest.annotation.RunWithUsers;
 import fi.vincit.multiusertest.context.ComponentTestContext;
 import fi.vincit.multiusertest.context.TestConfiguration;
@@ -25,10 +24,7 @@ import static fi.vincit.multiusertest.rule.expectation.TestExpectations.expectEx
 import static fi.vincit.multiusertest.rule.expectation.TestExpectations.expectNotToFail;
 import static fi.vincit.multiusertest.util.UserIdentifiers.roles;
 
-@RunWithUsers(
-        producers = {"role:ROLE_ADMIN"}, consumers = "role:ROLE_USER"
-)
-@MultiUserTestConfig
+@RunWithUsers(producers = {"role:ROLE_ADMIN"}, consumers = "role:ROLE_USER")
 @RunWith(MultiUserTestRunner.class)
 @ContextConfiguration(classes = {TestConfiguration.class, ComponentTestContext.class})
 public class ComponentSmokeTest {

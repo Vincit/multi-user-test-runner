@@ -1,12 +1,14 @@
 package fi.vincit.multiusertest;
 
 import fi.vincit.multiusertest.annotation.MultiUserConfigClass;
-import fi.vincit.multiusertest.annotation.MultiUserTestConfig;
 import fi.vincit.multiusertest.annotation.RunWithUsers;
 import fi.vincit.multiusertest.configuration.ConfiguredTest;
 import fi.vincit.multiusertest.rule.AuthorizationRule;
 import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
-import fi.vincit.multiusertest.util.*;
+import fi.vincit.multiusertest.util.LoginRole;
+import fi.vincit.multiusertest.util.SecurityUtil;
+import fi.vincit.multiusertest.util.User;
+import fi.vincit.multiusertest.util.UserIdentifier;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,7 +21,6 @@ import static org.junit.Assert.assertThat;
 @RunWithUsers(producers = {"role:ROLE_ADMIN", "role:ROLE_USER"},
         consumers = {RunWithUsers.WITH_PRODUCER_ROLE})
 @RunWith(MultiUserTestRunner.class)
-@MultiUserTestConfig
 public class NewUserTest {
 
     @MultiUserConfigClass

@@ -1,7 +1,6 @@
 package fi.vincit.multiusertest;
 
 import fi.vincit.multiusertest.annotation.MultiUserConfigClass;
-import fi.vincit.multiusertest.annotation.MultiUserTestConfig;
 import fi.vincit.multiusertest.annotation.RunWithUsers;
 import fi.vincit.multiusertest.configuration.ConfiguredTest;
 import fi.vincit.multiusertest.rule.AuthorizationRule;
@@ -18,7 +17,6 @@ import static org.junit.Assert.assertThat;
 
 @RunWithUsers(producers = {RunWithUsers.ANONYMOUS},
         consumers = {"role:ROLE_ADMIN", "role:ROLE_USER"})
-@MultiUserTestConfig
 @RunWith(MultiUserTestRunner.class)
 public class AnonymousProducerTest {
 

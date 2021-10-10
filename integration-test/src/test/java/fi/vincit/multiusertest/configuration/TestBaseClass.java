@@ -1,7 +1,6 @@
 package fi.vincit.multiusertest.configuration;
 
 import fi.vincit.multiusertest.annotation.MultiUserConfigClass;
-import fi.vincit.multiusertest.annotation.MultiUserTestConfig;
 import fi.vincit.multiusertest.rule.AuthorizationRule;
 import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
 import fi.vincit.multiusertest.test.MultiUserConfig;
@@ -12,7 +11,6 @@ import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
 
 @RunWith(MultiUserTestRunner.class)
-@MultiUserTestConfig
 public abstract class TestBaseClass {
 
     @Rule

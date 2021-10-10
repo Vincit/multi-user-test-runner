@@ -1,7 +1,6 @@
 package fi.vincit.multiusertest;
 
 import fi.vincit.multiusertest.annotation.MultiUserConfigClass;
-import fi.vincit.multiusertest.annotation.MultiUserTestConfig;
 import fi.vincit.multiusertest.annotation.RunWithUsers;
 import fi.vincit.multiusertest.configuration.ConfiguredTest;
 import fi.vincit.multiusertest.rule.AuthorizationRule;
@@ -20,7 +19,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
         consumers = {"role:ROLE_ADMIN", "$role:ROLE_USER", RunWithUsers.PRODUCER},
         focusEnabled = false)
 @RunWith(MultiUserTestRunner.class)
-@MultiUserTestConfig
 public class FocusOnUsersNotEnabledTest {
 
     private static int numberOfCalls = 0;

@@ -1,7 +1,6 @@
 package fi.vincit.multiusertest;
 
 import fi.vincit.multiusertest.annotation.MultiUserConfigClass;
-import fi.vincit.multiusertest.annotation.MultiUserTestConfig;
 import fi.vincit.multiusertest.annotation.RunWithUsers;
 import fi.vincit.multiusertest.configuration.ConfiguredTestWithRoleAlias;
 import fi.vincit.multiusertest.rule.AuthorizationRule;
@@ -22,7 +21,6 @@ import static org.junit.Assert.assertThat;
 @RunWithUsers(producers = {"role:ADMIN", "role:NORMAL"},
         consumers = {"role:ADMIN", "role:NORMAL"})
 @RunWith(MultiUserTestRunner.class)
-@MultiUserTestConfig
 public class AliasRoleTest {
 
     @MultiUserConfigClass

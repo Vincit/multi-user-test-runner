@@ -2,7 +2,6 @@ package fi.vincit.mutrproject.testconfig;
 
 
 import fi.vincit.multiusertest.annotation.MultiUserConfigClass;
-import fi.vincit.multiusertest.annotation.MultiUserTestConfig;
 import fi.vincit.multiusertest.rule.AuthorizationRule;
 import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
 import fi.vincit.mutrproject.Application;
@@ -15,7 +14,6 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.rules.SpringClassRule;
@@ -32,7 +30,6 @@ import org.springframework.test.context.transaction.TransactionalTestExecutionLi
 @TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
         DirtiesContextTestExecutionListener.class,
         TransactionalTestExecutionListener.class})
-@MultiUserTestConfig
 @ContextConfiguration(classes = {Application.class, SecurityConfig.class})
 @RunWith(MultiUserTestRunner.class)
 public abstract class AbstractConfiguredMultiRoleIT {

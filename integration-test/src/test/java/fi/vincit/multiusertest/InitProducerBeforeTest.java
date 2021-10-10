@@ -1,7 +1,6 @@
 package fi.vincit.multiusertest;
 
 import fi.vincit.multiusertest.annotation.MultiUserConfigClass;
-import fi.vincit.multiusertest.annotation.MultiUserTestConfig;
 import fi.vincit.multiusertest.annotation.RunWithUsers;
 import fi.vincit.multiusertest.configuration.InitProducerBeforeTestConfiguredTest;
 import fi.vincit.multiusertest.rule.AuthorizationRule;
@@ -16,7 +15,6 @@ import org.junit.runner.RunWith;
 @RunWithUsers(producers = {"user:test-user"},
         consumers = {RunWithUsers.PRODUCER, "role:ROLE_ADMIN", "role:ROLE_USER"})
 @RunWith(MultiUserTestRunner.class)
-@MultiUserTestConfig
 public class InitProducerBeforeTest {
 
     @MultiUserConfigClass

@@ -1,7 +1,6 @@
 package fi.vincit.mutrproject.feature.todo;
 
 import fi.vincit.multiusertest.annotation.MultiUserConfigClass;
-import fi.vincit.multiusertest.annotation.MultiUserTestConfig;
 import fi.vincit.multiusertest.annotation.RunWithUsers;
 import fi.vincit.multiusertest.rule.AuthorizationRule;
 import fi.vincit.multiusertest.runner.junit.MultiUserTestRunner;
@@ -35,7 +34,6 @@ import static fi.vincit.multiusertest.util.UserIdentifiers.roles;
 @TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
         DirtiesContextTestExecutionListener.class,
         TransactionalTestExecutionListener.class})
-@MultiUserTestConfig
 @ContextConfiguration(classes = {Application.class, SecurityConfig.class})
 @RunWith(MultiUserTestRunner.class)
 @RunWithUsers(

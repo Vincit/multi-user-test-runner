@@ -40,7 +40,6 @@ import static org.hamcrest.Matchers.hasSize;
 @TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
         DirtiesContextTestExecutionListener.class,
         TransactionalTestExecutionListener.class})
-@MultiUserTestConfig
 @ContextConfiguration(classes = {Application.class, SecurityConfig.class})
 @SpringBootTest(webEnvironment=SpringBootTest.WebEnvironment.DEFINED_PORT)
 @RunWithUsers(

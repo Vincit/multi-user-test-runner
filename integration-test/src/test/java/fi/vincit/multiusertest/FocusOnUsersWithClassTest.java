@@ -1,7 +1,6 @@
 package fi.vincit.multiusertest;
 
 import fi.vincit.multiusertest.annotation.MultiUserConfigClass;
-import fi.vincit.multiusertest.annotation.MultiUserTestConfig;
 import fi.vincit.multiusertest.annotation.RunWithUsers;
 import fi.vincit.multiusertest.configuration.ConfiguredTest;
 import fi.vincit.multiusertest.rule.AuthorizationRule;
@@ -25,7 +24,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
         consumers = {"$role:ROLE_USER"},
         focusEnabled = true)
 @RunWith(MultiUserTestRunner.class)
-@MultiUserTestConfig
 public class FocusOnUsersWithClassTest {
 
     public static class Producers implements UserDefinitionClass {
