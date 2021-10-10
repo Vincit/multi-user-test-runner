@@ -5,7 +5,6 @@ import fi.vincit.mutrproject.feature.todo.command.ItemStatus;
 import fi.vincit.mutrproject.feature.todo.command.TodoItemCommand;
 import fi.vincit.mutrproject.feature.todo.command.TodoListCommand;
 import fi.vincit.mutrproject.feature.todo.dto.TodoListDto;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,8 +12,11 @@ import java.util.List;
 @RestController
 public class TodoController {
 
-    @Autowired
-    private TodoService todoService;
+    private final TodoService todoService;
+
+    public TodoController(TodoService todoService) {
+        this.todoService = todoService;
+    }
 
     @RequestMapping(value = "/api/todo/lists", method = RequestMethod.GET)
     public List<TodoListDto> getLists() {
