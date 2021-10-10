@@ -15,14 +15,14 @@ import java.util.*;
 public class TestRunnerFactory {
 
     private final TestClass testClass;
-    private final Constructor runnerConstructor;
+    private final Constructor<?> runnerConstructor;
 
     /**
      *
      * @param testClass Test class
      * @param runnerConstructor Test class constructor
      */
-    public TestRunnerFactory(TestClass testClass, Constructor runnerConstructor) {
+    public TestRunnerFactory(TestClass testClass, Constructor<?> runnerConstructor) {
         this.testClass = testClass;
         this.runnerConstructor = runnerConstructor;
     }
@@ -31,6 +31,7 @@ public class TestRunnerFactory {
      * Creates runners for each producer consumer combination.
      * @param producerIdentifiers Producer identifiers
      * @param consumerIdentifiers Consumer identifiers
+     * @param focusType Focus type
      * @return All required combinations for given identifiers
      * @throws Exception If an exception is thrown
      */
@@ -58,7 +59,7 @@ public class TestRunnerFactory {
 
                 final Object parentRunner = runnerConstructor.newInstance(runnerConfig);
 
-                runners.add((ParentRunner) parentRunner);
+                runners.add((ParentRunner<?>) parentRunner);
 
             }
         }
@@ -66,12 +67,8 @@ public class TestRunnerFactory {
     }
 
     void validateConsumers(Collection<UserIdentifier> producerIdentifiers, Collection<UserIdentifier> consumerIdentifiers) {
-        boolean containsExistingUserDefinition = false;
-        for (UserIdentifier identifier : producerIdentifiers) {
-            if (identifier.getType() == UserIdentifier.Type.USER) {
-                containsExistingUserDefinition = true;
-            }
-        }
+        boolean containsExistingUserDefinition = producerIdentifiers.stream()
+                .anyMatch(identifier -> identifier.getType() == UserIdentifier.Type.USER);
 
         if (containsExistingUserDefinition
                 && consumerIdentifiers.contains(UserIdentifier.getWithProducerRole(FocusType.NONE))) {
