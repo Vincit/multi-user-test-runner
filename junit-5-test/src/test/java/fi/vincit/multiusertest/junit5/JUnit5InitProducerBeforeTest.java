@@ -14,10 +14,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @RunWithUsers(producers = {"user:test-user"},
         consumers = {RunWithUsers.PRODUCER, "role:ROLE_ADMIN", "role:ROLE_USER"})
 @ExtendWith(JUnit5MultiUserTestRunner.class)
-public class JUnit5InitProducerBeforeTest {
+class JUnit5InitProducerBeforeTest {
 
     @MultiUserConfigClass
-    private InitProducerBeforeTestConfiguredTest configuredTest =
+    private final InitProducerBeforeTestConfiguredTest configuredTest =
             new InitProducerBeforeTestConfiguredTest();
 
     @BeforeEach
@@ -27,14 +27,14 @@ public class JUnit5InitProducerBeforeTest {
     }
 
     @TestTemplate
-    public void producerLoggedIn(Authorization authorization) {
+    void producerLoggedIn(Authorization authorization) {
         if (!configuredTest.getProducer().getUsername().equals("test-user")) {
             throw new AssertionError("Wrong producer user, should be test-user");
         }
     }
 
     @TestTemplate
-    public void logInAsUser(Authorization authorization) {
+    void logInAsUser(Authorization authorization) {
         configuredTest.logInAs(LoginRole.CONSUMER);
     }
 

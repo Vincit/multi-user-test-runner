@@ -60,8 +60,18 @@ public abstract class AbstractMultiUserConfig<USER, ROLE> implements MultiUserCo
     }
 
     @Override
+    public UserIdentifier getConsumerIdentifier() {
+        return userResolver.getConsumer().getUserIdentifier();
+    }
+
+    @Override
     public USER getProducer() {
         return userResolver.resolverProducer();
+    }
+
+    @Override
+    public UserIdentifier getProducerIdentifier() {
+        return userResolver.getProducer().getUserIdentifier();
     }
 
     @Override

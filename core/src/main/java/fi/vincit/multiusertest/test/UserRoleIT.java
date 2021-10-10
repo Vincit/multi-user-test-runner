@@ -21,10 +21,22 @@ public interface UserRoleIT<USER> {
     USER getConsumer();
 
     /**
+     * Returns the current consumer user identifier
+     * @return Current consumer user identifier
+     */
+    UserIdentifier getConsumerIdentifier();
+
+    /**
      * Returns the current producer user
      * @return Current producer user or null if anonymous
      */
     USER getProducer();
+
+    /**
+     * Returns the current producer user identifier
+     * @return Current producer user identifier
+     */
+    UserIdentifier getProducerIdentifier();
 
     /**
      * Login as the given user login role using the configured producer or consmer.

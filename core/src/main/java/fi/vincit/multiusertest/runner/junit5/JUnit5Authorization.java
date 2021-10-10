@@ -47,18 +47,26 @@ public class JUnit5Authorization implements Authorization {
 
     @Override
     public WhenThen<TestExpectation> given(FunctionCall functionCall) {
-        return new FunctionCallWhenThen(functionCall, null, userIdentifier, this, userRoleIT, new HashSet<>(), focusType);
+        return new FunctionCallWhenThen(
+                functionCall,
+                producerIdentifier,
+                userIdentifier,
+                this,
+                userRoleIT,
+                allowedIdentifiers,
+                focusType
+        );
     }
 
     @Override
     public <VALUE_TYPE> WhenThen<TestValueExpectation<VALUE_TYPE>> given(ReturnValueCall<VALUE_TYPE> returnValueCall) {
         return new ReturnValueWhenThen<>(
                 returnValueCall,
-                null,
+                producerIdentifier,
                 userIdentifier,
                 this, 
                 userRoleIT,
-                new HashSet<>(),
+                allowedIdentifiers,
                 focusType
         );
     }

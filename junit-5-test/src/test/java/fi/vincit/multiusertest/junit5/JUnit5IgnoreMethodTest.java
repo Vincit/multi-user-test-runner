@@ -22,7 +22,7 @@ import static org.hamcrest.core.Is.is;
 @ExtendWith(JUnit5MultiUserTestRunner.class)
 public class JUnit5IgnoreMethodTest {
 
-    private static MethodCalls methodCalls = new MethodCalls()
+    private static final MethodCalls methodCalls = new MethodCalls()
             .expectMethodCalls("neverIgnore", 4)
             .expectMethodCalls("neverIgnore_None", 4)
             .expectMethodCalls("runProducerAdmin", 2)
@@ -35,7 +35,7 @@ public class JUnit5IgnoreMethodTest {
             .expectMethodCalls("neverRun", 0);
 
     @MultiUserConfigClass
-    private ConfiguredTest configuredTest = new ConfiguredTest();
+    private final ConfiguredTest configuredTest = new ConfiguredTest();
 
     @BeforeAll
     public static void initMethodCalls() {
@@ -50,21 +50,21 @@ public class JUnit5IgnoreMethodTest {
 
     @TestTemplate
     @RunWithUsers(producers = {"role:ROLE_ADMIN"})
-    public void runProducerAdmin(Authorization authorization) {
+    void runProducerAdmin(Authorization authorization) {
         methodCalls.call("runProducerAdmin");
         assertThat(configuredTest.getProducer().getRole(), is(User.Role.ROLE_ADMIN));
     }
 
     @TestTemplate
     @RunWithUsers(consumers = {"role:ROLE_USER"})
-    public void runConsumerIsUser(Authorization authorization) {
+    void runConsumerIsUser(Authorization authorization) {
         methodCalls.call("runConsumerIsUser");
         assertThat(configuredTest.getConsumer().getRole(), is(User.Role.ROLE_USER));
     }
 
     @TestTemplate
     @RunWithUsers(consumers = {"role:ROLE_ADMIN"}, producers = {"role:ROLE_ADMIN"})
-    public void runConsumerAdminAndProducerAdmin(Authorization authorization) {
+    void runConsumerAdminAndProducerAdmin(Authorization authorization) {
         methodCalls.call("runConsumerAdminAndProducerAdmin");
         assertThat(configuredTest.getConsumer().getRole(), is(User.Role.ROLE_ADMIN));
         assertThat(configuredTest.getProducer().getRole(), is(User.Role.ROLE_ADMIN));
@@ -72,7 +72,7 @@ public class JUnit5IgnoreMethodTest {
 
     @TestTemplate
     @RunWithUsers(consumers = {"role:ROLE_USER"}, producers = {"role:ROLE_ADMIN"})
-    public void runConsumerUserAndProducerAdmin(Authorization authorization) {
+    void runConsumerUserAndProducerAdmin(Authorization authorization) {
         methodCalls.call("runConsumerUserAndProducerAdmin");
         assertThat(configuredTest.getProducer().getRole(), is(User.Role.ROLE_ADMIN));
         assertThat(configuredTest.getConsumer().getRole(), is(User.Role.ROLE_USER));
@@ -81,14 +81,14 @@ public class JUnit5IgnoreMethodTest {
     @Disabled("JUnit 5 throws exception if no context available for a TestTemplate.")
     @TestTemplate
     @RunWithUsers(consumers = {"role:ROLE_VISITOR"}, producers = {"role:ROLE_VISITOR"})
-    public void neverRun(Authorization authorization) {
+    void neverRun(Authorization authorization) {
         methodCalls.call("neverRun");
         throw new AssertionError("Should never call this method");
     }
 
     @TestTemplate
     @IgnoreForUsers(consumers = {"role:ROLE_USER"}, producers = {"role:ROLE_ADMIN"})
-    public void ignoreConsumerUserAndProducerAdmin(Authorization authorization) {
+    void ignoreConsumerUserAndProducerAdmin(Authorization authorization) {
         methodCalls.call("ignoreConsumerUserAndProducerAdmin");
         assertThat(configuredTest.getProducer().getRole(), is(User.Role.ROLE_USER));
         assertThat(configuredTest.getConsumer().getRole(), is(User.Role.ROLE_ADMIN));
@@ -96,27 +96,27 @@ public class JUnit5IgnoreMethodTest {
 
     @TestTemplate
     @IgnoreForUsers(consumers = {"role:ROLE_USER"})
-    public void ignoreConsumerUser(Authorization authorization) {
+    void ignoreConsumerUser(Authorization authorization) {
         methodCalls.call("ignoreConsumerUser");
         assertThat(configuredTest.getConsumer().getRole(), is(User.Role.ROLE_ADMIN));
     }
 
     @TestTemplate
     @IgnoreForUsers(producers = {"role:ROLE_ADMIN"})
-    public void ignoreProducerAdmin(Authorization authorization) {
+    void ignoreProducerAdmin(Authorization authorization) {
         methodCalls.call("ignoreProducerAdmin");
         assertThat(configuredTest.getProducer().getRole(), is(User.Role.ROLE_USER));
     }
 
     @TestTemplate
     @IgnoreForUsers(consumers = {"role:ROLE_VISITOR"}, producers = {"role:ROLE_VISITOR"})
-    public void neverIgnore(Authorization authorization) {
+    void neverIgnore(Authorization authorization) {
         methodCalls.call("neverIgnore");
     }
 
     @TestTemplate
     @IgnoreForUsers
-    public void neverIgnore_None(Authorization authorization) {
+    void neverIgnore_None(Authorization authorization) {
         methodCalls.call("neverIgnore_None");
     }
 

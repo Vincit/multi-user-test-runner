@@ -1,6 +1,7 @@
 package fi.vincit.multiusertest.runner.junit5;
 
 import fi.vincit.multiusertest.rule.Authorization;
+import fi.vincit.multiusertest.runner.junit.RunnerConfig;
 import fi.vincit.multiusertest.test.MultiUserConfig;
 import fi.vincit.multiusertest.util.LoginRole;
 import fi.vincit.multiusertest.util.UserIdentifier;
@@ -12,10 +13,12 @@ import static fi.vincit.multiusertest.util.ConfigurationUtil.getConfigComponent;
 
 class MutrParameterResolver implements ParameterResolver {
 
+    private final RunnerConfig runnerConfig;
     private final UserIdentifier producer;
     private final UserIdentifier consumer;
 
-    public MutrParameterResolver(UserIdentifier producer, UserIdentifier consumer) {
+    public MutrParameterResolver(RunnerConfig runnerConfig, UserIdentifier producer, UserIdentifier consumer) {
+        this.runnerConfig = runnerConfig;
         this.producer = producer;
         this.consumer = consumer;
     }
@@ -37,7 +40,10 @@ class MutrParameterResolver implements ParameterResolver {
         userIt.setAuthorizationRule(authorization);
         userIt.initialize();
 
-        authorization.setRole(producer, null);
+        authorization.setRole(producer, consumer);
+        authorization.setUserRoleIT(userIt);
+        authorization.setAllowedIdentifiers(runnerConfig.getAllowedIdentifiers());
+        authorization.setFocusType(runnerConfig.getFocusType());
 
         userIt.logInAs(LoginRole.PRODUCER);
 

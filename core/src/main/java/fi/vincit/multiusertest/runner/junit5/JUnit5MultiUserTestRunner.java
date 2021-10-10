@@ -3,6 +3,7 @@ package fi.vincit.multiusertest.runner.junit5;
 import fi.vincit.multiusertest.annotation.IgnoreForUsers;
 import fi.vincit.multiusertest.annotation.MultiUserTestConfig;
 import fi.vincit.multiusertest.annotation.RunWithUsers;
+import fi.vincit.multiusertest.runner.junit.RunnerConfig;
 import fi.vincit.multiusertest.util.TestConfiguration;
 import fi.vincit.multiusertest.util.TestMethodFilter;
 import fi.vincit.multiusertest.util.UserIdentifier;
@@ -11,9 +12,7 @@ import org.junit.jupiter.api.extension.TestTemplateInvocationContext;
 import org.junit.jupiter.api.extension.TestTemplateInvocationContextProvider;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Stream;
 
 public class JUnit5MultiUserTestRunner implements
@@ -33,17 +32,29 @@ public class JUnit5MultiUserTestRunner implements
     }
 
     private List<TestTemplateInvocationContext> generateTestInvocations(ExtensionContext context, TestConfiguration configuration) {
+        final Set<UserIdentifier> allowedIdentifiers = new HashSet<>();
+        allowedIdentifiers.addAll(configuration.getConsumerIdentifiers());
+        allowedIdentifiers.addAll(configuration.getProducerIdentifiers());
+
         final List<TestTemplateInvocationContext> contextList = new ArrayList<>();
         for (UserIdentifier producerIdentifier : configuration.getProducerIdentifiers()) {
             for (UserIdentifier consumerIdentifier : configuration.getConsumerIdentifiers()) {
-                createContext(context, producerIdentifier, consumerIdentifier)
+                RunnerConfig runnerConfig = new RunnerConfig(
+                        context.getRequiredTestClass(),
+                        allowedIdentifiers,
+                        producerIdentifier,
+                        consumerIdentifier,
+                        configuration.getFocusType()
+                );
+
+                createContext(context, runnerConfig, producerIdentifier, consumerIdentifier)
                         .ifPresent(contextList::add);
             }
         }
         return contextList;
     }
 
-    private Optional<TemplateInvocationContext> createContext(ExtensionContext context, UserIdentifier producerIdentifier, UserIdentifier consumerIdentifier) {
+    private Optional<TemplateInvocationContext> createContext(ExtensionContext context, RunnerConfig configuration, UserIdentifier producerIdentifier, UserIdentifier consumerIdentifier) {
         final Method testMethod = context.getRequiredTestMethod();
         final Class<?> declaringClass = context.getRequiredTestClass();
 
@@ -57,7 +68,7 @@ public class JUnit5MultiUserTestRunner implements
         );
 
         if (shouldRun) {
-             return Optional.of(new TemplateInvocationContext(producerIdentifier, consumerIdentifier));
+             return Optional.of(new TemplateInvocationContext(configuration, producerIdentifier, consumerIdentifier));
         } else {
             return Optional.empty();
         }
