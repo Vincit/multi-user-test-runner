@@ -36,6 +36,39 @@ jobs:
           paths:
             - ~/.gradle/caches
           key: v1-gradle-cache-{{ checksum "build.gradle" }}
+  junit5-test:
+    parameters:
+      junit5-version:
+        type: string
+    environment:
+      _JAVA_OPTIONS: "-Xmx3g"
+      GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+      JUNIT5_VERSION: << parameters.junit5-version >>
+    docker:
+      - image: circleci/openjdk:8-jdk-stretch
+    steps:
+      - checkout
+      - restore_cache:
+          key: v1-gradle-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
+      - restore_cache:
+          key: v1-gradle-cache-{{ checksum "build.gradle" }}
+      - run:
+          name: Test JUnit 5 compatibility
+          command: |
+            ./build/test-junit5-compatibility.sh
+      - run:
+          name: Copy test artifacts
+          command: |
+            ./build/gather-test-artifacts.sh
+          when: always
+      - save_cache:
+          paths:
+            - ~/.gradle/wrapper
+          key: v1-gradle-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
+      - save_cache:
+          paths:
+            - ~/.gradle/caches
+          key: v1-gradle-cache-{{ checksum "build.gradle" }}
   build:
     environment:
       _JAVA_OPTIONS: "-Xmx3g"
@@ -96,3 +129,7 @@ workflows:
             # Spring Core/Spring Security
             spring-version: ["5.3.10/5.5.2", "5.2.17.RELEASE/5.5.2", "5.1.20.RELEASE/5.5.2", "5.0.20.RELEASE/5.5.2",
                              "4.3.30.RELEASE/3.2.5.RELEASE", "4.2.9.RELEASE/3.2.5.RELEASE"]
+    - junit5-test:
+        matrix:
+          parameters:
+            junit5-version: ["5.0.0/4.12.3", "5.1.1", "5.2.0", "5.3.2", "5.4.2", "5.5.2", "5.6.3", "5.7.2", "5.8.1"]
