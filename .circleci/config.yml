@@ -105,12 +105,15 @@ jobs:
           name: Generate JavaDoc
           command: |
             ./build/generate-javadoc.sh
-  build:
+  build-library:
+    parameters:
+      jdk-version:
+        type: string
     environment:
       _JAVA_OPTIONS: "-Xmx3g"
       GRADLE_OPTS: "-Dorg.gradle.daemon=false"
     docker:
-      - image: circleci/openjdk:8-jdk-stretch
+      - image: << parameters.jdk-version >>
     steps:
       - checkout
       - restore_cache:
@@ -145,13 +148,16 @@ workflows:
   version: 2
   workflow:
     jobs:
-    - build
+    - build-library:
+        matrix:
+          parameters:
+            jdk-version: [ "circleci/openjdk:8-jdk-stretch", "cimg/openjdk:17.0.0" ]
     - find-bugs:
         requires:
-          - build
+          - build-library
     - javadoc:
         requires:
-          - build
+          - build-library
     - spring-test:
         requires:
           - find-bugs
